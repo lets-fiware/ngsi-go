@@ -1,0 +1,25 @@
+#! /bin/bash
+
+PROG=ngsi
+brokers=`ngsi -B --syslog off --stderr err broker list`
+
+_cli_bash_autocomplete() {
+  if [[ "${COMP_WORDS[0]}" != "source" ]]; then
+    local cur prev cword opts base
+    _get_comp_words_by_ref -n : cur prev cword
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    if [ "${prev}" = "-h" -o "${prev}" = "--host" ]; then
+      opts=${brokers}
+    elif [[ "$cur" == "-"* ]]; then
+      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} ${cur} --generate-bash-completion )
+    else
+      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} --generate-bash-completion )
+    fi
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+  fi
+}
+
+complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete $PROG
+unset PROG

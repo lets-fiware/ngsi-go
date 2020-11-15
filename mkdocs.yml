@@ -1,0 +1,37 @@
+site_name: "NGSI Go"
+site_description: NGSI Go (Let's FIWARE)
+
+nav:
+  - 'Home':
+    - 'Index': index.md
+    - 'Usage': usage.md
+    - 'Quick Start Guide': quick_start_guide.md
+    - 'Install': install.md
+    - 'Build from source': build_source.md
+    - 'files': files.md
+  - 'NGSI Go walkthrough':
+    - 'NGSI-LD CRUD': walkthrough/ngsi-ld-crud.md
+    - 'NGSIv2 CRUD': walkthrough/ngsi-v2-crud.md
+  - 'NGSI command':
+    -   'append': ngsi/append.md
+    -   'create': ngsi/create.md
+    -   'delete': ngsi/delete.md
+    -   'get': ngsi/get.md
+    -   'list': ngsi/list.md
+    -   'replace': ngsi/replace.md
+    -   'update': ngsi/update.md
+    -   'upsert': ngsi/upsert.md
+  - 'Convenience command':
+    -   'cp': convenience/cp.md
+    -   'wc': convenience/wc.md
+    -   'man': convenience/man.md
+    -   'ls': convenience/ls.md
+    -   'rm': convenience/rm.md
+    -   'template': convenience/template.md
+    -   'version': convenience/version.md
+  - 'Management command':
+    -    'broker': management/broker.md
+    -    'context': management/context.md
+    -    'settings': management/settings.md
+    -    'token': management/token.md
+  - 'Global Options': global.md

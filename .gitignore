@@ -1,0 +1,4 @@
+*.swp
+profile.out
+bin/
+build/

@@ -1,0 +1,22 @@
+language: go
+go:
+    - 1.15
+
+env:
+  global:
+    - TZ=Asia/Tokyo
+before_script:
+  - sudo timedatectl set-timezone Asia/Tokyo
+  - sudo dpkg-reconfigure --frontend noninteractive tzdata
+
+before_install:
+    - make devel-deps
+    - go get github.com/mattn/goveralls
+    - go get golang.org/x/tools/cmd/cover
+
+script:
+    - make build
+    - make test
+
+after_success:
+    - $GOPATH/bin/goveralls -coverprofile=internal/profile.out -covermode=count -service=travis-ci
