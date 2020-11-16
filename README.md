@@ -1,14 +1,16 @@
 [![Let's FIWARE Banner](https://github.com/lets-fiware/ngsi-go/blob/gh-pages/img/lets-fiware-logo-non-free.png)](https://www.letsfiware.jp/)
-
 [![NGSI v2](https://img.shields.io/badge/NGSI-v2-5dc0cf.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
 [![NGSI LD](https://img.shields.io/badge/NGSI-LD-d6604d.svg)](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf)
+
+![FIWARE: Tools](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/deployment-tools.svg)
 [![License: MIT](https://img.shields.io/github/license/lets-fiware/ngsi-go.svg)](https://opensource.org/licenses/MIT)
 ![GitHub top language](https://img.shields.io/github/languages/top/lets-fiware/ngsi-go)
 ![Lines of code](https://img.shields.io/tokei/lines/github/lets-fiware/ngsi-go)
 [![Build Status](https://travis-ci.com/lets-fiware/ngsi-go.svg?branch=main)](https://travis-ci.com/lets-fiware/ngsi-go)
 [![Coverage Status](https://coveralls.io/repos/github/lets-fiware/ngsi-go/badge.svg?branch=main)](https://coveralls.io/github/lets-fiware/ngsi-go?branch=main)
 
-The NGSI Go is a Unix-like command-line tool for FIWARE NGSIv2 and NGSI-LD.
+
+The NGSI Go is a Unix command-line tool for FIWARE NGSI v2 and NGSI-LD.
 
 ## Contents
  
@@ -18,97 +20,104 @@ The NGSI Go is a Unix-like command-line tool for FIWARE NGSIv2 and NGSI-LD.
 -   [Getting Started with NGSI Go](#getting-started-with-ngsi-go)
 -   [Usage](#usage)
 -   [Install](#install)
--   [Document](#document)
+-   [Documentation](#documentation)
 -   [Third party packages](#third-party-packages)
 -   [Copyright and License](#copyright-and-license)
 
 
 </details>
 
-# What's NGSI Go
+# What is NGSI Go?
+
+The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) and [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf), which simplifies syntax.
 
 > "Brave (hero), bearer of the blood of Erdrick, hero of legend! Know that your weapon will not
 > serve to vanquish the Dragonload."
 >
 > — DRAGON WARRIOR (DRAGON QUEST)
 
-The NGSI Go is a Unix-like command-line tool for FIWARE NGSIv2 and NGSI-LD.
 
 ## Getting Started with NGSI Go
 
 You can get the version of your context broker instance as shown:
 
+```console
+ngsi version -h localhost:1026
+```
+
 ```json
-$ ngsi version -h localhost:1026
 {
-"orion" : {
-  "version" : "2.5.0",
-  "uptime" : "0 d, 5 h, 7 m, 50 s",
-  "git_hash" : "63cc107657ae10aa03f1c83bdea0be869d8e26a1",
-  "compile_time" : "Fri Oct 30 09:02:37 UTC 2020",
-  "compiled_by" : "root",
-  "compiled_in" : "320890801dd4",
-  "release_date" : "Fri Oct 30 09:02:37 UTC 2020",
-  "doc" : "https://fiware-orion.rtfd.io/en/2.5.0/",
-  "libversions": {
-     "boost": "1_53",
-     "libcurl": "libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
-     "libmicrohttpd": "0.9.70",
-     "openssl": "1.0.2k",
-     "rapidjson": "1.1.0",
-     "mongodriver": "legacy-1.1.2"
-  }
-}
+ "orion" : {
+   "version" : "2.5.0",
+   "uptime" : "0 d, 5 h, 7 m, 50 s",
+   "git_hash" : "63cc107657ae10aa03f1c83bdea0be869d8e26a1",
+   "compile_time" : "Fri Oct 30 09:02:37 UTC 2020",
+   "compiled_by" : "root",
+   "compiled_in" : "320890801dd4",
+   "release_date" : "Fri Oct 30 09:02:37 UTC 2020",
+   "doc" : "https://fiware-orion.rtfd.io/en/2.5.0/",
+   "libversions": {
+      "boost": "1_53",
+      "libcurl": "libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
+      "libmicrohttpd": "0.9.70",
+      "openssl": "1.0.2k",
+      "rapidjson": "1.1.0",
+      "mongodriver": "legacy-1.1.2"
+   }
+ }
 }
 ```
 
 You can register an alias to access the broker.
 
-```
+```console
 ngsi broker add --host letsfiware --brokerHost http://localhost:1026 --ngsiType v2
 ```
 
 You can get the version by using the alias `letsfiware`.
 
+```console
+ngsi version -h letsfiware
 ```
-$ ngsi version -h letsfiware
+
+```json
 {
-"orion" : {
-  "version" : "2.5.0",
-  "uptime" : "0 d, 5 h, 7 m, 50 s",
-  "git_hash" : "63cc107657ae10aa03f1c83bdea0be869d8e26a1",
-  "compile_time" : "Fri Oct 30 09:02:37 UTC 2020",
-  "compiled_by" : "root",
-  "compiled_in" : "320890801dd4",
-  "release_date" : "Fri Oct 30 09:02:37 UTC 2020",
-  "doc" : "https://fiware-orion.rtfd.io/en/2.5.0/",
-  "libversions": {
-     "boost": "1_53",
-     "libcurl": "libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
-     "libmicrohttpd": "0.9.70",
-     "openssl": "1.0.2k",
-     "rapidjson": "1.1.0",
-     "mongodriver": "legacy-1.1.2"
-  }
-}
+ "orion" : {
+   "version" : "2.5.0",
+   "uptime" : "0 d, 5 h, 7 m, 50 s",
+   "git_hash" : "63cc107657ae10aa03f1c83bdea0be869d8e26a1",
+   "compile_time" : "Fri Oct 30 09:02:37 UTC 2020",
+   "compiled_by" : "root",
+   "compiled_in" : "320890801dd4",
+   "release_date" : "Fri Oct 30 09:02:37 UTC 2020",
+   "doc" : "https://fiware-orion.rtfd.io/en/2.5.0/",
+   "libversions": {
+      "boost": "1_53",
+      "libcurl": "libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
+      "libmicrohttpd": "0.9.70",
+      "openssl": "1.0.2k",
+      "rapidjson": "1.1.0",
+      "mongodriver": "legacy-1.1.2"
+   }
+ }
 }
 ```
 
 Once you access the broker, you can omit to specify the broker.
 
-```
+```console
 ngsi version
 ```
 
 If you want to check the current settings, you can run the following command.
 
-```
+```console
 ngsi settings list
 ```
 
 ## Usage
 
-```
+```text
 NAME:
    ngsi - unix-like command-line tool for FIWARE NGSI and NGSI-LD
 
@@ -160,33 +169,39 @@ COPYRIGHT:
 
 ### Install NGSI Go binary
 
-Install NGSI Go binary in `/usr/local/bin`.
+The NGSI Go binary is installed in `/usr/local/bin`.
 
-```
+#### Installation on UNIX
+
+```console
 curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.1.0/ngsi-v0.1.0-linux-amd64.tar.gz
 sudo tar zxvf ngsi-v0.1.0-linux-amd64.tar.gz -C /usr/local/bin
+```
+
+`ngsi-v0.1.0-linux-arm.tar.gz` and `ngsi-v0.1.0-linux-arm64.tar.gz` binaries are also available.
+
+#### Installation on Mac
+
+```console
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.1.0/ngsi-v0.1.0-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.1.0-darwin-amd64.tar.gz -C /usr/local/bin
 ```
 
 ### Install bash autocomplete file for NGSI Go
 
 Install ngsi_bash_autocomplete file in `/etc/bash_completion.d`.
 
-```
+```console
 curl -OL https://raw.githubusercontent.com/lets-fiware/ngsi-go/main/autocomplete/ngsi_bash_autocomplete
 sudo mv ngsi_bash_autocomplete /etc/bash_completion.d/
 source /etc/bash_completion.d/ngsi_bash_autocomplete
 echo "source /etc/bash_completion.d/ngsi_bash_autocomplete" >> ~/.bashrc
 ```
 
-### Other binaries
 
--    ngsi-v0.1.0-linux-arm.tar.gz
--    ngsi-v0.1.0-linux-arm64.tar.gz
--    ngsi-v0.1.0-darwin-amd64.tar.gz
+## Documentation
 
-## Document
-
--    [NGSI Go document](https://ngsi-go.letsfiware.jp/)
+-    [NGSI Go documentation](https://ngsi-go.letsfiware.jp/)
 
 ## Third party packages
 
@@ -201,4 +216,4 @@ The dependencies of dependencies have been omitted from the list.
 ## Copyright and License
 
 Copyright (c) 2020 Kazuhito Suda<br>
-Licensed under the MIT license.
+Licensed under the [MIT license](./LICENSE).
