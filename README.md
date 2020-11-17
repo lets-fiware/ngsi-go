@@ -125,7 +125,7 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.1.0 (git_hash:d64ff8e24b70c000561528baad2517a6ae8575d6)
+   0.1.0 (git_hash:8d4efe4c08597ff65706dfa0f03acee2a3c8b1d2)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
