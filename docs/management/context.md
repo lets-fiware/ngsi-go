@@ -1,4 +1,4 @@
-# context - Management command
+# Context - Management command
 
 -   [List contexts](#list-contexts)
 -   [Add context](#add-context)
@@ -7,7 +7,7 @@
 
 ## List contexts
 
-```
+```console
 ngsi context list [options]
 ```
 
@@ -20,8 +20,11 @@ ngsi context list [options]
 
 #### Example 1
 
+```console
+ngsi context list
 ```
-$ ngsi context list
+
+```text
 etsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld
 ld https://schema.lab.fiware.org/ld/context
 tutorial http://context-provider:3000/data-models/ngsi-context.jsonld
@@ -30,14 +33,17 @@ data-model http://context-provider:3000/data-models/ngsi-context.jsonld
 
 #### Example 2
 
+```console
+ngsi context list --name etsi
 ```
-$ ngsi context list --name etsi
+
+```text
 https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld
 ```
 
 ## Add context
 
-```
+```console
 ngsi context add [options]
 ```
 
@@ -51,13 +57,13 @@ ngsi context add [options]
 
 #### Example
 
-```
-$ ngsi context add --name tutorial --url http://context-provider:3000/data-models/ngsi-context.jsonld
+```console
+ngsi context add --name tutorial --url http://context-provider:3000/data-models/ngsi-context.jsonld
 ```
 
 ## Update context
 
-```
+```console
 ngsi context update [options]
 ```
 
@@ -71,13 +77,13 @@ ngsi context update [options]
 
 #### Example
 
-```
-$ ngsi context update --name data-model --url http://context-provider:3000/data-models/ngsi-context.jsonld
+```console
+ngsi context update --name data-model --url http://context-provider:3000/data-models/ngsi-context.jsonld
 ```
 
 ## Delete context
 
-```
+```console
 ngsi context delete [options]
 ```
 
@@ -90,6 +96,6 @@ ngsi context delete [options]
 
 #### Example
 
-```
-$ ngsi context delete --name data-model
+```console
+ngsi context delete --name data-model
 ```

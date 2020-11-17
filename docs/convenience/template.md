@@ -9,7 +9,7 @@ This command generates a json-style query text for subscription or registration.
 
 This command generates a json-style query text to create a subscription and print it to stdout.
 
-```
+```console
 ngsi template subscription [options]
 ```
 
@@ -52,7 +52,7 @@ ngsi template subscription [options]
 
 #### Reuqest:
 
-```
+```console
 ngsi template subscription --ngsiType ld
   --type Shelf \
   --query "numberOfItems<10;locatedIn==urn:ngsi-ld:Building:store001" \
@@ -65,7 +65,7 @@ ngsi template subscription --ngsiType ld
 
 #### Response:
 
-```
+```json
 {
   "subscriptionName": "subscription name",
   "description": "Notify me of low stock in Store 001",
@@ -101,7 +101,7 @@ ngsi template subscription --ngsiType ld
 
 #### Reuqest:
 
-```
+```console
 ngsi template subscription --ngsiType ld \
   --description "LD Notify me of low stock in Store 002" \
   --type Shelf \
@@ -113,7 +113,7 @@ ngsi template subscription --ngsiType ld \
 
 #### Respose:
 
-```
+```json
 {
   "description": "LD Notify me of low stock in Store 002",
   "entities": [
@@ -145,13 +145,13 @@ ngsi template subscription --ngsiType ld \
 
 #### Request:
 
-```
-$ ngsi template subscription --ngsiType v2 --idPattern ".*" --type Sensor --wAttrs temperature --nAttrs temperature --url http://192.168.0.1/ --expires 1day
+```console
+ngsi template subscription --ngsiType v2 --idPattern ".*" --type Sensor --wAttrs temperature --nAttrs temperature --url http://192.168.0.1/ --expires 1day
 ```
 
 #### Response:
 
-```
+```json
 {
   "subject": {
     "entities": [
@@ -182,7 +182,7 @@ $ ngsi template subscription --ngsiType v2 --idPattern ".*" --type Sensor --wAtt
 
 This command will generate a json-style query to create a registration and print it to stdout.
 
-```
+```console
 ngsi template registration
 ```
 
@@ -201,7 +201,7 @@ ngsi template registration
 
 #### Request:
 
-```
+```console
 ngsi template registration --ngsiType ld \
   --type Building \
   --id urn:ngsi-ld:Building:store001 \
@@ -212,7 +212,7 @@ ngsi template registration --ngsiType ld \
 
 #### Response:
 
-```
+```json
 {
   "description": "ContextSourceRegistration",
   "endpoint": "http://context-provider:3000/static/tweets",
@@ -233,51 +233,16 @@ ngsi template registration --ngsiType ld \
 }
 ```
 
-#### Reuqest:
-
-```
-ngsi template subscription --ngsiType ld \
-  --description "LD Notify me of low stock in Store 002" \
-  --type Shelf \
-  --wAttrs "numberOfItems" \
-  --query "numberOfItems<10;locatedIn==urn:ngsi-ld:Building:store002" \
-  --nAttrs "numberOfItems,stocks,locatedIn" \
-  --uri "http://tutorial:3000/subscription/low-stock-store002" > subscription.json
-```
-
-#### Respose:
-
-```
-{
-  "description": "LD Notify me of low stock in Store 002",
-  "entities": [
-    {
-      "type": "Shelf"
-    }
-  ],
-  "notification": {
-    "attributes": [
-      "numberOfItems",
-      "stocks",
-      "locatedIn"
-    ],
-    "endpoint": {
-      "accept": "application/ld+json",
-      "uri": "http://tutorial:3000/subscription/low-stock-store002"
-    },
-    "format": "normalized"
-  },
-  "q": "numberOfItems<10;locatedIn==urn:ngsi-ld:Building:store002",
-  "type": "Subscription",
-  "watchedAttributes": [
-    "numberOfItems"
-  ]
-}
-```
-
 ### Example for NGSIv2
 
 #### Request:
 
-#### Response:
-
+```console
+ngsi template registration \
+  --ngsiType v2 \
+  --description "sensor source" \
+  --attrs temperature,pressure,humidity \
+  --id urn:ngsi-ld:Device:device001 \
+  --type Device \
+  --provider http://raspi
+```

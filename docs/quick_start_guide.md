@@ -1,33 +1,14 @@
 # NGSI Go Quick Start Guide
 
-## Install
-
-### Install NGSI Go binary
-
-Install NGSI Go binary in `/usr/local/bin`.
-
-```
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.1.0/ngsi-v0.1.0-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.1.0-linux-amd64.tar.gz -C /usr/local/bin
-```
-
-### Install bash autocomplete file for NGSI Go
-
-Install ngsi_bash_autocomplete file in `/etc/bash_completion.d`.
-
-```
-curl -OL https://raw.githubusercontent.com/lets-fiware/ngsi-go/main/autocomplete/ngsi_bash_autocomplete
-sudo mv ngsi_bash_autocomplete /etc/bash_completion.d/
-source /etc/bash_completion.d/ngsi_bash_autocomplete
-echo "source /etc/bash_completion.d/ngsi_bash_autocomplete" >> ~/.bashrc
-```
-
-## Run
+## Get broker version
 
 You can get the version of your context broker instance as shown:
 
+```console
+ngsi version -h localhost:1026
+```
+
 ```json
-$ ngsi version -h localhost:1026
 {
 "orion" : {
   "version" : "2.5.0",
@@ -50,16 +31,22 @@ $ ngsi version -h localhost:1026
 }
 ```
 
+## Add a broker
+
 You can register an alias to access the broker.
 
-```
+```console
 ngsi broker add --host letsfiware --brokerHost http://localhost:1026 --ngsiType v2
 ```
+## Get broker version by using an alias
 
 You can get the version by using the alias `letsfiware`.
 
+```console
+ngsi version -h letsfiware
 ```
-$ ngsi version -h letsfiware
+
+```json
 {
 "orion" : {
   "version" : "2.5.0",
@@ -84,12 +71,77 @@ $ ngsi version -h letsfiware
 
 Once you access the broker, you can omit to specify the broker.
 
-```
+```console
 ngsi version
 ```
 
 If you want to check the current default settings, you can run the following command.
 
-```
+```console
 ngsi settings list
+```
+
+## Create a entity
+
+```console
+ngsi create entity --keyValues \
+--data ' {
+      "id":"urn:ngsi-ld:Product:110",
+      "type":"Product",
+      "name": "Lemonade",
+      "size": "S",
+      "price": 99
+}'
+```
+
+## Get a entity
+
+```console
+ngsi get entity --id urn:ngsi-ld:Product:110 --type Product
+```
+
+```json
+{"id":"urn:ngsi-ld:Product:110","type":"Product","name":{"type":"Text","value":"Lemonade","metadata":{}},"price":{"type":"Number","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}}
+```
+
+## Update attribute
+
+```console
+ngsi update attr --id urn:ngsi-ld:Product:110 --attrName price --data 11
+```
+
+## Get a entity (keyValues)
+
+```console
+ngsi get entity --id urn:ngsi-ld:Product:110 --keyValues
+```
+
+```json
+{"id":"urn:ngsi-ld:Product:110","name":"Lemonade","price":11,"size":"S","type":"Product"}
+```
+
+## Print number of entities
+
+```console
+ngsi wc entities --type Product
+```
+
+```text
+10
+```
+
+## Delete a entity
+
+```console
+ngsi delete entity --id urn:ngsi-ld:Product:110
+```
+
+## Print number of entities again
+
+```console
+ngsi wc entities --type Product
+```
+
+```text
+9
 ```

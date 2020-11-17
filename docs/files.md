@@ -7,11 +7,11 @@ The NGSI Go command creates the following file.
 
 ## Linux
 
-```bash
+```console
 /home/<username\>/.config/fiware
 ```
-## MacOS
+## Mac
 
-```bash
+```console
 /Users/<username\>/Library/Application Support/fiware
 ```

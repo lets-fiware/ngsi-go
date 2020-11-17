@@ -1,74 +1,86 @@
 # Usage
 
+-   [Syntax](#syntax)
+    -   [NGSI Command](#ngsi-command)
+    -   [Convenience command](#convenience-command)
+    -   [Management commnad](#management-commnad)
+    -   [Global Options](#global-options)
+    -   [Common options](#common-options)
+-   [Safe string](#safe-string)
+-   [Error message](#error-message)
+    -   [Detailed error information](#detailed-error-information)
+
 ## Syntax
 
+```console
 ngsi [global options] command [common options] sub-command [options]
+```
 
-### NGSI Command
+### NGSI command
 
-| command | sub-command  | Description         |
-| ------- | ------------ | ------------------- |
-| append  | attrs        | append attributes   |
-| create  | entity       | create entity       |
-|         | entities     | create entities     |
-|         | subscription | create subscription |
-|         | registration | create registration |
-| delete  | entity       | delete entity       |
-|         | entities     | delete entities     |
-|         | attr         | delete attribute    |
-|         | subscription | delete subscription |
-|         | registration | delete registration |
-| get     | entity       | get entity          |
-|         | entities     | get entities        |
-|         | attr         | get attribute       |
-|         | attrs        | get attributes      |
-|         | types        | get types           |
-|         | subscription | get subscription    |
-|         | registration | get registration    |
-| list    | entities     | list entties        |
-|         | types        | list types          |
-|         | subscription | list subscription   |
-|         | registration | list registration   |
-| replace | entities     | replace entities    |
-|         | attrs        | replace attrs       |
-| update  | entities     | update entities     |
-|         | attr         | update attribute    |
-|         | attrs        | update attributes   |
-|         | subscription | update subscription |
-| upsert  | entities     | upsert entities     |
+| command                      | sub-command  | Description         |
+| ---------------------------- | ------------ | ------------------- |
+| [append](./ngsi/append.md)   | attrs        | append attributes   |
+| [create](./ngsi/create.md)   | entity       | create entity       |
+|                              | entities     | create entities     |
+|                              | subscription | create subscription |
+|                              | registration | create registration |
+| [delete](./ngsi/delete.md)   | entity       | delete entity       |
+|                              | entities     | delete entities     |
+|                              | attr         | delete attribute    |
+|                              | subscription | delete subscription |
+|                              | registration | delete registration |
+| [get](./ngsi/get.md)         | entity       | get entity          |
+|                              | entities     | get entities        |
+|                              | attr         | get attribute       |
+|                              | attrs        | get attributes      |
+|                              | types        | get types           |
+|                              | subscription | get subscription    |
+|                              | registration | get registration    |
+| [list](./ngsi/list.md)       | entities     | list entties        |
+|                              | types        | list types          |
+|                              | subscription | list subscription   |
+|                              | registration | list registration   |
+| [replace](./ngsi/replace.md) | entities     | replace entities    |
+|                              | attrs        | replace attrs       |
+| [update](./ngsi/update.md)   | entities     | update entities     |
+|                              | attr         | update attribute    |
+|                              | attrs        | update attributes   |
+|                              | subscription | update subscription |
+| [upsert](./ngsi/upsert.md)   | entities     | upsert entities     |
 
 ### Convenience command
 
-| command  | sub-command  | Description                                                      |
-| -------- | ------------ | ---------------------------------------------------------------- |
-| cp       | -            | copy entities                                                    |
-| wc       | -            | print number of entities, subscriptions, registrations, or types |
-| man      | -            | print urls of document                                           |
-| ls       | -            | list entities                                                    |
-| rm       | -            | remove entities                                                  |
-| template | subscription | create template of subscription                                  |
-|          | registration | create template of registration                                  |
-| version  | -            | print the version of Context Broker                              |
+| command                               | sub-command  | Description                                                      |
+| ------------------------------------- | ------------ | ---------------------------------------------------------------- |
+| [cp](./convenience/cp.md)             | -            | copy entities                                                    |
+| [wc](./convenience/wc.md)             | -            | print number of entities, subscriptions, registrations, or types |
+| [man](./convenience/man.md)           | -            | print urls of document                                           |
+| [ls](./convenience/ls.md)             | -            | list entities                                                    |
+| [rm](./convenience/rm.md)             | -            | remove entities                                                  |
+| [template](./convenience/template.md) | subscription | create template of subscription                                  |
+|                                       | registration | create template of registration                                  |
+| [version](./convenience/version.md)   | -            | print the version of Context Broker                              |
 
 ### Management commnad
 
-| command  | sub-command  | Description     |
-| -------- | ------------ | --------------- |
-| broker   | list         | list brokers    |
-|          | get          | get brokes      |
-|          | add          | add brokes      |
-|          | update       | update brokes   |
-|          | delete       | delete brokes   |
-| context  | list         | list @context   |
-|          | add          | add @context    |
-|          | update       | udpate @context |
-|          | delete       | delete @context |
-| settings | list         | list settings   |
-|          | delete       | delete settings |
-|          | clear        | clear settings  |
-| token    | -            | manage token    |
+| command                              | sub-command  | Description     |
+| ------------------------------------ | ------------ | --------------- |
+| [broker](./management/broker.md)     | list         | list brokers    |
+|                                      | get          | get brokes      |
+|                                      | add          | add brokes      |
+|                                      | update       | update brokes   |
+|                                      | delete       | delete brokes   |
+| [context](./management/context.md)   | list         | list @context   |
+|                                      | add          | add @context    |
+|                                      | update       | udpate @context |
+|                                      | delete       | delete @context |
+| [settings](./management/settings.md) | list         | list settings   |
+|                                      | delete       | delete settings |
+|                                      | clear        | clear settings  |
+| [token](./management/token.md)       | -            | manage token    |
 
-## Global Options
+### Global Options
 
 | Options	     | Description                                      |
 | -------------- | ------------------------------------------------ |
@@ -80,7 +92,7 @@ ngsi [global options] command [common options] sub-command [options]
 | --help         | show help (default: false)                       |
 | --version, -v  | print the version (default: false)               |
 
-## Common options
+### Common options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |
@@ -92,15 +104,18 @@ ngsi [global options] command [common options] sub-command [options]
 
 ## Safe string
 
+```console
+ngsi broker get -host orion
 ```
-$ ngsi broker get -host orion
+
+```json
 {"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"off"}
 ```
 
 The value of the `name` attribute has a forbidden characters.
 
-```
-$ ngsi create entity --keyValues \
+```console
+ngsi create entity --keyValues \
 --data ' {
       "id":"urn:ngsi-ld:Product:110",
       "type":"Product",
@@ -108,13 +123,16 @@ $ ngsi create entity --keyValues \
       "size": "S",
       "price": 99
 }'
+```
+
+```text
 entityCreate006 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
 ```
 
 Create entity with `--safeString on`
 
-```
-$ ngsi create entity --keyValues --safeString on \
+```console
+ngsi create entity --keyValues --safeString on \
 --data ' {
       "id":"urn:ngsi-ld:Product:110",
       "type":"Product",
@@ -124,21 +142,33 @@ $ ngsi create entity --keyValues --safeString on \
 }'
 ```
 
+Get an attribute value with `--safeString off`
+
+```console
+ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString off
 ```
-$ ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name
+
+```json
 "%3CLemonade%3E"
 ```
 
+Get an attribute value with `--safeString on`
+
+```console
+ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString on
 ```
-$ ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString on
+
+```json
 "<Lemonade>"
 ```
 
 ## Error message
 
-An error message consists of a prefix and a body.
+An error message consists of a prefix and a body. E.g.
 
-E.g. entityCreate006 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
+```text
+entityCreate006 400 Bad Request {"error":"BadReqest","description":"Invalid characters in attribute value"}
+```
 
 The error message has `entityCreate006` as a prefix. A prefix consists of a Go function name and a position in the funciton.
 The function name is `entityCreate`. The position is 6th.
@@ -147,8 +177,11 @@ The function name is `entityCreate`. The position is 6th.
 
 You can get a detailed error information by running a command with the `--stderr info` option.
 
+```console
+ngsi --stderr info version --host http://192.168.11.0
 ```
-$ ngsi --stderr info version --host http://192.168.11.0
+
+```text
 version
 version003 Get "http://192.168.11.0/version": dial tcp 192.168.11.0:80: connect: no route to host: no route to host
 httpRequest003 Get "http://192.168.11.0/version": dial tcp 192.168.11.0:80: connect: no route to host

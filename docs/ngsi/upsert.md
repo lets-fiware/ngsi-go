@@ -20,7 +20,7 @@ This command upserts entities.
 
 This command upserts multiple entities.
 
-```bash
+```console
 ngsi upsert [common options] entities [options]
 ```
 
@@ -36,8 +36,8 @@ ngsi upsert [common options] entities [options]
 
 ### Example
 
-```bash
-$ ngsi upsert entities \
+```console
+ngsi upsert entities \
 --data '[
   {
     "id":"urn:ngsi-ld:Product:011", "type":"Product",

@@ -30,8 +30,8 @@ This option doesn't use previous args.
 
 This option prints the usage of NGSI Go.
 
-```
-$ ngsi --help
+```text
+ngsi --help
 NAME:
    ngsi - unix-like command-line tool for FIWARE NGSI and NGSI-LD
 
@@ -39,7 +39,7 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.1.0 (git_hash:4ad6c85c8acb1ba00cfe1fcef5a3288064985826)
+   0.1.0 (git_hash:8d4efe4c08597ff65706dfa0f03acee2a3c8b1d2)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -83,7 +83,10 @@ COPYRIGHT:
 
 This option prints the version of NGSI Go.
 
+```console
+ngsi --version
 ```
-$ ngsi --version
+
+```text
 ngsi version 0.1.0 (git_hash:4ad6c85c8acb1ba00cfe1fcef5a3288064985826)
 ```

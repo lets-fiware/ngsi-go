@@ -22,7 +22,7 @@
 
 This command will delete entity
 
-```bash
+```console
 ngsi delete [common options] entity [options]
 ```
 
@@ -39,7 +39,7 @@ ngsi delete [common options] entity [options]
 
 #### Request:
 
-```bash
+```console
 ngsi delete entity --id urn:ngsi-ld:Product:010
 ```
 
@@ -49,7 +49,7 @@ ngsi delete entity --id urn:ngsi-ld:Product:010
 
 This command deletes entities or attributes from entities.
 
-```bash
+```console
 ngsi delete [common options] entities [options]
 ```
 
@@ -66,7 +66,7 @@ ngsi delete [common options] entities [options]
 
 #### Request:
 
-```bash
+```console
 ngsi delete entities \
 --data '[
   {
@@ -80,7 +80,7 @@ ngsi delete entities \
 
 #### Request:
 
-```bash
+```console
 ngsi delete entities \
 --data '[
   {
@@ -102,7 +102,7 @@ ngsi delete entities \
 
 This commnad will delete attribute.
 
-```bash
+```console
 ngsi delete [common options] attr [options]
 ```
 
@@ -120,8 +120,8 @@ ngsi delete [common options] attr [options]
 
 #### Request:
 
-```bash
-$ ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
+```console
+ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
 ``` 
 
 <a name="delete-a-subscription"/>
@@ -130,7 +130,7 @@ $ ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
 
 This commnad deletes subscriptions.
 
-```bash
+```console
 ngsi delete [common options] subscription [options]
 ```
 
@@ -145,7 +145,7 @@ ngsi delete [common options] subscription [options]
 
 #### Request:
 
-```bash
+```console
 ngsi delete subscription --id urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 ```
 
@@ -155,7 +155,7 @@ ngsi delete subscription --id urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 
 This commnad deletes registrations.
 
-```bash
+```console
 ngsi delete [common options] registration [options]
 ```
 
@@ -171,6 +171,6 @@ ngsi delete [common options] registration [options]
 
 #### Request:
 
-```bash
+```console
 ngsi delete registration --id urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0
 ```

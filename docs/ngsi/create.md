@@ -21,7 +21,7 @@
 
 This command create an entity.
 
-```bash
+```console
 ngsi create [command options] entity [options]
 ```
 
@@ -39,8 +39,8 @@ ngsi create [command options] entity [options]
 
 #### Request:
 
-```bash
-$ ngsi create entity \
+```console
+ngsi create entity \
 --data ' {
       "id":"urn:ngsi-ld:Product:010",
       "type":"Product",
@@ -48,15 +48,22 @@ $ ngsi create entity \
       "size":{"type":"Text", "value": "S"},
       "price":{"type":"Integer", "value": 99}
 }'
+```
 
-$ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product
+#### Request:
+
+```console
+ngsi get entity --id urn:ngsi-ld:Product:010 --type Product
+```
+
+```json
 {"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}}
 ```
 
 #### Request:
 
-```bash
-$ ngsi create entity --keyValues \
+```console
+ngsi create entity --keyValues \
 --data ' {
       "id":"urn:ngsi-ld:Product:110",
       "type":"Product",
@@ -64,8 +71,15 @@ $ ngsi create entity --keyValues \
       "size": "S",
       "price": 99
 }'
+```
 
-$ ngsi get entity --id urn:ngsi-ld:Product:110 --type Product
+#### Request:
+
+```console
+ngsi get entity --id urn:ngsi-ld:Product:110 --type Product
+```
+
+```json
 {"id":"urn:ngsi-ld:Product:110","type":"Product","name":{"type":"Text","value":"Lemonade","metadata":{}},"price":{"type":"Number","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}}
 ```
 
@@ -75,7 +89,7 @@ $ ngsi get entity --id urn:ngsi-ld:Product:110 --type Product
 
 This command create entities.
 
-```bash
+```console
 ngsi create [common options] entities [options]
 ```
 
@@ -92,8 +106,8 @@ ngsi create [common options] entities [options]
 
 #### Request:
 
-```bash
-$ ngsi create entities \
+```console
+ngsi create entities \
 --data '[
   {
     "id":"urn:ngsi-ld:Product:011",
@@ -119,7 +133,7 @@ $ ngsi create entities \
 
 #### Request:
 
-```bash
+```console
 ngsi create entities --keyValues \
 --data '[
   {
@@ -150,7 +164,7 @@ ngsi create entities --keyValues \
 
 This command reads a query that the template command generated and creates a subscription.
 
-```bash
+```console
 ngsi create [command options] subscription [options]
 ```
 
@@ -194,13 +208,20 @@ ngsi create [command options] subscription [options]
 
 #### Request:
 
-```bash
-$ ngsi create subscription --idPattern ".*" --type Sensor \
+```console
+ngsi create subscription --idPattern ".*" --type Sensor \
 --wAttrs temperature --nAttrs temperature \
 --url http://192.168.0.1/ --expires 1day
-5fa7988a627088ba9b91b1c1
+```
 
-$ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
+```text
+5fa7988a627088ba9b91b1c1
+```
+
+#### Request:
+
+```console
+ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
 {
   "id": "5fa7988a627088ba9b91b1c1",
   "subject": {
@@ -235,27 +256,23 @@ $ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
 
 #### Request:
 
-```bash
+```console
 ngsi create subscription --data @subscription.json
 ```
 
-#### Response:
-
-```bash
+```text
 urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce
 ```
 
 #### Request:
 
-```bash
+```console
 ngsi create subscription \
   --link https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld \
   --data @subscription.json
 ```
 
-#### Response:
-
-```bash
+```text
 urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 ```
 
@@ -265,7 +282,7 @@ urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 
 This command reads a query that the template command generated and creates a registration.
 
-```bash
+```console
 ngsi create [command options] registration [options]
 ```
 
@@ -281,12 +298,10 @@ ngsi create [command options] registration [options]
 
 #### Request:
 
-```bash
-$ ngsi create registration --data @registration.json
+```console
+ngsi create registration --data @registration.json
 ```
 
-#### Response:
-
-```bash
+```text
 urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0
 ```

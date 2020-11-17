@@ -3,7 +3,7 @@
 This command removes all entities of an entity type specified by the `--type` option.
 
 
-```
+```console
 ngsi rm [options]
 ```
 
@@ -21,5 +21,5 @@ ngsi rm [options]
 
 #### Example
 
-```
-$ ngsi rm --host orion --type EvacuationSpace --run
+```console
+ngsi rm --host orion --type EvacuationSpace --run

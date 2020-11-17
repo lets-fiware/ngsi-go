@@ -2,7 +2,7 @@
 
 This command lists multiple entities
 
-```
+```console
 ngsi ls [options]
 ```
 
@@ -39,8 +39,11 @@ ngsi ls [options]
 
 #### Request:
 
+```console
+ngsi ls --type Product
 ```
-$ ngsi ls --type Product
+
+```text
 urn:ngsi-ld:Product:001
 urn:ngsi-ld:Product:002
 urn:ngsi-ld:Product:003
@@ -59,15 +62,21 @@ urn:ngsi-ld:Product:101
 
 #### Request:
 
+```console
+ngsi ls --type Product --count
 ```
-$ ngsi ls --type Product --count
+
+```text
 14
 ```
 
 #### Request:
 
+```console
+ngsi ls --type Product --idPattern '0{2}'
 ```
-$ ngsi ls --type Product --idPattern '0{2}'
+
+```text
 urn:ngsi-ld:Product:001
 urn:ngsi-ld:Product:002
 urn:ngsi-ld:Product:003
@@ -81,20 +90,30 @@ urn:ngsi-ld:Product:009
 
 #### Request:
 
+```console
+ngsi ls --type Product --idPattern '1{2}'
 ```
-$ ngsi ls --type Product --idPattern '1{2}'
+
+```text
 urn:ngsi-ld:Product:110
 urn:ngsi-ld:Product:111
 urn:ngsi-ld:Product:112
+```
 
-$ ngsi ls --type Product --idPattern '1{2}' --count
+#### Request:
+
+```console
+ngsi ls --type Product --idPattern '1{2}' --count
+```
+
+```text
 3
 ```
 
 #### Request:
 
-```
-$ ngsi ls --type Product --idPattern '1{2}' --verbose | jq .
+```console
+ngsi ls --type Product --idPattern '1{2}' --verbose | jq .
 [
   {
     "id": "urn:ngsi-ld:Product:110",
@@ -158,8 +177,8 @@ $ ngsi ls --type Product --idPattern '1{2}' --verbose | jq .
 
 #### Request:
 
-```
-$ ngsi ls --type Product --idPattern '1{2}' --verbose --keyValues | jq .
+```console
+ngsi ls --type Product --idPattern '1{2}' --verbose --keyValues | jq .
 [
   {
     "id": "urn:ngsi-ld:Product:110",
@@ -187,12 +206,26 @@ $ ngsi ls --type Product --idPattern '1{2}' --verbose --keyValues | jq .
 
 #### Request:
 
+```console
+ngsi ls --type Product --idPattern '1{2}' --count
 ```
-$ ngsi ls --type Product --idPattern '1{2}' --count
+
+```text
 3
+```
 
-$ ngsi ls --type Product --idPattern '1{2}' | xargs -L 1 ngsi delete entity --id
+#### Request:
 
-$ ngsi ls --type Product --idPattern '1{2}' --count
+```console
+ngsi ls --type Product --idPattern '1{2}' | xargs -L 1 ngsi delete entity --id
+```
+
+#### Request:
+
+```console
+ngsi ls --type Product --idPattern '1{2}' --count
+```
+
+```text
 0
 ```

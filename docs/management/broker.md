@@ -7,7 +7,7 @@
 
 ## List brokers
 
-```
+```console
 ngsi broker list [options]
 ```
 
@@ -21,15 +21,21 @@ ngsi broker list [options]
 
 #### Example 1
 
+```console
+ngsi broker list
 ```
-$ ngsi broker list
+
+```text
 orion orion-ld mylab
 ```
 
 #### Example 2
 
+```console
+ngsi broker list --host orion
 ```
-$ ngsi broker list --host orion
+
+```text
 brokerHost http://localhost:1026
 ngsiType v2
 safeString on
@@ -37,14 +43,17 @@ safeString on
 
 #### Example 3
 
+```console
+ngsi broker list --host orion --json
 ```
-$ ngsi broker list --host orion --json
+
+```json
 {"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"on"}
 ```
 
 ## Add broker
 
-```
+```console
 ngsi broker list [options]
 ```
 
@@ -72,8 +81,8 @@ ngsi broker list [options]
 
 NGSIv2 (for FIWARE Orion)
 
-```
-$ ngsi broker add \
+```console
+ngsi broker add \
   --host orion \
   --brokerHost http://localhost:1026 \
   --ngsiType v2
@@ -83,8 +92,8 @@ $ ngsi broker add \
 
 NGSI-LD Broker
 
-```
-$ ngsi broker add \
+```console
+ngsi broker add \
   --host orion-ld \
   --brokerHost http://localhost:1026
 ```
@@ -93,8 +102,8 @@ $ ngsi broker add \
 
 Orion-LD with Keyrock
 
-```
-$ ngsi broker add \
+```console
+ngsi broker add \
   --host orion-ld \
   --brokerHost https://orion-ld \
   --idmType keyrock \
@@ -116,7 +125,7 @@ Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Brok
 | password             | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keycloak, WSO2, Apinf, and Stellio) |
 | keyrock              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock                             |
 | KeyrockTokenProvider | idmHost, username, password                         | It provides auth token from Keyrock                                          |
-| tokenProxy           | idmHost, username, password                         | It provides auth token from Keyrock                                          |
+| tokenproxy           | idmHost, username, password                         | It provides auth token from Keyrock                                          |
 
 ### FIWARE Serivce and FIWARE ServicePath
 
@@ -124,8 +133,8 @@ Specify the `--service` and/or `--path` parameter when adding a new alias.
 
 #### Example 4
 
-```
-$ ngsi broker add \
+```console
+ngsi broker add \
   --host myinstance \
   --brokerHost http://localhost:1026 \
   --ngsiType v2
@@ -138,18 +147,19 @@ Specify an existing alias to the `--brokerHost` parameter when adding a new alia
 
 #### Example 5
 
-```
-$ ngsi broker add \
+```console
+ngsi broker add \
   --host myinstance \
   --brokerHost orion \
   --service open
   --path /iot
 ```
+
 ### API Path
 
 The NGSI Go assumes that the root of NGSI API is a root of URL.
 
-```
+```console
 https://orion.letsfiware.jp/v2/entities
 ```
 
@@ -157,31 +167,31 @@ You should use the `--apiPath` parameter if your broker has a special URL.
 
 If the root of the NGSI API is in a sub-directory:
 
-```
+```console
 https://fiware-server/orion/v2/entities
 ```
 
 You should set the `--apiPath` parameter to as shown:
 
-```
+```text
 --apiPath "/,/orion"
 ```
 
 If the path of NGSI API is changed to a special path:
 
-```
+```text
 https://fiware-server/orion/v2.0/entities
 ```
 
 You should set the `--apiPath` parameter to as shown:
 
-```
+```text
 --apiPath "/v2,/orion/v2.0"
 ```
 
 ## Update broker
 
-```
+```console
 ngsi broker upadte [options]
 ```
 
@@ -207,14 +217,14 @@ ngsi broker upadte [options]
 
 #### Example 1
 
-```
-$ ngsi broker update --host orion --ngsiType v2
+```console
+ngsi broker update --host orion --ngsiType v2
 ```
 
 ## Delete broker
 
-```
-$ ngsi broker upadte [options]
+```console
+ngsi broker upadte [options]
 ```
 
 ### Options
@@ -226,6 +236,6 @@ $ ngsi broker upadte [options]
 
 #### Example 1
 
-```
-$ ngsi broker delete --host orion
+```console
+ngsi broker delete --host orion
 ```

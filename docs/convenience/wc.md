@@ -25,7 +25,7 @@ This command prints number of entities, subscriptions, registrations, or types.
 
 This command prints number of entities.
 
-```bash
+```console
 ngsi wc [common options] entities [options]
 ```
 
@@ -41,15 +41,21 @@ ngsi wc [common options] entities [options]
 
 #### Example 1
 
-```bash
-$ ngsi wc --host orion entities
+```console
+ngsi wc --host orion entities
+```
+
+```text
 3606
 ```
 
 #### Example 2
 
+```console
+ngsi wc --host orion entities --type EvacuationSpace
 ```
-$ ngsi wc --host orion entities --type EvacuationSpace
+
+```text
 231
 ```
 
@@ -59,7 +65,7 @@ $ ngsi wc --host orion entities --type EvacuationSpace
 
 This command prints number of subscriptions.
 
-```bash
+```console
 ngsi wc [common options] subscriptions
 ```
 
@@ -67,8 +73,11 @@ ngsi wc [common options] subscriptions
 
 #### Example 1
 
-```bash
-$ ngsi wc --host orion subscriptions
+```console
+ngsi wc --host orion subscriptions
+```
+
+```text
 2
 ```
 
@@ -78,7 +87,7 @@ $ ngsi wc --host orion subscriptions
 
 This command prints number of registrations.
 
-```bash
+```console
 ngsi wc [common options] registrations
 ```
 
@@ -86,8 +95,11 @@ ngsi wc [common options] registrations
 
 #### Example 1
 
-```bash
-$ ngsi wc --host orion registrations
+```console
+ngsi wc --host orion registrations
+```
+
+```text
 1
 ```
 
@@ -97,7 +109,7 @@ $ ngsi wc --host orion registrations
 
 This command will print number of types.
 
-```bash
+```console
 ngsi wc [common options] types
 ```
 
@@ -105,7 +117,10 @@ ngsi wc [common options] types
 
 #### Example 1
 
-```bash
-$ ngsi wc --host orion types
+```console
+ngsi wc --host orion types
+```
+
+```text
 16
 ```

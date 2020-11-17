@@ -25,7 +25,7 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 
 This command gets entity.
 
-```bash
+```console
 ngsi get [command options] entity [options]
 ```
 
@@ -48,22 +48,31 @@ ngsi get [command options] entity [options]
 
 #### Request:
 
-```bash
-$ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product
+```console
+ngsi get entity --id urn:ngsi-ld:Product:010 --type Product
+```
+
+```json
 {"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}}
 ```
 
 #### Request:
 
-```bash
-$ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product --keyValues
+```console
+ngsi get entity --id urn:ngsi-ld:Product:010 --type Product --keyValues
+```
+
+```json
 {"id":"urn:ngsi-ld:Product:010","type":"Product","name":"Lemonade","price":99,"size":"S"}
 ```
 
 #### Request:
 
-```bash
-$ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product --keyValues --attrs size
+```console
+ngsi get entity --id urn:ngsi-ld:Product:010 --type Product --keyValues --attrs size
+```
+
+```json
 {"id":"urn:ngsi-ld:Product:010","type":"Product","size":"S"}
 ```
 
@@ -73,7 +82,7 @@ $ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product --keyValues --attr
 
 This command gets multiple entities.
 
-```bash
+```console
 ngsi get [command options] entities [options]
 ```
 
@@ -96,8 +105,8 @@ ngsi get [command options] entities [options]
 
 #### Request:
 
-```bash
-$ ngsi get entities --data '{"entities": [{"type": "Device", "idPattern": ".*"}],"attrs":["name"]}'
+```console
+ngsi get entities --data '{"entities": [{"type": "Device", "idPattern": ".*"}],"attrs":["name"]}'
 ```
 
 <a name="get-an-attribute"/>
@@ -106,7 +115,7 @@ $ ngsi get entities --data '{"entities": [{"type": "Device", "idPattern": ".*"}]
 
 This command gets an attribute value.
 
-```bash
+```console
 ngsi get [common options] attr [options]
 ```
 
@@ -124,9 +133,8 @@ ngsi get [common options] attr [options]
 
 #### Request:
 
-```bash
-$ ngsi get attr --id urn:ngsi-ld:Product:010 --type Product --attrName size
-"S"
+```console
+ngsi get attr --id urn:ngsi-ld:Product:010 --type Product --attrName size "S"
 ```
 
 <a name="get-multiple-attributes"/>
@@ -135,7 +143,7 @@ $ ngsi get attr --id urn:ngsi-ld:Product:010 --type Product --attrName size
 
 This command gets attributes.
 
-```bash
+```console
 ngsi get [common options] attrs [options]
 ```
 
@@ -157,22 +165,31 @@ ngsi get [common options] attrs [options]
 
 #### Request:
 
-```bash
-$ ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price
+```console
+ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price
+```
+
+```json
 {"name":{"type":"Text","value":"Beer","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}}}
 ```
 
 #### Request:
 
-```bash
-$ ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price --keyValues
+```console
+ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price --keyValues
+```
+
+```json
 {"name":"Beer","price":99}
 ```
 
 #### Request:
 
-```bash
-$ ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price --values
+```console
+ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price --values
+```
+
+```json
 ["Beer",99]
 ```
 
@@ -182,7 +199,7 @@ $ ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price 
 
 This command gets a subscription.
 
-```bash
+```console
 ngsi get [common options] subscription [options]
 ```
 
@@ -199,8 +216,11 @@ ngsi get [common options] subscription [options]
 
 #### Request:
 
-```bash
-$ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
+```console
+ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
+```
+
+```json
 {
   "id": "5fa7988a627088ba9b91b1c1",
   "subject": {
@@ -233,8 +253,11 @@ $ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
 
 #### Request:
 
-```bash
-$ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --localTime | jq .
+```console
+ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --localTime | jq .
+```
+
+```json
 {
   "id": "5fa7988a627088ba9b91b1c1",
   "subject": {
@@ -269,8 +292,11 @@ $ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --localTime | jq .
 
 #### Request:
 
-```bash
-$ ngsi get subscription --id urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce | jq .
+```console
+ngsi get subscription --id urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce | jq .
+```
+
+```json
 {
   "id": "urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce",
   "type": "Subscription",
@@ -305,7 +331,7 @@ $ ngsi get subscription --id urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce |
 
 This command gets a registration.
 
-```bash
+```console
 ngsi get [common options] registration [options]
 ```
 
@@ -321,8 +347,11 @@ ngsi get [common options] registration [options]
 
 #### Request:
 
-```bash
-$ ngsi get registration --id urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0 | jq .
+```console
+ngsi get registration --id urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0 | jq .
+```
+
+```json
 {
   "id": "urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0",
   "type": "ContextSourceRegistration",

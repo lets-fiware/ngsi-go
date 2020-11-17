@@ -2,7 +2,7 @@
 
 This command copies multiple entities from a source to a destination.
 
-```
+```console
 ngsi cp [options]
 ```
 
@@ -22,8 +22,10 @@ ngsi cp [options]
 | --run                         | actually run to copy entities (default: false)   |
 | --help                        | show help (default: false)                       |
 
-#### Example 
+### Example 
 
-```
-$ ngsi cp --host orion1 --destination orion2 --type EvacuationSpace --run
+#### Request:
+
+```console
+ngsi cp --host orion1 --destination orion2 --type EvacuationSpace --run
 ```
