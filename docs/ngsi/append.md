@@ -14,13 +14,13 @@ This command appends multiple attributes.
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="append-multiple-attributes"/a>
+<a name="append-multiple-attributes"/>
 
 ## Append multiple attributes
 
 This command appneds multiple attributes.
 
-```bash
+```console
 ngsi append [common options] attrs [options]
 ```
 
@@ -40,8 +40,8 @@ ngsi append [common options] attrs [options]
 
 #### Request:
 
-```bash
-$ ngsi append attrs --id urn:ngsi-ld:Product:001 \
+```console
+ngsi append attrs --id urn:ngsi-ld:Product:001 \
 --data '{
       "specialOffer":{"type": "Boolean", "value": true}
 }'
@@ -49,7 +49,7 @@ $ ngsi append attrs --id urn:ngsi-ld:Product:001 \
 
 #### Request:
 
-```bash
-$ ngsi append attrs --id urn:ngsi-ld:Product:001 \
+```console
+ngsi append attrs --id urn:ngsi-ld:Product:001 \
 --keyValues --data '{"specialOffer":false}'
 ```

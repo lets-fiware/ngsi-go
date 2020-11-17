@@ -23,7 +23,7 @@ This command will update entities, attribute(s), or subscription.
 
 This command updates multiple entities.
 
-```bash
+```console
 ngsi update [common options] entities [options]
 ```
 
@@ -40,8 +40,8 @@ ngsi update [common options] entities [options]
 
 ### Example
 
-```bash
-$ ngsi update entities
+```console
+ngsi update entities
 ```
 
 <a name="update-an-attribute"/>
@@ -50,7 +50,7 @@ $ ngsi update entities
 
 This command updates an attribute.
 
-```bash
+```console
 ngsi update [common options] attr [options]
 ```
 
@@ -65,8 +65,8 @@ ngsi update [common options] attr [options]
 
 ### Example
 
-```bash
-$ ngsi update attr
+```console
+ngsi update attr
 ```
 
 <a name="update-multiple-attributes"/>
@@ -75,7 +75,7 @@ $ ngsi update attr
 
 This command updates multiple attributes.
 
-```bash
+```console
 ngsi update [common options] attrs [options]
 ```
 
@@ -92,8 +92,8 @@ ngsi update [common options] attrs [options]
 
 ### Example
 
-```bash
-$ ngsi update attrs
+```console
+ngsi update attrs
 ```
 
 <a name="update-a-subscription"/>
@@ -102,7 +102,7 @@ $ ngsi update attrs
 
 This command update a subscription.
 
-```bash
+```console
 ngsi update [common options] subscription [options]
 ```
 
@@ -144,6 +144,6 @@ ngsi update [common options] subscription [options]
 
 ### Example
 
-```bash
-$ ngsi update subscription --id 5fa78b70627088ba9b91b1c0 --expires 1day
+```console
+ngsi update subscription --id 5fa78b70627088ba9b91b1c0 --expires 1day
 ```

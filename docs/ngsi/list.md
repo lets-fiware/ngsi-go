@@ -23,7 +23,7 @@ This command lists types, entities, subscriptions or registrations.
 
 This command lists types.
 
-```bash
+```console
 ngsi list [common options] types [options]
 ```
 
@@ -39,8 +39,11 @@ ngsi list [common options] types [options]
 
 #### Request:
 
-```bash
-$ ngsi list types
+```console
+ngsi list types
+```
+
+```text
 InventoryItem
 Product
 Shelf
@@ -49,8 +52,11 @@ Store
 
 #### Request:
 
-```bash
-$ ngsi list types --json
+```console
+ngsi list types --json
+```
+
+```json
 ["InventoryItem","Product","Shelf","Store"]
 ```
 
@@ -60,7 +66,7 @@ $ ngsi list types --json
 
 This command lists multiple entities.
 
-```bash
+```console
 ngsi list [common options] entities [options]
 ```
 
@@ -98,8 +104,11 @@ ngsi list [common options] entities [options]
 
 #### Request:
 
-```bash
-$ $ ngsi list entities --type Product
+```console
+$ ngsi list entities --type Product
+```
+
+```text
 urn:ngsi-ld:Product:001
 urn:ngsi-ld:Product:002
 urn:ngsi-ld:Product:003
@@ -118,15 +127,21 @@ urn:ngsi-ld:Product:101
 
 #### Request:
 
-```bash
-$ $ ngsi list entities --type Product --count
+```console
+$ ngsi list entities --type Product --count
+```
+
+```text
 14
 ```
 
 #### Request:
 
-```bash
-$ ngsi list entities --type Product --idPattern '0{2}'
+```console
+ngsi list entities --type Product --idPattern '0{2}'
+```
+
+```text
 urn:ngsi-ld:Product:001
 urn:ngsi-ld:Product:002
 urn:ngsi-ld:Product:003
@@ -140,20 +155,33 @@ urn:ngsi-ld:Product:009
 
 #### Request:
 
-```bash
-$ ngsi list entities --type Product --idPattern '1{2}'
+```console
+ngsi list entities --type Product --idPattern '1{2}'
+```
+
+```text
 urn:ngsi-ld:Product:110
 urn:ngsi-ld:Product:111
 urn:ngsi-ld:Product:112
+```
 
-$ ngsi list entities --type Product --idPattern '1{2}' --count
+#### Request:
+
+```console
+ngsi list entities --type Product --idPattern '1{2}' --count
+```
+
+```text
 3
 ```
 
 #### Request:
 
-```bash
-$ ngsi list entities --type Product --idPattern '1{2}' --verbose | jq .
+```console
+ngsi list entities --type Product --idPattern '1{2}' --verbose | jq .
+```
+
+```json
 [
   {
     "id": "urn:ngsi-ld:Product:110",
@@ -217,8 +245,11 @@ $ ngsi list entities --type Product --idPattern '1{2}' --verbose | jq .
 
 #### Request:
 
-```bash
-$ ngsi list entities --type Product --idPattern '1{2}' --verbose --keyValues | jq .
+```console
+ngsi list entities --type Product --idPattern '1{2}' --verbose --keyValues | jq .
+```
+
+```json
 [
   {
     "id": "urn:ngsi-ld:Product:110",
@@ -246,19 +277,33 @@ $ ngsi list entities --type Product --idPattern '1{2}' --verbose --keyValues | j
 
 #### Request:
 
-```bash
-$ ngsi list entities --type Product --idPattern '1{2}' --count
+```console
+ngsi list entities --type Product --idPattern '1{2}' --count
+```
+
+```text
 3
+```
 
-$ ngsi list entities --type Product --idPattern '1{2}' | xargs -L 1 ngsi delete entity --id
+#### Request:
 
-$ ngsi list entities --type Product --idPattern '1{2}' --count
+```console
+ngsi list entities --type Product --idPattern '1{2}' | xargs -L 1 ngsi delete entity --id
+```
+
+#### Request:
+
+```console
+ngsi list entities --type Product --idPattern '1{2}' --count
+```
+
+```text
 0
 ```
 
 #### Request:
 
-```bash
+```console
 ngsi list entities -q "refProduct%==urn:ngsi-ld:Product:001" --attrs type
 ```
 
@@ -268,7 +313,7 @@ ngsi list entities -q "refProduct%==urn:ngsi-ld:Product:001" --attrs type
 
 This command lists multiple subscriptions.
 
-```bash
+```console
 ngsi list [common options] subscriptions [options]
 ```
 
@@ -289,24 +334,33 @@ ngsi list [common options] subscriptions [options]
 
 #### Request:
 
-```bash
-$ ngsi list subscriptions
+```console
+ngsi list subscriptions
+```
+
+```text
 urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce
 urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 ```
 
 #### Request:
 
-```bash
-$ ngsi list subscriptions --verbose
+```console
+ngsi list subscriptions --verbose
+```
+
+```text
 urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce Notify me of low stock in Store 001
 urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf LD Notify me of low stock in Store 002
 ```
 
 #### Request:
 
-```bash
-$ ngsi list subscriptions --json | jq .
+```console
+ngsi list subscriptions --json | jq .
+```
+
+```json
 [
   {
     "description": "Notify me of low stock in Store 001",
@@ -369,7 +423,7 @@ $ ngsi list subscriptions --json | jq .
 
 This command lists multiple registrations.
 
-```bash
+```console
 ngsi list [common options] registrations [options]
 ```
 
@@ -387,22 +441,31 @@ ngsi list [common options] registrations [options]
 
 #### Request:
 
-```bash
-$ ngsi list registrations
+```console
+ngsi list registrations
+```
+
+```text
 urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0
 ```
 
 #### Request:
 
-```bash
-$ ngsi list registrations -v
+```console
+ngsi list registrations -v
+```
+
+```text
 urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0 ContextSourceRegistration
 ```
 
 #### Request:
 
-```bash
-$ ngsi list registrations -j | jq .
+```console
+ngsi list registrations -j | jq .
+```
+
+```json
 [
   {
     "description": "ContextSourceRegistration",

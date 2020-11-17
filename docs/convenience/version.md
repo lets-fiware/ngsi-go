@@ -2,7 +2,7 @@
 
 This command prints the version of Context Broker host specified by the `--host` option.
 
-```
+```console
 ngsi version [options]
 ```
 
@@ -16,18 +16,29 @@ ngsi version [options]
 
 #### Example
 
+```console
+ngsi version -h orion
 ```
-$ ngsi version -h orion
+
+```json
 {
-"orion" : {
-  "version" : "2.4.0-next",
-  "uptime" : "0 d, 15 h, 1 m, 6 s",
-  "git_hash" : "4f26834ca928e468b091729d93dabd22108a2690",
-  "compile_time" : "Tue Mar 31 15:41:02 UTC 2020",
-  "compiled_by" : "root",
-  "compiled_in" : "d99d1dbb4d9e",
-  "release_date" : "Tue Mar 31 15:41:02 UTC 2020",
-  "doc" : "https://fiware-orion.rtfd.io/"
-}
+ "orion" : {
+   "version" : "2.5.0",
+   "uptime" : "0 d, 5 h, 7 m, 50 s",
+   "git_hash" : "63cc107657ae10aa03f1c83bdea0be869d8e26a1",
+   "compile_time" : "Fri Oct 30 09:02:37 UTC 2020",
+   "compiled_by" : "root",
+   "compiled_in" : "320890801dd4",
+   "release_date" : "Fri Oct 30 09:02:37 UTC 2020",
+   "doc" : "https://fiware-orion.rtfd.io/en/2.5.0/",
+   "libversions": {
+      "boost": "1_53",
+      "libcurl": "libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
+      "libmicrohttpd": "0.9.70",
+      "openssl": "1.0.2k",
+      "rapidjson": "1.1.0",
+      "mongodriver": "legacy-1.1.2"
+   }
+ }
 }
 ```

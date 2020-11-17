@@ -1,16 +1,17 @@
-[![Let's FIWARE Banner](https://raw.githubusercontent.com/lets-fiware/ngsi-go/gh-pages/img/lets-fiware-logo-non-free.png)](https://www.letsfiware.jp/)
-
+[![Let's FIWARE Banner](https://github.com/lets-fiware/ngsi-go/blob/gh-pages/img/lets-fiware-logo-non-free.png)](https://www.letsfiware.jp/)
 [![NGSI v2](https://img.shields.io/badge/NGSI-v2-5dc0cf.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
 [![NGSI LD](https://img.shields.io/badge/NGSI-LD-d6604d.svg)](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf)
+
+![FIWARE: Tools](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/deployment-tools.svg)
 [![License: MIT](https://img.shields.io/github/license/lets-fiware/ngsi-go.svg)](https://opensource.org/licenses/MIT)
 ![GitHub top language](https://img.shields.io/github/languages/top/lets-fiware/ngsi-go)
 ![Lines of code](https://img.shields.io/tokei/lines/github/lets-fiware/ngsi-go)
 [![Build Status](https://travis-ci.com/lets-fiware/ngsi-go.svg?branch=main)](https://travis-ci.com/lets-fiware/ngsi-go)
 [![Coverage Status](https://coveralls.io/repos/github/lets-fiware/ngsi-go/badge.svg?branch=main)](https://coveralls.io/github/lets-fiware/ngsi-go?branch=main)
 
-# NGSI Go
+# What is NGSI Go?
 
-The NGSI Go is a Unix-like command-line tool for FIWARE NGSI and NGSI-LD.
+The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) and [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf), which simplifies syntax.
 
 ## Contents
 
@@ -27,6 +28,7 @@ The NGSI Go is a Unix-like command-line tool for FIWARE NGSI and NGSI-LD.
 ## Command reference
 
 ### NGSI
+
 -   [append](ngsi/append.md): append attributes
 -   [create](ngsi/create.md): create entity(ies), subscription or registration
 -   [delete](ngsi/delete.md): delete entity(ies), attribute, subscription or registration
@@ -37,6 +39,7 @@ The NGSI Go is a Unix-like command-line tool for FIWARE NGSI and NGSI-LD.
 -   [upsert](ngsi/upsert.md): upsert entities
 
 ### Convenience
+
 -   [cp](convenience/cp.md): copy entities
 -   [wc](convenience/wc.md): print number of entities, subscriptions or registrations
 -   [man](convenience/man.md): print  URLs of the documents related to the NGSI Go
@@ -46,6 +49,7 @@ The NGSI Go is a Unix-like command-line tool for FIWARE NGSI and NGSI-LD.
 -   [version](convenience/version.md): print the version of Context Broker
 
 ### Management
+
 -    [broker](management/broker.md): manage config for broker
 -    [context](management/context.md): manage @context
 -    [settings](management/settings.md):  manage settings
@@ -55,7 +59,7 @@ The NGSI Go is a Unix-like command-line tool for FIWARE NGSI and NGSI-LD.
 
 -   [Global Options](global.md)
 
-### files
+### Files
 
 -   [Files](files.md)
 
@@ -66,4 +70,4 @@ The NGSI Go is a Unix-like command-line tool for FIWARE NGSI and NGSI-LD.
 ## Copyright and License
 
 Copyright (c) 2020 Kazuhito Suda<br>
-Licensed under the MIT license.
+Licensed under the [MIT license](https://raw.githubusercontent.com/lets-fiware/ngsi-go/main/LICENSE).

@@ -21,7 +21,7 @@ This command replaces multiple entities or attributes
 
 This command replaces multiple entities.
 
-```bash
+```console
 ngsi replace [common options] entities [options]
 ```
 
@@ -35,8 +35,8 @@ ngsi replace [common options] entities [options]
 
 ### Example
 
-```bash
-$ ngsi replace entities \
+```console
+ngsi replace entities \
 --data '[
 {
     "id":"urn:ngsi-ld:Product:010", "type":"Product",
@@ -51,7 +51,7 @@ $ ngsi replace entities \
 
 This command replaces multiple attributes.
 
-```bash
+```console
 ngsi replace [common options] attrs [options]
 ```
 
@@ -66,12 +66,28 @@ ngsi replace [common options] attrs [options]
 
 ### Example
 
-```bash
-$ ngsi get entity --id urn:ngsi-ld:Sensor:001
+#### Request
+
+```console
+ngsi get entity --id urn:ngsi-ld:Sensor:001
+```
+
+```json
 {"id":"urn:ngsi-ld:Sensor:001","type":"Sensor","Temperature":{"type":"Text","value":"30","metadata":{}}}
+```
 
-$ ngsi replace attrs --id urn:ngsi-ld:Sensor:001 --keyValues --data '{"Temperature":30}'
+#### Request
 
-$ ngsi get entity --id urn:ngsi-ld:Sensor:001
+```console
+ngsi replace attrs --id urn:ngsi-ld:Sensor:001 --keyValues --data '{"Temperature":30}'
+```
+
+#### Request
+
+```console
+ngsi get entity --id urn:ngsi-ld:Sensor:001
+```
+
+```json
 {"id":"urn:ngsi-ld:Sensor:001","type":"Sensor","Temperature":{"type":"Number","value":30,"metadata":{}}}
 ```
