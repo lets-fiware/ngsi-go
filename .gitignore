@@ -1,4 +1,7 @@
 *.swp
 profile.out
+cover.html
+cover.out
 bin/
 build/
+.vscode/
