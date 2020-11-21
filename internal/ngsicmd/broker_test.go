@@ -340,6 +340,23 @@ func TestBrokersAddErrorAlreadyExists(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBrokersAddErrorBrokerHost(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,ngsiType,brokerHost")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+	err := brokersAdd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "brokerHost is missing", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
 
 func TestBrokersAddErrorNgsiType(t *testing.T) {
 	_, set, app, _ := setupTest()
@@ -352,8 +369,26 @@ func TestBrokersAddErrorNgsiType(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "ngsiType is missing", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestBrokersAddErrorNgsiType2(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,ngsiType,brokerHost")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--brokerHost=orion2", "--ngsiType=v2"})
+	err := brokersAdd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "can't specify ngsiType", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -362,15 +397,15 @@ func TestBrokersAddErrorNgsiType(t *testing.T) {
 func TestBrokersAddErrorCreateBroker(t *testing.T) {
 	_, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,ngsiType")
+	setupFlagString(set, "host,ngsiType,brokerHost,safeString")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--ngsiType=ld"})
+	_ = set.Parse([]string{"--host=orion-ld", "--ngsiType=ld", "--brokerHost=http://orion-ld", "--safeString=123"})
 	err := brokersAdd(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "brokerHost not found", ngsiErr.Message)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "unkown parameter: 123", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

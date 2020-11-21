@@ -65,8 +65,8 @@ const (
 	cClientID          = "clientId"
 	cClientSecret      = "clientSecret"
 	cContext           = "context"
-	cFiwareService     = "fiwareService"
-	cFiwareServicePath = "fiwareServicePath"
+	cFiwareService     = "service"
+	cFiwareServicePath = "path"
 	cSafeString        = "safeString"
 	cXAuthToken        = "xAuthToken"
 )
@@ -223,7 +223,7 @@ func (ngsi *NGSI) ServerInfoArgs() []string {
 }
 
 func copyBrokerInfo(from *Broker, to *Broker) {
-	if from.BrokerHost != "" && to.BrokerHost == "" {
+	if from.BrokerHost != "" {
 		to.BrokerHost = from.BrokerHost
 	}
 	if from.NgsiType != "" && to.NgsiType == "" {
