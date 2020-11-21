@@ -311,6 +311,7 @@ var templateCmd = cli.Command{
 			Name:  "registration",
 			Usage: "create template of registration",
 			Flags: []cli.Flag{
+				ngsiTypeFlag,
 				idFlag,
 				typeFlag,
 				attrsFlag,

@@ -111,8 +111,16 @@ func brokersAdd(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 3, host + " already exists", err}
 	}
 
-	if !c.IsSet("ngsiType") {
-		return &ngsiCmdError{funcName, 4, "ngsiType is missing", err}
+	if !c.IsSet("brokerHost") {
+		return &ngsiCmdError{funcName, 4, "brokerHost is missing", err}
+	}
+
+	if !c.IsSet("ngsiType") && ngsilib.IsHTTP(c.String("brokerHost")) {
+		return &ngsiCmdError{funcName, 5, "ngsiType is missing", err}
+	}
+
+	if c.IsSet("ngsiType") && !ngsilib.IsHTTP(c.String("brokerHost")) {
+		return &ngsiCmdError{funcName, 6, "can't specify ngsiType", err}
 	}
 
 	param := make(map[string]string)
@@ -129,7 +137,7 @@ func brokersAdd(c *cli.Context) error {
 
 	err = ngsi.CreateBroker(host, param)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return &ngsiCmdError{funcName, 7, err.Error(), err}
 	}
 	return nil
 }

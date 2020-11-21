@@ -246,3 +246,27 @@ ngsi template registration \
   --type Device \
   --provider http://raspi
 ```
+
+```
+{
+  "description": "sensor source",
+  "dataProvided": {
+    "entities": [
+      {
+        "id": "urn:ngsi-ld:Device:device001",
+        "type": "Device"
+      }
+    ],
+    "attrs": [
+      "temperature",
+      "pressure",
+      "humidity"
+    ]
+  },
+  "provider": {
+    "http": {
+      "url": "http://raspi"
+    }
+  }
+}
+```

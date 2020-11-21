@@ -65,14 +65,14 @@ const (
 	cClientID          = "clientId"
 	cClientSecret      = "clientSecret"
 	cContext           = "context"
-	cFiwareService     = "fiwareService"
-	cFiwareServicePath = "fiwareServicePath"
+	cFiwareService     = "service"
+	cFiwareServicePath = "path"
 	cSafeString        = "safeString"
 	cXAuthToken        = "xAuthToken"
 )
 
 const (
-	cPasswordCredentials = "password"
+	cPasswordCredentials  = "password"
 	cKeyrock              = "keyrock"
 	cKeyrocktokenprovider = "keyrocktokenprovider"
 	cTokenproxy           = "tokenproxy"
@@ -165,12 +165,12 @@ func getAPIPath(apiPath string) (string, string, error) {
 		return "", "", &NgsiLibError{funcName, 2, fmt.Sprintf("apiPath error: %s", pathBefore), nil}
 	}
 	pathAfter := apiPath[pos+1:]
-        if !strings.HasPrefix(pathAfter, "/") {
-                return "", "", &NgsiLibError{funcName, 3, fmt.Sprintf("must start with '/': %s", pathAfter), nil}
-        }
-        if strings.HasSuffix(pathAfter, "/") {
-                return "", "", &NgsiLibError{funcName, 4, fmt.Sprintf("trailing '/' is not required: %s", pathAfter), nil}
-        }
+	if !strings.HasPrefix(pathAfter, "/") {
+		return "", "", &NgsiLibError{funcName, 3, fmt.Sprintf("must start with '/': %s", pathAfter), nil}
+	}
+	if strings.HasSuffix(pathAfter, "/") {
+		return "", "", &NgsiLibError{funcName, 4, fmt.Sprintf("trailing '/' is not required: %s", pathAfter), nil}
+	}
 	return pathBefore, pathAfter, nil
 }
 
@@ -223,7 +223,7 @@ func (ngsi *NGSI) ServerInfoArgs() []string {
 }
 
 func copyBrokerInfo(from *Broker, to *Broker) {
-	if from.BrokerHost != "" && to.BrokerHost == "" {
+	if from.BrokerHost != "" {
 		to.BrokerHost = from.BrokerHost
 	}
 	if from.NgsiType != "" && to.NgsiType == "" {
@@ -283,7 +283,7 @@ func setBrokerParam(broker *Broker, param map[string]string) error {
 		case cAPIPath:
 			broker.APIPath = value
 		case cIdmType:
-			broker.IdmType = value
+			broker.IdmType = strings.ToLower(value)
 		case cIdmHost:
 			broker.IdmHost = value
 		case cToken:
