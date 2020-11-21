@@ -38,6 +38,7 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
+	"strings"
 )
 
 // Token is ...
@@ -177,7 +178,7 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 func getToken(ngsi *NGSI, client *Client) (string, error) {
 	const funcName = "getToken"
 
-	ngsi.Logging(LogInfo, funcName)
+	ngsi.Logging(LogInfo, funcName+"\n")
 
 	var data string
 	headers := make(map[string]string)
@@ -194,8 +195,9 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 	}
 
 	broker := client.Broker
+	idmType := strings.ToLower(broker.IdmType)
 
-	switch broker.IdmType {
+	switch idmType {
 	case cKeyrock:
 		idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
 		auth := fmt.Sprintf("%s:%s", broker.ClientID, broker.ClientSecret)
@@ -211,7 +213,7 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 		idm.SetHeader(cContentType, cAppJSON)
 		data = fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password)
 	default:
-		return "", &NgsiLibError{funcName, 3, "unkown idm type: " + broker.IdmType, nil}
+		return "", &NgsiLibError{funcName, 3, "unkown idm type: " + idmType, nil}
 	}
 
 	res, body, err := idm.HTTPPost(data)
@@ -224,7 +226,7 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 
 	var token Token
 
-	if broker.IdmType == cKeyrocktokenprovider {
+	if idmType == cKeyrocktokenprovider {
 		r := fmt.Sprintf(`{"access_token":"%s", "expires_in":%d}`, string(body), client.getExpiresIn())
 		json.Unmarshal([]byte(r), &token)
 	} else {
