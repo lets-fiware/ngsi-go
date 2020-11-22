@@ -51,6 +51,9 @@ func isTenantString(s string) bool {
 }
 
 func isScopeString(s string) bool {
+	if s == "" || s == "/" {
+		return true
+	}
 	return scopeRegexp.MatchString(s)
 }
 
