@@ -265,6 +265,18 @@ var (
 		Value:    "",
 		Required: true,
 	}
+	providedIDFlag = &cli.StringFlag{
+		Name:  "providedId",
+		Usage: "providedId",
+	}
+	legacyFlag = &cli.BoolFlag{
+		Name:  "legacy",
+		Usage: "legacy forwarding mode",
+	}
+	forwardingModeFlag = &cli.StringFlag{
+		Name:  "forwardingMode",
+		Usage: "forwarding mode",
+	}
 )
 
 // flags for options

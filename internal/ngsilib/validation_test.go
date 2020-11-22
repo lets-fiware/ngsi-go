@@ -406,3 +406,42 @@ func TestIsNameString(t *testing.T) {
 		}
 	}
 }
+
+func TestIsNgsiV2(t *testing.T) {
+	actual := IsNgsiV2("ngsi-v2")
+	expected := true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsNgsiV2("ngsiv2")
+	expected = true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsNgsiV2("v2")
+	expected = true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsNgsiV2("ld")
+	expected = false
+
+	assert.Equal(t, expected, actual)
+}
+
+func TestIsNgsiLd(t *testing.T) {
+	actual := IsNgsiLd("ngsi-ld")
+	expected := true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsNgsiLd("ld")
+	expected = true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsNgsiLd("v2")
+	expected = false
+
+	assert.Equal(t, expected, actual)
+}

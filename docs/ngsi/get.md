@@ -337,11 +337,12 @@ ngsi get [common options] registration [options]
 
 ### Options
 
-| Options                | Description                     |
-| ---------------------- | ------------------------------- |
-| --id value, -i value   | specify id                      |
-| --safeString value     | use safe string (value: on/off) |
-| --help                 | show help (default: false)      |
+| Options              | Description                        |
+| -------------------- | ---------------------------------- |
+| --id value, -i value | specify id                         |
+| --localTime          | specify localTime (default: false) |
+| --safeString value   | use safe string (value: on/off)    |
+| --help               | show help (default: false)         |
 
 ### Examples for NGSI-LD
 

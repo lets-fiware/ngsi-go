@@ -188,14 +188,20 @@ ngsi template registration
 
 ### Options
 
-| Options                    | Description                            |
-| -------------------------- | -------------------------------------- |
-| --id value, -i value       | specify id                             |
-| --type value, -t value     | specify Entity Type                    |
-| --attrs value              | specify attrs                          |
-| --provider value, -p value | specify URL of context provider/source |
-| --description value        | specify description                    | 
-| --help                     | show help (default: false)             |
+| Options                    | Description                                     |
+| -------------------------- | ----------------------------------------------- |
+| --ngsiType value           | specify NGSI type: v2 or ld                     |
+| --providedId value         | specify id                                      |
+| --idPattern value          | specify idPattern                               |
+| --type value, -t value     | specify Entity Type                             |
+| --attrs value              | specify attrs                                   |
+| --provider value, -p value | specify URL of context provider/source          |
+| --description value        | specify description                             |
+| --legacy                   | specify legacy forwarding mode (default: false) |
+| --forwardingMode value     | specify forwarding mode                         |
+| --expires value, -e value  | specify expires                                 |
+| --status value             | specify status                                  |
+| --help                     | show help (default: false)                      |
 
 ### Example for NGSI-LD
 
@@ -242,7 +248,7 @@ ngsi template registration \
   --ngsiType v2 \
   --description "sensor source" \
   --attrs temperature,pressure,humidity \
-  --id urn:ngsi-ld:Device:device001 \
+  --providedId urn:ngsi-ld:Device:device001 \
   --type Device \
   --provider http://raspi
 ```
@@ -269,4 +275,8 @@ ngsi template registration \
     }
   }
 }
+```
+
+```
+5fb9dcc4a723657d763c6317
 ```
