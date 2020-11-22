@@ -32,8 +32,18 @@ func TestIsTenantString(t *testing.T) {
 
 func TestIsScopeString(t *testing.T) {
 
-	actual := isScopeString("/fiware")
+	actual := isScopeString("")
 	expected := true
+
+	assert.Equal(t, expected, actual)
+
+	actual = isScopeString("/")
+	expected = true
+
+	assert.Equal(t, expected, actual)
+
+	actual = isScopeString("/fiware")
+	expected = true
 
 	assert.Equal(t, expected, actual)
 
