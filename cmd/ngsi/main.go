@@ -35,7 +35,7 @@ import (
 	"github.com/lets-fiware/ngsi-go/internal/ngsicmd"
 )
 
-var version = "0.1.0-next"
+var version = "0.2.0"
 var revision = ""
 
 func main() {
