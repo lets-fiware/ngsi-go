@@ -233,7 +233,7 @@ func TestCheckAllParamsErrorSafeString(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: none", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: none", ngsiErr.Message)
 	}
 }
 
@@ -682,7 +682,7 @@ func TestSafeStringError(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: error", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)
 	}
 }
@@ -715,7 +715,7 @@ func TestXAuthTokenError(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: error", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)
 	}
 }

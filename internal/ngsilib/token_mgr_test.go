@@ -428,7 +428,7 @@ func TestGetTokenErrorIdmType(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown idm type: fiware", ngsiErr.Message)
+		assert.Equal(t, "unknown idm type: fiware", ngsiErr.Message)
 	}
 }
 
