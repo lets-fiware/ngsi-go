@@ -265,8 +265,8 @@ func TestRegistrationsCreateErrorV2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -403,7 +403,7 @@ func TestRegistrationsTemplateErrorInitCmd(t *testing.T) {
 	}
 }
 
-func TestRegistrationsTemplateErrorV2(t *testing.T) {
+func TestRegistrationsTemplateNgsiV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
@@ -423,7 +423,7 @@ func TestRegistrationsTemplateErrorV2(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestRegistrationsTemplateErrorLd(t *testing.T) {
+func TestRegistrationsTemplateNgsiLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
@@ -441,6 +441,57 @@ func TestRegistrationsTemplateErrorLd(t *testing.T) {
 	err := registrationsTemplate(c)
 
 	assert.NoError(t, err)
+}
+
+func TestRegistrationsTemplateErrorNgsiTypeMissing(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	setupFlagString(set, "host,ngsiType")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/registrations"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	err := registrationsTemplate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "missing ngsiType", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegistrationsTemplateErrorNgsiTypeError(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	setupFlagString(set, "host,ngsiType")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/registrations"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--ngsiType=v1"})
+	err := registrationsTemplate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "ngsiType error: v1", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
 }
 
 func TestRegistrationsCountV2(t *testing.T) {

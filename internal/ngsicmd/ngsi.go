@@ -312,11 +312,16 @@ var templateCmd = cli.Command{
 			Usage: "create template of registration",
 			Flags: []cli.Flag{
 				ngsiTypeFlag,
-				idFlag,
+				providedIDFlag,
+				idPatternFlag,
 				typeFlag,
 				attrsFlag,
 				providerFlag,
 				descriptionFlag,
+				legacyFlag,
+				forwardingModeFlag,
+				expiresSFlag,
+				statusFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return registrationsTemplate(c)
@@ -639,6 +644,16 @@ var createCmd = cli.Command{
 			Flags: []cli.Flag{
 				dataFlag,
 				linkFlag,
+				providedIDFlag,
+				idPatternFlag,
+				typeFlag,
+				attrsFlag,
+				providerFlag,
+				descriptionFlag,
+				legacyFlag,
+				forwardingModeFlag,
+				expiresSFlag,
+				statusFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -731,8 +746,8 @@ var getCmd = cli.Command{
 	},
 	Subcommands: []*cli.Command{
 		{
-			Name:     "entities",
-			Usage:    "get entities",
+			Name:  "entities",
+			Usage: "get entities",
 			Flags: []cli.Flag{
 				orderByFlag,
 				countFlag,
@@ -813,6 +828,7 @@ var getCmd = cli.Command{
 			Usage: "get registration",
 			Flags: []cli.Flag{
 				idRFlag,
+				localTimeFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -844,8 +860,8 @@ var listCmd = cli.Command{
 	},
 	Subcommands: []*cli.Command{
 		{
-			Name:     "types",
-			Usage:    "list types",
+			Name:  "types",
+			Usage: "list types",
 			Flags: []cli.Flag{
 				verboseFlag,
 				jsonFlag,
@@ -855,8 +871,8 @@ var listCmd = cli.Command{
 			},
 		},
 		{
-			Name:     "entities",
-			Usage:    "list entities",
+			Name:  "entities",
+			Usage: "list entities",
 			Flags: []cli.Flag{
 				typeFlag,
 				idPatternFlag,
@@ -884,8 +900,8 @@ var listCmd = cli.Command{
 			},
 		},
 		{
-			Name:     "subscriptions",
-			Usage:    "list subscriptions",
+			Name:  "subscriptions",
+			Usage: "list subscriptions",
 			Flags: []cli.Flag{
 				verboseFlag,
 				jsonFlag,
@@ -900,11 +916,12 @@ var listCmd = cli.Command{
 			},
 		},
 		{
-			Name:     "registrations",
-			Usage:    "list registrations",
+			Name:  "registrations",
+			Usage: "list registrations",
 			Flags: []cli.Flag{
 				verboseFlag,
 				jsonFlag,
+				localTimeFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -927,8 +944,8 @@ var replaceCmd = cli.Command{
 	},
 	Subcommands: []*cli.Command{
 		{
-			Name:     "entities",
-			Usage:    "replace entities",
+			Name:  "entities",
+			Usage: "replace entities",
 			Flags: []cli.Flag{
 				keyValuesFlag,
 				dataFlag,
@@ -1059,8 +1076,8 @@ var upsertCmd = cli.Command{
 	},
 	Subcommands: []*cli.Command{
 		{
-			Name:     "entities",
-			Usage:    "upsert entities",
+			Name:  "entities",
+			Usage: "upsert entities",
 			Flags: []cli.Flag{
 				dataFlag,
 				replaceFlag,

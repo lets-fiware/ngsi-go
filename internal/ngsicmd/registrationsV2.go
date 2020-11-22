@@ -40,41 +40,54 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type registrationQuery struct {
-	Description  string `json:"description"`
-	DataProvided struct {
-		Entities []struct {
-			ID   string `json:"id"`
-			Type string `json:"type"`
-		} `json:"entities"`
-		Attrs []string `json:"attrs"`
-	} `json:"dataProvided"`
-	Provider struct {
-		HTTP struct {
-			URL string `json:"url"`
-		} `json:"http"`
-	} `json:"provider"`
+// lib/apiTypesV2/Registration.h in fiware-orion
+
+type registrationEntitiesV2 struct {
+	ID          string `json:"id,omitempty"`
+	IDPattern   string `json:"idPattern,omitempty"`
+	Type        string `json:"type,omitempty"`
+	TypePattern string `json:"typePattern,omitempty"`
 }
 
-const registrationTemplateV2 string = `{
-	"description": "Registration template",
-	"dataProvided": {
-	  "entities": [
-		{
-		  "id": "",
-		  "type": "Room"
-		}
-	  ],
-	  "attrs": [
-		"attr"
-	  ]
-	},
-	"provider": {
-	  "http": {
-		"url": "http://localhost:1234"
-	  }
-	}
-}`
+type registrationDataProvidedV2 struct {
+	Entities []registrationEntitiesV2 `json:"entities,omitempty"`
+	Atts     []string                 `json:"attrs,omitempty"`
+}
+
+type registrationHTTPV2 struct {
+	URL string `json:"url,omitempty"`
+}
+
+type registrationProviderV2 struct {
+	HTTP                    *registrationHTTPV2 `json:"http,omitempty"`
+	SupportedForwardingMode string              `json:"supportedForwardingMode,omitempty"`
+	LegacyForwarding        *bool               `json:"legacyForwarding,omitempty"`
+}
+
+type registrationForwardingInformationV2 struct {
+	TimesSent      *int64 `json:"timesSent,omitempty"`
+	LastForwarding string `json:"lastForwarding,omitempty"`
+	LastSuccess    string `json:"lastSuccess,omitempty"`
+	LastFailure    string `json:"lastFailure,omitempty"`
+}
+
+type registrationQueryV2 struct {
+	Description  string                      `json:"description,omitempty"`
+	DataProvided *registrationDataProvidedV2 `json:"dataProvided,omitempty"`
+	Provider     *registrationProviderV2     `json:"provider,omitempty"`
+	Expires      string                      `json:"expires,omitempty"`
+	Status       string                      `json:"status,omitempty"`
+}
+
+type registrationResposeV2 struct {
+	ID                    string                               `json:"id"`
+	Description           string                               `json:"description,omitempty"`
+	DataProvided          *registrationDataProvidedV2          `json:"dataProvided,omitempty"`
+	Provider              *registrationProviderV2              `json:"provider,omitempty"`
+	Expires               string                               `json:"expires,omitempty"`
+	Status                string                               `json:"status,omitempty"`
+	ForwardingInformation *registrationForwardingInformationV2 `json:"forwardingInformation,omitempty"`
+}
 
 func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registratinsListV2"
@@ -84,7 +97,7 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	limit := 100
 	total := 0
 
-	var registrations []map[string]interface{}
+	var registrations []registrationResposeV2
 
 	for {
 		client.SetPath("/registrations")
@@ -109,13 +122,13 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		if count == 0 {
 			break
 		}
-		var subs []map[string]interface{}
-		if err := ngsilib.JSONUnmarshalDecode(body, &subs, client.IsSafeString()); err != nil {
+		var regs []registrationResposeV2
+		if err := ngsilib.JSONUnmarshalDecode(body, &regs, client.IsSafeString()); err != nil {
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
-		registrations = append(registrations, subs...)
+		registrations = append(registrations, regs...)
 
-		total += len(subs)
+		total += len(regs)
 
 		if (page+1)*limit < count {
 			page = page + 1
@@ -131,12 +144,16 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		}
 		fmt.Fprintln(ngsi.StdWriter, string(b))
 	} else if c.IsSet("verbose") {
+		local := c.IsSet("localTime")
 		for _, e := range registrations {
-			fmt.Fprintf(ngsi.StdWriter, "%s %s\n", e["id"].(string), e["description"].(string))
+			if local {
+				toLocaltimeRegistration(&e)
+			}
+			fmt.Fprintf(ngsi.StdWriter, "%s %s %s\n", e.ID, e.Description, e.Expires)
 		}
 	} else {
 		for _, e := range registrations {
-			fmt.Fprintln(ngsi.StdWriter, e["id"].(string))
+			fmt.Fprintln(ngsi.StdWriter, e.ID)
 		}
 	}
 
@@ -157,13 +174,19 @@ func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil}
 	}
 
-	if client.IsSafeString() {
-		body, err = ngsilib.JSONSafeStringDecode(body)
-		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
-		}
+	var r registrationResposeV2
+	if err := ngsilib.JSONUnmarshalDecode(body, &r, client.IsSafeString()); err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
-	fmt.Fprintln(ngsi.StdWriter, string(body))
+
+	if c.IsSet("localTime") {
+		toLocaltimeRegistration(&r)
+	}
+	b, err := ngsilib.JSONMarshal(&r)
+	if err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
+	}
+	fmt.Fprint(ngsi.StdWriter, string(b))
 
 	return nil
 }
@@ -175,17 +198,23 @@ func registrationsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	client.SetHeader("Content-Type", "application/json")
 
-	s, err := readAll(c, ngsi)
-	if err != nil {
+	var r registrationQueryV2
+
+	if err := setRegistrationsValuleV2(c, ngsi, &r); err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	res, body, err := client.HTTPPost(s)
+	b, err := ngsilib.JSONMarshalEncode(&r, true)
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
+
+	res, body, err := client.HTTPPost(b)
+	if err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
+	}
 	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	location := res.Header.Get("Location")
@@ -221,37 +250,121 @@ func registrationsDeleteV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 func registrationsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 	const funcName = "registrationsTemplateV2"
 
-	var template registrationQuery
-	ngsilib.JSONUnmarshal([]byte(registrationTemplateV2), &template)
+	var r registrationQueryV2
+
+	if err := setRegistrationsValuleV2(c, ngsi, &r); err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	b, err := ngsilib.JSONMarshal(r)
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+	fmt.Fprint(ngsi.StdWriter, string(b))
+	return nil
+}
+
+func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registrationQueryV2) error {
+	const funcName = "setRegistrationsValuleV2"
+
+	if c.IsSet("data") {
+		b, err := readAll(c, ngsi)
+		if err != nil {
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
+		}
+		err = ngsilib.JSONUnmarshal(b, r)
+		if err != nil {
+			return &ngsiCmdError{funcName, 2, err.Error(), err}
+		}
+	}
 
 	if c.IsSet("description") {
-		template.Description = c.String("description")
+		r.Description = c.String("description")
 	}
-	if c.IsSet("id") {
-		template.DataProvided.Entities[0].ID = c.String("id")
+
+	if c.IsSet("providedId") || c.IsSet("idPattern") || c.IsSet("type") || c.IsSet("attrs") {
+		if r.DataProvided == nil {
+			r.DataProvided = new(registrationDataProvidedV2)
+		}
+		if len(r.DataProvided.Entities) == 0 {
+			r.DataProvided.Entities = append(r.DataProvided.Entities, *new(registrationEntitiesV2))
+		}
+	}
+
+	if c.IsSet("providedId") {
+		r.DataProvided.Entities[0].ID = c.String("providedId")
+	}
+	if c.IsSet("idPattern") {
+		r.DataProvided.Entities[0].IDPattern = c.String("idPattern")
 	}
 	if c.IsSet("type") {
-		template.DataProvided.Entities[0].Type = c.String("type")
+		r.DataProvided.Entities[0].Type = c.String("type")
 	}
 	if c.IsSet("attrs") {
 		s := c.String("attrs")
-		template.DataProvided.Attrs = strings.Split(s, ",")
+		r.DataProvided.Atts = strings.Split(s, ",")
 	}
-	if c.IsSet("provider") {
+
+	if c.IsSet("provider") || c.IsSet("legacy") || c.IsSet("forwardingModeFlag") {
+		if r.Provider == nil {
+			r.Provider = new(registrationProviderV2)
+		}
+		if r.Provider.HTTP == nil {
+			r.Provider.HTTP = new(registrationHTTPV2)
+		}
 		s := c.String("provider")
 		if ngsilib.IsHTTP(s) {
-			template.Provider.HTTP.URL = s
+			r.Provider.HTTP.URL = s
 		} else {
 			e := fmt.Sprintf("provider url error: %s", s)
 			return &ngsiCmdError{funcName, 1, e, nil}
 		}
-	}
 
-	b, err := ngsilib.JSONMarshalEncode(&template, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		if c.IsSet("legacy") {
+			legacy := c.Bool("legacy")
+			if legacy {
+				r.Provider.LegacyForwarding = &legacy
+			}
+		}
+
+		if c.IsSet("forwardingModeFlag") {
+			mode := c.String("forwardingModeFlag")
+			if !ngsilib.Contains([]string{"all", "none", "query", "update"}, mode) {
+				return &ngsiCmdError{funcName, 3, "unknown mode: " + mode, nil}
+			}
+			r.Provider.SupportedForwardingMode = mode
+		}
+
+		if c.IsSet("expires") {
+			s := c.String("expires")
+			if !ngsilib.IsOrionDateTime(s) {
+				var err error
+				s, err = ngsilib.GetExpirationDate(s)
+				if err != nil {
+					return &ngsiCmdError{funcName, 4, err.Error(), nil}
+				}
+			}
+			r.Expires = s
+		}
+
+		if c.IsSet("status") {
+			status := c.String("status")
+			if !ngsilib.Contains([]string{"active", "inactive"}, status) {
+				return &ngsiCmdError{funcName, 5, "unknown status: " + status, nil}
+			}
+			r.Status = status
+		}
 	}
-	fmt.Fprintln(ngsi.StdWriter, string(b))
 
 	return nil
+}
+
+func toLocaltimeRegistration(reg *registrationResposeV2) {
+	reg.Expires = getLocalTime(reg.Expires)
+	if reg.ForwardingInformation != nil {
+		reg.ForwardingInformation.LastForwarding = getLocalTime(reg.ForwardingInformation.LastForwarding)
+		reg.ForwardingInformation.LastSuccess = getLocalTime(reg.ForwardingInformation.LastSuccess)
+		reg.ForwardingInformation.LastFailure = getLocalTime(reg.ForwardingInformation.LastFailure)
+	}
+	reg.Expires = getLocalTime(reg.Expires)
 }

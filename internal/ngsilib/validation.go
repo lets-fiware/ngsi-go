@@ -136,3 +136,13 @@ func IsOrionDateTime(s string) bool {
 func IsNameString(s string) bool {
 	return nameRegexp.MatchString(s)
 }
+
+// IsNgsiV2 is ...
+func IsNgsiV2(s string) bool {
+	return Contains(ngsiV2Types, strings.ToLower(s))
+}
+
+// IsNgsiLd is ...
+func IsNgsiLd(s string) bool {
+	return Contains(ngsiLdTypes, strings.ToLower(s))
+}

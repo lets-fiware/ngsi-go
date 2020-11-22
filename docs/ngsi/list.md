@@ -29,11 +29,12 @@ ngsi list [common options] types [options]
 
 ### Options
 
-| Options       | Description                  |
-| ------------- | ---------------------------- |
-| --verbose, -v | verbose (default: false)     |
-| --json, -j    | JSON format (default: false) |
-| --help        | show help (default: false)   |
+| Options       | Description                        |
+| ------------- | ---------------------------------- |
+| --verbose, -v | verbose (default: false)           |
+| --json, -j    | JSON format (default: false)       |
+| --localTime   | specify localTime (default: false) |
+| --help        | show help (default: false)         |
 
 ### Examples
 

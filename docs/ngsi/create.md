@@ -288,11 +288,22 @@ ngsi create [command options] registration [options]
 
 ### Options
 
-| Options                   | Description                                      |
-| ------------------------- | ------------------------------------------------ |
-| --data value, -d value    | specify data                                     |
-| --link value, -L value    | specify @context                                 |
-| --help                    | show help (default: false)                       |
+| Options                    | Description                                     |
+| -------------------------- | ----------------------------------------------- |
+| --data value, -d value     | specify data                                    |
+| --link value, -L value     | specify @context                                |
+| --providedId value         | specify id                                      |
+| --idPattern value          | specify idPattern                               |
+| --type value, -t value     | specify Entity Type                             |
+| --attrs value              | specify attrs                                   |
+| --provider value, -p value | specify URL of context provider/source          |
+| --description value        | specify description                             |
+| --legacy                   | specify legacy forwarding mode (default: false) |
+| --forwardingMode value     | specify forwarding mode                         |
+| --expires value, -e value  | specify expires                                 |
+| --status value             | specify status                                  |
+| --safeString value         | use safe string (value: on/off)                 |
+| --help                     | show help (default: false)                      |
 
 ### Example for NGSI-LD
 

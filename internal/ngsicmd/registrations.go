@@ -35,6 +35,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
 )
 
@@ -121,12 +122,22 @@ func registrationsTemplate(c *cli.Context) error {
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
+
+	if !c.IsSet("ngsiType") {
+		return &ngsiCmdError{funcName, 2, "missing ngsiType", err}
+	}
+
 	t := strings.ToLower(c.String("ngsiType"))
-	if t == "v2" || t == "ngsiv2" || t == "ngsi-v2" {
+
+	if ngsilib.IsNgsiV2(t) {
 		return registrationsTemplateV2(c, ngsi)
 	}
 
-	return registrationsTemplateLd(c, ngsi)
+	if ngsilib.IsNgsiLd(t) {
+		return registrationsTemplateLd(c, ngsi)
+	}
+
+	return &ngsiCmdError{funcName, 3, "ngsiType error: " + t, nil}
 }
 
 func registrationsCount(c *cli.Context) error {
