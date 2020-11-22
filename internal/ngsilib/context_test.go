@@ -54,6 +54,8 @@ func TestAddContexErrorAlreadyExists(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
 	err := ngsi.AddContext("fiware", "https://fiware.org/")
+	assert.NoError(t, err)
+
 	err = ngsi.AddContext("fiware", "https://fiware.org/")
 
 	if assert.Error(t, err) {
@@ -130,6 +132,8 @@ func TestUpdateContexErrorSave(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName, OpenErr: errors.New("open error")}
 
 	err := ngsi.AddContext("fiware", "https://fiware.org/")
+	assert.Error(t, err)
+
 	err = ngsi.UpdateContext("fiware", "http://fiware.org")
 
 	if assert.Error(t, err) {

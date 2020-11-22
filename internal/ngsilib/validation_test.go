@@ -187,6 +187,8 @@ func TestIsExpirationDate(t *testing.T) {
 	actual = isExpirationDate("1year")
 	expected = true
 
+	assert.Equal(t, expected, actual)
+
 	actual = isExpirationDate("65months")
 	expected = true
 
@@ -194,6 +196,8 @@ func TestIsExpirationDate(t *testing.T) {
 
 	actual = isExpirationDate("1month")
 	expected = true
+
+	assert.Equal(t, expected, actual)
 
 	actual = isExpirationDate("365days")
 	expected = true

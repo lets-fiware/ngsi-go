@@ -109,7 +109,7 @@ func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, action
 	}
 
 	if !lines {
-		t, err = dec.Token()
+		_, err = dec.Token()
 		if err != nil {
 			return &ngsiCmdError{funcName, 10, err.Error(), err}
 		}

@@ -55,6 +55,7 @@ func TestTruncate(t *testing.T) {
 	fileName := "???"
 	io := ioLib{fileName: &fileName}
 	err := io.OpenFile(oWRONLY, 0600)
+	assert.Error(t, err)
 
 	err = io.Truncate(0)
 
@@ -65,6 +66,7 @@ func TestFileClose(t *testing.T) {
 	fileName := "???"
 	io := ioLib{fileName: &fileName}
 	err := io.OpenFile(oWRONLY, 0600)
+	assert.Error(t, err)
 
 	err = io.Close()
 
@@ -75,6 +77,7 @@ func TestNewDecoder(t *testing.T) {
 	fileName := "???"
 	io := ioLib{fileName: &fileName}
 	err := io.OpenFile(oWRONLY, 0600)
+	assert.Error(t, err)
 
 	var i int
 	err = io.Decode(&i)
@@ -86,6 +89,7 @@ func TestNewEncoder(t *testing.T) {
 	fileName := "???"
 	io := ioLib{fileName: &fileName}
 	err := io.OpenFile(oWRONLY, 0600)
+	assert.Error(t, err)
 
 	var i int
 	err = io.Encode(&i)
@@ -183,6 +187,8 @@ func TestFileLibOpen(t *testing.T) {
 func TestFileLibClose(t *testing.T) {
 	f := &fileLib{}
 	err := f.Open(".")
+	assert.NoError(t, err)
+
 	err = f.Close()
 
 	assert.NoError(t, err)
@@ -199,6 +205,8 @@ func TestFileLibCloseNil(t *testing.T) {
 func TestFileLibCloseError(t *testing.T) {
 	f := &fileLib{}
 	err := f.Open("???")
+	assert.Error(t, err)
+
 	err = f.Close()
 
 	assert.Error(t, err)
