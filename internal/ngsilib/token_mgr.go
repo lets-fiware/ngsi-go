@@ -213,7 +213,7 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 		idm.SetHeader(cContentType, cAppJSON)
 		data = fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password)
 	default:
-		return "", &NgsiLibError{funcName, 3, "unkown idm type: " + idmType, nil}
+		return "", &NgsiLibError{funcName, 3, "unknown idm type: " + idmType, nil}
 	}
 
 	res, body, err := idm.HTTPPost(data)

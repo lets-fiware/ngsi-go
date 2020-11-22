@@ -233,7 +233,7 @@ func TestCheckAllParamsErrorSafeString(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: none", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: none", ngsiErr.Message)
 	}
 }
 
@@ -527,6 +527,7 @@ func TestDeleteItemErrorHostNotFound(t *testing.T) {
 	param["brokerHost"] = "http://orion"
 	param["safeString"] = "on"
 	err := ngsi.CreateBroker("orion", param)
+	assert.NoError(t, err)
 
 	err = ngsi.DeleteItem("orion-ld", "safeString")
 
@@ -548,6 +549,7 @@ func TestDeleteItemErrorItem(t *testing.T) {
 	param["brokerHost"] = "http://orion"
 	param["safeString"] = "on"
 	err := ngsi.CreateBroker("orion", param)
+	assert.NoError(t, err)
 
 	err = ngsi.DeleteItem("orion", "SafeString")
 
@@ -568,6 +570,7 @@ func TestIsHostReferenced(t *testing.T) {
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 	err := ngsi.CreateBroker("orion", param)
+	assert.NoError(t, err)
 
 	err = ngsi.IsHostReferenced("orion")
 
@@ -584,10 +587,12 @@ func TestIsHostReferencedError(t *testing.T) {
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 	err := ngsi.CreateBroker("orion", param)
+	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["brokerHost"] = "orion"
 	err = ngsi.CreateBroker("fiware", param)
+	assert.NoError(t, err)
 
 	err = ngsi.IsHostReferenced("orion")
 
@@ -682,7 +687,7 @@ func TestSafeStringError(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: error", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)
 	}
 }
@@ -715,7 +720,7 @@ func TestXAuthTokenError(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: error", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)
 	}
 }

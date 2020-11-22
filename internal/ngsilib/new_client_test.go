@@ -408,7 +408,7 @@ func TestNewClientErrorSafeString(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 9, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: enable", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: enable", ngsiErr.Message)
 	}
 }
 
@@ -436,7 +436,7 @@ func TestNewClientErrorSafeStringCmdFlag(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 10, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: enable", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: enable", ngsiErr.Message)
 	}
 }
 

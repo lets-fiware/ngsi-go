@@ -134,7 +134,7 @@ func (ngsi *NGSI) BoolFlag(s string) (bool, error) {
 	case "on", "true":
 		return true, nil
 	}
-	return false, &NgsiLibError{funcName, 1, fmt.Sprintf("unkown parameter: %s", s), nil}
+	return false, &NgsiLibError{funcName, 1, fmt.Sprintf("unknown parameter: %s", s), nil}
 }
 
 func getConfigDir(io IoLib) (string, error) {

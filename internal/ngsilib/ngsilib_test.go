@@ -122,7 +122,7 @@ func TestBoolError(t *testing.T) {
 		assert.Equal(t, false, b)
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: fiware", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: fiware", ngsiErr.Message)
 	}
 }
 

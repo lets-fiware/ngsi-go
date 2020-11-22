@@ -405,7 +405,7 @@ func TestBrokersAddErrorCreateBroker(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
-		assert.Equal(t, "unkown parameter: 123", ngsiErr.Message)
+		assert.Equal(t, "unknown parameter: 123", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
