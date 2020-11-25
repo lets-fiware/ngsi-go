@@ -139,6 +139,7 @@ func TestNGSIMessage(t *testing.T) {
 
 	assert.Equal(t, "error message", s)
 }
+
 func TestIsSetsORTrue(t *testing.T) {
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "host,type")

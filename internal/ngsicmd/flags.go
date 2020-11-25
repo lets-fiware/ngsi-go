@@ -211,6 +211,10 @@ var (
 		Name:  "coords",
 		Usage: "coords",
 	}
+	geopropertyFlag = &cli.StringFlag{
+		Name:  "geoproperty",
+		Usage: "geoproperty",
+	}
 	headersFlag = &cli.StringFlag{
 		Name:  "headers",
 		Usage: "headers",
@@ -238,6 +242,18 @@ var (
 	subjectIDFlag = &cli.StringFlag{
 		Name:  "subjectId",
 		Usage: "subjectId",
+	}
+	subscriptionIDFlag = &cli.StringFlag{
+		Name:  "subscriptionId",
+		Usage: "subscription id",
+	}
+	subscriptionNameFlag = &cli.StringFlag{
+		Name:  "name",
+		Usage: "subscription name",
+	}
+	entityIDFlag = &cli.StringFlag{
+		Name:  "entityId",
+		Usage: "entityId",
 	}
 	attrsFlag = &cli.StringFlag{
 		Name:  "attrs",
@@ -276,6 +292,26 @@ var (
 	forwardingModeFlag = &cli.StringFlag{
 		Name:  "forwardingMode",
 		Usage: "forwarding mode",
+	}
+)
+
+// Temporal
+var (
+	timeRelFlag = &cli.StringFlag{
+		Name:  "timeRel",
+		Usage: "temporal relationship",
+	}
+	timeAtFlag = &cli.StringFlag{
+		Name:  "timeAt",
+		Usage: "timeAt",
+	}
+	endTimeAtFlag = &cli.StringFlag{
+		Name:  "entTimeAt",
+		Usage: "entTimeAt",
+	}
+	timePropertyFlag = &cli.StringFlag{
+		Name:  "timeProperty",
+		Usage: "timeProperty",
 	}
 )
 
@@ -360,6 +396,10 @@ var (
 		Name:  "uri",
 		Usage: "url or uri",
 	}
+	acceptFlag = &cli.StringFlag{
+		Name:  "accept",
+		Usage: "accept header (json or ld+json)",
+	}
 	notifyURLFlag = &cli.StringFlag{
 		Name:    "url",
 		Aliases: []string{"u"},
@@ -404,6 +444,22 @@ var (
 	statusFlag = &cli.StringFlag{
 		Name:  "status",
 		Usage: "status",
+	}
+	timeIntervalFlag = &cli.Int64Flag{
+		Name:  "timeInterval",
+		Usage: "time interval",
+	}
+	csfFlag = &cli.StringFlag{
+		Name:  "csf",
+		Usage: "context source filter",
+	}
+	activeFlag = &cli.BoolFlag{
+		Name:  "active",
+		Usage: "active",
+	}
+	inActiveFlag = &cli.BoolFlag{
+		Name:  "inactive",
+		Usage: "inactive",
 	}
 	descriptionFlag = &cli.StringFlag{
 		Name:  "description",

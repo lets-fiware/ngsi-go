@@ -33,6 +33,7 @@ import (
 	"bytes"
 	"errors"
 	"flag"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -90,6 +91,12 @@ func setupFlagString(set *flag.FlagSet, s string) {
 func setupFlagBool(set *flag.FlagSet, s string) {
 	for _, flag := range strings.Split(s, ",") {
 		set.Bool(flag, false, "doc")
+	}
+}
+
+func setupFlagInt64(set *flag.FlagSet, s string) {
+	for _, flag := range strings.Split(s, ",") {
+		set.Int64(flag, 0, "doc")
 	}
 }
 
@@ -177,6 +184,8 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 	}
 	if data != nil && r.ReqData != nil {
 		if !reflect.DeepEqual(r.ReqData, data) {
+			fmt.Printf("r.ReqData: %s\n", string(r.ReqData))
+			fmt.Printf("Data: %s\n", string(data))
 			return nil, nil, &ngsiCmdError{funcName, 1, "body data error", nil}
 		}
 	}

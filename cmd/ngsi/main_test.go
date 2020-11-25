@@ -17,3 +17,12 @@ func TestHelp(t *testing.T) {
 	ts.Commands["ngsi"] = cmdtest.InProcessProgram("ngsi", run)
 	ts.Run(t, *update)
 }
+
+func TestSubscription(t *testing.T) {
+	ts, err := cmdtest.Read("testdata/subscription")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ts.Commands["ngsi"] = cmdtest.InProcessProgram("ngsi", run)
+	ts.Run(t, *update)
+}
