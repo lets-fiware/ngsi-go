@@ -61,7 +61,7 @@ wc:
 .PHONY: build
 build: bin/ngsi
 
-.PHONY: all clean linux drrwin
+.PHONY: all clean linux darwin
 
 .PHONY: release
 release:
