@@ -52,7 +52,7 @@ var debugCmd = cli.Command{
 }
 
 func debugCommand(c *cli.Context) error {
-	const funcName = "debug"
+	const funcName = "debugCommand"
 
 	ngsi, err := initCmd(c, funcName, false)
 	if err != nil {

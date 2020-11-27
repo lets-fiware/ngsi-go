@@ -58,7 +58,7 @@ func subscriptionsList(c *cli.Context) error {
 }
 
 func subscriptionGet(c *cli.Context) error {
-	const funcName = "subscriptionsGet"
+	const funcName = "subscriptionGet"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {

@@ -192,7 +192,7 @@ func entitiesList(c *cli.Context) error {
 }
 
 func entitiesCount(c *cli.Context) error {
-	const funcName = "count"
+	const funcName = "entitiesCount"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {

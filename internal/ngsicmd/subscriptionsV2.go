@@ -244,7 +244,7 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 }
 
 func subscriptionGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
-	const funcName = "subscriptionsGetV2"
+	const funcName = "subscriptionGetV2"
 
 	id := c.String("id")
 	client.SetPath("/subscriptions/" + id)
@@ -395,7 +395,7 @@ func subscriptionsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 }
 
 func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscriptionV2, checkskip bool) error {
-	const funcName = "setTemplateValues"
+	const funcName = "setSubscriptionValuesV2"
 
 	if c.IsSet("data") {
 		b, err := readAll(c, ngsi)
@@ -576,7 +576,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 }
 
 func getAttributesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscriptionV2) error {
-	const funcName = "setTemplateValues"
+	const funcName = "getAttributesV2"
 
 	entityType := c.String("type")
 

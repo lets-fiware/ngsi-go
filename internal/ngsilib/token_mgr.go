@@ -107,7 +107,7 @@ func (ngsi *NGSI) InitTokenMgr(file *string) error {
 }
 
 func initTokenList(io IoLib) error {
-	const funcName = "initTokenMgr"
+	const funcName = "initTokenList"
 
 	if *io.FileName() == "" {
 		return nil
