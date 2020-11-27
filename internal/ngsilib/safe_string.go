@@ -81,7 +81,7 @@ func SafeStringDecode(s string) string {
 
 // JSONSafeStringEncode is ...
 func JSONSafeStringEncode(data []byte) ([]byte, error) {
-	const funcName = "SafeString"
+	const funcName = "JSONSafeStringEncode"
 
 	var e interface{}
 
@@ -98,7 +98,7 @@ func JSONSafeStringEncode(data []byte) ([]byte, error) {
 
 // JSONSafeStringDecode is ...
 func JSONSafeStringDecode(data []byte) ([]byte, error) {
-	const funcName = "SafeString"
+	const funcName = "JSONSafeStringDecode"
 
 	if IsJSON(data) {
 		var e interface{}

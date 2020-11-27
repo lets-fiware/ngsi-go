@@ -96,7 +96,7 @@ func brokersGet(c *cli.Context) error {
 }
 
 func brokersAdd(c *cli.Context) error {
-	const funcName = "brokerAdd"
+	const funcName = "brokersAdd"
 
 	ngsi, err := initCmd(c, funcName, false)
 	if err != nil {
@@ -143,7 +143,7 @@ func brokersAdd(c *cli.Context) error {
 }
 
 func brokersUpdate(c *cli.Context) error {
-	const funcName = "brokerUpdate"
+	const funcName = "brokersUpdate"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {
@@ -175,7 +175,7 @@ func brokersUpdate(c *cli.Context) error {
 }
 
 func brokersDelete(c *cli.Context) error {
-	const funcName = "brokerDelete"
+	const funcName = "brokersDelete"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {

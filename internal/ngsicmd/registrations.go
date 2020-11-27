@@ -59,7 +59,7 @@ func registrationsList(c *cli.Context) error {
 }
 
 func registrationsGet(c *cli.Context) error {
-	const funcName = "registratinsList"
+	const funcName = "registrationsGet"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {
@@ -141,7 +141,7 @@ func registrationsTemplate(c *cli.Context) error {
 }
 
 func registrationsCount(c *cli.Context) error {
-	const funcName = "registratinsList"
+	const funcName = "registrationsCount"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {

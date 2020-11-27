@@ -37,7 +37,7 @@ import (
 )
 
 func tokenCommand(c *cli.Context) error {
-	const funcName = "tokenCmd"
+	const funcName = "tokenCommand"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {

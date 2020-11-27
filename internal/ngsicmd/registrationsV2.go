@@ -161,7 +161,7 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 }
 
 func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
-	const funcName = "registratinGetV2"
+	const funcName = "registrationsGetV2"
 
 	id := c.String("id")
 	client.SetPath("/registrations/" + id)

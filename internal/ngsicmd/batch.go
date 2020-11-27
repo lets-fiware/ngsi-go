@@ -38,7 +38,7 @@ import (
 )
 
 func batch(c *cli.Context, mode string) error {
-	const funcName = "batchCreate"
+	const funcName = "batch"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {

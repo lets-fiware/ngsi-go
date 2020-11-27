@@ -122,7 +122,7 @@ func subscriptionsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 }
 
 func subscriptionGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
-	const funcName = "subscriptionsGetLd"
+	const funcName = "subscriptionGetLd"
 
 	id := c.String("id")
 	client.SetPath("/subscriptions/" + id)
@@ -148,7 +148,7 @@ func subscriptionGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 }
 
 func subscriptionsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
-	const funcName = "subscriptionsCreateLD"
+	const funcName = "subscriptionsCreateLd"
 
 	client.SetPath("/subscriptions")
 
@@ -181,7 +181,7 @@ func subscriptionsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 }
 
 func subscriptionsUpdateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
-	const funcName = "subscriptionsUpdateLD"
+	const funcName = "subscriptionsUpdateLd"
 
 	return &ngsiCmdError{funcName, 1, "not yet implemented", nil}
 }

@@ -76,7 +76,7 @@ func NewHTTPRequet() HTTPRequest {
 }
 
 func (r *httpRequest) Request(method string, url *url.URL, headers map[string]string, body interface{}) (*http.Response, []byte, error) {
-	const funcName = "httpRequest"
+	const funcName = "Request"
 
 	client := &http.Client{Timeout: time.Duration(60 * time.Second)}
 

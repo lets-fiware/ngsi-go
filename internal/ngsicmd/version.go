@@ -37,7 +37,7 @@ import (
 )
 
 func cbVersion(c *cli.Context) error {
-	const funcName = "version"
+	const funcName = "cbVersion"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {
