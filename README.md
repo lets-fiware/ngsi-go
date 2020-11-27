@@ -13,6 +13,9 @@
 
 The NGSI Go is a Unix command-line tool for FIWARE NGSI v2 and NGSI-LD.
 
+| :books: [Documentation](https://ngsi-go.letsfiware.jp/) | :dart: [Roadmap](./roadmap.md) |
+|---------------------------------------------------------|--------------------------------|
+
 ## Contents
  
 <details>
@@ -21,10 +24,8 @@ The NGSI Go is a Unix command-line tool for FIWARE NGSI v2 and NGSI-LD.
 -   [Getting Started with NGSI Go](#getting-started-with-ngsi-go)
 -   [Usage](#usage)
 -   [Install](#install)
--   [Documentation](#documentation)
 -   [Third party packages](#third-party-packages)
 -   [Copyright and License](#copyright-and-license)
-
 
 </details>
 
@@ -198,11 +199,6 @@ sudo mv ngsi_bash_autocomplete /etc/bash_completion.d/
 source /etc/bash_completion.d/ngsi_bash_autocomplete
 echo "source /etc/bash_completion.d/ngsi_bash_autocomplete" >> ~/.bashrc
 ```
-
-
-## Documentation
-
--    [NGSI Go documentation](https://ngsi-go.letsfiware.jp/)
 
 ## Third party packages
 
