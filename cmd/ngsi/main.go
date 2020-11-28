@@ -41,5 +41,9 @@ var revision = ""
 func main() {
 	ngsicmd.Version = version
 	ngsicmd.Revision = revision
-	os.Exit(ngsicmd.Run())
+	os.Exit(run())
+}
+
+func run() int {
+	return ngsicmd.Run(os.Args, os.Stdin, os.Stdout, os.Stderr)
 }
