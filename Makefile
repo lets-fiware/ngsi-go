@@ -54,6 +54,10 @@ test:
 cover:
 	cd internal;go test -coverprofile=cover.out -covermode=atomic ./...;go tool cover -html=cover.out -o cover.html
 
+.PHONY: e2e_test
+e2e_test:
+	script/e2e_test.sh
+
 .PHONY: wc
 wc:
 	wc $(SOURCES)

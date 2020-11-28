@@ -32,7 +32,7 @@ package ngsicmd
 import (
 	"errors"
 	"fmt"
-	"io"
+	"os"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 
@@ -49,7 +49,12 @@ const copyright = "(c) 2020 Kazuhito Suda"
 const usage = "unix-like command-line tool for FIWARE NGSI and NGSI-LD"
 
 // Run is a main rouitne of NGSI Go
-func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
+func Run() int {
+	args := os.Args
+	stdin := os.Stdin
+	stdout := os.Stdout
+	stderr := os.Stderr
+
 	ngsi := ngsilib.NewNGSI()
 	defer ngsi.Close()
 
