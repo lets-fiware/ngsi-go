@@ -1,7 +1,7 @@
 *.swp
-profile.out
-cover.html
-cover.out
+coverage.out
+coverage.lcov
+coverage.html
 bin/
 build/
 .vscode/

@@ -41,18 +41,19 @@ export GO111MODULE=on
 devel-deps:
 	go get \
 	github.com/x-motemen/gobump/cmd/gobump \
-	github.com/tcnksm/ghr
+	github.com/tcnksm/ghr \
+	golang.org/x/tools/cmd/cover
 
 bin/%: cmd/%/main.go $(SOURCES)
 	go build -ldflags "$(LDFLAGS)" -o $@ $<
 
 .PHONY: test
 test:
-	cd internal;go test -coverprofile=profile.out -covermode=atomic ./...
+	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...
 
 .PHONY: cover
 cover:
-	cd internal;go test -coverprofile=cover.out -covermode=atomic ./...;go tool cover -html=cover.out -o cover.html
+	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...;cd ..;go tool cover -html=coverage/coverage.out -o coverage/coverage.html
 
 .PHONY: e2e_test
 e2e_test:
