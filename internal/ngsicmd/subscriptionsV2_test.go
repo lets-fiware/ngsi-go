@@ -66,6 +66,35 @@ func TestSubscriptionssubscriptionsListV2(t *testing.T) {
 	}
 }
 
+func TestSubscriptionssubscriptionsListV2Count(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionData)
+	reqRes.Path = "/v2/subscriptions"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagBool(set, "count")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--count"})
+
+	err := subscriptionsListV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "6\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestSubscriptionssubscriptionsListV2CountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -208,6 +237,36 @@ func TestSubscriptionssubscriptionsListV2Json(t *testing.T) {
 	if assert.NoError(t, err) {
 		actual := buf.String()
 		expected := "[{\"id\":\"9f6c254ac4a6068bb276774e\",\"description\":\"ngsi source subscription\",\"subject\":{\"entities\":[{\"idPattern\":\".*\"}],\"condition\":{\"attrs\":[\"dateObserved\"]}},\"notification\":{\"timesSent\":28,\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:13.00Z\",\"status\":\"inactive\"}]\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionssubscriptionsListV2JsonCount0(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionData)
+	reqRes.Path = "/v2/subscriptions"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "status,query")
+	set.Bool("json", false, "doc")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--status=inactive", "--json"})
+
+	err := subscriptionsListV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := ""
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()

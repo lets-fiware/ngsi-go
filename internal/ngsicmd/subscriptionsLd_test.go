@@ -65,6 +65,35 @@ func TestSubscriptionssubscriptionsListLd(t *testing.T) {
 	}
 }
 
+func TestSubscriptionssubscriptionsListLdCount(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionLdData)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagBool(set, "count")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--count"})
+
+	err := subscriptionsListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "6\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestSubscriptionssubscriptionsListLdPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -149,6 +178,36 @@ func TestSubscriptionssubscriptionsListLdJson(t *testing.T) {
 	if assert.NoError(t, err) {
 		actual := buf.String()
 		expected := testDataLdRespose
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionssubscriptionsListLdJsonCount0(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionLdData)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"0"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "status,query")
+	set.Bool("json", false, "doc")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--json"})
+
+	err := subscriptionsListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := ""
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
