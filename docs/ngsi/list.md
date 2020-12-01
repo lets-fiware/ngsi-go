@@ -329,6 +329,7 @@ ngsi list [common options] subscriptions [options]
 | --query value, -q value | specify query                      |
 | --items value, -i value | specify itmes                      |
 | --safeString value      | use safe string (value: on/off)    |
+| --count, -C             | count (default: false)             |
 | --help                  | show help (default: false)         |
 
 ### Examples for NGSI-LD

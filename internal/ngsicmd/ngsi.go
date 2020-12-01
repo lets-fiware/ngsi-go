@@ -910,6 +910,7 @@ var listCmd = cli.Command{
 				queryFlag,
 				itemsFlag,
 				safeStringFlag,
+				countFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return subscriptionsList(c)

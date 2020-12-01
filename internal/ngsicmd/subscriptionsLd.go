@@ -102,12 +102,16 @@ func subscriptionsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		}
 	}
 
-	if c.IsSet("json") {
-		b, err := ngsilib.JSONMarshal(subscriptions)
-		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+	if c.IsSet("count") {
+		fmt.Fprintf(ngsi.StdWriter, "%d\n", len(subscriptions))
+	} else if c.IsSet("json") {
+		if len(subscriptions) > 0 {
+			b, err := ngsilib.JSONMarshal(subscriptions)
+			if err != nil {
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(b))
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(b))
 	} else if c.IsSet("verbose") {
 		for _, e := range subscriptions {
 			fmt.Fprintf(ngsi.StdWriter, "%s %s\n", e["id"].(string), e["description"].(string))
