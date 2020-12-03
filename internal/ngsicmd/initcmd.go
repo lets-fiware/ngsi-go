@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"time"
@@ -122,6 +123,7 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 	c.App.Writer = ngsi.StdWriter
 	c.App.ErrWriter = ngsi.LogWriter
 
+	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s (git_hash:%s)\n", Version, Revision))
 	ngsi.Logging(ngsilib.LogInfo, cmdName+"\n")
 
 	ngsi.Host = c.String("host")
