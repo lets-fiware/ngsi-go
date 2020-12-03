@@ -512,9 +512,9 @@ func TestSaveToken(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{}
 	ngsi.LogWriter = &bytes.Buffer{}
-	token := &Token{}
+	tokens := make(map[string]interface{})
 
-	err := saveToken("cache-file", token)
+	err := saveToken("cache-file", tokens)
 	assert.NoError(t, err)
 }
 
@@ -522,9 +522,9 @@ func TestSaveTokenNoFileName(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{}
 	ngsi.LogWriter = &bytes.Buffer{}
-	token := &Token{}
+	tokens := make(map[string]interface{})
 
-	err := saveToken("", token)
+	err := saveToken("", tokens)
 	assert.NoError(t, err)
 }
 
@@ -532,9 +532,9 @@ func TestSaveTokenErrorOpenFile(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{OpenErr: errors.New("open error")}
 	ngsi.LogWriter = &bytes.Buffer{}
-	token := &Token{}
+	tokens := make(map[string]interface{})
 
-	err := saveToken("cache-file", token)
+	err := saveToken("cache-file", tokens)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
@@ -546,9 +546,9 @@ func TestSaveTokenErrorTruncate(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{TruncateErr: errors.New("truncate error")}
 	ngsi.LogWriter = &bytes.Buffer{}
-	token := &Token{}
+	tokens := make(map[string]interface{})
 
-	err := saveToken("cache-file", token)
+	err := saveToken("cache-file", tokens)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
@@ -560,9 +560,9 @@ func TestSaveTokenErrorEncode(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{EncodeErr: errors.New("encode error")}
 	ngsi.LogWriter = &bytes.Buffer{}
-	token := &Token{}
+	tokens := make(map[string]interface{})
 
-	err := saveToken("cache-file", token)
+	err := saveToken("cache-file", tokens)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
