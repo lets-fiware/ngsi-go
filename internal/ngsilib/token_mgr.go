@@ -256,14 +256,14 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 	tokens := make(map[string]interface{})
 	tokens["tokens"] = ngsi.tokenList
 
-	err = saveToken(*ngsi.CacheFile.FileName(), &token)
+	err = saveToken(*ngsi.CacheFile.FileName(), tokens)
 	if err != nil {
 		return "", &NgsiLibError{funcName, 6, err.Error(), err}
 	}
 	return token.AccessToken, nil
 }
 
-func saveToken(file string, token *Token) error {
+func saveToken(file string, tokens map[string]interface{}) error {
 	const funcName = "saveToken"
 
 	gNGSI.Logging(LogInfo, funcName+"\n")
@@ -284,7 +284,7 @@ func saveToken(file string, token *Token) error {
 		return &NgsiLibError{funcName, 2, err.Error(), err}
 	}
 
-	err = cacheFile.Encode(&token)
+	err = cacheFile.Encode(tokens)
 	if err != nil {
 		return &NgsiLibError{funcName, 3, err.Error(), err}
 	}
