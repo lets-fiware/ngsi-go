@@ -126,7 +126,7 @@ func (client *Client) SetContentType() {
 
 // SetPath is ...
 func (client *Client) SetPath(path string) {
-	if path != "/version" {
+	if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache"}, path) {
 		if client.NgsiType == ngsiLd {
 			path = "/ngsi-ld/v1" + path
 		} else {
@@ -139,6 +139,15 @@ func (client *Client) SetPath(path string) {
 		}
 	}
 	client.URL.Path = path
+}
+
+func hasPrefix(prefixes []string, path string) bool {
+	for _, prefix := range prefixes {
+		if strings.HasPrefix(path, prefix) {
+			return true
+		}
+	}
+	return false
 }
 
 // SetQuery is ...

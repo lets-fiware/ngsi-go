@@ -22,6 +22,7 @@ nav:
     -   'update': ngsi/update.md
     -   'upsert': ngsi/upsert.md
   - 'Convenience command':
+    -   'admin': convenience/admin.md
     -   'cp': convenience/cp.md
     -   'wc': convenience/wc.md
     -   'man': convenience/man.md

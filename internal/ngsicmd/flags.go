@@ -501,3 +501,31 @@ var (
 		Required: true,
 	}
 )
+
+var (
+	levelFlag = &cli.StringFlag{
+		Name:    "level",
+		Aliases: []string{"l"},
+		Usage:   "specify log level",
+	}
+	deleteFlag = &cli.BoolFlag{
+		Name:    "delete",
+		Aliases: []string{"d"},
+		Usage:   "delete",
+	}
+	setFlag = &cli.BoolFlag{
+		Name:    "set",
+		Aliases: []string{"s"},
+		Usage:   "set",
+	}
+	resetFlag = &cli.BoolFlag{
+		Name:    "reset",
+		Aliases: []string{"r"},
+		Usage:   "reset",
+	}
+	loggingFlag = &cli.BoolFlag{
+		Name:    "logging",
+		Aliases: []string{"L"},
+		Usage:   "logging",
+	}
+)

@@ -41,6 +41,7 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 
 ### Convenience
 
+-   [admin](convenience/admin.md): administrative command for FIWARE Orion
 -   [cp](convenience/cp.md): copy entities
 -   [wc](convenience/wc.md): print number of entities, subscriptions or registrations
 -   [man](convenience/man.md): print  URLs of the documents related to the NGSI Go

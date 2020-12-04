@@ -37,6 +37,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/urfave/cli/v2"
 )
 
 func TestNGSICommand(t *testing.T) {
@@ -45,6 +46,12 @@ func TestNGSICommand(t *testing.T) {
 		rc   int
 	}{
 		//{args: []string{}, rc: 0},
+		{args: []string{"admin", "log"}, rc: 1},
+		{args: []string{"admin", "trace"}, rc: 1},
+		{args: []string{"admin", "semaphore"}, rc: 1},
+		{args: []string{"admin", "metrics"}, rc: 1},
+		{args: []string{"admin", "statistics"}, rc: 1},
+		{args: []string{"admin", "cacheStatistics"}, rc: 1},
 		{args: []string{"cp", "--type", "abc", "--destination", "abc"}, rc: 1},
 		{args: []string{"wc", "entities"}, rc: 1},
 		{args: []string{"wc", "subscriptions"}, rc: 1},
@@ -130,4 +137,55 @@ func TestNGSIMessage(t *testing.T) {
 	s := message(e)
 
 	assert.Equal(t, "error message", s)
+}
+func TestIsSetsORTrue(t *testing.T) {
+	_, set, app, _ := setupTest()
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--count"})
+	actual := isSetOR(c, []string{"host"})
+	expected := true
+
+	assert.Equal(t, expected, actual)
+}
+
+func TestIsSetsORFalse(t *testing.T) {
+	_, set, app, _ := setupTest()
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+
+	c := cli.NewContext(app, set, nil)
+
+	actual := isSetOR(c, []string{"host"})
+	expected := false
+
+	assert.Equal(t, expected, actual)
+}
+
+func TestIsSetsANDTrue(t *testing.T) {
+	_, set, app, _ := setupTest()
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--count"})
+	actual := isSetAND(c, []string{"host", "count"})
+	expected := true
+
+	assert.Equal(t, expected, actual)
+}
+
+func TestIsSetsANDFalse(t *testing.T) {
+	_, set, app, _ := setupTest()
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+
+	c := cli.NewContext(app, set, nil)
+
+	actual := isSetAND(c, []string{"host"})
+	expected := false
+
+	assert.Equal(t, expected, actual)
 }

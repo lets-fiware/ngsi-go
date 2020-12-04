@@ -271,6 +271,18 @@ func TestSetPathV2APIPath(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestHasPrefixTrue(t *testing.T) {
+	actual := hasPrefix([]string{"/version", "/v2"}, "/v2/entities")
+	expected := true
+	assert.Equal(t, expected, actual)
+}
+
+func TestHasPrefixFalse(t *testing.T) {
+	actual := hasPrefix([]string{"/version", "/v2"}, "/v1/entities")
+	expected := false
+	assert.Equal(t, expected, actual)
+}
+
 func TestIsSafeStringFalse(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
 	client.SafeString = false
