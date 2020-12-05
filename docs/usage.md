@@ -6,15 +6,20 @@
     -   [Management commnad](#management-commnad)
     -   [Global Options](#global-options)
     -   [Common options](#common-options)
+-   [--data option](#data-option)
 -   [Safe string](#safe-string)
 -   [Error message](#error-message)
     -   [Detailed error information](#detailed-error-information)
+
+<a name="syntax"/>
 
 ## Syntax
 
 ```console
 ngsi [global options] command [common options] sub-command [options]
 ```
+
+<a name="ngsi-command"/>
 
 ### NGSI command
 
@@ -49,6 +54,8 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | subscription | update subscription |
 | [upsert](./ngsi/upsert.md)   | entities     | upsert entities     |
 
+<a name="convenience-command"/>
+
 ### Convenience command
 
 | command                               | sub-command  | Description                                                      |
@@ -61,6 +68,8 @@ ngsi [global options] command [common options] sub-command [options]
 | [template](./convenience/template.md) | subscription | create template of subscription                                  |
 |                                       | registration | create template of registration                                  |
 | [version](./convenience/version.md)   | -            | print the version of Context Broker                              |
+
+<a name="management-commnad"/>
 
 ### Management commnad
 
@@ -80,6 +89,8 @@ ngsi [global options] command [common options] sub-command [options]
 |                                      | clear        | clear settings  |
 | [token](./management/token.md)       | -            | manage token    |
 
+<a name="global-options"/>
+
 ### Global Options
 
 | Options	     | Description                                      |
@@ -92,6 +103,8 @@ ngsi [global options] command [common options] sub-command [options]
 | --help         | show help (default: false)                       |
 | --version, -v  | print the version (default: false)               |
 
+<a name="common-options"/>
+
 ### Common options
 
 | Options                   | Description                |
@@ -101,6 +114,56 @@ ngsi [global options] command [common options] sub-command [options]
 | --service value, -s value | specify FIWARE Service     |
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
+
+<a name="data-option"/>
+
+## --data option
+
+### argument
+
+```console
+ngsi create entity --keyValues \
+--data ' {
+      "id":"urn:ngsi-ld:Product:001",
+      "type":"Product",
+      "name": "Lemonade",
+      "size": "S",
+      "price": 99
+}'
+```
+### pipe
+
+```console
+echo "{ \"id\":\"urn:ngsi-ld:Product:003\", \"type\":\"Product\", \"name\": \"Lemonade\", \"size\": \"S\", \"price\": 99 }" | ngsi create entity --keyValues --data @-
+```
+
+```
+echo "{ \"id\":\"urn:ngsi-ld:Product:003\", \"type\":\"Product\", \"name\": \"Lemonade\", \"size\": \"S\", \"price\": 99 }" | ngsi create entity --keyValues --data stdin
+```
+
+```
+echo '{ "id":"urn:ngsi-ld:Product:002", "type":"Product", "name": "Lemonade", "size": "S", "price": 99 }' | ngsi create entity --keyValues --data @-
+```
+
+### file
+
+```console
+ngsi create entity --keyValues --data @data.json
+```
+
+data.json:
+
+```
+{
+  "id":"urn:ngsi-ld:Product:001",
+  "type":"Product",
+  "name": "Lemonade",
+  "size": "S",
+  "price": 99
+}
+```
+
+<a name="safe-string"/>
 
 ## Safe string
 
@@ -162,6 +225,8 @@ ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString on
 "<Lemonade>"
 ```
 
+<a name="error-message"/>
+
 ## Error message
 
 An error message consists of a prefix and a body. E.g.
@@ -172,6 +237,8 @@ entityCreate006 400 Bad Request {"error":"BadReqest","description":"Invalid char
 
 The error message has `entityCreate006` as a prefix. A prefix consists of a Go function name and a position in the funciton.
 The function name is `entityCreate`. The position is 6th.
+
+<a name="detailed-error-information"/>
 
 ### Detailed error information
 
