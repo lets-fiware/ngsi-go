@@ -76,6 +76,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 			batchFlag,
 		},
 		Commands: []*cli.Command{
+			&adminCmd,
 			&appendCmd,
 			&brokersCmd,
 			&contextCmd,
@@ -127,6 +128,24 @@ func message(err error) (s string) {
 		s = e.Error()
 	}
 	return
+}
+
+func isSetOR(c *cli.Context, params []string) bool {
+	for _, param := range params {
+		if c.IsSet(param) {
+			return true
+		}
+	}
+	return false
+}
+
+func isSetAND(c *cli.Context, params []string) bool {
+	for _, param := range params {
+		if !c.IsSet(param) {
+			return false
+		}
+	}
+	return true
 }
 
 var copyCmd = cli.Command{
@@ -1087,6 +1106,86 @@ var upsertCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return batch(c, "upsert")
+			},
+		},
+	},
+}
+
+var adminCmd = cli.Command{
+	Name:     "admin",
+	Usage:    "admin command for FIWARE Orion",
+	Category: "CONVENIENCE",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "log",
+			Usage: "admin log",
+			Flags: []cli.Flag{
+				levelFlag,
+				loggingFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return adminLog(c)
+			},
+		},
+		{
+			Name:  "trace",
+			Usage: "admin trace",
+			Flags: []cli.Flag{
+				levelFlag,
+				setFlag,
+				deleteFlag,
+				loggingFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return adminTrace(c)
+			},
+		},
+		{
+			Name:  "semaphore",
+			Usage: "print semaphore",
+			Flags: []cli.Flag{
+				loggingFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return adminSemaphore(c)
+			},
+		},
+		{
+			Name:  "metrics",
+			Usage: "manage metrics",
+			Flags: []cli.Flag{
+				deleteFlag,
+				resetFlag,
+				loggingFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return adminMetrics(c)
+			},
+		},
+		{
+			Name:  "statistics",
+			Usage: "print statistics",
+			Flags: []cli.Flag{
+				deleteFlag,
+				loggingFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return adminStatistics(c)
+			},
+		},
+		{
+			Name:  "cacheStatistics",
+			Usage: "print cache statistics",
+			Flags: []cli.Flag{
+				deleteFlag,
+				loggingFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return adminCacheStatistics(c)
 			},
 		},
 	},
