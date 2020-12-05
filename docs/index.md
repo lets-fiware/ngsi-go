@@ -4,6 +4,9 @@
 
 ![FIWARE: Tools](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/deployment-tools.svg)
 [![License: MIT](https://img.shields.io/github/license/lets-fiware/ngsi-go.svg)](https://opensource.org/licenses/MIT)
+![GitHub all releases](https://img.shields.io/github/downloads/lets-fiware/ngsi-go/total)
+[![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware+ngsi-go)
+<br/>
 ![GitHub top language](https://img.shields.io/github/languages/top/lets-fiware/ngsi-go)
 ![Lines of code](https://img.shields.io/tokei/lines/github/lets-fiware/ngsi-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lets-fiware/ngsi-go)](https://goreportcard.com/report/github.com/lets-fiware/ngsi-go)
