@@ -42,11 +42,12 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.2.0 (git_hash:2b8a7721a2a446fcd0956a3ac0d3adee7aa39750)
+   0.3.0 (git_hash:d466356676201c8b237eaa4e768b9742d1b91120)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
    CONVENIENCE:
+     admin     admin command for FIWARE Orion
      cp        copy entities
      wc        print number of entities, subscriptions, registrations, or types
      man       print urls of document
@@ -91,5 +92,5 @@ ngsi --version
 ```
 
 ```text
-ngsi version 0.2.0 (git_hash:2b8a7721a2a446fcd0956a3ac0d3adee7aa39750)
+ngsi version 0.3.0 (git_hash:d466356676201c8b237eaa4e768b9742d1b91120)
 ```
