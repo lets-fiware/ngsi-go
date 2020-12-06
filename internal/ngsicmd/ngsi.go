@@ -171,7 +171,7 @@ var copyCmd = cli.Command{
 
 var countCmd = cli.Command{
 	Name:     "wc",
-	Usage:    "print number of entities, subscriptions, registrations, or types",
+	Usage:    "print number of entities, subscriptions, registrations or types",
 	Category: "CONVENIENCE",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -684,7 +684,7 @@ var createCmd = cli.Command{
 
 var deleteCmd = cli.Command{
 	Name:     "delete",
-	Usage:    "delete entity(ies), attribute, subscription, or registration",
+	Usage:    "delete entity(ies), attribute, subscription or registration",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -755,7 +755,7 @@ var deleteCmd = cli.Command{
 
 var getCmd = cli.Command{
 	Name:     "get",
-	Usage:    "get entity(ies), attribute(s), subscription, registration, or type",
+	Usage:    "get entity(ies), attribute(s), subscription, registration or type",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -869,7 +869,7 @@ var getCmd = cli.Command{
 
 var listCmd = cli.Command{
 	Name:     "list",
-	Usage:    "list types, entities, subscriptions, or registrations",
+	Usage:    "list types, entities, subscriptions or registrations",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -992,7 +992,7 @@ var replaceCmd = cli.Command{
 
 var updateCmd = cli.Command{
 	Name:     "update",
-	Usage:    "update entities, attribute(s), or subscription",
+	Usage:    "update entities, attribute(s) or subscription",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1095,6 +1095,19 @@ var upsertCmd = cli.Command{
 		scopeFlag,
 	},
 	Subcommands: []*cli.Command{
+		{
+			Name:  "entity",
+			Usage: "upsert entity",
+			Flags: []cli.Flag{
+				dataFlag,
+				keyValuesFlag,
+				linkFlag,
+				safeStringFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return entityUpsert(c)
+			},
+		},
 		{
 			Name:  "entities",
 			Usage: "upsert entities",

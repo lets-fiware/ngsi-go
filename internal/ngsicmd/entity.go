@@ -32,6 +32,7 @@ package ngsicmd
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
@@ -117,6 +118,53 @@ func entityRead(c *cli.Context) error {
 		}
 	}
 	fmt.Fprintln(ngsi.StdWriter, string(body))
+
+	return nil
+}
+func entityUpsert(c *cli.Context) error {
+	const funcName = "entityUpsert"
+
+	ngsi, err := initCmd(c, funcName, true)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	client, err := newClient(ngsi, c, false)
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	client.SetPath("/entities")
+
+	v := url.Values{}
+	options := "upsert"
+	if c.IsSet("keyValues") {
+		options = options + ",keyValues"
+	}
+	v.Set("options", options)
+	client.SetQuery(&v)
+
+	client.SetContentType()
+
+	b, err := readAll(c, ngsi)
+	if err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
+	}
+
+	if client.IsSafeString() {
+		b, err = ngsilib.JSONSafeStringEncode(b)
+		if err != nil {
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
+		}
+	}
+
+	res, body, err := client.HTTPPost(b)
+	if err != nil {
+		return &ngsiCmdError{funcName, 5, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusNoContent {
+		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+	}
 
 	return nil
 }
