@@ -2,6 +2,7 @@
 
 This command upserts entities.
 
+-   [Upsert an entity](#upsert-an-entity)
 -   [Upsert multiple entities](#upsert-multiple-entities)
 
 ### Common Options
@@ -13,6 +14,40 @@ This command upserts entities.
 | --service value, -s value | specify FIWARE Service     |
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
+
+<a name="upsert-an-entity"/>
+
+## Upset an entity
+
+This command upserts an entity.
+
+```console
+ngsi upsert [common options] entity [options]
+```
+
+### Options
+
+| Options                   | Description                        |
+| ------------------------- | ---------------------------------- |
+| --data value, -d value    | specify data                       |
+| --keyValues, -k           | specify keyValues (default: false) |
+| --link value, -L value    | specify @context                   |
+| --help                    | show help (default: false)         |
+
+### Example
+
+#### Request:
+
+```console
+ngsi upsert entity \
+--data ' {
+      "id":"urn:ngsi-ld:Product:010",
+      "type":"Product",
+      "name":{"type":"Text", "value":"Lemonade"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+}'
+```
 
 <a name="upsert-multiple-entities"/>
 
