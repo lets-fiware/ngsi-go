@@ -274,17 +274,34 @@ var (
 		Value:    "",
 		Required: true,
 	}
+)
+
+// Registration
+var (
 	providedIDFlag = &cli.StringFlag{
 		Name:  "providedId",
 		Usage: "providedId",
 	}
+	propertiesFlag = &cli.StringFlag{
+		Name:  "properties",
+		Usage: "properties (LD)",
+	}
+	relationshipsFlag = &cli.StringFlag{
+		Name:  "relationships",
+		Usage: "relationships (LD)",
+	}
+	providerFlag = &cli.StringFlag{
+		Name:    "provider",
+		Aliases: []string{"p"},
+		Usage:   "Url of context provider/source",
+	}
 	legacyFlag = &cli.BoolFlag{
 		Name:  "legacy",
-		Usage: "legacy forwarding mode",
+		Usage: "legacy forwarding mode (V2)",
 	}
 	forwardingModeFlag = &cli.StringFlag{
 		Name:  "forwardingMode",
-		Usage: "forwarding mode",
+		Usage: "forwarding mode (V2)",
 	}
 )
 
@@ -449,11 +466,6 @@ var (
 	descriptionFlag = &cli.StringFlag{
 		Name:  "description",
 		Usage: "description",
-	}
-	providerFlag = &cli.StringFlag{
-		Name:    "provider",
-		Aliases: []string{"p"},
-		Usage:   "Url of context provider/source",
 	}
 	wAttrsFlag = &cli.StringFlag{
 		Name:  "wAttrs",

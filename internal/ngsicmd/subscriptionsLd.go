@@ -47,7 +47,7 @@ import (
 type entityInfoLd struct {
 	ID        string `json:"id,omitempty"`
 	IDPattern string `json:"idPattern,omitempty"`
-	Type      string `json:"type"`
+	Type      string `json:"type,omitempty"`
 }
 
 // 5.2.13 GeoQuery

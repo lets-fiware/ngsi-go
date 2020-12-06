@@ -334,26 +334,26 @@ func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registratio
 			}
 			r.Provider.SupportedForwardingMode = mode
 		}
+	}
 
-		if c.IsSet("expires") {
-			s := c.String("expires")
-			if !ngsilib.IsOrionDateTime(s) {
-				var err error
-				s, err = ngsilib.GetExpirationDate(s)
-				if err != nil {
-					return &ngsiCmdError{funcName, 4, err.Error(), nil}
-				}
+	if c.IsSet("expires") {
+		s := c.String("expires")
+		if !ngsilib.IsOrionDateTime(s) {
+			var err error
+			s, err = ngsilib.GetExpirationDate(s)
+			if err != nil {
+				return &ngsiCmdError{funcName, 4, err.Error(), nil}
 			}
-			r.Expires = s
 		}
+		r.Expires = s
+	}
 
-		if c.IsSet("status") {
-			status := c.String("status")
-			if !ngsilib.Contains([]string{"active", "inactive"}, status) {
-				return &ngsiCmdError{funcName, 5, "unknown status: " + status, nil}
-			}
-			r.Status = status
+	if c.IsSet("status") {
+		status := c.String("status")
+		if !ngsilib.Contains([]string{"active", "inactive"}, status) {
+			return &ngsiCmdError{funcName, 5, "unknown status: " + status, nil}
 		}
+		r.Status = status
 	}
 
 	return nil
