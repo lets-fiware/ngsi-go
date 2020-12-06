@@ -1086,7 +1086,7 @@ var updateCmd = cli.Command{
 
 var upsertCmd = cli.Command{
 	Name:     "upsert",
-	Usage:    "upsert entities",
+	Usage:    "upsert entity or entities",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
