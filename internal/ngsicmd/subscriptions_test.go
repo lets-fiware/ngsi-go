@@ -123,7 +123,7 @@ func TestSubscriptionsListErrorLd(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -300,9 +300,10 @@ func TestSubscriptionsCreateErrorLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+	setupFlagString(set, "data")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion", "--data="})
 	err := subscriptionsCreate(c)
 
 	if assert.Error(t, err) {
@@ -399,8 +400,8 @@ func TestSubscriptionsUpdateErrorLd(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "not yet implemented", ngsiErr.Message)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

@@ -50,6 +50,26 @@ func IsJSON(b []byte) bool {
 	return false
 }
 
+// GetJSONArray is ...
+func GetJSONArray(b []byte, v interface{}) error {
+	const funcName = "GetJSONArray"
+
+	for i := 0; i < len(b); i++ {
+		if string(b[i]) == " " || string(b[i]) == "\t" {
+			continue
+		}
+		if string(b[i]) == "[" {
+			err := JSONUnmarshal(b, v)
+			if err != nil {
+				return &NgsiLibError{funcName, 1, err.Error(), err}
+			}
+			return nil
+		}
+		break
+	}
+	return &NgsiLibError{funcName, 2, "not JSON Array:" + string(b), nil}
+}
+
 // JSONMarshal is ...
 func JSONMarshal(v interface{}) ([]byte, error) {
 	return jsonMarshal(v, false, nil)

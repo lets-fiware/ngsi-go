@@ -35,6 +35,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
 )
 
@@ -145,11 +146,11 @@ func subscriptionsTemplate(c *cli.Context) error {
 	}
 
 	t := strings.ToLower(c.String("ngsiType"))
-	if t == "v2" || t == "ngsiv2" || t == "ngsi-v2" {
+	if ngsilib.IsNgsiV2(t) {
 		return subscriptionsTemplateV2(c, ngsi)
 	}
 
-	if t == "ld" || t == "ngsi-ld" {
+	if ngsilib.IsNgsiLd(t) {
 		return subscriptionsTemplateLd(c, ngsi)
 	}
 

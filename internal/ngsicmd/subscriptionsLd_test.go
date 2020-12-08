@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"testing"
@@ -38,7 +39,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestSubscriptionssubscriptionsListLd(t *testing.T) {
+func TestSubscriptionsListLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -58,14 +59,14 @@ func TestSubscriptionssubscriptionsListLd(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "3ea2e78f675f2d199d3025ff\n5f64060ef6752d199d302600\n1f32db4bf6752d199d302601\n3978fabd87752d199d302602\n9f6c254ac4a6068bb276774e\n4f6c2576c4a6068bb276774f\n"
+		expected := "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c93f\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c940\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c941\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c942\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdCount(t *testing.T) {
+func TestSubscriptionsListLdCount(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -94,7 +95,7 @@ func TestSubscriptionssubscriptionsListLdCount(t *testing.T) {
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdPage(t *testing.T) {
+func TestSubscriptionsListLdPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -120,14 +121,74 @@ func TestSubscriptionssubscriptionsListLdPage(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "3ea2e78f675f2d199d3025ff\n5f64060ef6752d199d302600\n1f32db4bf6752d199d302601\n3978fabd87752d199d302602\n9f6c254ac4a6068bb276774e\n4f6c2576c4a6068bb276774f\n3ea2e78f675f2d199d3025ff\n5f64060ef6752d199d302600\n1f32db4bf6752d199d302601\n3978fabd87752d199d302602\n9f6c254ac4a6068bb276774e\n4f6c2576c4a6068bb276774f\n"
+		expected := "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c93f\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c940\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c941\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c942\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c93f\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c940\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c941\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c942\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdCountZero(t *testing.T) {
+func TestSubscriptionsListLdStatus(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionLdData)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "status")
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--status=active"})
+
+	err := subscriptionsListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "urn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsListLdQuery(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionLdData)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "query")
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--query=FIWARE*"})
+
+	err := subscriptionsListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsListLdCountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -154,7 +215,7 @@ func TestSubscriptionssubscriptionsListLdCountZero(t *testing.T) {
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdJson(t *testing.T) {
+func TestSubscriptionsListLdJson(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -184,7 +245,7 @@ func TestSubscriptionssubscriptionsListLdJson(t *testing.T) {
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdJsonCount0(t *testing.T) {
+func TestSubscriptionsListLdJsonCount0(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -214,7 +275,7 @@ func TestSubscriptionssubscriptionsListLdJsonCount0(t *testing.T) {
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdVerbose(t *testing.T) {
+func TestSubscriptionsListLdVerbose(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -237,14 +298,74 @@ func TestSubscriptionssubscriptionsListLdVerbose(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "3ea2e78f675f2d199d3025ff ngsi source subscription\n5f64060ef6752d199d302600 ngsi source subscription\n1f32db4bf6752d199d302601 ngsi source subscription\n3978fabd87752d199d302602 ngsi source subscription\n9f6c254ac4a6068bb276774e ngsi source subscription\n4f6c2576c4a6068bb276774f FIWARE\n"
+		expected := "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e  2021-12-10T11:16:29.693Z FIWARE\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c93f  2020-12-09T11:06:29.693Z Notify me of low stock in Store 001\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c940  2021-12-10T11:06:29.693Z LD Notify me of low stock in Store 003\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c941  2020-12-09T11:06:29.693Z Notify me of low stock in Store 004\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c942  2021-12-09T11:06:29.693Z LD Notify me of low stock in Store 005\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943 active 2020-12-09T11:06:29.693Z Notify me of low stock in Store 006\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdErrorHTTP(t *testing.T) {
+func TestSubscriptionsListLdLocaltime(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionLdData)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagBool(set, "verbose,localTime")
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--verbose", "--localTime"})
+
+	err := subscriptionsListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e  2021-12-10T20:16:29.693+0900 FIWARE\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c93f  2020-12-09T20:06:29.693+0900 Notify me of low stock in Store 001\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c940  2021-12-10T20:06:29.693+0900 LD Notify me of low stock in Store 003\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c941  2020-12-09T20:06:29.693+0900 Notify me of low stock in Store 004\nurn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c942  2021-12-09T20:06:29.693+0900 LD Notify me of low stock in Store 005\nurn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943 active 2020-12-09T20:06:29.693+0900 Notify me of low stock in Store 006\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsListLdErrorStatus(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionLdData)
+	reqRes.Path = "/ld/subscription"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "status")
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--status=err"})
+
+	err := subscriptionsListLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "error: err (active, paused, expired)", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsListLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -264,14 +385,14 @@ func TestSubscriptionssubscriptionsListLdErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdErrorHTTPStatus(t *testing.T) {
+func TestSubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -291,13 +412,13 @@ func TestSubscriptionssubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdErrorResultsCount(t *testing.T) {
+func TestSubscriptionsListLdErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -317,13 +438,13 @@ func TestSubscriptionssubscriptionsListLdErrorResultsCount(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
+func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -345,13 +466,13 @@ func TestSubscriptionssubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, "json error", ngsiErr.Message)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsListLdErrorJSONMarshal(t *testing.T) {
+func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -376,20 +497,51 @@ func TestSubscriptionssubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, "json error", ngsiErr.Message)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsGetLd(t *testing.T) {
+func TestSubscriptionsListLdErrorItems(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionLdData)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "status,query,items")
+	setupFlagBool(set, "verbose")
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--verbose", "--items=id"})
+
+	err := subscriptionsListLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, "error: id in --items", ngsiErr.Message)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsGetLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte("{}")
+	reqRes.ResBody = []byte(`{"id": "3ea2e78f675f2d199d3025ff", "description": "ngsi source subscription", "expires": "2020-09-01T01:24:01.00Z"}`)
 	reqRes.Path = "/ngsi-ld/v1/subscriptions/3ea2e78f675f2d199d3025ff"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -403,14 +555,44 @@ func TestSubscriptionssubscriptionsGetLd(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{}\n"
+		expected := "{\"id\":\"3ea2e78f675f2d199d3025ff\",\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-01T01:24:01.00Z\"}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSubscriptionssubscriptionsGetLdSafeString(t *testing.T) {
+func TestSubscriptionsGetLdLocalTime(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"id": "3ea2e78f675f2d199d3025ff", "description": "ngsi source subscription", "expires": "2020-09-01T01:24:01.00Z"}`)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/3ea2e78f675f2d199d3025ff"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "id")
+	setupFlagBool(set, "localTime")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--localTime"})
+	client, _ := newClient(ngsi, c, false)
+
+	err := subscriptionGetLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"id\":\"3ea2e78f675f2d199d3025ff\",\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-01T10:24:01.00+0900\"}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsGetLdSafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -438,7 +620,7 @@ func TestSubscriptionssubscriptionsGetLdSafeString(t *testing.T) {
 	}
 }
 
-func TestSubscriptionssubscriptionsGetLdErrorHTTP(t *testing.T) {
+func TestSubscriptionsGetLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -463,7 +645,7 @@ func TestSubscriptionssubscriptionsGetLdErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestSubscriptionssubscriptionsGetLdErrorHTTPStatus(t *testing.T) {
+func TestSubscriptionsGetLdErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -489,7 +671,7 @@ func TestSubscriptionssubscriptionsGetLdErrorHTTPStatus(t *testing.T) {
 	}
 }
 
-func TestSubscriptionssubscriptionsGetLdErrorSafeString(t *testing.T) {
+func TestSubscriptionsGetLdErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -513,6 +695,38 @@ func TestSubscriptionssubscriptionsGetLdErrorSafeString(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsGetLdErrorJSONMarshal(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte("{}")
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/3ea2e78f675f2d199d3025ff"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "id,safeString")
+	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+
+	err := subscriptionGetLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -547,7 +761,7 @@ func TestSubscriptionsCreateLd(t *testing.T) {
 	}
 }
 
-func TestSubscriptionsCreateLdErrorReadAll(t *testing.T) {
+func TestSubscriptionsCreateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
@@ -562,6 +776,7 @@ func TestSubscriptionsCreateLdErrorReadAll(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--data="})
 
 	err := subscriptionsCreateLd(c, ngsi, client)
 
@@ -569,6 +784,36 @@ func TestSubscriptionsCreateLdErrorReadAll(t *testing.T) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "data is empty", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.ResHeader = http.Header{"Location": []string{"/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "data")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--data={}"})
+
+	err := subscriptionsCreateLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -595,7 +840,7 @@ func TestSubscriptionsCreateLdErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -622,7 +867,7 @@ func TestSubscriptionsCreateLdErrorStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -633,15 +878,145 @@ func TestSubscriptionsUpdateLd(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "id,throttling,expires")
+	set.Bool("get", false, "doc")
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	err := subscriptionsUpdateLd(c, ngsi, client)
+
+	assert.NoError(t, err)
+}
+
+func TestSubscriptionsUpdateLdErrorSetSubscriptionValuesLd(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "data,id,throttling,expires")
+	set.Bool("get", false, "doc")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--data="})
+	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
 	err := subscriptionsUpdateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "not yet implemented", ngsiErr.Message)
+		assert.Equal(t, "data is empty", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsUpdateLdErrorJSONMarshalEncode(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "id,throttling,expires")
+	set.Bool("get", false, "doc")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	err := subscriptionsUpdateLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsUpdateLdErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
+	reqRes.Path = "/ngsi-ld/v2/subscriptions/5f0a44789dd803416ccbf15c"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "id,throttling,expires")
+	set.Bool("get", false, "doc")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	err := subscriptionsUpdateLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsUpdateLdErrorStatus(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "id,throttling,expires")
+	set.Bool("get", false, "doc")
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	err := subscriptionsUpdateLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+	} else {
+		t.FailNow()
 	}
 }
 
@@ -728,7 +1103,7 @@ func TestSubscriptionsTemplateLd(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"description\":\"description\",\"entities\":[{\"type\":\"Template\"}],\"notification\":{\"attributes\":[\"attribute\"],\"endpoint\":{\"accept\":\"application/ld+json\",\"uri\":\"http://template\"},\"format\":\"normalized\"},\"type\":\"Subscription\",\"watchedAttributes\":[\"watchedAttribute\"]}"
+		expected := "{\"type\":\"Subscription\"}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -743,7 +1118,7 @@ func TestSubscriptionsTemplateLdKeyValues(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"description\":\"description\",\"entities\":[{\"type\":\"Template\"}],\"notification\":{\"attributes\":[\"attribute\"],\"endpoint\":{\"accept\":\"application/ld+json\",\"uri\":\"http://template\"},\"format\":\"keyValues\"},\"type\":\"Subscription\",\"watchedAttributes\":[\"watchedAttribute\"]}"
+		expected := "{\"type\":\"Subscription\",\"notification\":{\"format\":\"keyValues\"}}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -764,7 +1139,7 @@ func TestSubscriptionsTemplateLdArgs(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"@Context\":\"https://schema.lab.fiware.org/ld/context\",\"description\":\"test\",\"entities\":[{\"type\":\"Device\"}],\"notification\":{\"attributes\":[\"abc\",\"xyz\"],\"endpoint\":{\"accept\":\"application/ld+json\",\"uri\":\"http://ngsiproxy\"},\"format\":\"normalized\"},\"q\":\"abc\",\"type\":\"Subscription\",\"watchedAttributes\":[\"abc\",\"xyz\"]}"
+		expected := "{\"type\":\"Subscription\",\"description\":\"test\",\"entities\":[{\"type\":\"Device\"}],\"watchedAttributes\":[\"abc\",\"xyz\"],\"q\":\"abc\",\"notification\":{\"attributes\":[\"abc\",\"xyz\"],\"endpoint\":{\"uri\":\"http://ngsiproxy\"}},\"@context\":\"https://schema.lab.fiware.org/ld/context\"}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -787,7 +1162,7 @@ func TestSubscriptionsTemplateLdErrorUri(t *testing.T) {
 	}
 }
 
-func TestSubscriptionsTemplateLdErrorLink(t *testing.T) {
+func TestSubscriptionsTemplateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupFlagString(set, "link")
@@ -798,7 +1173,7 @@ func TestSubscriptionsTemplateLdErrorLink(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "abc not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -815,197 +1190,611 @@ func TestSubscriptionsTemplateLdErrorJSONMarshal(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
+func TestSetSubscriptionValuesLd1(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagString(set, "subscriptionId,name,entityId,idPattern,type,wAttrs,query")
+	setupFlagBool(set, "active")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--subscriptionId=subsId", "--name=subsName", "--entityId==device001", "--idPattern=.*", "--type=device", "--wAttrs=temperature", "--query=subs*", "--active"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"id\":\"subsId\",\"type\":\"Subscription\",\"name\":\"subsName\",\"entities\":[{\"id\":\"=device001\",\"idPattern\":\".*\",\"type\":\"device\"}],\"watchedAttributes\":[\"temperature\"],\"q\":\"subs*\",\"isActive\":true}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLd2(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagString(set, "geometry,coords,georel,geoproperty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--geometry=Point", "--coords=[0, 100]", "--georel=near", "--geoproperty=geo"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"geoQ\":{\"geometry\":\"Point\",\"coordinates\":[0,100],\"georel\":\"near\",\"geoproperty\":\"geo\"}}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLd3(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagInt64(set, "timeInterval")
+	setupFlagString(set, "csf")
+	setupFlagBool(set, "inactive")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--timeInterval=1", "--csf=abc", "--inactive"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"timeInterval\":1,\"csf\":\"abc\",\"isActive\":false}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLdAccept1(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagString(set, "accept")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--accept=json"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"notification\":{\"endpoint\":{\"uri\":\"\",\"accept\":\"application/json\"}}}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLdAccept2(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagString(set, "accept")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--accept=ld+json"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"notification\":{\"endpoint\":{\"uri\":\"\",\"accept\":\"application/ld+json\"}}}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLdAccept3(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagString(set, "accept")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--accept=ld"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"notification\":{\"endpoint\":{\"uri\":\"\",\"accept\":\"application/ld+json\"}}}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLd4(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagString(set, "timeRel,timeAt,endTimeAt,timeProperty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--timeRel=before", "--timeAt=2020-09-24T07:49:56.00Z", "--endTimeAt=2020-09-24T07:49:56.00Z", "--timeProperty=timeProp"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"temporalQ\":{\"timerel\":\"before\",\"timeAt\":\"2020-09-24T07:49:56.00Z\",\"timeproperty\":\"timeProp\"}}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLd5(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagInt64(set, "throttling")
+	setupFlagString(set, "expires,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-01T01:10:00.00Z", "--link=http://context"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"expires\":\"2020-10-01T01:10:00.00Z\",\"throttling\":1,\"@context\":\"http://context\"}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLd6(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	var s subscriptionLd
+
+	setupFlagInt64(set, "throttling")
+	setupFlagString(set, "expires,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-01T01:10:00.000Z", "--link=http://context"})
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"expires\":\"2020-10-01T01:10:00.000Z\",\"throttling\":1,\"@context\":\"http://context\"}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorReadAll(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	setupFlagString(set, "data")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--data="})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "data is empty", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorJSONUnMarshal(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	setupFlagString(set, "data")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--data={}"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorCoords(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "coords")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--coords=1,100"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "coords: not JSON Array:1,100", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorActive(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagBool(set, "active,inactive")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--active", "--inactive"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "cannot specify both active and inactive options", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorUri(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "uri")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--uri=ngsiproxy"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "notification url error: ngsiproxy", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorAccept(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "accept")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--accept=xml"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "unknown param: xml", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+func TestSetSubscriptionValuesLdErrorExpires(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "expires")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--expires=day"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "error day", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorTimeRel(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "timeRel")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--timeRel=current"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "unknown param: current", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSetSubscriptionValuesLdErrorLink(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--link=context"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, "context not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestToLocaltimeLd(t *testing.T) {
+	var s subscriptionLd
+
+	s.Expires = "2020-10-01T01:10:00.000Z"
+	toLocaltimeLd(&s)
+
+	assert.Equal(t, "2020-10-01T10:10:00.000+0900", s.Expires)
+}
+
+func TestToLocaltimeLd2(t *testing.T) {
+	var s subscriptionLd
+	s.Notification = new(notificationParamsLd)
+
+	s.Expires = "2020-10-01T01:10:00.000Z"
+	s.Notification.LastNotification = "2020-10-02T01:10:00.00Z"
+	s.Notification.LastSuccess = "2020-10-03T01:10:00.00Z"
+	s.Notification.LastFailure = "2020-10-04T01:10:00.000Z"
+
+	toLocaltimeLd(&s)
+
+	assert.Equal(t, "2020-10-01T10:10:00.000+0900", s.Expires)
+	assert.Equal(t, "2020-10-02T10:10:00.00+0900", s.Notification.LastNotification)
+	assert.Equal(t, "2020-10-03T10:10:00.00+0900", s.Notification.LastSuccess)
+	assert.Equal(t, "2020-10-04T10:10:00.000+0900", s.Notification.LastFailure)
+}
+
+func TestCheckItemLd(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "items")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--items=description,timessent,lastnotification,lastsuccess"})
+
+	actual, err := checkItemsLd(c)
+
+	if assert.NoError(t, err) {
+		expected := []string{"id", "description", "timessent", "lastnotification", "lastsuccess"}
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestCheckItemLdError(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "items")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--items=id"})
+
+	_, err := checkItemsLd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "error: id in --items", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSprintItemsLd(t *testing.T) {
+	var s subscriptionLd
+	s.Notification = new(notificationParamsLd)
+	s.Notification.Endpoint = new(endpointLd)
+
+	var time int64
+
+	s.Status = "active"
+	s.Notification.TimesSent = &time
+	s.Notification.Status = "active"
+	s.Notification.Endpoint.URI = "http://ngsiproxy"
+
+	items := []string{"id", "description", "timessent", "lastnotification", "lastsuccess", "notificationstatus", "uri", "expires", "status"}
+
+	actual := sprintItemsLd(&s, items)
+
+	assert.Equal(t, "  0   active http://ngsiproxy  active", actual)
+}
+
 var subscriptionLdData = `[
 	{
-	  "id": "3ea2e78f675f2d199d3025ff",
-	  "description": "ngsi source subscription",
-	  "subject": {
+		"id": "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e",
+		"type": "Subscription",
+		"description": "FIWARE",
 		"entities": [
 		  {
-			"idPattern": ".*"
+			"type": "Shelf"
 		  }
 		],
-		"condition": {
-		  "attrs": [
-			"observed",
-			"location"
-		  ]
-		}
-	  },
-	  "notification": {
-		"timesSent": 3406,
-		"lastNotification": "2020-09-01T07:43:00.00Z",
-		"lastSuccess": "2020-09-01T07:43:04.00Z",
-		"lastSuccessCode": 204,
-		"lastFailure": "2020-09-01T07:42:07.00Z",
-		"lastFailureReason": "Timeout was reached",
-		"onlyChangedAttrs": false,
-		"http": {
-		  "url": "https://ngsiproxy"
+		"watchedAttributes": [
+		  "numberOfItems"
+		],
+		"q": "https://fiware.github.io/tutorials.Step-by-Step/schema/numberOfItems<10;https://fiware.github.io/tutorials.Step-by-Step/schema/locatedIn==urn:ngsi-ld:Building:store002",
+		"notification": {
+		  "attributes": [
+			"numberOfItems",
+			"stocks",
+			"locatedIn"
+		  ],
+		  "format": "normalized",
+		  "endpoint": {
+			"uri": "http://tutorial:3000/subscription/low-stock-store002",
+			"accept": "application/ld+json"
+		  }
 		},
-		"attrsFormat": "keyValues"
+		"expires": "2021-12-10T11:16:29.693Z"
 	  },
-	  "expires": "2020-09-01T01:24:01.00Z",
-	  "status": "expired"
-	},
-	{
-	  "id": "5f64060ef6752d199d302600",
-	  "description": "ngsi source subscription",
-	  "subject": {
+	  {
+		"id": "urn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c93f",
+		"type": "Subscription",
+		"description": "Notify me of low stock in Store 001",
 		"entities": [
 		  {
-			"idPattern": ".*",
-			"type": "WeatherObserved"
+			"type": "Shelf"
 		  }
 		],
-		"condition": {
-		  "attrs": [
-			"dateRetrieved"
-		  ]
-		}
-	  },
-	  "notification": {
-		"timesSent": 27,
-		"lastNotification": "2020-09-16T03:40:27.00Z",
-		"lastSuccess": "2020-09-16T03:40:28.00Z",
-		"lastSuccessCode": 404,
-		"onlyChangedAttrs": false,
-		"http": {
-		  "url": "https://ngsiproxy"
+		"watchedAttributes": [
+		  "numberOfItems"
+		],
+		"notification": {
+		  "attributes": [
+			"numberOfItems",
+			"stocks",
+			"locatedIn"
+		  ],
+		  "format": "keyValues",
+		  "endpoint": {
+			"uri": "http://tutorial:3000/subscription/low-stock-store001",
+			"accept": "application/json"
+		  }
 		},
-		"attrsFormat": "keyValues"
+		"expires": "2020-12-09T11:06:29.693Z"
 	  },
-	  "expires": "2020-09-16T03:57:49.00Z",
-	  "status": "expired"
-	},
-	{
-	  "id": "1f32db4bf6752d199d302601",
-	  "description": "ngsi source subscription",
-	  "subject": {
+	  {
+		"id": "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c940",
+		"type": "Subscription",
+		"description": "LD Notify me of low stock in Store 003",
 		"entities": [
 		  {
-			"idPattern": ".*"
+			"type": "Shelf"
 		  }
 		],
-		"condition": {
-		  "attrs": [
-			"observed",
-			"location"
-		  ]
-		}
-	  },
-	  "notification": {
-		"timesSent": 3408,
-		"lastNotification": "2020-09-16T04:03:00.00Z",
-		"lastSuccess": "2020-09-16T04:03:04.00Z",
-		"lastSuccessCode": 404,
-		"lastFailure": "2020-09-16T03:40:06.00Z",
-		"lastFailureReason": "Timeout was reached",
-		"onlyChangedAttrs": false,
-		"http": {
-		  "url": "https://ngsiproxy"
+		"watchedAttributes": [
+		  "numberOfItems"
+		],
+		"q": "https://fiware.github.io/tutorials.Step-by-Step/schema/numberOfItems<10;https://fiware.github.io/tutorials.Step-by-Step/schema/locatedIn==urn:ngsi-ld:Building:store002",
+		"notification": {
+		  "attributes": [
+			"numberOfItems",
+			"stocks",
+			"locatedIn"
+		  ],
+		  "format": "normalized",
+		  "endpoint": {
+			"uri": "http://tutorial:3000/subscription/low-stock-store003",
+			"accept": "application/ld+json"
+		  }
 		},
-		"attrsFormat": "keyValues"
+		"expires": "2021-12-10T11:06:29.693Z"
 	  },
-	  "expires": "2020-09-16T04:03:05.00Z",
-	  "status": "expired"
-	},
-	{
-	  "id": "3978fabd87752d199d302602",
-	  "description": "ngsi source subscription",
-	  "subject": {
+	  {
+		"id": "urn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c941",
+		"type": "Subscription",
+		"description": "Notify me of low stock in Store 004",
 		"entities": [
 		  {
-			"idPattern": ".*",
-			"type": "WeatherObserved"
+			"type": "Shelf"
 		  }
 		],
-		"condition": {
-		  "attrs": [
-			"dateRetrieved"
-		  ]
-		}
-	  },
-	  "notification": {
-		"timesSent": 10,
-		"lastNotification": "2020-09-16T04:00:13.00Z",
-		"lastSuccess": "2020-09-16T04:00:13.00Z",
-		"lastSuccessCode": 204,
-		"onlyChangedAttrs": false,
-		"http": {
-		  "url": "https://ngsiproxy"
+		"watchedAttributes": [
+		  "numberOfItems"
+		],
+		"notification": {
+		  "attributes": [
+			"numberOfItems",
+			"stocks",
+			"locatedIn"
+		  ],
+		  "format": "keyValues",
+		  "endpoint": {
+			"uri": "http://tutorial:3000/subscription/low-stock-store004",
+			"accept": "application/json"
+		  }
 		},
-		"attrsFormat": "keyValues"
+		"expires": "2020-12-09T11:06:29.693Z"
 	  },
-	  "expires": "2020-09-16T04:03:07.00Z",
-	  "status": "expired"
-	},
-	{
-	  "id": "9f6c254ac4a6068bb276774e",
-	  "description": "ngsi source subscription",
-	  "subject": {
+	  {
+		"id": "urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c942",
+		"type": "Subscription",
+		"description": "LD Notify me of low stock in Store 005",
 		"entities": [
 		  {
-			"idPattern": ".*"
+			"type": "Shelf"
 		  }
 		],
-		"condition": {
-		  "attrs": [
-			"dateObserved"
-		  ]
-		}
-	  },
-	  "notification": {
-		"timesSent": 28,
-		"lastNotification": "2020-09-24T07:30:02.00Z",
-		"lastSuccess": "2020-09-24T07:30:02.00Z",
-		"lastSuccessCode": 404,
-		"onlyChangedAttrs": false,
-		"http": {
-		  "url": "https://ngsiproxy"
+		"watchedAttributes": [
+		  "numberOfItems"
+		],
+		"q": "https://fiware.github.io/tutorials.Step-by-Step/schema/numberOfItems<10;https://fiware.github.io/tutorials.Step-by-Step/schema/locatedIn==urn:ngsi-ld:Building:store002",
+		"notification": {
+		  "attributes": [
+			"numberOfItems",
+			"stocks",
+			"locatedIn"
+		  ],
+		  "format": "normalized",
+		  "endpoint": {
+			"uri": "http://tutorial:3000/subscription/low-stock-store005",
+			"accept": "application/ld+json"
+		  }
 		},
-		"attrsFormat": "keyValues"
+		"expires": "2021-12-09T11:06:29.693Z"
 	  },
-	  "expires": "2020-09-24T07:49:13.00Z",
-	  "status": "inactive"
-	},
-	{
-	  "id": "4f6c2576c4a6068bb276774f",
-	  "description": "FIWARE",
-	  "subject": {
+	  {
+		"id": "urn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943",
+		"type": "Subscription",
+		"description": "Notify me of low stock in Store 006",
 		"entities": [
 		  {
-			"idPattern": ".*",
-			"type": "WeatherObserved"
+			"type": "Shelf"
 		  }
 		],
-		"condition": {
-		  "attrs": [
-			"dateRetrieved"
-		  ]
-		}
-	  },
-	  "notification": {
-		"timesSent": 278,
-		"lastNotification": "2020-09-24T07:40:26.00Z",
-		"lastSuccess": "2020-09-24T07:40:26.00Z",
-		"lastSuccessCode": 404,
-		"onlyChangedAttrs": false,
-		"http": {
-		  "url": "https://ngsiproxy"
+		"watchedAttributes": [
+		  "numberOfItems"
+		],
+		"notification": {
+		  "attributes": [
+			"numberOfItems",
+			"stocks",
+			"locatedIn"
+		  ],
+		  "format": "keyValues",
+		  "endpoint": {
+			"uri": "http://tutorial:3000/subscription/low-stock-store006",
+			"accept": "application/json"
+		  }
 		},
-		"attrsFormat": "keyValues"
-	  },
-	  "expires": "2020-09-24T07:49:56.00Z",
-	  "status": "active"
-	}
+		"expires": "2020-12-09T11:06:29.693Z",
+		"status": "active"
+	  }
   ]`
 
-var testDataLdRespose = "[{\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-01T01:24:01.00Z\",\"id\":\"3ea2e78f675f2d199d3025ff\",\"notification\":{\"attrsFormat\":\"keyValues\",\"http\":{\"url\":\"https://ngsiproxy\"},\"lastFailure\":\"2020-09-01T07:42:07.00Z\",\"lastFailureReason\":\"Timeout was reached\",\"lastNotification\":\"2020-09-01T07:43:00.00Z\",\"lastSuccess\":\"2020-09-01T07:43:04.00Z\",\"lastSuccessCode\":204,\"onlyChangedAttrs\":false,\"timesSent\":3406},\"status\":\"expired\",\"subject\":{\"condition\":{\"attrs\":[\"observed\",\"location\"]},\"entities\":[{\"idPattern\":\".*\"}]}},{\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-16T03:57:49.00Z\",\"id\":\"5f64060ef6752d199d302600\",\"notification\":{\"attrsFormat\":\"keyValues\",\"http\":{\"url\":\"https://ngsiproxy\"},\"lastNotification\":\"2020-09-16T03:40:27.00Z\",\"lastSuccess\":\"2020-09-16T03:40:28.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"timesSent\":27},\"status\":\"expired\",\"subject\":{\"condition\":{\"attrs\":[\"dateRetrieved\"]},\"entities\":[{\"idPattern\":\".*\",\"type\":\"WeatherObserved\"}]}},{\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-16T04:03:05.00Z\",\"id\":\"1f32db4bf6752d199d302601\",\"notification\":{\"attrsFormat\":\"keyValues\",\"http\":{\"url\":\"https://ngsiproxy\"},\"lastFailure\":\"2020-09-16T03:40:06.00Z\",\"lastFailureReason\":\"Timeout was reached\",\"lastNotification\":\"2020-09-16T04:03:00.00Z\",\"lastSuccess\":\"2020-09-16T04:03:04.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"timesSent\":3408},\"status\":\"expired\",\"subject\":{\"condition\":{\"attrs\":[\"observed\",\"location\"]},\"entities\":[{\"idPattern\":\".*\"}]}},{\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-16T04:03:07.00Z\",\"id\":\"3978fabd87752d199d302602\",\"notification\":{\"attrsFormat\":\"keyValues\",\"http\":{\"url\":\"https://ngsiproxy\"},\"lastNotification\":\"2020-09-16T04:00:13.00Z\",\"lastSuccess\":\"2020-09-16T04:00:13.00Z\",\"lastSuccessCode\":204,\"onlyChangedAttrs\":false,\"timesSent\":10},\"status\":\"expired\",\"subject\":{\"condition\":{\"attrs\":[\"dateRetrieved\"]},\"entities\":[{\"idPattern\":\".*\",\"type\":\"WeatherObserved\"}]}},{\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-24T07:49:13.00Z\",\"id\":\"9f6c254ac4a6068bb276774e\",\"notification\":{\"attrsFormat\":\"keyValues\",\"http\":{\"url\":\"https://ngsiproxy\"},\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"timesSent\":28},\"status\":\"inactive\",\"subject\":{\"condition\":{\"attrs\":[\"dateObserved\"]},\"entities\":[{\"idPattern\":\".*\"}]}},{\"description\":\"FIWARE\",\"expires\":\"2020-09-24T07:49:56.00Z\",\"id\":\"4f6c2576c4a6068bb276774f\",\"notification\":{\"attrsFormat\":\"keyValues\",\"http\":{\"url\":\"https://ngsiproxy\"},\"lastNotification\":\"2020-09-24T07:40:26.00Z\",\"lastSuccess\":\"2020-09-24T07:40:26.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"timesSent\":278},\"status\":\"active\",\"subject\":{\"condition\":{\"attrs\":[\"dateRetrieved\"]},\"entities\":[{\"idPattern\":\".*\",\"type\":\"WeatherObserved\"}]}}]\n"
+var testDataLdRespose = "[{\"id\":\"urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c93e\",\"type\":\"Subscription\",\"description\":\"FIWARE\",\"entities\":[{\"type\":\"Shelf\"}],\"watchedAttributes\":[\"numberOfItems\"],\"q\":\"https://fiware.github.io/tutorials.Step-by-Step/schema/numberOfItems<10;https://fiware.github.io/tutorials.Step-by-Step/schema/locatedIn==urn:ngsi-ld:Building:store002\",\"notification\":{\"attributes\":[\"numberOfItems\",\"stocks\",\"locatedIn\"],\"format\":\"normalized\",\"endpoint\":{\"uri\":\"http://tutorial:3000/subscription/low-stock-store002\",\"accept\":\"application/ld+json\"}},\"expires\":\"2021-12-10T11:16:29.693Z\"},{\"id\":\"urn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c93f\",\"type\":\"Subscription\",\"description\":\"Notify me of low stock in Store 001\",\"entities\":[{\"type\":\"Shelf\"}],\"watchedAttributes\":[\"numberOfItems\"],\"notification\":{\"attributes\":[\"numberOfItems\",\"stocks\",\"locatedIn\"],\"format\":\"keyValues\",\"endpoint\":{\"uri\":\"http://tutorial:3000/subscription/low-stock-store001\",\"accept\":\"application/json\"}},\"expires\":\"2020-12-09T11:06:29.693Z\"},{\"id\":\"urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c940\",\"type\":\"Subscription\",\"description\":\"LD Notify me of low stock in Store 003\",\"entities\":[{\"type\":\"Shelf\"}],\"watchedAttributes\":[\"numberOfItems\"],\"q\":\"https://fiware.github.io/tutorials.Step-by-Step/schema/numberOfItems<10;https://fiware.github.io/tutorials.Step-by-Step/schema/locatedIn==urn:ngsi-ld:Building:store002\",\"notification\":{\"attributes\":[\"numberOfItems\",\"stocks\",\"locatedIn\"],\"format\":\"normalized\",\"endpoint\":{\"uri\":\"http://tutorial:3000/subscription/low-stock-store003\",\"accept\":\"application/ld+json\"}},\"expires\":\"2021-12-10T11:06:29.693Z\"},{\"id\":\"urn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c941\",\"type\":\"Subscription\",\"description\":\"Notify me of low stock in Store 004\",\"entities\":[{\"type\":\"Shelf\"}],\"watchedAttributes\":[\"numberOfItems\"],\"notification\":{\"attributes\":[\"numberOfItems\",\"stocks\",\"locatedIn\"],\"format\":\"keyValues\",\"endpoint\":{\"uri\":\"http://tutorial:3000/subscription/low-stock-store004\",\"accept\":\"application/json\"}},\"expires\":\"2020-12-09T11:06:29.693Z\"},{\"id\":\"urn:ngsi-ld:Subscription:5fcf5b65f6c9a661e958c942\",\"type\":\"Subscription\",\"description\":\"LD Notify me of low stock in Store 005\",\"entities\":[{\"type\":\"Shelf\"}],\"watchedAttributes\":[\"numberOfItems\"],\"q\":\"https://fiware.github.io/tutorials.Step-by-Step/schema/numberOfItems<10;https://fiware.github.io/tutorials.Step-by-Step/schema/locatedIn==urn:ngsi-ld:Building:store002\",\"notification\":{\"attributes\":[\"numberOfItems\",\"stocks\",\"locatedIn\"],\"format\":\"normalized\",\"endpoint\":{\"uri\":\"http://tutorial:3000/subscription/low-stock-store005\",\"accept\":\"application/ld+json\"}},\"expires\":\"2021-12-09T11:06:29.693Z\"},{\"id\":\"urn:ngsi-ld:Subscription:5fcf5e3ff6c9a661e958c943\",\"type\":\"Subscription\",\"description\":\"Notify me of low stock in Store 006\",\"entities\":[{\"type\":\"Shelf\"}],\"watchedAttributes\":[\"numberOfItems\"],\"notification\":{\"attributes\":[\"numberOfItems\",\"stocks\",\"locatedIn\"],\"format\":\"keyValues\",\"endpoint\":{\"uri\":\"http://tutorial:3000/subscription/low-stock-store006\",\"accept\":\"application/json\"}},\"expires\":\"2020-12-09T11:06:29.693Z\",\"status\":\"active\"}]\n"

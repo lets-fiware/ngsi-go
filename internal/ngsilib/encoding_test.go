@@ -160,6 +160,35 @@ func TestIsJSON(t *testing.T) {
 
 }
 
+func TestGetJSONArray(t *testing.T) {
+	testNgsiLibInit()
+
+	var v interface{}
+
+	var a, b float64
+	a = -1
+	b = 100
+	err := GetJSONArray([]byte("[-1, 100]"), &v)
+	expected := []interface{}([]interface{}{a, b})
+	if assert.NoError(t, err) {
+		assert.Equal(t, expected, v)
+	}
+
+	err = GetJSONArray([]byte(" [-1, 100"), v)
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
+	}
+
+	err = GetJSONArray([]byte(" {}"), v)
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "not JSON Array: {}", ngsiErr.Message)
+	}
+}
+
 func TestJSONMarshalEncode(t *testing.T) {
 	testNgsiLibInit()
 

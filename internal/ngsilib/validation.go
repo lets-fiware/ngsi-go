@@ -42,7 +42,7 @@ var (
 	ipRegexp                = regexp.MustCompile(`^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(:[1-9][0-9]*)*$`)
 	localhostRegexp         = regexp.MustCompile(`^localhost(:[1-9][0-9]{0,3})*$`)
 	expirationDateRegexp    = regexp.MustCompile(`^[1-9][0-9]{0,2}(year|month|day|hour|minute)s?$`)
-	orionDateTimeZoneRegexp = regexp.MustCompile(`^2[0-9]{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])(T([0-1][0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9].[0-9]{3}(Z|(\+|-)([01][0-9]|2[0-4]):?([0-5][0-9])?))?$`)
+	orionDateTimeZoneRegexp = regexp.MustCompile(`^2[0-9]{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])(T([0-1][0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9].[0-9]{2,3}(Z|(\+|-)([01][0-9]|2[0-4]):?([0-5][0-9])?))?$`)
 	nameRegexp              = regexp.MustCompile(`^[A-Za-z][-@0-9A-Za-z_]{0,31}$`)
 )
 
