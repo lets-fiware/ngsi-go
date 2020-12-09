@@ -723,11 +723,11 @@ func TestSubscriptionsCreateV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,subjectId,url")
+	setupFlagString(set, "id,throttling,expires,entityId,uri")
 	set.Bool("get", false, "doc")
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--entityId=abc", "--uri=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
 	err := subscriptionsCreateV2(c, ngsi, client)
@@ -782,11 +782,11 @@ func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,subjectId,url")
+	setupFlagString(set, "id,throttling,expires,entityId,url")
 	set.Bool("get", false, "doc")
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
 	err := subscriptionsCreateV2(c, ngsi, client)
@@ -812,11 +812,11 @@ func TestSubscriptionsCreateV2ErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,subjectId,url")
+	setupFlagString(set, "id,throttling,expires,entityId,url")
 	set.Bool("get", false, "doc")
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
 	err := subscriptionsCreateV2(c, ngsi, client)
@@ -842,11 +842,11 @@ func TestSubscriptionsCreateV2ErrorStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,subjectId,url")
+	setupFlagString(set, "id,throttling,expires,entityId,url")
 	set.Bool("get", false, "doc")
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
 	err := subscriptionsCreateV2(c, ngsi, client)
@@ -1104,9 +1104,9 @@ func TestSubscriptionsDeleteV2ErrorStatusCode(t *testing.T) {
 func TestSubscriptionsTemplateV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "data,subjectId,url")
+	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
 
 	err := subscriptionsTemplateV2(c, ngsi)
 
@@ -1116,7 +1116,7 @@ func TestSubscriptionsTemplateV2(t *testing.T) {
 func TestSubscriptionsTemplateV2Error(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "data,subjectId,url")
+	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data={}", "--url=http://ngsiproxy"})
 
@@ -1135,9 +1135,9 @@ func TestSubscriptionsTemplateV2ErrorMarshal(t *testing.T) {
 
 	j := ngsi.JSONConverter
 	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
-	setupFlagString(set, "data,subjectId,url")
+	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
 
 	err := subscriptionsTemplateV2(c, ngsi)
 
@@ -1155,9 +1155,9 @@ func TestSetSubscriptionValuesV2Data(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,subjectId,url")
+	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1177,10 +1177,10 @@ func TestSetSubscriptionValuesV2getAttributes(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "data,subjectId,url,host,type,link")
+	setupFlagString(set, "data,entityId,url,host,type,link")
 	set.Bool("get", false, "doc")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get"})
+	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1192,7 +1192,7 @@ func TestSetSubscriptionValuesV2IdPattern(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,subjectId,idPattern,url")
+	setupFlagString(set, "data,entityId,idPattern,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data={}", "--idPattern=abc", "--url=http://ngsiproxy"})
 
@@ -1206,7 +1206,7 @@ func TestSetSubscriptionValuesV2TypePattern(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data={}", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 
@@ -1220,7 +1220,7 @@ func TestSetSubscriptionValuesV2wAttrs1(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,wAttrs")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,wAttrs")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--wAttrs=abc,def,xyz", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 
@@ -1236,7 +1236,7 @@ func TestSetSubscriptionValuesV2wAttrs2(t *testing.T) {
 	sub.Subject = new(subscriptionSubjectV2)
 	sub.Subject.Condition = new(subscriptionConditionV2)
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,wAttrs")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,wAttrs")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--wAttrs=abc,def,xyz", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 
@@ -1252,7 +1252,7 @@ func TestSetSubscriptionValuesV2query1(t *testing.T) {
 	sub.Subject = new(subscriptionSubjectV2)
 	sub.Subject.Condition = new(subscriptionConditionV2)
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,query,mq,georel,geometry,coords")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--query=abc", "--mq=def", "--georel=123", "--geometry=456", "--coords=789", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 
@@ -1267,7 +1267,7 @@ func TestSetSubscriptionValuesV2query2(t *testing.T) {
 	sub := subscriptionV2{}
 	sub.Subject = new(subscriptionSubjectV2)
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,query,mq,georel,geometry,coords")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--query=abc", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 
@@ -1285,7 +1285,7 @@ func TestSetSubscriptionValuesV2query3(t *testing.T) {
 	sub.Subject.Condition = new(subscriptionConditionV2)
 	sub.Subject.Condition.Expression = new(subscriptionExpressionV2)
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,query,mq,georel,geometry,coords")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--query=abc", "--mq=def", "--georel=123", "--geometry=456", "--coords=789", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 
@@ -1301,7 +1301,7 @@ func TestSetSubscriptionValuesV2url(t *testing.T) {
 	sub.Notification = new(subscriptionNotificationV2)
 	sub.Notification.HTTP = new(subscriptionHTTPV2)
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,query,mq,georel,geometry,coords")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 
@@ -1317,7 +1317,7 @@ func TestSetSubscriptionValuesV2headers(t *testing.T) {
 	sub.Notification = new(subscriptionNotificationV2)
 	sub.Notification.HTTP = new(subscriptionHTTPV2)
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,headers,qs,method,payload")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,headers,qs,method,payload")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{`--headers={"abc":"123","xyz":"456"}`})
@@ -1334,7 +1334,7 @@ func TestSetSubscriptionValuesV2qs(t *testing.T) {
 	sub.Notification = new(subscriptionNotificationV2)
 	sub.Notification.HTTPCustom = new(subscriptionHTTPCustomV2)
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,headers,qs,method,payload")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,headers,qs,method,payload")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{`--qs={"abc":"123","xyz":"456"}`})
@@ -1349,7 +1349,7 @@ func TestSetSubscriptionValuesV2method(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,method,payload,nAttrs,metadata")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,method,payload,nAttrs,metadata")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--method=post", "--payload=abc", "--nAttrs=abc,xyz", "--metadata=abc,xyz"})
@@ -1364,7 +1364,7 @@ func TestSetSubscriptionValuesV2exceptAttrs(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,exceptAttrs,attrsFormat,throttling,expires,status")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,exceptAttrs,attrsFormat,throttling,expires,status")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--exceptAttrs=abc,xyz", "--attrsFormat=abc", "--throttling=1", "--expires=1day", "--status=oneshot"})
@@ -1379,7 +1379,7 @@ func TestSetSubscriptionValuesV2expires(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,subjectId,idPattern,url,exceptAttrs,attrsFormat,throttling,expires,status")
+	setupFlagString(set, "typePattern,data,entityId,idPattern,url,exceptAttrs,attrsFormat,throttling,expires,status")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--exceptAttrs=abc,xyz", "--attrsFormat=abc", "--throttling=1", "--expires=2020-10-05T00:58:26.929Z", "--status=active"})
@@ -1394,9 +1394,9 @@ func TestSetSubscriptionValuesV2Error1(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,subjectId,url")
+	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data=", "--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--data=", "--entityId=abc", "--url=http://ngsiproxy"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1414,9 +1414,9 @@ func TestSetSubscriptionValuesV2Error2(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,subjectId,url")
+	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={id}", "--subjectId=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--data={id}", "--entityId=abc", "--url=http://ngsiproxy"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1441,9 +1441,9 @@ func TestSetSubscriptionValuesV2Error3(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "data,subjectId,url,host,type,get,link")
+	setupFlagString(set, "data,entityId,url,host,type,get,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get", "--link=abc"})
+	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get", "--link=abc"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1460,7 +1460,7 @@ func TestSetSubscriptionValuesV2Error41(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url")
+	setupFlagString(set, "entityId,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--url=http://ngsiproxy"})
 
@@ -1479,9 +1479,9 @@ func TestSetSubscriptionValuesV2Error42(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url,idPattern")
+	setupFlagString(set, "entityId,url,idPattern")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--url=http://ngsiproxy", "--subjectId=xyz", "--idPattern=abc"})
+	_ = set.Parse([]string{"--url=http://ngsiproxy", "--entityId=xyz", "--idPattern=abc"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1498,9 +1498,9 @@ func TestSetSubscriptionValuesV2Error5(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url")
+	setupFlagString(set, "entityId,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--subjectId=abc"})
+	_ = set.Parse([]string{"--entityId=abc"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1517,9 +1517,9 @@ func TestSetSubscriptionValuesV2Error6(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url,type,typePattern")
+	setupFlagString(set, "entityId,url,type,typePattern")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--subjectId=abc", "--url=http://ngsiproxy", "--type=123", "--typePattern=xyz"})
+	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--type=123", "--typePattern=xyz"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1536,9 +1536,9 @@ func TestSetSubscriptionValuesV2Error7(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url,type,typePattern,headers")
+	setupFlagString(set, "entityId,url,type,typePattern,headers")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--headers={id}", "--subjectId=abc", "--url=http://ngsiproxy", "--type=123"})
+	_ = set.Parse([]string{"--headers={id}", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1555,9 +1555,9 @@ func TestSetSubscriptionValuesV2Error8(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url,type,typePattern,headers,qs")
+	setupFlagString(set, "entityId,url,type,typePattern,headers,qs")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--qs={id}", "--subjectId=abc", "--url=http://ngsiproxy", "--type=123"})
+	_ = set.Parse([]string{"--qs={id}", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1574,9 +1574,9 @@ func TestSetSubscriptionValuesV2Error9(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url,type,typePattern,headers,qs,expires,exceptAttrs,nAttrs")
+	setupFlagString(set, "entityId,url,type,typePattern,headers,qs,expires,exceptAttrs,nAttrs")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--exceptAttrs=abc", "--nAttrs=abc", "--subjectId=abc", "--url=http://ngsiproxy", "--type=123"})
+	_ = set.Parse([]string{"--exceptAttrs=abc", "--nAttrs=abc", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1593,9 +1593,9 @@ func TestSetSubscriptionValuesV2Error10(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url,type,typePattern,headers,qs,expires")
+	setupFlagString(set, "entityId,url,type,typePattern,headers,qs,expires")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--expires=1", "--subjectId=abc", "--url=http://ngsiproxy", "--type=123"})
+	_ = set.Parse([]string{"--expires=1", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1612,9 +1612,9 @@ func TestSetSubscriptionValuesV2Error11(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "subjectId,url,type,typePattern,headers,qs,expires,status")
+	setupFlagString(set, "entityId,url,type,typePattern,headers,qs,expires,status")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--status=error", "--subjectId=abc", "--url=http://ngsiproxy", "--type=123"})
+	_ = set.Parse([]string{"--status=error", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
