@@ -23,3 +23,4 @@ ngsi rm [options]
 
 ```console
 ngsi rm --host orion --type EvacuationSpace --run
+```

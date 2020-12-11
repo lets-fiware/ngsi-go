@@ -65,6 +65,7 @@ ngsi [global options] command [common options] sub-command [options]
 | [man](./convenience/man.md)           | -            | print urls of document                                           |
 | [ls](./convenience/ls.md)             | -            | list entities                                                    |
 | [rm](./convenience/rm.md)             | -            | remove entities                                                  |
+| [receiver](./convenience/receiver.md) | -            | notification receiver                                            |
 | [template](./convenience/template.md) | subscription | create template of subscription                                  |
 |                                       | registration | create template of registration                                  |
 | [version](./convenience/version.md)   | -            | print the version of Context Broker                              |

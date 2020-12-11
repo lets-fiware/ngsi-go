@@ -60,7 +60,7 @@ type NGSI struct {
 	PreviousArgs  *Settings
 	Updated       bool
 	HTTP          HTTPRequest
-	Stderr        *os.File
+	Stderr        io.Writer
 	OsType        string
 	SyslogLib     SyslogLib
 	TimeLib       TimeLib
@@ -119,6 +119,7 @@ func Reset() {
 func (ngsi *NGSI) InitLog(stdin io.Reader, stdout, stderr io.Writer) *NGSI {
 	ngsi.StdReader = stdin
 	ngsi.StdWriter = stdout
+	ngsi.Stderr = stderr
 	ngsi.LogWriter = &LogWriter{stderr, LogErr}
 	ngsi.LogLevel = LogErr
 	return ngsi

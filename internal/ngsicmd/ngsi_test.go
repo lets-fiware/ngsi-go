@@ -59,6 +59,7 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"wc", "types"}, rc: 1},
 		{args: []string{"ls"}, rc: 1},
 		{args: []string{"rm", "--type", "abc"}, rc: 1},
+		{args: []string{"receiver"}, rc: 1},
 		{args: []string{"template", "registration"}, rc: 1},
 		{args: []string{"template", "subscription", "--url", "abc"}, rc: 1},
 		{args: []string{"version"}, rc: 1},

@@ -50,6 +50,7 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 -   [man](convenience/man.md): print  URLs of the documents related to the NGSI Go
 -   [ls](convenience/ls.md): list entities
 -   [rm](convenience/rm.md): remove entities
+-   [receiver](convenience/receiver.md): notification receiver
 -   [template](convenience/template.md): create template of subscription or registration
 -   [version](convenience/version.md): print the version of Context Broker
 
