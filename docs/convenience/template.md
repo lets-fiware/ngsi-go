@@ -13,40 +13,50 @@ This command generates a json-style query text to create a subscription and prin
 ngsi template subscription [options]
 ```
 
-### Options
+### Options for NGSI-LD
 
-| Options                   | Description                                                |
-| ------------------------- | ---------------------------------------------------------- |
-| --ngsiType value          | specify NGSI type: v2 or ld                                |
-| --data value, -d value    | specify data                                               |
-| --uri value               | specify url or uri                                         |
-| --url value, -u value     | specify url to be invoked when a notification is generated |
-| --expires value, -e value | specify expires                                            |
-| --throttling value        | specify throttling (default: 0)                            |
-| --keyValues, -k           | specify keyValues (default: false)                         |
-| --query value, -q value   | specify query                                              |
-| --link value, -L value    | specify @context                                           |
-| --nAttrs value            | specify attributes to be notified                          |
-| --wAttrs value            | specify watched attributes                                 |
-| --description value       | specify description                                        |
-| --get                     | specify get (default: false)                               |
-| --status value            | specify status                                             |
-| --subjectId value         | specify subjectId                                          |
-| --idPattern value         | specify idPattern                                          |
-| --type value, -t value    | specify Entity Type                                        |
-| --typePattern value       | specify typePattern                                        |
-| --mq value, -m value      | specify mq                                                 |
-| --georel value            | specify georel                                             |
-| --geometry value          | specify geometry                                           |
-| --coords value            | specify coords                                             |
-| --headers value           | specify headers                                            |
-| --qs value                | specify qs                                                 |
-| --method value            | specify method                                             |
-| --payload value           | specify payload                                            |
-| --metadata value          | specify metadata                                           |
-| --exceptAttrs value       | specify exceptAttrs                                        |
-| --attrsFormat value       | specify attrsFormat                                        |
-| --help                    | show help (default: false)                                 |
+| Options                   | Description                                                    |
+| ------------------------- | -------------------------------------------------------------- |
+| --ngsiType value          | specify NGSI type: ld                                          |
+| --data value, -d value    | specify data                                                   |
+| --subscriptionId value    | specify subscription id (LD)                                   |
+| --name value              | specify subscription name (LD)                                 |
+| --description value       | specify description                                            |
+| --entityId value          | specify entityId (LD)                                          |
+| --idPattern value         | specify idPattern                                              |
+| --type value, -t value    | specify Entity Type                                            |
+| --typePattern value       | specify typePattern (v2)                                       |
+| --wAttrs value            | specify watched attributes                                     |
+| --timeInterval value      | specify time interval (LD) (default: 0)                        |
+| --query value, -q value   | filtering by attribute value                                   |
+| --mq value, -m value      | filtering by metadata (v2)                                     |
+| --geometry value          | specify geometry                                               |
+| --coords value            | specify coords                                                 |
+| --georel value            | specify georel                                                 |
+| --geoproperty value       | sprcify geoproperty (LD)                                       |
+| --csf value               | specify context source filter (LD)                             |
+| --active                  | specify active (LD) (default: false)                           |
+| --inactive                | specify inactive (LD) (default: false)                         |
+| --nAttrs value            | specify attributes to be notified                              |
+| --keyValues, -k           | specify keyValues (default: false)                             |
+| --uri value               | specify uri/url to be invoked when a notification is generated |
+| --accept value            | specify accept header (json or ld+json)                        |
+| --expires value, -e value | specify expires                                                |
+| --throttling value        | specify throttling (default: 0)                                |
+| --timeRel value           | specify temporal relationship (LD)                             |
+| --timeAt value            | specify timeAt (LD)                                            |
+| --endTimeAt value         | specify endTimeAt (LD)                                         |
+| --timeProperty value      | specify timeProperty (LD)                                      |
+| --link value, -L value    | specify @context (LD)                                          |
+| --status value            | specify status                                                 |
+| --headers value           | specify headers (v2)                                           |
+| --qs value                | specify qs (v2)                                                |
+| --method value            | specify method (v2)                                            |
+| --payload value           | specify payload (v2)                                           |
+| --metadata value          | specify metadata (v2)                                          |
+| --exceptAttrs value       | specify exceptAttrs (v2)                                       |
+| --attrsFormat value       | specify attrsFormat (v2)                                       |
+| --help                    | show help (default: false)                                     |
 
 ### Example for NGSI-LD
 

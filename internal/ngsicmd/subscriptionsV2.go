@@ -417,27 +417,27 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 	}
 
 	if !checkskip {
-		if (c.IsSet("subjectId") && c.IsSet("idPattern")) || (!c.IsSet("subjectId") && !c.IsSet("idPattern")) {
-			return &ngsiCmdError{funcName, 4, "subjectId or idPattern", nil}
+		if (c.IsSet("entityId") && c.IsSet("idPattern")) || (!c.IsSet("entityId") && !c.IsSet("idPattern")) {
+			return &ngsiCmdError{funcName, 4, "entityId or idPattern", nil}
 		}
 
 		if t.Notification == nil ||
 			((t.Notification.HTTP == nil || t.Notification.HTTP.URL == "") && (t.Notification.HTTPCustom == nil || t.Notification.HTTPCustom.URL == "")) {
-			if !c.IsSet("url") {
+			if !c.IsSet("url") && !c.IsSet("uri") {
 				return &ngsiCmdError{funcName, 5, "url not found", nil}
 			}
 		}
 	}
 
-	if c.IsSet("subjectId") || c.IsSet("idPattern") {
+	if c.IsSet("entityId") || c.IsSet("idPattern") {
 		if t.Subject == nil {
 			t.Subject = new(subscriptionSubjectV2)
 		}
 		if len(t.Subject.Entities) == 0 {
 			t.Subject.Entities = append(t.Subject.Entities, *new(subscriptionEntityV2))
 		}
-		if c.IsSet("subjectId") {
-			t.Subject.Entities[0].ID = c.String("subjectId")
+		if c.IsSet("entityId") {
+			t.Subject.Entities[0].ID = c.String("entityId")
 			t.Subject.Entities[0].IDPattern = ""
 		}
 		if c.IsSet("idPattern") {
@@ -495,14 +495,22 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		t.Subject.Condition.Expression.Coords = c.String("coords")
 	}
 
-	if c.IsSet("url") {
+	url := ""
+
+	if c.IsSet("uri") {
+		url = c.String("uri")
+	} else if c.IsSet("url") {
+		url = c.String("url")
+	}
+
+	if url != "" {
 		if t.Notification == nil {
 			t.Notification = new(subscriptionNotificationV2)
 		}
 		if t.Notification.HTTP == nil {
 			t.Notification.HTTP = new(subscriptionHTTPV2)
 		}
-		t.Notification.HTTP.URL = c.String("url")
+		t.Notification.HTTP.URL = url
 	}
 	for _, arg := range []string{"headers", "qs", "method", "payload"} {
 		if c.IsSet(arg) {

@@ -91,6 +91,9 @@ func (client *Client) InitHeader() error {
 				fmt.Sprintf(`<%s>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"`, *(client.Link))
 		}
 	}
+
+	client.Headers["Accept"] = "*/*"
+
 	return nil
 }
 

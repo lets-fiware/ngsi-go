@@ -120,7 +120,7 @@ var (
 	linkFlag = &cli.StringFlag{
 		Name:    "link",
 		Aliases: []string{"L"},
-		Usage:   "@context",
+		Usage:   "@context (LD)",
 	}
 	xAuthTokenFlag = &cli.BoolFlag{
 		Name:   "x-auth-token",
@@ -187,17 +187,17 @@ var (
 	}
 	typePatternFlag = &cli.StringFlag{
 		Name:  "typePattern",
-		Usage: "typePattern",
+		Usage: "typePattern (v2)",
 	}
 	queryFlag = &cli.StringFlag{
 		Name:    "query",
 		Aliases: []string{"q"},
-		Usage:   "query",
+		Usage:   "filtering by attribute value",
 	}
 	mqFlag = &cli.StringFlag{
 		Name:    "mq",
 		Aliases: []string{"m"},
-		Usage:   "mq",
+		Usage:   "filtering by metadata (v2)",
 	}
 	georelFlag = &cli.StringFlag{
 		Name:  "georel",
@@ -213,62 +213,55 @@ var (
 	}
 	geopropertyFlag = &cli.StringFlag{
 		Name:  "geoproperty",
-		Usage: "geoproperty",
+		Usage: "geoproperty (LD)",
 	}
 	headersFlag = &cli.StringFlag{
 		Name:  "headers",
-		Usage: "headers",
+		Usage: "headers (v2)",
 	}
 	qsFlag = &cli.StringFlag{
 		Name:  "qs",
-		Usage: "qs",
+		Usage: "qs (v2)",
 	}
 	methodFlag = &cli.StringFlag{
 		Name:  "method",
-		Usage: "method",
+		Usage: "method (v2)",
 	}
 	payloadFlag = &cli.StringFlag{
 		Name:  "payload",
-		Usage: "payload",
+		Usage: "payload (v2)",
 	}
 	exceptAttrsFlag = &cli.StringFlag{
 		Name:  "exceptAttrs",
-		Usage: "exceptAttrs",
+		Usage: "exceptAttrs (v2)",
 	}
 	attrsFormatFlag = &cli.StringFlag{
 		Name:  "attrsFormat",
-		Usage: "attrsFormat",
-	}
-	subjectIDFlag = &cli.StringFlag{
-		Name:  "subjectId",
-		Usage: "subjectId",
+		Usage: "attrsFormat (v2)",
 	}
 	subscriptionIDFlag = &cli.StringFlag{
 		Name:  "subscriptionId",
-		Usage: "subscription id",
+		Usage: "subscription id (LD)",
 	}
 	subscriptionNameFlag = &cli.StringFlag{
 		Name:  "name",
-		Usage: "subscription name",
+		Usage: "subscription name (LD)",
 	}
 	entityIDFlag = &cli.StringFlag{
 		Name:  "entityId",
-		Usage: "entityId",
+		Usage: "entity id",
 	}
 	attrsFlag = &cli.StringFlag{
 		Name:  "attrs",
-		Usage: "attrs",
-		Value: "",
+		Usage: "attributes",
 	}
 	metadataFlag = &cli.StringFlag{
 		Name:  "metadata",
-		Usage: "metadata",
-		Value: "",
+		Usage: "metadata (v2)",
 	}
 	orderByFlag = &cli.StringFlag{
 		Name:  "orderBy",
 		Usage: "orderBy",
-		Value: "",
 	}
 	actionTypeFlag = &cli.StringFlag{
 		Name:     "actionType",
@@ -299,19 +292,19 @@ var (
 var (
 	timeRelFlag = &cli.StringFlag{
 		Name:  "timeRel",
-		Usage: "temporal relationship",
+		Usage: "temporal relationship (LD)",
 	}
 	timeAtFlag = &cli.StringFlag{
 		Name:  "timeAt",
-		Usage: "timeAt",
+		Usage: "timeAt (LD)",
 	}
 	endTimeAtFlag = &cli.StringFlag{
-		Name:  "entTimeAt",
-		Usage: "entTimeAt",
+		Name:  "endTimeAt",
+		Usage: "endTimeAt (LD)",
 	}
 	timePropertyFlag = &cli.StringFlag{
 		Name:  "timeProperty",
-		Usage: "timeProperty",
+		Usage: "timeProperty (LD)",
 	}
 )
 
@@ -394,16 +387,12 @@ var (
 	}
 	uriFlag = &cli.StringFlag{
 		Name:  "uri",
-		Usage: "url or uri",
+		Aliases:  []string{"u"},
+		Usage: "uri/url to be invoked when a notification is generated",
 	}
 	acceptFlag = &cli.StringFlag{
 		Name:  "accept",
 		Usage: "accept header (json or ld+json)",
-	}
-	notifyURLFlag = &cli.StringFlag{
-		Name:    "url",
-		Aliases: []string{"u"},
-		Usage:   "url to be invoked when a notification is generated",
 	}
 	expiresFlag = &cli.BoolFlag{
 		Name:    "expires",
@@ -437,29 +426,25 @@ var (
 		Name:  "localTime",
 		Usage: "localTime",
 	}
-	getFlag = &cli.BoolFlag{
-		Name:  "get",
-		Usage: "get",
-	}
 	statusFlag = &cli.StringFlag{
 		Name:  "status",
 		Usage: "status",
 	}
 	timeIntervalFlag = &cli.Int64Flag{
 		Name:  "timeInterval",
-		Usage: "time interval",
+		Usage: "time interval (LD)",
 	}
 	csfFlag = &cli.StringFlag{
 		Name:  "csf",
-		Usage: "context source filter",
+		Usage: "context source filter (LD)",
 	}
 	activeFlag = &cli.BoolFlag{
 		Name:  "active",
-		Usage: "active",
+		Usage: "active (LD)",
 	}
 	inActiveFlag = &cli.BoolFlag{
 		Name:  "inactive",
-		Usage: "inactive",
+		Usage: "inactive (LD)",
 	}
 	descriptionFlag = &cli.StringFlag{
 		Name:  "description",
@@ -477,6 +462,16 @@ var (
 	nAttrsFlag = &cli.StringFlag{
 		Name:  "nAttrs",
 		Usage: "attributes to be notified",
+	}
+	getFlag = &cli.BoolFlag{
+		Name:  "get",
+		Usage: "get (v2)",
+		Hidden: true,
+	}
+	notifyURLFlag = &cli.StringFlag{
+		Name:    "url",
+		Usage:   "url to be invoked when a notification is generated (v2)",
+		Hidden: true,
 	}
 )
 

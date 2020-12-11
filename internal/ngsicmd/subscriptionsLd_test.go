@@ -47,7 +47,7 @@ func TestSubscriptionsListLd(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -74,7 +74,7 @@ func TestSubscriptionsListLdCount(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -103,12 +103,12 @@ func TestSubscriptionsListLdPage(t *testing.T) {
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte(subscriptionLdData)
-	reqRes1.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes1.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes1.ResHeader = http.Header{"Ngsild-Results-Count": []string{"106"}}
 	reqRes2 := MockHTTPReqRes{}
 	reqRes2.Res.StatusCode = http.StatusOK
 	reqRes2.ResBody = []byte(subscriptionLdData)
-	reqRes2.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes2.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes2.ResHeader = http.Header{"Ngsild-Results-Count": []string{"106"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
@@ -136,7 +136,7 @@ func TestSubscriptionsListLdStatus(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -166,7 +166,7 @@ func TestSubscriptionsListLdQuery(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -196,7 +196,7 @@ func TestSubscriptionsListLdCountZero(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"0"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -223,7 +223,7 @@ func TestSubscriptionsListLdJson(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -253,7 +253,7 @@ func TestSubscriptionsListLdJsonCount0(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"0"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -283,7 +283,7 @@ func TestSubscriptionsListLdVerbose(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -313,7 +313,7 @@ func TestSubscriptionsListLdLocaltime(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -400,7 +400,7 @@ func TestSubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -426,7 +426,7 @@ func TestSubscriptionsListLdErrorResultsCount(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -453,7 +453,7 @@ func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -483,7 +483,7 @@ func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -511,7 +511,7 @@ func TestSubscriptionsListLdErrorItems(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"6"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -768,7 +768,7 @@ func TestSubscriptionsCreateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Location": []string{"/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -798,7 +798,7 @@ func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
 	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
-	reqRes.Path = "/ngsi-ld/v1/subscriptions"
+	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
 	reqRes.ResHeader = http.Header{"Location": []string{"/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -1328,7 +1328,7 @@ func TestSetSubscriptionValuesLd4(t *testing.T) {
 	actual := string(b)
 
 	if assert.NoError(t, err) {
-		expected := "{\"type\":\"Subscription\",\"temporalQ\":{\"timerel\":\"before\",\"timeAt\":\"2020-09-24T07:49:56.00Z\",\"timeproperty\":\"timeProp\"}}"
+		expected := "{\"type\":\"Subscription\",\"temporalQ\":{\"timerel\":\"before\",\"timeAt\":\"2020-09-24T07:49:56.00Z\",\"endTimeAt\":\"2020-09-24T07:49:56.00Z\",\"timeproperty\":\"timeProp\"}}"
 		assert.Equal(t, expected, actual)
 	}
 }

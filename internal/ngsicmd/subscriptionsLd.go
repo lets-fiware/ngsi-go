@@ -134,7 +134,7 @@ func subscriptionsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	var subscriptions []subscriptionLd
 
 	for {
-		client.SetPath("/subscriptions")
+		client.SetPath("/subscriptions/")
 
 		v := url.Values{}
 		v.Set("count", "true")
@@ -549,7 +549,7 @@ func setSubscriptionValuesLd(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 			t.TemporalQ.TimeAt = c.String("timeAt")
 		}
 		if c.IsSet("endTimeAt") {
-			t.TemporalQ.EndTimeAt = c.String("entTimeAt")
+			t.TemporalQ.EndTimeAt = c.String("endTimeAt")
 		}
 		if c.IsSet("timeProperty") {
 			t.TemporalQ.Timeproperty = c.String("timeProperty")

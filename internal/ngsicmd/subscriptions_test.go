@@ -282,7 +282,7 @@ func TestSubscriptionsCreateErrorV2(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "subjectId or idPattern", ngsiErr.Message)
+		assert.Equal(t, "entityId or idPattern", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -508,7 +508,7 @@ func TestSubscriptionsTemplateNgsiTypeV2(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "subjectId or idPattern", ngsiErr.Message)
+		assert.Equal(t, "entityId or idPattern", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
