@@ -40,24 +40,42 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const registrationTemplateLd string = `{
-	"type": "ContextSourceRegistration",
-	"description": "registration template",
-    "information": [
-        {
-            "entities": [
-                {
-                    "type": "Registration",
-                    "id": "urn:ngsi-ld:Registration:001"
-                }
-            ],
-            "properties": [
-                "attr"
-            ]
-        }
-    ],
-    "endpoint": "http://registration"
-}`
+// 4.7 GeoJSON geometry
+type geometry struct {
+	Type        string        `json:"entities,omitempty"`
+	Coordinates []interface{} `json:"coordinates,omitempty"`
+}
+
+// 5.2.9 CsourceRegistration
+type cSourceRegistration struct {
+	ID                  string             `json:"id,omitempty"`
+	Type                string             `json:"type,omitempty"`
+	Name                string             `json:"name,omitempty"` // registrationName???
+	Description         string             `json:"description,omitempty"`
+	Information         []registrationInfo `json:"registrationInfo,omitempty"`
+	Tenant              string             `json:"tenant,omitempty"`
+	ObservationInterval *timeInterval      `json:"observationInterval,omitempty"`
+	ManagementInterval  *timeInterval      `json:"ManagementInterval,omitempty"`
+	Location            *geometry          `json:"location,omitempty"`
+	ObservationSpace    *geometry          `json:"observationSpace,omitempty"`
+	OperationSpace      *geometry          `json:"operationSpace,omitempty"`
+	Expires             string             `json:"expires,omitempty"` // expiresAt???
+	Endpoint            string             `json:"endpoint,omitempty"`
+}
+
+// 5.2.10 RegistrationInfo
+type registrationInfo struct {
+	Entities      []entityInfoLd `json:"entities,omitempty"`
+	Properties    []string       `json:"properties,omitempty"`    // PropertyNames???
+	Relationships []string       `json:"relationships,omitempty"` // RelationshipNames???
+}
+
+// 5.2.11 TimeInterval
+
+type timeInterval struct {
+	StartAt string `json:"startAt,omitempty"`
+	EndAt   string `json:"endAt,omitempty"`
+}
 
 func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registratinsListLd"
@@ -67,10 +85,10 @@ func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	limit := 100
 	total := 0
 
-	var registrations []map[string]interface{}
+	var registrations []cSourceRegistration
 
 	for {
-		client.SetPath("/csourceRegistrations")
+		client.SetPath("/csourceRegistrations/")
 
 		v := url.Values{}
 		v.Set("count", "true")
@@ -92,7 +110,7 @@ func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		if count == 0 {
 			break
 		}
-		var subs []map[string]interface{}
+		var subs []cSourceRegistration
 		if err := ngsilib.JSONUnmarshalDecode(body, &subs, client.IsSafeString()); err != nil {
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
@@ -114,12 +132,16 @@ func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		}
 		fmt.Fprintln(ngsi.StdWriter, string(b))
 	} else if c.IsSet("verbose") {
+		local := c.IsSet("localTime")
 		for _, e := range registrations {
-			fmt.Fprintf(ngsi.StdWriter, "%s %s\n", e["id"].(string), e["description"].(string))
+			if local {
+				e.Expires = getLocalTime(e.Expires)
+			}
+			fmt.Fprintf(ngsi.StdWriter, "%s %s %s\n", e.ID, e.Description, e.Expires)
 		}
 	} else {
 		for _, e := range registrations {
-			fmt.Fprintln(ngsi.StdWriter, e["id"].(string))
+			fmt.Fprintln(ngsi.StdWriter, e.ID)
 		}
 	}
 
@@ -140,14 +162,20 @@ func registrationsGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil}
 	}
 
-	if client.IsSafeString() {
-		body, err = ngsilib.JSONSafeStringDecode(body)
-		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
-		}
+	var r cSourceRegistration
+	if err := ngsilib.JSONUnmarshalDecode(body, &r, client.IsSafeString()); err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 
-	fmt.Fprintln(ngsi.StdWriter, string(body))
+	if c.IsSet("localTime") {
+		r.Expires = getLocalTime(r.Expires)
+	}
+	b, err := ngsilib.JSONMarshal(&r)
+	if err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
+	}
+	fmt.Fprint(ngsi.StdWriter, string(b))
+
 	return nil
 }
 
@@ -158,17 +186,23 @@ func registrationsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	client.SetHeader("Content-Type", "application/json")
 
-	s, err := readAll(c, ngsi)
-	if err != nil {
+	var r cSourceRegistration
+
+	if err := setRegistrationsValuleLd(c, ngsi, &r); err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	res, body, err := client.HTTPPost(s)
+	b, err := ngsilib.JSONMarshalEncode(&r, true)
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
+
+	res, body, err := client.HTTPPost(b)
+	if err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
+	}
 	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	location := res.Header.Get("Location")
@@ -177,8 +211,7 @@ func registrationsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 		location = location[len(p):]
 	}
 
-	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is created, FIWARE-Service: %s, FIWARE-ServicePath: %s",
-		res.Header.Get("Location"), c.String("service"), c.String("path")))
+	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is created, FIWARE-ServicePath: %s", res.Header.Get("Location"), c.String("service")))
 
 	fmt.Fprintln(ngsi.StdWriter, location)
 
@@ -210,37 +243,88 @@ func registrationsDeleteLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 func registrationsTemplateLd(c *cli.Context, ngsi *ngsilib.NGSI) error {
 	const funcName = "registrationsTemplateLd"
 
-	var template = make(map[string]interface{})
-	ngsilib.JSONUnmarshal([]byte(registrationTemplateLd), &template)
+	var r cSourceRegistration
 
-	if c.IsSet("description") {
-		template["description"] = c.String("description")
-	}
-	if c.IsSet("type") {
-		template["information"].([]interface{})[0].(map[string]interface{})["entities"].([]interface{})[0].(map[string]interface{})["type"] = c.String("type")
-	}
-	if c.IsSet("id") {
-		template["information"].([]interface{})[0].(map[string]interface{})["entities"].([]interface{})[0].(map[string]interface{})["id"] = c.String("id")
-	}
-	if c.IsSet("attrs") {
-		s := c.String("attrs")
-		template["information"].([]interface{})[0].(map[string]interface{})["properties"] = strings.Split(s, ",")
-	}
-	if c.IsSet("provider") {
-		s := c.String("provider")
-		if ngsilib.IsHTTP(s) {
-			template["endpoint"] = s
-		} else {
-			e := fmt.Sprintf("provider url error: %s", s)
-			return &ngsiCmdError{funcName, 1, e, nil}
-		}
+	err := setRegistrationsValuleLd(c, ngsi, &r)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	b, err := ngsilib.JSONMarshal(template)
+	b, err := ngsilib.JSONMarshal(r)
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
+
 	fmt.Fprint(ngsi.StdWriter, string(b))
+
+	return nil
+}
+
+func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegistration) error {
+	const funcName = "setRegistrationsValuleLd"
+
+	if c.IsSet("data") {
+		b, err := readAll(c, ngsi)
+		if err != nil {
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
+		}
+		err = ngsilib.JSONUnmarshal(b, r)
+		if err != nil {
+			return &ngsiCmdError{funcName, 2, err.Error(), err}
+		}
+	}
+
+	if c.IsSet("description") {
+		r.Description = c.String("description")
+	}
+
+	if isSetOR(c, []string{"type", "providedId", "idPattern", "properties", "relationships"}) {
+		if len(r.Information) == 0 {
+			r.Information = append(r.Information, *new(registrationInfo))
+		}
+		if len(r.Information[0].Entities) == 0 {
+			r.Information[0].Entities = append(r.Information[0].Entities, *new(entityInfoLd))
+		}
+		if c.IsSet("type") {
+			r.Information[0].Entities[0].Type = c.String("type")
+		}
+		if c.IsSet("providedId") {
+			r.Information[0].Entities[0].ID = c.String("providedId")
+		}
+		if c.IsSet("idPattern") {
+			r.Information[0].Entities[0].IDPattern = c.String("idPattern")
+		}
+		if c.IsSet("properties") {
+			s := c.String("properties")
+			r.Information[0].Properties = strings.Split(s, ",")
+		}
+		if c.IsSet("relationships") {
+			s := c.String("relationships")
+			r.Information[0].Relationships = strings.Split(s, ",")
+		}
+	}
+
+	if c.IsSet("expires") {
+		s := c.String("expires")
+		if !ngsilib.IsOrionDateTime(s) {
+			var err error
+			s, err = ngsilib.GetExpirationDate(s)
+			if err != nil {
+				return &ngsiCmdError{funcName, 4, err.Error(), nil}
+			}
+		}
+		r.Expires = s
+	}
+
+	if c.IsSet("provider") {
+		s := c.String("provider")
+		if ngsilib.IsHTTP(s) {
+			r.Endpoint = s
+		} else {
+			e := fmt.Sprintf("provider url error: %s", s)
+			return &ngsiCmdError{funcName, 3, e, nil}
+		}
+	}
 
 	return nil
 }
