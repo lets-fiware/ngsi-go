@@ -370,8 +370,13 @@ var receiverCmd = cli.Command{
 	Category: "CONVENIENCE",
 	Usage:    "notification receiver",
 	Flags: []cli.Flag{
-		portFlag,
-		prettyFlag,
+		receiverHostFlag,
+		receiverPortFlag,
+		receiverURLFlag,
+		receiverPrettyFlag,
+		receiverHTTPSFlag,
+		receiverKeyFlag,
+		receiverCertFlag,
 		verboseFlag,
 	},
 	Action: func(c *cli.Context) error {

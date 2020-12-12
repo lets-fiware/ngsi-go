@@ -50,24 +50,45 @@ var receiverGlobal *receiverParam
 func receiver(c *cli.Context) error {
 	const funcName = "receiver"
 
-	port := c.String("port")
-	addr := ":" + port
-
-	pretty := c.IsSet("pretty")
-
 	ngsi, err := initCmd(c, funcName, false)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
+	host := c.String("host")
+	port := c.String("port")
+	addr := host + ":" + port
+
+	path := c.String("url")
+	url := addr + path
+
+	pretty := c.IsSet("pretty")
+
+	if c.Bool("https") {
+		if !c.IsSet("key") {
+			return &ngsiCmdError{funcName, 2, "no key file provided", nil}
+		}
+		if !c.IsSet("cert") {
+			return &ngsiCmdError{funcName, 3, "no cert file provided", nil}
+		}
+		url = "https://" + url
+	} else {
+		url = "http://" + url
+	}
+
 	receiverGlobal = &receiverParam{ngsi: ngsi, pretty: pretty}
 
-	http.HandleFunc("/", http.HandlerFunc(receiverHandler))
+	http.HandleFunc(path, http.HandlerFunc(receiverHandler))
 
-	if c.IsSet("verbose") {
-		fmt.Fprintf(ngsi.Stderr, "%s\n", addr)
+	if c.Bool("verbose") {
+		fmt.Fprintf(ngsi.Stderr, "%s\n", url)
 	}
-	http.ListenAndServe(addr, nil)
+
+	if c.Bool("https") {
+		http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), nil)
+	} else {
+		http.ListenAndServe(addr, nil)
+	}
 
 	return nil
 }
