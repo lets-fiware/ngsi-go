@@ -546,16 +546,44 @@ var (
 
 // flag for receiver
 var (
-	portFlag = &cli.StringFlag{
+	receiverHostFlag = &cli.StringFlag{
+		Name:    "host",
+		Aliases: []string{"h"},
+		Value:   "0.0.0.0",
+		Usage:   "host for receiver",
+	}
+	receiverPortFlag = &cli.StringFlag{
 		Name:    "port",
 		Aliases: []string{"p"},
 		Value:   "1028",
 		Usage:   "port for receiver",
 	}
-	prettyFlag = &cli.BoolFlag{
+	receiverURLFlag = &cli.StringFlag{
+		Name:    "url",
+		Aliases: []string{"u"},
+		Value:   "/",
+		Usage:   "url for receiver",
+	}
+	receiverPrettyFlag = &cli.BoolFlag{
 		Name:    "pretty",
 		Aliases: []string{"P"},
 		Usage:   "pretty format",
+	}
+	receiverHTTPSFlag = &cli.BoolFlag{
+		Name:    "https",
+		Aliases: []string{"s"},
+		Value:   false,
+		Usage:   "start in https",
+	}
+	receiverKeyFlag = &cli.StringFlag{
+		Name:    "key",
+		Aliases: []string{"k"},
+		Usage:   "key file (only needed if https is enabled)",
+	}
+	receiverCertFlag = &cli.StringFlag{
+		Name:    "cert",
+		Aliases: []string{"c"},
+		Usage:   "cert file (only needed if https is enabled)",
 	}
 )
 

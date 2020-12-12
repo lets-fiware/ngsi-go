@@ -41,13 +41,30 @@ import (
 )
 
 func TestReceiver(t *testing.T) {
-	_, set, app, _ := setupTest()
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
 
-	setupFlagString(set, "port")
+	setupFlagString(set, "port,url")
 	setupFlagBool(set, "verbose,pretty")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--verbose", "--port=aaaa"})
+	_ = set.Parse([]string{"--verbose", "--port=aaaa", "--url=/"})
+	err := receiver(c)
+
+	assert.NoError(t, err)
+}
+
+func TestReceiverHTTPS(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,key,cert")
+	setupFlagBool(set, "verbose,pretty,https")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--https", "--key=test.key", "--cert=test.cert", "--verbose", "--port=aaaa", "--url=/test"})
 	err := receiver(c)
 
 	assert.NoError(t, err)
@@ -68,6 +85,44 @@ func TestReceiverError(t *testing.T) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
+	}
+}
+
+func TestReceiverErrorKey(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,key,cert")
+	setupFlagBool(set, "verbose,pretty,https")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--https", "--port=aaaa", "--url=/"})
+	err := receiver(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "no key file provided", ngsiErr.Message)
+	}
+}
+
+func TestReceiverErrorCert(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,key,cert")
+	setupFlagBool(set, "verbose,pretty,https")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--https", "--key=a", "--port=aaaa", "--url=/"})
+	err := receiver(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "no cert file provided", ngsiErr.Message)
 	}
 }
 
