@@ -4,6 +4,7 @@ cd ngsi-go
 rm -fr build
 ln -s /build
 rm -fr build/*
+touch build/.gitkeep
 make devel-deps
 echo "TARGET: $NGSIGO_TARGET"
 make $NGSIGO_TARGET
