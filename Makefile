@@ -33,7 +33,8 @@ NAMEVER := $(NAME)-v$(VERSION)
 
 build = rm -f build/$(3) && GOOS=$(1) GOARCH=$(2) go build -ldflags "$(LDFLAGS)" -o build/$(3) cmd/$(NAME)/main.go
 buildx = script/release_buildx.sh build/$(1).tar.gz
-tar = cd build && tar -cvzf $(NAMEVER)-$(1)-$(2).tar.gz $(3) && rm $(3) && sha256sum $(NAMEVER)-$(1)-$(2).tar.gz > $(NAMEVER)-$(1)-$(2)-sha256sum.txt
+tar = cd build && tar -cvzf $(NAMEVER)-$(1)-$(2).tar.gz $(3) && rm $(3)
+sum = cd build && sha256sum *.tar.gz > $(NAMEVER)-sha256sum.txt
 
 export GO111MODULE=on
 
@@ -51,7 +52,7 @@ bin/%: cmd/%/main.go $(SOURCES)
 test:
 	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...
 
-.PHONY: cover
+.PHONY: coverage
 cover:
 	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...;cd ..;go tool cover -html=coverage/coverage.out -o coverage/coverage.html
 
@@ -72,6 +73,7 @@ build: bin/ngsi
 release:
 	@rm -fr build/
 	@script/release_buildx.sh
+	$(call sum)
 
 .PHONY: release_github
 release_github:
