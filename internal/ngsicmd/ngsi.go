@@ -90,6 +90,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 			&listCmd,
 			&lsCmd,
 			&removeCmd,
+			&receiverCmd,
 			&replaceCmd,
 			&settingsCmd,
 			&templateCmd,
@@ -361,6 +362,20 @@ var templateCmd = cli.Command{
 				return registrationsTemplate(c)
 			},
 		},
+	},
+}
+
+var receiverCmd = cli.Command{
+	Name:     "receiver",
+	Category: "CONVENIENCE",
+	Usage:    "notification receiver",
+	Flags: []cli.Flag{
+		portFlag,
+		prettyFlag,
+		verboseFlag,
+	},
+	Action: func(c *cli.Context) error {
+		return receiver(c)
 	},
 }
 

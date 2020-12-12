@@ -403,9 +403,9 @@ var (
 		Required: true,
 	}
 	uriFlag = &cli.StringFlag{
-		Name:  "uri",
-		Aliases:  []string{"u"},
-		Usage: "uri/url to be invoked when a notification is generated",
+		Name:    "uri",
+		Aliases: []string{"u"},
+		Usage:   "uri/url to be invoked when a notification is generated",
 	}
 	acceptFlag = &cli.StringFlag{
 		Name:  "accept",
@@ -476,13 +476,13 @@ var (
 		Usage: "attributes to be notified",
 	}
 	getFlag = &cli.BoolFlag{
-		Name:  "get",
-		Usage: "get (v2)",
+		Name:   "get",
+		Usage:  "get (v2)",
 		Hidden: true,
 	}
 	notifyURLFlag = &cli.StringFlag{
-		Name:    "url",
-		Usage:   "url to be invoked when a notification is generated (v2)",
+		Name:   "url",
+		Usage:  "url to be invoked when a notification is generated (v2)",
 		Hidden: true,
 	}
 )
@@ -541,6 +541,21 @@ var (
 	allFlag = &cli.BoolFlag{
 		Name:  "all",
 		Usage: "ail itmes",
+	}
+)
+
+// flag for receiver
+var (
+	portFlag = &cli.StringFlag{
+		Name:    "port",
+		Aliases: []string{"p"},
+		Value:   "1028",
+		Usage:   "port for receiver",
+	}
+	prettyFlag = &cli.BoolFlag{
+		Name:    "pretty",
+		Aliases: []string{"P"},
+		Usage:   "pretty format",
 	}
 )
 
