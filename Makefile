@@ -53,7 +53,7 @@ test:
 	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...
 
 .PHONY: coverage
-cover:
+coverage:
 	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...;cd ..;go tool cover -html=coverage/coverage.out -o coverage/coverage.html
 
 .PHONY: e2e_test
