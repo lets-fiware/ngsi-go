@@ -28,18 +28,18 @@ ngsi receiver --verbose
 
 ```json
 {
+  "subscriptionId": "5fd412e8ecb082767349b975",
   "data": [
     {
       "id": "device001",
+      "type": "device",
       "temperature": {
-        "metadata": {},
         "type": "Number",
-        "value": 24
-      },
-      "type": "device"
+        "value": 21,
+        "metadata": {}
+      }
     }
-  ],
-  "subscriptionId": "5fd412e8ecb082767349b975"
+  ]
 }
 ```
 
@@ -100,18 +100,18 @@ You will find the following message on the terminal that you ran `ngsi receiver`
 
 ```json
 {
+  "subscriptionId": "5fd412e8ecb082767349b975",
   "data": [
     {
       "id": "device001",
+      "type": "device",
       "temperature": {
-        "metadata": {},
         "type": "Number",
-        "value": 22
-      },
-      "type": "device"
+        "value": 21,
+        "metadata": {}
+      }
     }
-  ],
-  "subscriptionId": "5fd412e8ecb082767349b975"
+  ]
 }
 ```
 

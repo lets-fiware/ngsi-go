@@ -83,6 +83,7 @@ func receiver(c *cli.Context) error {
 	if c.Bool("verbose") {
 		fmt.Fprintf(ngsi.Stderr, "%s\n", url)
 	}
+	ngsi.Logging(ngsilib.LogErr, url)
 
 	if c.Bool("https") {
 		http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), nil)
@@ -107,13 +108,14 @@ func receiverHandler(w http.ResponseWriter, r *http.Request) {
 		io.Copy(buf, body)
 
 		b := buf.Bytes()
+		receiverGlobal.ngsi.Logging(ngsilib.LogInfo, string(b))
+
 		if receiverGlobal.pretty && ngsilib.IsJSON(b) {
-			var j interface{}
-			err := json.Unmarshal(b, &j)
-			if err != nil {
-				fmt.Fprintf(receiverGlobal.ngsi.Stderr, "json.Unmarshal error\n")
+			newBuf := new(bytes.Buffer)
+			err := json.Indent(newBuf, b, "", "  ")
+			if err == nil {
+				b = newBuf.Bytes()
 			}
-			b, _ = json.MarshalIndent(j, "", "  ")
 		}
 		fmt.Fprint(receiverGlobal.ngsi.StdWriter, string(b)+"\n")
 	}
