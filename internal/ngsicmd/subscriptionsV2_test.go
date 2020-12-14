@@ -752,11 +752,11 @@ func TestSubscriptionsCreateV2ErrorsetSubscriptionValuesV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
+	setupFlagString(set, "id,throttling,expires,data")
 	set.Bool("get", false, "doc")
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	_ = set.Parse([]string{"--data=", "--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
 	err := subscriptionsCreateV2(c, ngsi, client)
 
@@ -1118,7 +1118,7 @@ func TestSubscriptionsTemplateV2Error(t *testing.T) {
 
 	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--data=", "--url=http://ngsiproxy"})
 
 	err := subscriptionsTemplateV2(c, ngsi)
 
@@ -1455,64 +1455,7 @@ func TestSetSubscriptionValuesV2Error3(t *testing.T) {
 	}
 }
 
-func TestSetSubscriptionValuesV2Error41(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	sub := subscriptionV2{}
-
-	setupFlagString(set, "entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSetSubscriptionValuesV2Error42(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	sub := subscriptionV2{}
-
-	setupFlagString(set, "entityId,url,idPattern")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--url=http://ngsiproxy", "--entityId=xyz", "--idPattern=abc"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestSetSubscriptionValuesV2Error5(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	sub := subscriptionV2{}
-
-	setupFlagString(set, "entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--entityId=abc"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSetSubscriptionValuesV2Error6(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	sub := subscriptionV2{}
@@ -1525,13 +1468,13 @@ func TestSetSubscriptionValuesV2Error6(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSetSubscriptionValuesV2Error7(t *testing.T) {
+func TestSetSubscriptionValuesV2Error6(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	sub := subscriptionV2{}
@@ -1544,13 +1487,13 @@ func TestSetSubscriptionValuesV2Error7(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSetSubscriptionValuesV2Error8(t *testing.T) {
+func TestSetSubscriptionValuesV2Error7(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	sub := subscriptionV2{}
@@ -1563,13 +1506,13 @@ func TestSetSubscriptionValuesV2Error8(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSetSubscriptionValuesV2Error9(t *testing.T) {
+func TestSetSubscriptionValuesV2Error8(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	sub := subscriptionV2{}
@@ -1582,13 +1525,13 @@ func TestSetSubscriptionValuesV2Error9(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSetSubscriptionValuesV2Error10(t *testing.T) {
+func TestSetSubscriptionValuesV2Error9(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	sub := subscriptionV2{}
@@ -1601,13 +1544,13 @@ func TestSetSubscriptionValuesV2Error10(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 10, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestSetSubscriptionValuesV2Error11(t *testing.T) {
+func TestSetSubscriptionValuesV2Error10(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	sub := subscriptionV2{}
@@ -1620,7 +1563,7 @@ func TestSetSubscriptionValuesV2Error11(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 11, ngsiErr.ErrNo)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
