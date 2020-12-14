@@ -1310,6 +1310,20 @@ func TestSetSubscriptionValuesV2url(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestSetSubscriptionValuesV2Metadata(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	sub := subscriptionV2{}
+
+	setupFlagString(set, "metadata")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{`--metadata=abc`})
+
+	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+
+	assert.NoError(t, err)
+}
+
 func TestSetSubscriptionValuesV2headers(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
