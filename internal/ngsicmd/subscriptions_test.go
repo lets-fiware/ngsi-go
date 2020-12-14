@@ -281,8 +281,8 @@ func TestSubscriptionsCreateErrorV2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "entityId or idPattern", ngsiErr.Message)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -495,7 +495,7 @@ func TestSubscriptionsDeleteErrorLd(t *testing.T) {
 }
 
 func TestSubscriptionsTemplateNgsiTypeV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	ngsi, set, app, buf := setupTest()
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
@@ -505,10 +505,10 @@ func TestSubscriptionsTemplateNgsiTypeV2(t *testing.T) {
 	_ = set.Parse([]string{"--ngsiType=v2"})
 	err := subscriptionsTemplate(c)
 
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "entityId or idPattern", ngsiErr.Message)
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{}"
+		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}

@@ -416,19 +416,6 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 
-	if !checkskip {
-		if (c.IsSet("entityId") && c.IsSet("idPattern")) || (!c.IsSet("entityId") && !c.IsSet("idPattern")) {
-			return &ngsiCmdError{funcName, 4, "entityId or idPattern", nil}
-		}
-
-		if t.Notification == nil ||
-			((t.Notification.HTTP == nil || t.Notification.HTTP.URL == "") && (t.Notification.HTTPCustom == nil || t.Notification.HTTPCustom.URL == "")) {
-			if !c.IsSet("url") && !c.IsSet("uri") {
-				return &ngsiCmdError{funcName, 5, "url not found", nil}
-			}
-		}
-	}
-
 	if c.IsSet("entityId") || c.IsSet("idPattern") {
 		if t.Subject == nil {
 			t.Subject = new(subscriptionSubjectV2)
@@ -447,7 +434,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 	}
 
 	if c.IsSet("type") && c.IsSet("typePattern") {
-		return &ngsiCmdError{funcName, 6, "type or typePattern", nil}
+		return &ngsiCmdError{funcName, 4, "type or typePattern", nil}
 	}
 	if c.IsSet("type") {
 		t.Subject.Entities[0].Type = c.String("type")
@@ -458,110 +445,111 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		t.Subject.Entities[0].Type = ""
 	}
 
-	if c.IsSet("wAttrs") {
+	if isSetOR(c, []string{"wAttrs", "query", "mq", "georel", "geometry", "coords"}) {
 		if t.Subject == nil {
 			t.Subject = new(subscriptionSubjectV2)
 		}
 		if t.Subject.Condition == nil {
 			t.Subject.Condition = new(subscriptionConditionV2)
 		}
-		t.Subject.Condition.Attrs = strings.Split(c.String("wAttrs"), ",")
-	}
+		if c.IsSet("wAttrs") {
+			t.Subject.Condition.Attrs = strings.Split(c.String("wAttrs"), ",")
+		}
 
-	for _, arg := range []string{"query", "mq", "georel", "geometry", "coords"} {
-		if c.IsSet(arg) {
-			if t.Subject.Condition == nil {
-				t.Subject.Condition = new(subscriptionConditionV2)
-			}
+		if isSetOR(c, []string{"query", "mq", "georel", "geometry", "coords"}) {
 			if t.Subject.Condition.Expression == nil {
 				t.Subject.Condition.Expression = new(subscriptionExpressionV2)
 			}
-			break
+			if c.IsSet("query") {
+				t.Subject.Condition.Expression.Q = c.String("query")
+			}
+			if c.IsSet("mq") {
+				t.Subject.Condition.Expression.Mq = c.String("mq")
+			}
+			if c.IsSet("georel") {
+				t.Subject.Condition.Expression.Georel = c.String("georel")
+			}
+			if c.IsSet("geometry") {
+				t.Subject.Condition.Expression.Geometry = c.String("geometry")
+			}
+			if c.IsSet("coords") {
+				t.Subject.Condition.Expression.Coords = c.String("coords")
+			}
 		}
 	}
-	if c.IsSet("query") {
-		t.Subject.Condition.Expression.Q = c.String("query")
-	}
-	if c.IsSet("mq") {
-		t.Subject.Condition.Expression.Mq = c.String("mq")
-	}
-	if c.IsSet("georel") {
-		t.Subject.Condition.Expression.Georel = c.String("georel")
-	}
-	if c.IsSet("geometry") {
-		t.Subject.Condition.Expression.Geometry = c.String("geometry")
-	}
-	if c.IsSet("coords") {
-		t.Subject.Condition.Expression.Coords = c.String("coords")
-	}
 
-	url := ""
-
-	if c.IsSet("uri") {
-		url = c.String("uri")
-	} else if c.IsSet("url") {
-		url = c.String("url")
-	}
-
-	if url != "" {
-		if t.Notification == nil {
-			t.Notification = new(subscriptionNotificationV2)
+	if isSetOR(c, []string{"uri", "url", "headers", "qs", "method", "payload"}) {
+		url := ""
+		if c.IsSet("uri") {
+			url = c.String("uri")
+		} else if c.IsSet("url") {
+			url = c.String("url")
 		}
-		if t.Notification.HTTP == nil {
-			t.Notification.HTTP = new(subscriptionHTTPV2)
+		if url != "" {
+			if t.Notification == nil {
+				t.Notification = new(subscriptionNotificationV2)
+			}
+			if t.Notification.HTTP == nil {
+				t.Notification.HTTP = new(subscriptionHTTPV2)
+			}
+			t.Notification.HTTP.URL = url
 		}
-		t.Notification.HTTP.URL = url
-	}
-	for _, arg := range []string{"headers", "qs", "method", "payload"} {
-		if c.IsSet(arg) {
+		if isSetOR(c, []string{"headers", "qs", "method", "payload"}) {
 			if t.Notification.HTTPCustom == nil {
 				t.Notification.HTTPCustom = new(subscriptionHTTPCustomV2)
 			}
-			t.Notification.HTTPCustom.URL = t.Notification.HTTP.URL
-			t.Notification.HTTP = nil
-			break
+			if t.Notification.HTTP != nil {
+				t.Notification.HTTPCustom.URL = t.Notification.HTTP.URL
+				t.Notification.HTTP = nil
+			}
+			if c.IsSet("headers") {
+				var headers map[string]string
+				err := ngsilib.JSONUnmarshal([]byte(c.String("headers")), &headers)
+				if err != nil {
+					return &ngsiCmdError{funcName, 5, "err" + c.String("headers"), err}
+				}
+				t.Notification.HTTPCustom.Headers = headers
+			}
+			if c.IsSet("qs") {
+				var qs map[string]string
+				err := ngsilib.JSONUnmarshal([]byte(c.String("qs")), &qs)
+				if err != nil {
+					return &ngsiCmdError{funcName, 6, "err" + c.String("qs"), err}
+				}
+				t.Notification.HTTPCustom.Qs = qs
+			}
+			if c.IsSet("method") {
+				t.Notification.HTTPCustom.Method = c.String("method")
+			}
+			if c.IsSet("payload") {
+				s := c.String("payload")
+				s = strings.ReplaceAll(s, `\"`, `"`)
+				s = strings.ReplaceAll(s, `\\`, `\`)
+				s = ngsilib.SafeStringEncode(s)
+				t.Notification.HTTPCustom.Payload = s
+			}
 		}
 	}
-	if c.IsSet("headers") {
-		var headers map[string]string
-		err := ngsilib.JSONUnmarshal([]byte(c.String("headers")), &headers)
-		if err != nil {
-			return &ngsiCmdError{funcName, 7, "err" + c.String("headers"), err}
+
+	if isSetOR(c, []string{"nAttrs", "metadata", "exceptAttrs", "attrsFormat"}) {
+		if t.Notification == nil {
+			t.Notification = new(subscriptionNotificationV2)
 		}
-		t.Notification.HTTPCustom.Headers = headers
-	}
-	if c.IsSet("qs") {
-		var qs map[string]string
-		err := ngsilib.JSONUnmarshal([]byte(c.String("qs")), &qs)
-		if err != nil {
-			return &ngsiCmdError{funcName, 8, "err" + c.String("qs"), err}
+		if c.IsSet("nAttrs") {
+			t.Notification.Attrs = strings.Split(c.String("nAttrs"), ",")
 		}
-		t.Notification.HTTPCustom.Qs = qs
-	}
-	if c.IsSet("method") {
-		t.Notification.HTTPCustom.Method = c.String("method")
-	}
-	if c.IsSet("payload") {
-		s := c.String("payload")
-		s = strings.ReplaceAll(s, `\"`, `"`)
-		s = strings.ReplaceAll(s, `\\`, `\`)
-		s = ngsilib.SafeStringEncode(s)
-		t.Notification.HTTPCustom.Payload = s
-	}
-	if c.IsSet("nAttrs") {
-		t.Notification.Attrs = strings.Split(c.String("nAttrs"), ",")
-	}
-	if c.IsSet("metadata") {
-		t.Notification.Metadata = strings.Split(c.String("Metadata"), ",")
-	}
-	if c.IsSet("exceptAttrs") && c.IsSet("nAttrs") {
-		return &ngsiCmdError{funcName, 9, "error exceptAttrs or nAttrs", nil}
-	}
-	if c.IsSet("exceptAttrs") {
-		t.Notification.ExceptAttrs = strings.Split(c.String("exceptAttrs"), ",")
-	}
-	if c.IsSet("attrsFormat") {
-		t.Notification.AttrsFormat = c.String("attrsFormat")
+		if c.IsSet("metadata") {
+			t.Notification.Metadata = strings.Split(c.String("metadata"), ",")
+		}
+		if c.IsSet("exceptAttrs") && c.IsSet("nAttrs") {
+			return &ngsiCmdError{funcName, 7, "error exceptAttrs or nAttrs", nil}
+		}
+		if c.IsSet("exceptAttrs") {
+			t.Notification.ExceptAttrs = strings.Split(c.String("exceptAttrs"), ",")
+		}
+		if c.IsSet("attrsFormat") {
+			t.Notification.AttrsFormat = c.String("attrsFormat")
+		}
 	}
 
 	if c.IsSet("throttling") {
@@ -572,7 +560,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		if !ngsilib.IsOrionDateTime(s) {
 			s, err = ngsilib.GetExpirationDate(s)
 			if err != nil {
-				return &ngsiCmdError{funcName, 10, err.Error(), nil}
+				return &ngsiCmdError{funcName, 8, err.Error(), nil}
 			}
 		}
 		t.Expires = s
@@ -580,7 +568,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 	if c.IsSet("status") {
 		s := strings.ToLower(c.String("status"))
 		if !ngsilib.Contains([]string{"active", "inactive", "oneshot"}, s) {
-			return &ngsiCmdError{funcName, 11, "error: " + s + " (active, inactive, oneshot)", nil}
+			return &ngsiCmdError{funcName, 9, "error: " + s + " (active, inactive, oneshot)", nil}
 		}
 		t.Status = s
 	}
