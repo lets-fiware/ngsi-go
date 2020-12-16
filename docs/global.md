@@ -42,17 +42,18 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.0 (git_hash:d466356676201c8b237eaa4e768b9742d1b91120)
+   0.4.0 (git_hash:92b31f9c7fd1e0aad13e2aca14e73e6566adab2e)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
    CONVENIENCE:
      admin     admin command for FIWARE Orion
      cp        copy entities
-     wc        print number of entities, subscriptions, registrations, or types
+     wc        print number of entities, subscriptions, registrations or types
      man       print urls of document
      ls        list entities
      rm        remove entities
+     receiver  notification receiver
      template  create template of subscription or registration
      version   print the version of Context Broker
    MANAGEMENT:
@@ -63,12 +64,12 @@ COMMANDS:
    NGSI:
      append   append attributes
      create   create entity(ies), subscription or registration
-     delete   delete entity(ies), attribute, subscription, or registration
-     get      get entity(ies), attribute(s), subscription, registration, or type
-     list     list types, entities, subscriptions, or registrations
+     delete   delete entity(ies), attribute, subscription or registration
+     get      get entity(ies), attribute(s), subscription, registration or type
+     list     list types, entities, subscriptions or registrations
      replace  replace entities or attributes
-     update   update entities, attribute(s), or subscription
-     upsert   upsert entities
+     update   update entities, attribute(s) or subscription
+     upsert   upsert entity or entities
 
 GLOBAL OPTIONS:
    --syslog LEVEL  specify logging LEVEL (off, err, info, debug)
@@ -92,5 +93,5 @@ ngsi --version
 ```
 
 ```text
-ngsi version 0.3.0 (git_hash:d466356676201c8b237eaa4e768b9742d1b91120)
+ngsi version 0.4.0 (git_hash:92b31f9c7fd1e0aad13e2aca14e73e6566adab2e)
 ```
