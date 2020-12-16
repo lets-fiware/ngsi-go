@@ -133,6 +133,61 @@ func TestEntityCreateErrorNewClient(t *testing.T) {
 	}
 }
 
+func TestEntityCreateErrorLdKeyValues(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "keyValues")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--keyValues"})
+	err := entityCreate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "--keyValues only available on NGSIv2", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntityCreateErrorLdUpsert(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "upsert")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--upsert"})
+	err := entityCreate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "--upsert only available on NGSIv2", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
 func TestEntityCreateErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -153,7 +208,7 @@ func TestEntityCreateErrorReadAll(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "data is empty", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -181,7 +236,7 @@ func TestEntityCreateErrorSafeString(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -208,7 +263,7 @@ func TestEntityCreateErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -234,7 +289,7 @@ func TestEntityCreateErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -477,26 +532,6 @@ func TestEntityUpsertV2SafeString(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestEntityUpsertLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/ngsi-ld/v1/entities"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,data")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}"})
-	err := entityUpsert(c)
-
-	assert.NoError(t, err)
-}
-
 func TestEntityUpsertErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -532,6 +567,32 @@ func TestEntityUpsertErrorNewClient(t *testing.T) {
 	}
 }
 
+func TestEntityUpsertErrorLd(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,data")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}"})
+	err := entityUpsert(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "only available on NGSIv2", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntityUpsertErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -552,7 +613,7 @@ func TestEntityUpsertErrorReadAll(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "data is empty", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -580,7 +641,7 @@ func TestEntityUpsertErrorSafeString(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -607,7 +668,7 @@ func TestEntityUpsertErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -633,7 +694,7 @@ func TestEntityUpsertErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
