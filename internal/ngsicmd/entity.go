@@ -51,6 +51,15 @@ func entityCreate(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
+	if client.IsNgsiLd() {
+		if c.IsSet("keyValues") {
+			return &ngsiCmdError{funcName, 3, "--keyValues only available on NGSIv2", err}
+		}
+		if c.IsSet("upsert") {
+			return &ngsiCmdError{funcName, 4, "--upsert only available on NGSIv2", err}
+		}
+	}
+
 	client.SetPath("/entities")
 
 	var opts = []string{"keyValues", "upsert"}
@@ -61,22 +70,22 @@ func entityCreate(c *cli.Context) error {
 
 	b, err := readAll(c, ngsi)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return &ngsiCmdError{funcName, 5, err.Error(), err}
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return &ngsiCmdError{funcName, 7, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 8, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil
@@ -134,6 +143,10 @@ func entityUpsert(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
+	if client.IsNgsiLd() {
+		return &ngsiCmdError{funcName, 3, "only available on NGSIv2", err}
+	}
+
 	client.SetPath("/entities")
 
 	v := url.Values{}
@@ -148,22 +161,22 @@ func entityUpsert(c *cli.Context) error {
 
 	b, err := readAll(c, ngsi)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil
