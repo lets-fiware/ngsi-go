@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -85,7 +84,7 @@ func TestAttrsReadV2SafeString(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"CO\":{\"metadata\":{},\"type\":\"Number\",\"value\":400.463869544}}\n"
+		expected := "{\"CO\":{\"type\":\"Number\",\"value\":400.463869544,\"metadata\":{}}}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -100,12 +99,11 @@ func TestAttrsReadV2ErrorSafeString(t *testing.T) {
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
+	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value"400.463869544,"metadata":{}}}`)
 	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attrName=CO"})
@@ -114,7 +112,8 @@ func TestAttrsReadV2ErrorSafeString(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		expected := "invalid character '4' after object key (30) Number\",\"value\"400.463869544,\""
+		assert.Equal(t, expected, ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -351,16 +350,15 @@ func TestAttrsAppendV2SafeStringError(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value: true}"})
 	err := attrsAppend(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -546,15 +544,14 @@ func TestAttrsUpdateV2SafeStringError(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}"})
 	err := attrsUpdate(c)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "json error: :{\"value\":true}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -740,16 +737,15 @@ func TestAttrsReplaceV2SafeStringError(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}"})
 	err := attrsReplace(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "json error: :{\"value\":true}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

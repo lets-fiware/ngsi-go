@@ -231,13 +231,13 @@ func TestEntityCreateErrorSafeString(t *testing.T) {
 	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--data={", "--safeString=on"})
 	err := entityCreate(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "json error: {", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -329,7 +329,7 @@ func TestEntityReadV2SafeString(t *testing.T) {
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
+	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type":"Product","name%25":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -342,7 +342,7 @@ func TestEntityReadV2SafeString(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"id\":\"urn:ngsi-ld:Product:010\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"price\":{\"type\":\"Integer\",\"value\":99},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"type\":\"Product\"}\n"
+		expected := "{\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name%\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -469,12 +469,11 @@ func TestEntityReadV2ErrorSafeString(t *testing.T) {
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
+	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type:"Product","name":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	setupFlagString(set, "host,id,safeString")
 
@@ -485,7 +484,7 @@ func TestEntityReadV2ErrorSafeString(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "invalid character 'P' after object key (39) ct:010\",\"type:\"Product\",\"name\"", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -633,16 +632,15 @@ func TestEntityUpsertErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	setupFlagString(set, "host,data,safeString")
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--data={,}", "--safeString=on"})
 	err := entityUpsert(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "invalid character ',' (1) {,}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

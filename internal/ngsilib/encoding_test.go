@@ -305,7 +305,7 @@ func TestJsonUnmarshalErrorJSON(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "invalid character 'a' looking for beginning of value (8) {\"id\": aa", ngsiErr.Message)
+		assert.Equal(t, "invalid character 'a' looking for beginning of value (5) {\"id\": aa", ngsiErr.Message)
 	}
 }
 
@@ -317,74 +317,22 @@ func TestJsonUnmarshalErrorJSONEof(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error: {", ngsiErr.Message)
 	}
 }
 
-func TestJsonUnmarshalErrorNonPointer(t *testing.T) {
+func TestJsonUnmarshalErrorJSONNoSafeString(t *testing.T) {
 	testNgsiLibInit()
 
 	var template subscriptionQuery
-	err := jsonUnmarshal([]byte(test), template, true, SafeStringEncode)
+	err := jsonUnmarshal([]byte(`{"name":aa`), template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "non-pointer", ngsiErr.Message)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "invalid character 'a' looking for beginning of value (9) {\"name\":aa", ngsiErr.Message)
 	}
-}
-func TestCovertNil(t *testing.T) {
-	convert(nil, SafeStringEncode)
-}
-
-func TestCovertStructStruct(t *testing.T) {
-	type Child struct {
-		Name string
-	}
-	type Parent struct {
-		Child Child
-	}
-
-	p := Parent{Child: Child{Name: "test"}}
-
-	convert(&p, SafeStringEncode)
-}
-
-func TestCovertStructPointerStruct(t *testing.T) {
-	type Child struct {
-		Name string
-	}
-	type Parent struct {
-		Child *Child
-	}
-
-	p := Parent{Child: &Child{Name: "test"}}
-
-	convert(&p, SafeStringEncode)
-}
-
-func TestCovertSliceString(t *testing.T) {
-	data := []string{"abc", "xyz"}
-
-	convert(&data, SafeStringEncode)
-}
-
-func TestCovertMapString(t *testing.T) {
-	data := map[string]string{}
-	data["abc"] = "xyz"
-
-	convert(&data, SafeStringEncode)
-}
-
-func TestCovertMapMapString(t *testing.T) {
-	type strmap map[string]string
-
-	data := map[string]strmap{}
-	data2 := strmap{"abc": "xyz"}
-	data["abc"] = data2
-
-	convert(&data, SafeStringEncode)
 }
 
 // subscription query
