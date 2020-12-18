@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -238,14 +237,13 @@ func TestAttrReadV2ErrorSafeString(t *testing.T) {
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"name":"%25"}`)
+	reqRes.ResBody = []byte(`{"name":`)
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:001/attrs/price/value"
 
 	AddReqRes(ngsi, reqRes)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--safeString=on"})
@@ -254,7 +252,7 @@ func TestAttrReadV2ErrorSafeString(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "json error: {\"name\"", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

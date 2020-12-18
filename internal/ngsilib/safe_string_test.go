@@ -110,48 +110,42 @@ func TestJSONSafeStringEncode(t *testing.T) {
 	}
 
 	input = `{"id":"abc","type":"%<>\"'=;()","speed":{"type":"Text","value":"xyz()"},"array":{"type":"=struct%%","value":[1,"<abc>"]}}`
-	expected = `{"array":{"type":"%3Dstruct%25%25","value":[1,"%3Cabc%3E"]},"id":"abc","speed":{"type":"Text","value":"xyz%28%29"},"type":"%25%3C%3E%22%27%3D%3B%28%29"}`
+	expected = `{"id":"abc","type":"%25%3C%3E%22%27%3D%3B%28%29","speed":{"type":"Text","value":"xyz%28%29"},"array":{"type":"%3Dstruct%25%25","value":[1,"%3Cabc%3E"]}}`
 
 	actual, err = JSONSafeStringEncode([]byte(input))
 
 	if assert.NoError(t, err) {
-		assert.Equal(t, []byte(expected), actual)
+		assert.Equal(t, string([]byte(expected)), string(actual))
 	} else {
 		t.FailNow()
 	}
 }
 
 func TestJSONSafeStringErrorEncode1(t *testing.T) {
-	ngsi := testNgsiLibInit()
+	testNgsiLibInit()
 
-	j := gNGSI.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{Jsonlib: j, DecodeErr: errors.New("json error")}
-
-	input := `{"id":"abc","type":"%<>\"'=;()","speed":{"type":"Text","value":"xyz()"},"array":{"type":"=struct%%","value":[1,"<abc>"]}}`
+	input := `{"id":"abc","type:"%<>\"'=;()","speed":{"type":"Text","value":"xyz()"},"array":{"type":"=struct%%","value":[1,"<abc>"]}}`
 	_, err := JSONSafeStringEncode([]byte(input))
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "invalid character '%' after object key (19) \":\"abc\",\"type:\"%<>\\\"'=;()\",\"sp", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
 func TestJSONSafeStringErrorEncode2(t *testing.T) {
-	ngsi := testNgsiLibInit()
+	testNgsiLibInit()
 
-	j := gNGSI.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
-
-	input := `{"id":"abc","type":"%<>\"'=;()","speed":{"type":"Text","value":"xyz()"},"array":{"type":"=struct%%","value":[1,"<abc>"]}}`
+	input := `{"id":"abc","type":"%<>\"'=;()","speed:{"type":"Text","value":"xyz()"},"array":{"type":"=struct%%","value":[1,"<abc>"]}}`
 	_, err := JSONSafeStringEncode([]byte(input))
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "invalid character 't' after object key (41) =;()\",\"speed:{\"type\":\"Text\",\"v", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -183,15 +177,14 @@ func TestJSONSafeStringDecodeJSON(t *testing.T) {
 }
 
 func TestJSONSafeStringDecodeErrorMarshal(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	testNgsiLibInit()
 
-	_, err := JSONSafeStringDecode([]byte(`{"name":"%25"}`))
+	_, err := JSONSafeStringDecode([]byte(`{"name":%25"}`))
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "invalid character '%' looking for beginning of value (7) {\"name\":%25\"}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -203,13 +196,65 @@ func TestJSONSafeStringDecodeErrorUnmarshal(t *testing.T) {
 	j := ngsi.JSONConverter
 	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
 
-	_, err := JSONSafeStringDecode([]byte(`{"name":"%25"}`))
+	_, err := JSONSafeStringDecode([]byte(`{"name":"%25}`))
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	} else {
 		t.FailNow()
+	}
+}
+
+func testStringFunc(s string) string {
+	return s
+}
+func TestJsonParser(t *testing.T) {
+	cases := []struct {
+		data     string
+		expected string
+	}{
+		{data: `1`, expected: `1`},
+		{data: `null`, expected: `null`},
+		{data: `{}`, expected: `{}`},
+		{data: `[]`, expected: `[]`},
+		{data: `[1,2,3]`, expected: `[1,2,3]`},
+		{data: `["a","b","c"]`, expected: `["a","b","c"]`},
+		{data: `[{},{},{}]`, expected: `[{},{},{}]`},
+		{data: `{"array":[{},{},{}]}`, expected: `{"array":[{},{},{}]}`},
+		{
+			data:     `{"a":12.01,"Null":null,"id":"5fd412e8ecb082767349b975","subject":{"entities":[{"idPattern":".*"},{}],"condition":{}},"notification":{"timesSent":17,"lastNotification":"2020-12-12T06:16:11.000Z","lastSuccess":"2020-12-12T06:16:11.000Z","lastSuccessCode":204,"onlyChangedAttrs":false,"http":{"url":"http://172.22.143.188:1028/"},"attrsFormat":"normalized"},"status":"active"}`,
+			expected: `{"a":12.01,"Null":null,"id":"5fd412e8ecb082767349b975","subject":{"entities":[{"idPattern":".*"},{}],"condition":{}},"notification":{"timesSent":17,"lastNotification":"2020-12-12T06:16:11.000Z","lastSuccess":"2020-12-12T06:16:11.000Z","lastSuccessCode":204,"onlyChangedAttrs":false,"http":{"url":"http://172.22.143.188:1028/"},"attrsFormat":"normalized"},"status":"active"}`,
+		},
+	}
+
+	for _, c := range cases {
+		actual, err := jsonParser([]byte(c.data), testStringFunc)
+		if assert.NoError(t, err) {
+			assert.Equal(t, c.expected, string(actual))
+		} else {
+			t.FailNow()
+		}
+	}
+}
+
+func TestJsonParserError(t *testing.T) {
+	data := `{"name":`
+	_, err := jsonParser([]byte(data), testStringFunc)
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error: {\"name\"", ngsiErr.Message)
+	}
+}
+
+func TestJsonParserError2(t *testing.T) {
+	data := `{"name":"abcdefghijklmn"`
+	_, err := jsonParser([]byte(data), testStringFunc)
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error: abcdefghijklmn\"", ngsiErr.Message)
 	}
 }

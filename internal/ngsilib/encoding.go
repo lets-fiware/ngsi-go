@@ -33,7 +33,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"reflect"
 )
 
 // IsJSON is ...
@@ -89,10 +88,6 @@ func JSONMarshalDecode(v interface{}, safeString bool) ([]byte, error) {
 func jsonMarshal(v interface{}, safeString bool, f func(string) string) ([]byte, error) {
 	const funcName = "jsonMarshal"
 
-	if safeString {
-		convert(v, f)
-	}
-
 	buffer := &bytes.Buffer{}
 	err := gNGSI.JSONConverter.Encode(buffer, v)
 	if err != nil {
@@ -102,6 +97,11 @@ func jsonMarshal(v interface{}, safeString bool, f func(string) string) ([]byte,
 	if b[len(b)-1] == 0xa {
 		b = b[:len(b)-1]
 	}
+
+	if safeString {
+		b, _ = jsonParser(b, f)
+	}
+
 	return b, nil
 }
 
@@ -125,6 +125,15 @@ func JSONUnmarshalDecode(data []byte, v interface{}, safeString bool) error {
 func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) string) error {
 	const funcName = "jsonUnmarshal"
 
+	if safeString {
+		var err error
+		data, err = jsonParser(data, f)
+		if err != nil {
+			return &NgsiLibError{funcName, 1, err.Error(), err}
+		}
+
+	}
+
 	err := gNGSI.JSONConverter.Decode(bytes.NewReader(data), &v)
 	if err != nil {
 		if err, ok := err.(*json.SyntaxError); ok {
@@ -136,105 +145,10 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 			if e > int64(len(data)) {
 				e = int64(len(data))
 			}
-			return &NgsiLibError{funcName, 1, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(data[s:e])), err}
+			return &NgsiLibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(data[s:e])), err}
 		}
-		return &NgsiLibError{funcName, 2, err.Error(), err}
+		return &NgsiLibError{funcName, 3, err.Error(), err}
 	}
-	if safeString {
-		if reflect.ValueOf(v).Kind() != reflect.Ptr {
-			return &NgsiLibError{funcName, 3, "non-pointer", nil}
-		}
-		convert(v, f)
-	}
+
 	return nil
-}
-
-// convert is ...
-func convert(e interface{}, f func(string) string) {
-	const funcName = "convert"
-
-	if (e == nil) || reflect.ValueOf(e).IsNil() {
-		return
-	}
-	v := reflect.ValueOf(e)
-	if v.Kind() == reflect.Ptr {
-		v = reflect.Indirect(reflect.ValueOf(e))
-	}
-
-	t := v.Type()
-
-	switch t.Kind() {
-	case reflect.Interface:
-		switch reflect.ValueOf(v.Interface()).Kind() {
-		case reflect.Map:
-			convert(v.Interface().(map[string]interface{}), f)
-		case reflect.Slice:
-			convert(v.Interface().([]interface{}), f)
-		}
-	case reflect.Struct:
-		for i := 0; i < t.NumField(); i++ {
-			ft := t.Field(i)
-			fv := v.FieldByName(ft.Name)
-			switch ft.Type.Kind() {
-			case reflect.Struct, reflect.Map, reflect.Slice:
-				convert(fv.Addr().Interface(), f)
-			case reflect.Ptr:
-				switch ft.Type.Elem().Kind() {
-				case reflect.Struct, reflect.Map, reflect.Slice:
-					convert(fv.Interface(), f)
-				}
-			case reflect.String:
-				fv.SetString(f(fv.String()))
-			}
-		}
-	case reflect.Slice:
-		switch t.Elem().Kind() {
-		case reflect.Struct, reflect.Map, reflect.Slice:
-			for i := 0; i < v.Len(); i++ {
-				e := v.Index(i)
-				convert(e.Addr().Interface(), f)
-			}
-		case reflect.String:
-			for i := 0; i < v.Len(); i++ {
-				e := v.Index(i)
-				s := f(e.String())
-				v.Index(i).SetString(s)
-			}
-		case reflect.Interface:
-			for i := 0; i < v.Len(); i++ {
-				e := v.Index(i)
-				switch reflect.ValueOf(e.Interface()).Kind() {
-				case reflect.Map:
-					convert(e.Interface().(map[string]interface{}), f)
-				case reflect.String:
-					s := f(e.Interface().(string))
-					v.Index(i).Set(reflect.ValueOf(s))
-				}
-			}
-		}
-	case reflect.Map:
-		kt := v.Type().Key()
-		if kt.Kind() == reflect.String {
-			iter := v.MapRange()
-			for iter.Next() {
-				key := iter.Key().String()
-				mapv := iter.Value()
-				switch mapv.Kind() {
-				case reflect.Struct, reflect.Map, reflect.Slice:
-					convert(mapv.Interface(), f)
-				case reflect.String:
-					s := f(mapv.String())
-					v.SetMapIndex(reflect.ValueOf(key), reflect.ValueOf(s))
-				case reflect.Interface:
-					switch reflect.ValueOf(mapv.Interface()).Kind() {
-					case reflect.String:
-						s := f(mapv.Interface().(string))
-						v.SetMapIndex(reflect.ValueOf(key), reflect.ValueOf(s))
-					case reflect.Struct, reflect.Map, reflect.Slice:
-						convert(mapv.Interface(), f)
-					}
-				}
-			}
-		}
-	}
 }

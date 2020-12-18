@@ -446,20 +446,19 @@ func TestOpQueryVerboseErrorSafeString(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
-	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
+	reqRes.ResBody = []byte(`[{"id": "Sensor001","type:"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--verbose", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 	err := opQuery(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 10, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Equal(t, "invalid character 'S' after object key (27) sor001\",\"type:\"Sensor\"},{\"id\":", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

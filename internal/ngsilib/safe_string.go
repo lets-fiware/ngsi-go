@@ -30,6 +30,11 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"strconv"
 	"strings"
 )
 
@@ -83,15 +88,9 @@ func SafeStringDecode(s string) string {
 func JSONSafeStringEncode(data []byte) ([]byte, error) {
 	const funcName = "JSONSafeStringEncode"
 
-	var e interface{}
-
-	if err := JSONUnmarshalEncode(data, &e, true); err != nil {
-		return nil, &NgsiLibError{funcName, 1, err.Error(), err}
-	}
-
-	bytes, err := JSONMarshalDecode(&e, false)
+	bytes, err := jsonParser(data, SafeStringEncode)
 	if err != nil {
-		return nil, &NgsiLibError{funcName, 2, err.Error(), err}
+		return nil, &NgsiLibError{funcName, 1, err.Error(), err}
 	}
 	return bytes, nil
 }
@@ -100,19 +99,150 @@ func JSONSafeStringEncode(data []byte) ([]byte, error) {
 func JSONSafeStringDecode(data []byte) ([]byte, error) {
 	const funcName = "JSONSafeStringDecode"
 
-	if IsJSON(data) {
-		var e interface{}
-
-		if err := JSONUnmarshalEncode(data, &e, false); err != nil {
-			return nil, &NgsiLibError{funcName, 1, err.Error(), err}
-		}
-
-		bytes, err := JSONMarshalDecode(&e, true)
-		if err != nil {
-			return nil, &NgsiLibError{funcName, 2, err.Error(), err}
-		}
-		return bytes, nil
+	bytes, err := jsonParser(data, SafeStringDecode)
+	if err != nil {
+		return nil, &NgsiLibError{funcName, 1, err.Error(), err}
 	}
-	s := SafeStringDecode(string(data))
-	return []byte(s), nil
+	return bytes, nil
+}
+
+const (
+	tokenNone          = iota
+	tokenBracesOpen    // {
+	tokenBracesClose   // }
+	tokenBracketsOpen  // [
+	tokenBracketsClose // ]
+	tokenJSONKey
+	tokenJSONValue
+)
+
+func jsonParser(jsonStream []byte, f func(string) string) ([]byte, error) {
+	const funcName = "jsonParser"
+
+	if !IsJSON(jsonStream) {
+		s := f(string(jsonStream))
+		return []byte(s), nil
+	}
+
+	var err error
+	var stack [128]int
+	tokenTable := map[byte]int{
+		'{': tokenBracesOpen,
+		'}': tokenBracesClose,
+		'[': tokenBracketsOpen,
+		']': tokenBracketsClose,
+	}
+
+	p := -1
+	prevToken := tokenNone
+	mode := tokenNone
+
+	dst := new(bytes.Buffer)
+	dec := json.NewDecoder(bytes.NewReader(jsonStream))
+	for {
+		var t json.Token
+		t, err = dec.Token()
+		if err == io.EOF {
+			if p == -1 && (prevToken == tokenBracesClose || prevToken == tokenBracketsClose) {
+				err = nil
+				break
+			}
+			s := string(dst.Bytes())
+			l := len(s)
+			if l > 15 {
+				l = 15
+			}
+			return nil, &NgsiLibError{funcName, 1, "json error: " + s[len(s)-l:], err}
+		}
+		if err != nil {
+			break
+		}
+		switch t.(type) {
+		case json.Delim:
+			c := byte(t.(json.Delim))
+			switch t {
+			case json.Delim('{'), json.Delim('['):
+				p++
+				stack[p] = mode
+				switch prevToken {
+				case tokenJSONKey:
+					dst.WriteByte(':')
+				case tokenJSONValue, tokenBracesClose, tokenBracketsClose:
+					dst.WriteByte(',')
+				}
+				dst.WriteByte(c)
+				prevToken = tokenTable[c]
+				mode = prevToken
+			case json.Delim('}'), json.Delim(']'):
+				dst.WriteByte(c)
+				prevToken = tokenTable[c]
+				mode = stack[p]
+				p--
+			}
+		case string:
+			s := `"` + f(t.(string)) + `"`
+			switch mode {
+			case tokenBracketsOpen: // [
+				if prevToken != tokenBracketsOpen {
+					dst.WriteByte(',')
+				}
+				dst.WriteString(s)
+				prevToken = tokenJSONValue
+			case tokenBracesOpen: // {
+				switch prevToken {
+				case tokenBracesOpen:
+					dst.WriteString(s)
+					prevToken = tokenJSONKey
+				case tokenJSONKey:
+					dst.WriteByte(':')
+					dst.WriteString(s)
+					prevToken = tokenJSONValue
+				case tokenJSONValue, tokenBracesClose, tokenBracketsClose:
+					dst.WriteByte(',')
+					dst.WriteString(s)
+					prevToken = tokenJSONKey
+				}
+			}
+		case float64:
+			s := strconv.FormatFloat(t.(float64), 'f', -1, 64)
+			writeTokenValue(dst, mode, s, &prevToken)
+		case bool:
+			s := strconv.FormatBool(t.(bool))
+			writeTokenValue(dst, mode, s, &prevToken)
+		case nil:
+			s := "null"
+			writeTokenValue(dst, mode, s, &prevToken)
+		}
+	}
+	if err != nil {
+		if err, ok := err.(*json.SyntaxError); ok {
+			s := err.Offset - 15
+			if s < 0 {
+				s = 0
+			}
+			e := err.Offset + 15
+			if e > int64(len(jsonStream)) {
+				e = int64(len(jsonStream))
+			}
+
+			return nil, &NgsiLibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(jsonStream[s:e])), err}
+		}
+		return nil, &NgsiLibError{funcName, 3, err.Error(), err}
+	}
+	return dst.Bytes(), nil
+}
+
+func writeTokenValue(dst *bytes.Buffer, mode int, s string, prevToken *int) {
+	switch mode {
+	case tokenBracketsOpen: // [
+		if *prevToken != tokenBracketsOpen {
+			dst.WriteByte(',')
+		}
+		dst.WriteString(s)
+		*prevToken = tokenJSONValue
+	case tokenBracesOpen: // {
+		dst.WriteByte(':')
+		dst.WriteString(s)
+		*prevToken = tokenJSONValue
+	}
 }
