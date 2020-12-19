@@ -253,6 +253,7 @@ var lsCmd = cli.Command{
 		linkFlag,
 		verboseFlag,
 		linesFlag,
+		prettyFlag,
 		safeStringFlag,
 	},
 	Action: func(c *cli.Context) error {
@@ -334,6 +335,7 @@ var templateCmd = cli.Command{
 				attrsFormatFlag,
 				notifyURLFlag,
 				getFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return subscriptionsTemplate(c)
@@ -357,6 +359,7 @@ var templateCmd = cli.Command{
 				legacyFlag,
 				forwardingModeFlag,
 				statusFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return registrationsTemplate(c)
@@ -373,7 +376,7 @@ var receiverCmd = cli.Command{
 		receiverHostFlag,
 		receiverPortFlag,
 		receiverURLFlag,
-		receiverPrettyFlag,
+		prettyFlag,
 		receiverHTTPSFlag,
 		receiverKeyFlag,
 		receiverCertFlag,
@@ -408,6 +411,7 @@ var brokersCmd = cli.Command{
 			Flags: []cli.Flag{
 				hostFlag,
 				jsonFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return brokersList(c)
@@ -419,6 +423,7 @@ var brokersCmd = cli.Command{
 			Flags: []cli.Flag{
 				hostFlag,
 				jsonFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return brokersGet(c)
@@ -578,6 +583,7 @@ var tokenCmd = cli.Command{
 		hostFlag,
 		verboseFlag,
 		expiresFlag,
+		prettyFlag,
 	},
 	Category: "MANAGEMENT",
 	Action: func(c *cli.Context) error {
@@ -822,6 +828,7 @@ var getCmd = cli.Command{
 				verboseFlag,
 				linesFlag,
 				dataFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -840,6 +847,7 @@ var getCmd = cli.Command{
 				uniqueFlag,
 				sysAttrsFlag,
 				linkFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -853,6 +861,7 @@ var getCmd = cli.Command{
 				idRFlag,
 				typeFlag,
 				attrNameRFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -870,6 +879,7 @@ var getCmd = cli.Command{
 				keyValuesFlag,
 				valuesFlag,
 				uniqueFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -882,6 +892,7 @@ var getCmd = cli.Command{
 			Flags: []cli.Flag{
 				idRFlag,
 				localTimeFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -894,6 +905,7 @@ var getCmd = cli.Command{
 			Flags: []cli.Flag{
 				idRFlag,
 				localTimeFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -905,6 +917,7 @@ var getCmd = cli.Command{
 			Usage: "get type",
 			Flags: []cli.Flag{
 				typeRFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return typeGet(c)
@@ -930,6 +943,7 @@ var listCmd = cli.Command{
 			Flags: []cli.Flag{
 				verboseFlag,
 				jsonFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return typesList(c)
@@ -958,6 +972,7 @@ var listCmd = cli.Command{
 				linkFlag,
 				verboseFlag,
 				linesFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -974,6 +989,7 @@ var listCmd = cli.Command{
 				localTimeFlag,
 				queryFlag,
 				itemsFlag,
+				prettyFlag,
 				safeStringFlag,
 				countFlag,
 			},
@@ -988,6 +1004,7 @@ var listCmd = cli.Command{
 				verboseFlag,
 				jsonFlag,
 				localTimeFlag,
+				prettyFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -1198,6 +1215,7 @@ var adminCmd = cli.Command{
 			Flags: []cli.Flag{
 				levelFlag,
 				loggingFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return adminLog(c)
@@ -1221,6 +1239,7 @@ var adminCmd = cli.Command{
 			Usage: "print semaphore",
 			Flags: []cli.Flag{
 				loggingFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return adminSemaphore(c)
@@ -1233,6 +1252,7 @@ var adminCmd = cli.Command{
 				deleteFlag,
 				resetFlag,
 				loggingFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return adminMetrics(c)
@@ -1244,6 +1264,7 @@ var adminCmd = cli.Command{
 			Flags: []cli.Flag{
 				deleteFlag,
 				loggingFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return adminStatistics(c)
@@ -1255,6 +1276,7 @@ var adminCmd = cli.Command{
 			Flags: []cli.Flag{
 				deleteFlag,
 				loggingFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return adminCacheStatistics(c)

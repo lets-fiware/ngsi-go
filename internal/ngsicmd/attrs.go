@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 
@@ -72,6 +73,16 @@ func attrsRead(c *cli.Context) error {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
 	}
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		return nil
+	}
+
 	fmt.Fprintln(ngsi.StdWriter, string(body))
 
 	return nil

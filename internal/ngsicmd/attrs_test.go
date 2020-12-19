@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -64,6 +65,33 @@ func TestAttrsReadV2(t *testing.T) {
 	}
 }
 
+func TestAttrsReadV2Pretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagBool(set, "append,keyValues,pretty")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
+	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO", "--pretty"})
+	err := attrsRead(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"CO\": {\n    \"type\": \"Number\",\n    \"value\": 400.463869544,\n    \"metadata\": {}\n  }\n}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestAttrsReadV2SafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -86,34 +114,6 @@ func TestAttrsReadV2SafeString(t *testing.T) {
 		actual := buf.String()
 		expected := "{\"CO\":{\"type\":\"Number\",\"value\":400.463869544,\"metadata\":{}}}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestAttrsReadV2ErrorSafeString(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value"400.463869544,"metadata":{}}}`)
-	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attrName=CO"})
-	err := attrsRead(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-		expected := "invalid character '4' after object key (30) Number\",\"value\"400.463869544,\""
-		assert.Equal(t, expected, ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -216,6 +216,63 @@ func TestAttrsReadErrorHTTPStatus(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestAttrsReadV2ErrorSafeString(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagBool(set, "append,keyValues")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value"400.463869544,"metadata":{}}}`)
+	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attrName=CO"})
+	err := attrsRead(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		expected := "invalid character '4' after object key (30) Number\",\"value\"400.463869544,\""
+		assert.Equal(t, expected, ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestAttrsReadV2ErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagBool(set, "append,keyValues,pretty")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
+	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO", "--pretty"})
+	err := attrsRead(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

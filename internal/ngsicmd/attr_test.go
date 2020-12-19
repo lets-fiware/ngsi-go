@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -60,6 +61,35 @@ func TestAttrReadV2(t *testing.T) {
 	if assert.NoError(t, err) {
 		actual := buf.String()
 		expected := "89\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestAttrReadV2Pretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagBool(set, "append,keyValues,pretty")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"name":"fiware"}`)
+	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:001/attrs/price/value"
+
+	AddReqRes(ngsi, reqRes)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--pretty", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	err := attrRead(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"name\": \"fiware\"\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -253,6 +283,37 @@ func TestAttrReadV2ErrorSafeString(t *testing.T) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: {\"name\"", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+func TestAttrReadV2ErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagBool(set, "append,keyValues,pretty")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"name":"fiware"}`)
+	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:001/attrs/price/value"
+
+	AddReqRes(ngsi, reqRes)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--pretty", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	err := attrRead(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

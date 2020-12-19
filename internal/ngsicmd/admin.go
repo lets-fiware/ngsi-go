@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -62,7 +63,7 @@ func adminLog(c *cli.Context) error {
 	if c.IsSet("level") {
 		level := strings.ToLower(c.String("level"))
 
-		if !ngsilib.Contains([]string{"NONE", "FATAL", "ERROR", "WARN", "INFO", "DEBUG"}, level) {
+		if !ngsilib.Contains([]string{"none", "fatal", "error", "warn", "info", "debug"}, level) {
 			return &ngsiCmdError{funcName, 4, "log level error: " + level + " (none, fatal, error, warn, info, debug)", nil}
 		}
 
@@ -87,7 +88,16 @@ func adminLog(c *cli.Context) error {
 		if res.StatusCode != http.StatusOK {
 			return &ngsiCmdError{funcName, 8, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 		}
-		fmt.Fprint(ngsi.StdWriter, string(body))
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 9, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprint(ngsi.StdWriter, string(body))
+		}
 
 		if c.IsSet("logging") {
 			ngsi.Logging(ngsilib.LogInfo, string(body))
@@ -221,7 +231,16 @@ func adminMetrics(c *cli.Context) error {
 		if res.StatusCode != http.StatusOK {
 			return &ngsiCmdError{funcName, 8, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 		}
-		fmt.Fprint(ngsi.StdWriter, string(body))
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 9, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprint(ngsi.StdWriter, string(body))
+		}
 
 		if c.IsSet("logging") {
 			ngsi.Logging(ngsilib.LogInfo, string(body))
@@ -257,7 +276,16 @@ func adminSemaphore(c *cli.Context) error {
 	if res.StatusCode != http.StatusOK {
 		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
-	fmt.Fprint(ngsi.StdWriter, string(body))
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+	} else {
+		fmt.Fprint(ngsi.StdWriter, string(body))
+	}
 
 	if c.IsSet("logging") {
 		ngsi.Logging(ngsilib.LogInfo, string(body))
@@ -305,7 +333,16 @@ func adminStatistics(c *cli.Context) error {
 		if res.StatusCode != http.StatusOK {
 			return &ngsiCmdError{funcName, 7, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 		}
-		fmt.Fprint(ngsi.StdWriter, string(body))
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprint(ngsi.StdWriter, string(body))
+		}
 
 		if c.IsSet("logging") {
 			ngsi.Logging(ngsilib.LogInfo, string(body))
@@ -354,7 +391,16 @@ func adminCacheStatistics(c *cli.Context) error {
 		if res.StatusCode != http.StatusOK {
 			return &ngsiCmdError{funcName, 7, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 		}
-		fmt.Fprint(ngsi.StdWriter, string(body))
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprint(ngsi.StdWriter, string(body))
+		}
 
 		if c.IsSet("logging") {
 			ngsi.Logging(ngsilib.LogInfo, string(body))

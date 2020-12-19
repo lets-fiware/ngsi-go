@@ -56,6 +56,7 @@ ngsi template subscription [options]
 | --metadata value          | specify metadata (v2)                                          |
 | --exceptAttrs value       | specify exceptAttrs (v2)                                       |
 | --attrsFormat value       | specify attrsFormat (v2)                                       |
+| --pretty, -P              | pretty format (default: false)                                 |
 | --help                    | show help (default: false)                                     |
 
 ### Example for NGSI-LD
@@ -211,6 +212,7 @@ ngsi template registration
 | --forwardingMode value     | specify forwarding mode                         |
 | --expires value, -e value  | specify expires                                 |
 | --status value             | specify status                                  |
+| --pretty, -P               | pretty format (default: false)                  |
 | --help                     | show help (default: false)                      |
 
 ### Example for NGSI-LD

@@ -435,6 +435,12 @@ var (
 		Aliases: []string{"j"},
 		Usage:   "JSON format",
 	}
+	prettyFlag = &cli.BoolFlag{
+		Name:    "pretty",
+		Aliases: []string{"P"},
+		Value:   false,
+		Usage:   "pretty format",
+	}
 	skipInitialNotificationFlag = &cli.BoolFlag{
 		Name:  "skipInitialNotification",
 		Usage: "skipInitialNotification",
@@ -563,11 +569,6 @@ var (
 		Aliases: []string{"u"},
 		Value:   "/",
 		Usage:   "url for receiver",
-	}
-	receiverPrettyFlag = &cli.BoolFlag{
-		Name:    "pretty",
-		Aliases: []string{"P"},
-		Usage:   "pretty format",
 	}
 	receiverHTTPSFlag = &cli.BoolFlag{
 		Name:    "https",

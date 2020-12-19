@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -137,12 +138,21 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		}
 	}
 
-	if c.IsSet("json") {
+	if c.IsSet("json") || c.Bool("pretty") {
 		b, err := ngsilib.JSONMarshal(registrations)
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(b))
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 6, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprintln(ngsi.StdWriter, string(b))
+		}
 	} else if c.IsSet("verbose") {
 		local := c.IsSet("localTime")
 		for _, e := range registrations {
@@ -185,6 +195,15 @@ func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 	b, err := ngsilib.JSONMarshal(&r)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
+	}
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		return nil
 	}
 	fmt.Fprint(ngsi.StdWriter, string(b))
 
@@ -260,6 +279,16 @@ func registrationsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 3, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		return nil
+	}
+
 	fmt.Fprint(ngsi.StdWriter, string(b))
 	return nil
 }

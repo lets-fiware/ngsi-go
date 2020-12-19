@@ -32,6 +32,7 @@ ngsi ls [options]
 | --id value, -i value          | specify id                                  |
 | --link value, -L value        | specify @context                            |
 | --verbose, -v                 | specify verbose (default: false)            |
+| --pretty, -P                  | pretty format (default: false)              |
 | --lines, -1                   | specify lines (default: false)              |
 | --help                        | show help (default: false)                  |
 
@@ -113,7 +114,7 @@ ngsi ls --type Product --idPattern '1{2}' --count
 #### Request:
 
 ```console
-ngsi ls --type Product --idPattern '1{2}' --verbose | jq .
+ngsi ls --type Product --idPattern '1{2}' --verbose --pretty
 [
   {
     "id": "urn:ngsi-ld:Product:110",
@@ -178,7 +179,7 @@ ngsi ls --type Product --idPattern '1{2}' --verbose | jq .
 #### Request:
 
 ```console
-ngsi ls --type Product --idPattern '1{2}' --verbose --keyValues | jq .
+ngsi ls --type Product --idPattern '1{2}' --verbose --keyValues --pretty
 [
   {
     "id": "urn:ngsi-ld:Product:110",

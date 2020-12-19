@@ -12,6 +12,7 @@ ngsi token [options]
 | ---------------------- | ------------------------------------------- |
 | --host value, -h value | specify host or alias (Required)            |
 | --verbose, -v          | print detailed information (default: false) |
+| --pretty, -P           | pretty format (default: false)              |
 | --expires, -e          | print expires (default: false)              |
 | --help                 | show help (default: false)                  |
 

@@ -118,7 +118,7 @@ You will find the following message on the terminal that you ran `ngsi receiver`
 #### Print the subscription
 
 ```console
-ngsi get subscription --id 5fd412e8ecb082767349b975 | jq .
+ngsi get subscription --id 5fd412e8ecb082767349b975 --pretty
 ```
 
 ```json

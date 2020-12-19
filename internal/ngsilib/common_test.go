@@ -272,6 +272,15 @@ func TestJSONLibEncode(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestIndent(t *testing.T) {
+	j := &jsonLib{}
+	buf := &bytes.Buffer{}
+	src := []byte("{}")
+	err := j.Indent(buf, src, "", "  ")
+
+	assert.NoError(t, err)
+}
+
 func TestTimeLibNow(t *testing.T) {
 	time := &timeLib{}
 

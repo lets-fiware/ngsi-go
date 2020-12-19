@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -45,12 +46,21 @@ func brokersList(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	if c.IsSet("json") {
+	if c.IsSet("json") || c.Bool("pretty") {
 		lists, err := ngsi.BrokerList().BrokerInfoJSON("")
 		if err != nil {
 			return &ngsiCmdError{funcName, 2, err.Error(), err}
 		}
-		fmt.Fprint(ngsi.StdWriter, *lists)
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, []byte(*lists), "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 3, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprint(ngsi.StdWriter, *lists)
+		}
 	} else {
 		info := ngsi.BrokerList()
 		list := info.List()
@@ -74,20 +84,29 @@ func brokersGet(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, "Required host not found", nil}
 	}
 
-	if c.IsSet("json") {
+	if c.IsSet("json") || c.Bool("pretty") {
 		lists, err := ngsi.BrokerList().BrokerInfoJSON(host)
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, host + " not found", err}
 		}
-		fmt.Fprint(ngsi.StdWriter, *lists)
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, []byte(*lists), "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 4, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprint(ngsi.StdWriter, *lists)
+		}
 	} else {
 		info, err := ngsi.BrokerList().BrokerInfo(host)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, host + " not found", err}
+			return &ngsiCmdError{funcName, 5, host + " not found", err}
 		}
 		b, err := ngsilib.JSONMarshal(info)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
 		fmt.Fprintln(ngsi.StdWriter, string(b))
 	}

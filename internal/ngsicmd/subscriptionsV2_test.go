@@ -243,6 +243,37 @@ func TestSubscriptionssubscriptionsListV2Json(t *testing.T) {
 	}
 }
 
+func TestSubscriptionssubscriptionsListV2JsonPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionData)
+	reqRes.Path = "/v2/subscriptions"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "status,query")
+	setupFlagBool(set, "json,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--status=inactive", "--json", "--pretty"})
+
+	err := subscriptionsListV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "[\n  {\n    \"id\": \"9f6c254ac4a6068bb276774e\",\n    \"description\": \"ngsi source subscription\",\n    \"subject\": {\n      \"entities\": [\n        {\n          \"idPattern\": \".*\"\n        }\n      ],\n      \"condition\": {\n        \"attrs\": [\n          \"dateObserved\"\n        ]\n      }\n    },\n    \"notification\": {\n      \"timesSent\": 28,\n      \"lastNotification\": \"2020-09-24T07:30:02.00Z\",\n      \"lastSuccess\": \"2020-09-24T07:30:02.00Z\",\n      \"lastSuccessCode\": 404,\n      \"onlyChangedAttrs\": false,\n      \"http\": {\n        \"url\": \"https://ngsiproxy\"\n      },\n      \"attrsFormat\": \"keyValues\"\n    },\n    \"expires\": \"2020-09-24T07:49:13.00Z\",\n    \"status\": \"inactive\"\n  }\n]\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestSubscriptionssubscriptionsListV2JsonCount0(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -537,6 +568,40 @@ func TestSubscriptionssubscriptionsListV2ErrorMarshal(t *testing.T) {
 	}
 }
 
+func TestSubscriptionssubscriptionsListV2ErrorJSONPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(subscriptionData)
+	reqRes.Path = "/v2/subscriptions"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "status,query")
+	setupFlagBool(set, "json,pretty")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--status=inactive", "--json", "--pretty"})
+
+	err := subscriptionsListV2(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestSubscriptionssubscriptionsListV2ErrorHTTPItems(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -560,7 +625,7 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTPItems(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -588,6 +653,36 @@ func TestSubscriptionsGetV2(t *testing.T) {
 	if assert.NoError(t, err) {
 		actual := buf.String()
 		expected := "{\"id\":\"4f6c2576c4a6068bb276774f\",\"description\":\"FIWARE\",\"subject\":{\"entities\":[{\"idPattern\":\".*\",\"type\":\"WeatherObserved\"}],\"condition\":{\"attrs\":[\"dateRetrieved\"]}},\"notification\":{\"timesSent\":278,\"lastNotification\":\"2020-09-24T07:40:26.00Z\",\"lastSuccess\":\"2020-09-24T07:40:26.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:56.00Z\",\"status\":\"active\"}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsGetV2Pretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	setupFlagString(set, "id")
+	setupFlagBool(set, "pretty")
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
+	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c", "--pretty"})
+
+	err := subscriptionGetV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"id\": \"4f6c2576c4a6068bb276774f\",\n  \"description\": \"FIWARE\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\",\n        \"type\": \"WeatherObserved\"\n      }\n    ],\n    \"condition\": {\n      \"attrs\": [\n        \"dateRetrieved\"\n      ]\n    }\n  },\n  \"notification\": {\n    \"timesSent\": 278,\n    \"lastNotification\": \"2020-09-24T07:40:26.00Z\",\n    \"lastSuccess\": \"2020-09-24T07:40:26.00Z\",\n    \"lastSuccessCode\": 404,\n    \"onlyChangedAttrs\": false,\n    \"http\": {\n      \"url\": \"https://ngsiproxy\"\n    },\n    \"attrsFormat\": \"keyValues\"\n  },\n  \"expires\": \"2020-09-24T07:49:56.00Z\",\n  \"status\": \"active\"\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -704,6 +799,39 @@ func TestSubscriptionsGetV2ErrorMarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsGetV2ErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	setupFlagString(set, "id")
+	setupFlagBool(set, "pretty")
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
+	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c", "--pretty"})
+
+	err := subscriptionGetV2(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -1113,6 +1241,25 @@ func TestSubscriptionsTemplateV2(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestSubscriptionsTemplateV2Pretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupFlagString(set, "data,entityId,url")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--pretty", "--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
+
+	err := subscriptionsTemplateV2(c, ngsi)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"subject\": {\n    \"entities\": [\n      {\n        \"id\": \"abc\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://ngsiproxy\"\n    }\n  }\n}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestSubscriptionsTemplateV2Error(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -1144,6 +1291,28 @@ func TestSubscriptionsTemplateV2ErrorMarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSubscriptionsTemplateV2ErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "data,entityId,url")
+	setupFlagBool(set, "pretty")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--pretty", "--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
+	err := subscriptionsTemplateV2(c, ngsi)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
