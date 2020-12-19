@@ -80,10 +80,36 @@ func TestVersionTokenCommandJSON(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion", "--verbose"})
 	err := tokenCommand(c)
 
-	assert.NoError(t, err)
-	actual := buf.String()
-	expected := "{\"access_token\":\"c312d32a36a8a1df219a807a79323bb31941f462\",\"expires_in\":1156,\"refresh_token\":\"7cb75b47782195839ecbc7c7457f18abed853fe1\",\"scope\":[\"bearer\"],\"token_type\":\"Bearer\"}\n"
-	assert.Equal(t, expected, actual)
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"access_token\":\"c312d32a36a8a1df219a807a79323bb31941f462\",\"expires_in\":1156,\"refresh_token\":\"7cb75b47782195839ecbc7c7457f18abed853fe1\",\"scope\":[\"bearer\"],\"token_type\":\"Bearer\"}\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestVersionTokenCommandJSONPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":1156,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "verbose,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty"})
+	err := tokenCommand(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"access_token\": \"c312d32a36a8a1df219a807a79323bb31941f462\",\n  \"expires_in\": 1156,\n  \"refresh_token\": \"7cb75b47782195839ecbc7c7457f18abed853fe1\",\n  \"scope\": [\n    \"bearer\"\n  ],\n  \"token_type\": \"Bearer\"\n}\n"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestVersionTokenCommandJSONExpiresZero(t *testing.T) {
@@ -105,10 +131,11 @@ func TestVersionTokenCommandJSONExpiresZero(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion", "--verbose"})
 	err := tokenCommand(c)
 
-	assert.NoError(t, err)
-	actual := buf.String()
-	expected := "{\"access_token\":\"c312d32a36a8a1df219a807a79323bb31941f462\",\"expires_in\":0,\"refresh_token\":\"7cb75b47782195839ecbc7c7457f18abed853fe1\",\"scope\":[\"bearer\"],\"token_type\":\"Bearer\"}\n"
-	assert.Equal(t, expected, actual)
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"access_token\":\"c312d32a36a8a1df219a807a79323bb31941f462\",\"expires_in\":0,\"refresh_token\":\"7cb75b47782195839ecbc7c7457f18abed853fe1\",\"scope\":[\"bearer\"],\"token_type\":\"Bearer\"}\n"
+		assert.Equal(t, expected, actual)
+	}
 
 }
 
@@ -131,10 +158,11 @@ func TestVersionTokenCommandExpires(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion", "--expires"})
 	err := tokenCommand(c)
 
-	assert.NoError(t, err)
-	actual := buf.String()
-	expected := "1156\n"
-	assert.Equal(t, expected, actual)
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "1156\n"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestVersionTokenCommandExpiresZero(t *testing.T) {
@@ -156,10 +184,11 @@ func TestVersionTokenCommandExpiresZero(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion", "--expires"})
 	err := tokenCommand(c)
 
-	assert.NoError(t, err)
-	actual := buf.String()
-	expected := "0\n"
-	assert.Equal(t, expected, actual)
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "0\n"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 // initCmd() Error: no host
@@ -251,5 +280,35 @@ func TestVersionTokenCommandErrorJSON(t *testing.T) {
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 		assert.Error(t, err)
+	}
+}
+
+func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":1156,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "verbose,pretty")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty"})
+	err := tokenCommand(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
 	}
 }

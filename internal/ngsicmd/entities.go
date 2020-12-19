@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 
@@ -60,6 +61,9 @@ func entitiesList(c *cli.Context) error {
 	limit := 100
 
 	verbose := c.IsSet("verbose")
+	if c.Bool("pretty") {
+		verbose = true
+	}
 	values := c.IsSet("values")
 	if values {
 		verbose = true
@@ -167,12 +171,21 @@ func entitiesList(c *cli.Context) error {
 				}
 			}
 		} else if verbose {
-			buf.bufferWrite(body)
+			if c.Bool("pretty") {
+				newBuf := new(bytes.Buffer)
+				err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+				if err != nil {
+					return &ngsiCmdError{funcName, 12, err.Error(), err}
+				}
+				buf.bufferWrite(newBuf.Bytes())
+			} else {
+				buf.bufferWrite(body)
+			}
 		} else {
 			var entities entitiesRespose
 			err = ngsilib.JSONUnmarshal(body, &entities)
 			if err != nil {
-				return &ngsiCmdError{funcName, 12, err.Error(), err}
+				return &ngsiCmdError{funcName, 13, err.Error(), err}
 			}
 			for _, e := range entities {
 				fmt.Fprintln(ngsi.StdWriter, e["id"])

@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -214,13 +215,22 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 
 	if c.IsSet("count") {
 		fmt.Fprintf(ngsi.StdWriter, "%d\n", len(subscriptions))
-	} else if c.IsSet("json") {
+	} else if c.IsSet("json") || c.Bool("pretty") {
 		if len(subscriptions) > 0 {
 			b, err := ngsilib.JSONMarshal(subscriptions)
 			if err != nil {
 				return &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(b))
+			if c.Bool("pretty") {
+				newBuf := new(bytes.Buffer)
+				err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+				if err != nil {
+					return &ngsiCmdError{funcName, 7, err.Error(), err}
+				}
+				fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			} else {
+				fmt.Fprintln(ngsi.StdWriter, string(b))
+			}
 		}
 	} else if c.IsSet("verbose") {
 		items := []string{"id", "status", "expires", "description"}
@@ -228,7 +238,7 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		if c.IsSet("items") {
 			items, err = checkItems(c)
 			if err != nil {
-				return &ngsiCmdError{funcName, 7, err.Error(), err}
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
 			}
 		}
 		local := c.IsSet("localTime")
@@ -273,6 +283,16 @@ func subscriptionGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		return nil
+	}
+
 	fmt.Fprint(ngsi.StdWriter, string(b))
 	return nil
 }
@@ -394,6 +414,16 @@ func subscriptionsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 3, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		return nil
+	}
+
 	fmt.Fprint(ngsi.StdWriter, string(b))
 	return nil
 }

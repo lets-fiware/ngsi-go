@@ -231,7 +231,7 @@ ngsi create subscription --idPattern ".*" --type Sensor \
 #### Request:
 
 ```console
-ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
+ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --pretty
 {
   "id": "5fa7988a627088ba9b91b1c1",
   "subject": {

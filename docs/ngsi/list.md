@@ -98,6 +98,7 @@ ngsi list [common options] entities [options]
 | --link value, -L value    | specify @context                            |
 | --verbose, -v             | specify verbose (default: false)            |
 | --lines, -1               | specify lines (default: false)              |
+| --pretty, -P              | pretty format (default: false)              |
 | --safeString value        | use safe string (value: on/off)             |
 | --help                    | show help (default: false)                  |
 
@@ -179,7 +180,7 @@ ngsi list entities --type Product --idPattern '1{2}' --count
 #### Request:
 
 ```console
-ngsi list entities --type Product --idPattern '1{2}' --verbose | jq .
+ngsi list entities --type Product --idPattern '1{2}' --verbose --pretty
 ```
 
 ```json
@@ -247,7 +248,7 @@ ngsi list entities --type Product --idPattern '1{2}' --verbose | jq .
 #### Request:
 
 ```console
-ngsi list entities --type Product --idPattern '1{2}' --verbose --keyValues | jq .
+ngsi list entities --type Product --idPattern '1{2}' --verbose --keyValues --pretty
 ```
 
 ```json
@@ -328,6 +329,7 @@ ngsi list [common options] subscriptions [options]
 | --localTime             | specify localTime (default: false) |
 | --query value, -q value | specify query                      |
 | --items value, -i value | specify itmes                      |
+| --pretty, -P            | pretty format (default: false)     |
 | --safeString value      | use safe string (value: on/off)    |
 | --count, -C             | count (default: false)             |
 | --help                  | show help (default: false)         |
@@ -359,7 +361,7 @@ urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf LD Notify me of low stock in S
 #### Request:
 
 ```console
-ngsi list subscriptions --json | jq .
+ngsi list subscriptions --json --pretty
 ```
 
 ```json
@@ -435,6 +437,7 @@ ngsi list [common options] registrations [options]
 | ------------------ | ------------------------------- |
 | --verbose, -v      | verbose (default: false)        |
 | --json, -j         | JSON format (default: false)    |
+| --pretty, -P       | pretty format (default: false)  |
 | --safeString value | use safe string (value: on/off) |
 | --help             | show help (default: false)      |
 
@@ -464,7 +467,7 @@ urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0 ContextSourceRegi
 #### Request:
 
 ```console
-ngsi list registrations -j | jq .
+ngsi list registrations -j --pretty
 ```
 
 ```json

@@ -64,6 +64,32 @@ func TestAdminLog(t *testing.T) {
 	}
 }
 
+func TestAdminLogPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"level":"DEBUG"}`)
+	reqRes.Path = "/admin/log"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminLog(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"level\": \"DEBUG\"\n}\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestAdminLogErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -263,6 +289,35 @@ func TestAdminLogErrorStatusCode(t *testing.T) {
 	}
 }
 
+func TestAdminLogErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"level":"DEBUG"}`)
+	reqRes.Path = "/admin/log"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminLog(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
 func TestAdminTrace(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -624,6 +679,32 @@ func TestAdminMetrics(t *testing.T) {
 	}
 }
 
+func TestAdminMetricsPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"services":{"default-service":{"subservs":{"root-subserv":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}},"sum":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}}},"sum":{"subservs":{"root-subserv":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}},"sum":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}}}`)
+	reqRes.Path = "/admin/metrics"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,reset,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--reset", "--logging", "--pretty"})
+	err := adminMetrics(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"services\": {\n    \"default-service\": {\n      \"subservs\": {\n        \"root-subserv\": {\n          \"incomingTransactionResponseSize\": 1103,\n          \"serviceTime\": 0.000524,\n          \"incomingTransactions\": 7\n        }\n      },\n      \"sum\": {\n        \"incomingTransactionResponseSize\": 1103,\n        \"serviceTime\": 0.000524,\n        \"incomingTransactions\": 7\n      }\n    }\n  },\n  \"sum\": {\n    \"subservs\": {\n      \"root-subserv\": {\n        \"incomingTransactionResponseSize\": 1103,\n        \"serviceTime\": 0.000524,\n        \"incomingTransactions\": 7\n      }\n    },\n    \"sum\": {\n      \"incomingTransactionResponseSize\": 1103,\n      \"serviceTime\": 0.000524,\n      \"incomingTransactions\": 7\n    }\n  }\n}\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestAdminMetricsDelete(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -851,6 +932,36 @@ func TestAdminMetricsErrorStatusCode(t *testing.T) {
 	}
 }
 
+func TestAdminMetricsErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"services":{"default-service":{"subservs":{"root-subserv":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}},"sum":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}}},"sum":{"subservs":{"root-subserv":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}},"sum":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}}}`)
+	reqRes.Path = "/admin/metrics"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,reset,pretty")
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--reset", "--logging", "--pretty"})
+	err := adminMetrics(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestAdminSemaphore(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -875,7 +986,32 @@ func TestAdminSemaphore(t *testing.T) {
 		expected := `{"dbConnectionPool":{"status":"free"},"dbConnection":{"status":"free"},"request":{"status":"free"},"subCache":{"status":"free"},"transaction":{"status":"free"},"timeStat":{"status":"free"},"logMsg":{"status":"free"},"alarmMgr":{"status":"free"},"metricsMgr":{"status":"free"},"connectionContext":{"status":"free"},"connectionEndpoints":{"status":"free"}}`
 		assert.Equal(t, expected, actual)
 	}
+}
 
+func TestAdminSemaphorePretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"dbConnectionPool":{"status":"free"},"dbConnection":{"status":"free"},"request":{"status":"free"},"subCache":{"status":"free"},"transaction":{"status":"free"},"timeStat":{"status":"free"},"logMsg":{"status":"free"},"alarmMgr":{"status":"free"},"metricsMgr":{"status":"free"},"connectionContext":{"status":"free"},"connectionEndpoints":{"status":"free"}}`)
+	reqRes.Path = "/admin/sem"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminSemaphore(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"dbConnectionPool\": {\n    \"status\": \"free\"\n  },\n  \"dbConnection\": {\n    \"status\": \"free\"\n  },\n  \"request\": {\n    \"status\": \"free\"\n  },\n  \"subCache\": {\n    \"status\": \"free\"\n  },\n  \"transaction\": {\n    \"status\": \"free\"\n  },\n  \"timeStat\": {\n    \"status\": \"free\"\n  },\n  \"logMsg\": {\n    \"status\": \"free\"\n  },\n  \"alarmMgr\": {\n    \"status\": \"free\"\n  },\n  \"metricsMgr\": {\n    \"status\": \"free\"\n  },\n  \"connectionContext\": {\n    \"status\": \"free\"\n  },\n  \"connectionEndpoints\": {\n    \"status\": \"free\"\n  }\n}\n"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestAdminSemaphoreErrorInitCmd(t *testing.T) {
@@ -997,6 +1133,36 @@ func TestAdminSemaphoreErrorStatusCode(t *testing.T) {
 	}
 }
 
+func TestAdminSemaphoreErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"dbConnectionPool":{"status":"free"},"dbConnection":{"status":"free"},"request":{"status":"free"},"subCache":{"status":"free"},"transaction":{"status":"free"},"timeStat":{"status":"free"},"logMsg":{"status":"free"},"alarmMgr":{"status":"free"},"metricsMgr":{"status":"free"},"connectionContext":{"status":"free"},"connectionEndpoints":{"status":"free"}}`)
+	reqRes.Path = "/admin/sem"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminSemaphore(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestAdminStatistics(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -1019,6 +1185,32 @@ func TestAdminStatistics(t *testing.T) {
 	if assert.NoError(t, err) {
 		actual := buf.String()
 		expected := `{"uptime_in_secs":152275,"measuring_interval_in_secs":152275}`
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestAdminStatisticsPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"uptime_in_secs":152275,"measuring_interval_in_secs":152275}`)
+	reqRes.Path = "/statistics"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminStatistics(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"uptime_in_secs\": 152275,\n  \"measuring_interval_in_secs\": 152275\n}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1223,6 +1415,36 @@ func TestAdminStatisticsErrorStatusCode(t *testing.T) {
 	}
 }
 
+func TestAdminStatisticsErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"uptime_in_secs":152275,"measuring_interval_in_secs":152275}`)
+	reqRes.Path = "/statistics"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminStatistics(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestAdminCacheStatistics(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -1245,6 +1467,32 @@ func TestAdminCacheStatistics(t *testing.T) {
 	if assert.NoError(t, err) {
 		actual := buf.String()
 		expected := `{"ids":"","refresh":1949,"inserts":0,"removes":0,"updates":0,"items":0}`
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestAdminCacheStatisticsPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"ids":"","refresh":1949,"inserts":0,"removes":0,"updates":0,"items":0}`)
+	reqRes.Path = "/cache/statistics"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminCacheStatistics(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"ids\": \"\",\n  \"refresh\": 1949,\n  \"inserts\": 0,\n  \"removes\": 0,\n  \"updates\": 0,\n  \"items\": 0\n}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1444,6 +1692,36 @@ func TestAdminCacheStatisticsErrorStatusCode(t *testing.T) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "error  ", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestAdminCacheStatisticsErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"ids":"","refresh":1949,"inserts":0,"removes":0,"updates":0,"items":0}`)
+	reqRes.Path = "/cache/statistics"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,pretty")
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+	err := adminCacheStatistics(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

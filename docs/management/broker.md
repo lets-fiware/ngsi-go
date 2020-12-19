@@ -1,9 +1,12 @@
 # broker - Management command
 
 -   [List brokers](#list-brokers)
+-   [Get broker](#get-broker)
 -   [Add broker](#add-broker)
 -   [Update broker](#update-broker)
 -   [Delete broker](#delete-broker)
+
+<a name="list-brokers"/>
 
 ## List brokers
 
@@ -17,6 +20,7 @@ ngsi broker list [options]
 | ------------------------------- | -------------------------------------------- |
 | --host value, -h value          | specify host or alias                        |
 | --json, -j                      | print JSON format (default: false)           |
+| --pretty, -P                    | pretty format (default: false)               |
 | --help                          | show help (default: false)                   |
 
 #### Example 1
@@ -50,6 +54,35 @@ ngsi broker list --host orion --json
 ```json
 {"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"on"}
 ```
+
+<a name="get-broker"/>
+
+## Get broker
+
+```console
+ngsi broker list [options]
+```
+
+### Options
+
+| Options                         | Description                                  |
+| ------------------------------- | -------------------------------------------- |
+| --host value, -h value          | specify host or alias                        |
+| --json, -j                      | print JSON format (default: false)           |
+| --pretty, -P                    | pretty format (default: false)               |
+| --help                          | show help (default: false)                   |
+
+#### Example 1
+
+```console
+ngsi broker get --host orion
+```
+
+```text
+{"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"off"}
+```
+
+<a name="add-broker"/>
 
 ## Add broker
 
@@ -189,6 +222,8 @@ You should set the `--apiPath` parameter to as shown:
 --apiPath "/v2,/orion/v2.0"
 ```
 
+<a name="update-broker"/>
+
 ## Update broker
 
 ```console
@@ -220,6 +255,8 @@ ngsi broker upadte [options]
 ```console
 ngsi broker update --host orion --ngsiType v2
 ```
+
+<a name="delete-broker"/>
 
 ## Delete broker
 

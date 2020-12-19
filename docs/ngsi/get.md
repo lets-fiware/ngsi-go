@@ -41,6 +41,7 @@ ngsi get [command options] entity [options]
 | --unique, -u           | specify unique (default: false)    |
 | --sysAttrs, -s         | specify sysAttrs (default: false)  |
 | --link value, -L value | specify @context                   |
+| --pretty, -P           | pretty format (default: false)     |
 | --safeString value     | use safe string (value: on/off)    |
 | --help                 | show help (default: false)         |
 
@@ -98,6 +99,7 @@ ngsi get [command options] entities [options]
 | --verbose, -v          | specfiy verbose (default: false)   |
 | --lines, -1            | specify lines (default: false)     |
 | --data value, -d value | specify data                       |
+| --pretty, -P           | pretty format (default: false)     |
 | --safeString value     | use safe string (value: on/off)    |
 | --help                 | show help (default: false)         |
 
@@ -126,6 +128,7 @@ ngsi get [common options] attr [options]
 | --id value, -i value   | specify id                      |
 | --type value, -t value | specify entity type             |
 | --attrName value       | specify attrName                |
+| --pretty, -P           | pretty format (default: false)  |
 | --safeString value     | use safe string (value: on/off) |
 | --help                 | show help (default: false)      |
 
@@ -158,6 +161,7 @@ ngsi get [common options] attrs [options]
 | --keyValues, -k        | specify keyValues (default: false) |
 | --values, -V           | specify values (default: false)    |
 | --unique, -u           | specify unique (default: false)    |
+| --pretty, -P           | pretty format (default: false)     |
 | --safeString value     | use safe string (value: on/off)    |
 | --help                 | show help (default: false)         |
 
@@ -208,8 +212,9 @@ ngsi get [common options] subscription [options]
 | Options                | Description                     |
 | ---------------------- | ------------------------------- |
 | --id value, -i value   | specify id                      |
-| --safeString value     | use safe string (value: on/off) |
 | --localTime            | localTime (default: false)      |
+| --pretty, -P           | pretty format (default: false)  |
+| --safeString value     | use safe string (value: on/off) |
 | --help                 | show help (default: false)      |
 
 ### Examples for NGSIv2
@@ -217,7 +222,7 @@ ngsi get [common options] subscription [options]
 #### Request:
 
 ```console
-ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
+ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --pretty
 ```
 
 ```json
@@ -254,7 +259,7 @@ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 | jq .
 #### Request:
 
 ```console
-ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --localTime | jq .
+ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --localTime --pretty
 ```
 
 ```json
@@ -293,7 +298,7 @@ ngsi get subscription --id 5fa7988a627088ba9b91b1c1 --localTime | jq .
 #### Request:
 
 ```console
-ngsi get subscription --id urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce | jq .
+ngsi get subscription --id urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce --pretty
 ```
 
 ```json
@@ -341,6 +346,7 @@ ngsi get [common options] registration [options]
 | -------------------- | ---------------------------------- |
 | --id value, -i value | specify id                         |
 | --localTime          | specify localTime (default: false) |
+| --pretty, -P           | pretty format (default: false)  |
 | --safeString value   | use safe string (value: on/off)    |
 | --help               | show help (default: false)         |
 
@@ -349,7 +355,7 @@ ngsi get [common options] registration [options]
 #### Request:
 
 ```console
-ngsi get registration --id urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0 | jq .
+ngsi get registration --id urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0 --pretty
 ```
 
 ```json

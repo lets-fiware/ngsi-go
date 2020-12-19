@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -185,6 +186,7 @@ func (f *fileLib) File() io.Reader {
 type JSONLib interface {
 	Decode(r io.Reader, v interface{}) error
 	Encode(w io.Writer, v interface{}) error
+	Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error
 }
 
 type jsonLib struct {
@@ -198,6 +200,10 @@ func (j *jsonLib) Encode(w io.Writer, v interface{}) error {
 	encoder := json.NewEncoder(w)
 	encoder.SetEscapeHTML(false)
 	return encoder.Encode(v)
+}
+
+func (j *jsonLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error {
+	return json.Indent(dst, src, prefix, indent)
 }
 
 // TimeLib is ...

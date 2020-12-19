@@ -33,6 +33,7 @@ ngsi admin [command options] log [options]
 | ----------------------- | ------------------------------------------------------------------- |
 | --level value, -l value | specify log level (none, fatal, error, warn, info, debug)           | 
 | --logging, -L           | logging output when logging level higher than Info (default: false) |
+| --pretty, -P            | pretty format (default: false)                                      |
 | --help                  | show help (default: false)                                          |
 
 ### Example 
@@ -118,6 +119,7 @@ ngsi admin [command options] semaphore [options]
 | Options       | Description                                                         |
 | ------------- | ------------------------------------------------------------------- |
 | --logging, -L | logging output when logging level higher than Info (default: false) |
+| --pretty, -P  | pretty format (default: false)                                      |
 | --help        | show help (default: false)                                          |
 
 ### Example
@@ -125,7 +127,7 @@ ngsi admin [command options] semaphore [options]
 #### Request:
 
 ```console
-ngsi admin semaphore | jq .
+ngsi admin semaphore --pretty
 ```
 
 ```json
@@ -183,6 +185,7 @@ ngsi admin [command options] metrics [options]
 | --delete, -d  | delete metrics (default: false)                                     |
 | --reset, -r   | reset metrics (default: false)                                      |
 | --logging, -L | logging output when logging level higher than Info (default: false) |
+| --pretty, -P  | pretty format (default: false)                                      |
 | --help        | show help (default: false)                                          |
 
 ### Example
@@ -190,7 +193,7 @@ ngsi admin [command options] metrics [options]
 #### Request:
 
 ```console
-ngsi admin metrics | jq .
+ngsi admin metrics --pretty
 ```
 
 ```json
@@ -231,7 +234,7 @@ ngsi admin metrics | jq .
 #### Request:
 
 ```console
-ngsi admin metrics --reset | jq .
+ngsi admin metrics --reset --pretty
 ```
 
 ```json
@@ -291,6 +294,7 @@ ngsi admin [command options] statistics [options]
 | ------------- | ------------------------------------------------------------------- |
 | --delete, -d  | delete metrics (default: false)                                     |
 | --logging, -L | logging output when logging level higher than Info (default: false) |
+| --pretty, -P  | pretty format (default: false)                                      |
 | --help        | show help (default: false)                                          |
 
 ### Example
@@ -298,7 +302,7 @@ ngsi admin [command options] statistics [options]
 #### Request:
 
 ```console
- ngsi admin statistics | jq .
+ ngsi admin statistics --pretty
 ```
 
 ```json
@@ -330,6 +334,7 @@ ngsi admin [command options] cacheStatistics [options]
 | ------------- | ------------------------------------------------------------------- |
 | --delete, -d  | delete metrics (default: false)                                     |
 | --logging, -L | logging output when logging level higher than Info (default: false) |
+| --pretty, -P  | pretty format (default: false)                                      |
 | --help        | show help (default: false)                                          |
 
 ### Example
@@ -337,7 +342,7 @@ ngsi admin [command options] cacheStatistics [options]
 #### Request:
 
 ```console
-ngsi admin cacheStatistics | jq .
+ngsi admin cacheStatistics --pretty
 ```
 
 ```json

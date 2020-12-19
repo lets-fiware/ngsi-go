@@ -76,6 +76,27 @@ func TestBrokersListJSON(t *testing.T) {
 	}
 }
 
+func TestBrokersListJSONPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	setupFlagBool(set, "json,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--json", "--pretty"})
+	err := brokersList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"orion\": {\n    \"brokerHost\": \"https://orion\",\n    \"ngsiType\": \"v2\"\n  },\n  \"orion-ld\": {\n    \"brokerHost\": \"https://orion-ld\",\n    \"ngsiType\": \"ld\"\n  }\n}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersListErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -116,6 +137,30 @@ func TestBrokersListErrorJSON(t *testing.T) {
 	}
 }
 
+func TestBrokersListErrorJSONPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+
+	setupFlagBool(set, "json,pretty")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--json", "--pretty"})
+	err := brokersList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersGet(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -149,6 +194,26 @@ func TestBrokersGetJSON(t *testing.T) {
 	if assert.NoError(t, err) {
 		actual := buf.String()
 		expected := "{\"brokerHost\":\"https://orion\",\"ngsiType\":\"v2\"}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestBrokersGetJSONPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupFlagString(set, "host")
+	setupFlagBool(set, "json,pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--json", "--pretty"})
+	err := brokersGet(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"brokerHost\": \"https://orion\",\n  \"ngsiType\": \"v2\"\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -212,6 +277,29 @@ func TestBrokersGetErrorBrokerListErrorJSON(t *testing.T) {
 	}
 }
 
+func TestBrokersGetErrorJSONPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setupFlagString(set, "host")
+	setupFlagBool(set, "json,pretty")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--json", "--pretty"})
+	err := brokersGet(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersGetErrorBrokerList(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -224,7 +312,7 @@ func TestBrokersGetErrorBrokerList(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -244,7 +332,7 @@ func TestBrokersGetErrorMarshal(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()

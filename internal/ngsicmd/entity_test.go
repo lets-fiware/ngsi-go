@@ -322,6 +322,34 @@ func TestEntityReadV2(t *testing.T) {
 	}
 }
 
+func TestEntityReadV2Pretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
+	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "pretty")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--pretty"})
+	err := entityRead(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"id\": \"urn:ngsi-ld:Product:010\",\n  \"type\": \"Product\",\n  \"name\": {\n    \"type\": \"Text\",\n    \"value\": \"Lemonade\"\n  },\n  \"size\": {\n    \"type\": \"Text\",\n    \"value\": \"S\"\n  },\n  \"price\": {\n    \"type\": \"Integer\",\n    \"value\": 99\n  }\n}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntityReadV2SafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -485,6 +513,37 @@ func TestEntityReadV2ErrorSafeString(t *testing.T) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 'P' after object key (39) ct:010\",\"type:\"Product\",\"name\"", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntityReadV2ErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
+	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "pretty")
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--pretty"})
+	err := entityRead(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

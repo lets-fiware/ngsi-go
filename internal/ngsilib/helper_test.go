@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"bytes"
 	"io"
 	"net/http"
 	"net/url"
@@ -60,6 +61,7 @@ func (t *MockTimeLib) NowUnix() int64 {
 type MockJSONLib struct {
 	DecodeErr error
 	EncodeErr error
+	IndentErr error
 	Jsonlib   JSONLib
 }
 
@@ -75,6 +77,13 @@ func (j *MockJSONLib) Encode(w io.Writer, v interface{}) error {
 		return j.Jsonlib.Encode(w, v)
 	}
 	return j.EncodeErr
+}
+
+func (j *MockJSONLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error {
+	if j.IndentErr == nil {
+		return j.Jsonlib.Indent(dst, src, prefix, indent)
+	}
+	return j.IndentErr
 }
 
 func testNgsiLibInit() *NGSI {

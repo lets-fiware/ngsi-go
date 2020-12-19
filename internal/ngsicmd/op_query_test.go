@@ -223,6 +223,32 @@ func TestOpQueryVerbose(t *testing.T) {
 	}
 }
 
+func TestOpQueryVerbosePretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	setupFlagString(set, "host,data")
+	setupFlagBool(set, "verbose,pretty")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/op/query"
+	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
+	err := opQuery(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "[\n  {\n    \"id\": \"Sensor001\",\n    \"type\": \"Sensor\"\n  },\n  {\n    \"id\": \"Sensor002\",\n    \"type\": \"Sensor\"\n  },\n  {\n    \"id\": \"Sensor003\",\n    \"type\": \"Sensor\"\n  }\n]"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestOpQueryCount(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -583,6 +609,38 @@ func TestOpQueryErrorLines2(t *testing.T) {
 	}
 }
 
+func TestOpQueryErrorVerbosePretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+
+	setupFlagString(set, "host,data")
+	setupFlagBool(set, "verbose,pretty")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/op/query"
+	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
+	err := opQuery(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 15, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestOpQueryErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -604,7 +662,7 @@ func TestOpQueryErrorUnmarshal(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 15, ngsiErr.ErrNo)
+		assert.Equal(t, 16, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()

@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
@@ -60,13 +61,22 @@ func tokenCommand(c *cli.Context) error {
 		time = 0
 	}
 
-	if c.Bool("verbose") {
+	if c.Bool("verbose") || c.Bool("pretty") {
 		token.Token.ExpiresIn = time
 		b, err := ngsilib.JSONMarshal(token.Token)
 		if err != nil {
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(b))
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprintln(ngsi.StdWriter, string(b))
+		}
 	} else if c.Bool("expires") {
 		fmt.Fprintf(ngsi.StdWriter, "%d\n", time)
 	} else {
