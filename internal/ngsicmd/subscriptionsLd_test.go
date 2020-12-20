@@ -1260,14 +1260,14 @@ func TestSubscriptionsTemplateLdArgs(t *testing.T) {
 	setupFlagBool(set, "keyValues")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--type=Device", "--uri=http://ngsiproxy", "--query=abc"})
-	_ = set.Parse([]string{"--link=ld", "--wAttrs=abc,xyz", "--nAttrs=abc,xyz"})
+	_ = set.Parse([]string{"--wAttrs=abc,xyz", "--nAttrs=abc,xyz"})
 	_ = set.Parse([]string{"--description=test"})
 
 	err := subscriptionsTemplateLd(c, ngsi)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"type\":\"Subscription\",\"description\":\"test\",\"entities\":[{\"type\":\"Device\"}],\"watchedAttributes\":[\"abc\",\"xyz\"],\"q\":\"abc\",\"notification\":{\"attributes\":[\"abc\",\"xyz\"],\"endpoint\":{\"uri\":\"http://ngsiproxy\"}},\"@context\":\"https://schema.lab.fiware.org/ld/context\"}"
+		expected := "{\"type\":\"Subscription\",\"description\":\"test\",\"entities\":[{\"type\":\"Device\"}],\"watchedAttributes\":[\"abc\",\"xyz\"],\"q\":\"abc\",\"notification\":{\"attributes\":[\"abc\",\"xyz\"],\"endpoint\":{\"uri\":\"http://ngsiproxy\"}}}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1281,14 +1281,14 @@ func TestSubscriptionsTemplateLdArgsPretty(t *testing.T) {
 	setupFlagBool(set, "keyValues,pretty")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--type=Device", "--uri=http://ngsiproxy", "--query=abc"})
-	_ = set.Parse([]string{"--link=ld", "--wAttrs=abc,xyz", "--nAttrs=abc,xyz"})
+	_ = set.Parse([]string{"--wAttrs=abc,xyz", "--nAttrs=abc,xyz"})
 	_ = set.Parse([]string{"--description=test", "--pretty"})
 
 	err := subscriptionsTemplateLd(c, ngsi)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"type\": \"Subscription\",\n  \"description\": \"test\",\n  \"entities\": [\n    {\n      \"type\": \"Device\"\n    }\n  ],\n  \"watchedAttributes\": [\n    \"abc\",\n    \"xyz\"\n  ],\n  \"q\": \"abc\",\n  \"notification\": {\n    \"attributes\": [\n      \"abc\",\n      \"xyz\"\n    ],\n    \"endpoint\": {\n      \"uri\": \"http://ngsiproxy\"\n    }\n  },\n  \"@context\": \"https://schema.lab.fiware.org/ld/context\"\n}\n"
+		expected := "{\n  \"type\": \"Subscription\",\n  \"description\": \"test\",\n  \"entities\": [\n    {\n      \"type\": \"Device\"\n    }\n  ],\n  \"watchedAttributes\": [\n    \"abc\",\n    \"xyz\"\n  ],\n  \"q\": \"abc\",\n  \"notification\": {\n    \"attributes\": [\n      \"abc\",\n      \"xyz\"\n    ],\n    \"endpoint\": {\n      \"uri\": \"http://ngsiproxy\"\n    }\n  }\n}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1314,9 +1314,9 @@ func TestSubscriptionsTemplateLdErrorUri(t *testing.T) {
 func TestSubscriptionsTemplateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "link")
+	setupFlagString(set, "context")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc"})
+	_ = set.Parse([]string{"--context=abc"})
 
 	err := subscriptionsTemplateLd(c, ngsi)
 
@@ -1517,14 +1517,14 @@ func TestSetSubscriptionValuesLd5(t *testing.T) {
 	setupFlagInt64(set, "throttling")
 	setupFlagString(set, "expires,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-01T01:10:00.00Z", "--link=http://context"})
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-01T01:10:00.00Z"})
 	err := setSubscriptionValuesLd(c, ngsi, &s, false)
 
 	b, _ := json.Marshal(s)
 	actual := string(b)
 
 	if assert.NoError(t, err) {
-		expected := "{\"type\":\"Subscription\",\"expires\":\"2020-10-01T01:10:00.00Z\",\"throttling\":1,\"@context\":\"http://context\"}"
+		expected := "{\"type\":\"Subscription\",\"expires\":\"2020-10-01T01:10:00.00Z\",\"throttling\":1}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1537,14 +1537,34 @@ func TestSetSubscriptionValuesLd6(t *testing.T) {
 	setupFlagInt64(set, "throttling")
 	setupFlagString(set, "expires,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-01T01:10:00.000Z", "--link=http://context"})
+	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-01T01:10:00.000Z"})
 	err := setSubscriptionValuesLd(c, ngsi, &s, false)
 
 	b, _ := json.Marshal(s)
 	actual := string(b)
 
 	if assert.NoError(t, err) {
-		expected := "{\"type\":\"Subscription\",\"expires\":\"2020-10-01T01:10:00.000Z\",\"throttling\":1,\"@context\":\"http://context\"}"
+		expected := "{\"type\":\"Subscription\",\"expires\":\"2020-10-01T01:10:00.000Z\",\"throttling\":1}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSetSubscriptionValuesLdContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "context")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--context=[\"http://context\"]"})
+
+	var s subscriptionLd
+
+	err := setSubscriptionValuesLd(c, ngsi, &s, false)
+
+	b, _ := json.Marshal(s)
+	actual := string(b)
+
+	if assert.NoError(t, err) {
+		expected := "{\"type\":\"Subscription\",\"@context\":[\"http://context\"]}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1710,12 +1730,12 @@ func TestSetSubscriptionValuesLdErrorTimeRel(t *testing.T) {
 	}
 }
 
-func TestSetSubscriptionValuesLdErrorLink(t *testing.T) {
+func TestSetSubscriptionValuesLdErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "link")
+	setupFlagString(set, "context")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=context"})
+	_ = set.Parse([]string{"--context=[\"http://context\""})
 
 	var s subscriptionLd
 
@@ -1724,7 +1744,7 @@ func TestSetSubscriptionValuesLdErrorLink(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 9, ngsiErr.ErrNo)
-		assert.Equal(t, "context not found", ngsiErr.Message)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

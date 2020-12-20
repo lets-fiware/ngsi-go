@@ -38,10 +38,24 @@ import (
 // IsJSON is ...
 func IsJSON(b []byte) bool {
 	for i := 0; i < len(b); i++ {
-		if string(b[i]) == " " || string(b[i]) == "\t" {
+		if b[i] == ' ' || b[i] == '\t' {
 			continue
 		}
-		if string(b[i]) == "{" || string(b[i]) == "[" {
+		if b[i] == '{' || b[i] == '[' {
+			return true
+		}
+		break
+	}
+	return false
+}
+
+// IsJSONArray is ...
+func IsJSONArray(b []byte) bool {
+	for i := 0; i < len(b); i++ {
+		if b[i] == ' ' || b[i] == '\t' {
+			continue
+		}
+		if b[i] == '[' {
 			return true
 		}
 		break
@@ -136,7 +150,9 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 
 	err := gNGSI.JSONConverter.Decode(bytes.NewReader(data), &v)
 	if err != nil {
-		if err, ok := err.(*json.SyntaxError); ok {
+		switch err.(type) {
+		case *json.SyntaxError:
+			err := err.(*json.SyntaxError)
 			s := err.Offset - 15
 			if s < 0 {
 				s = 0
@@ -146,8 +162,19 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 				e = int64(len(data))
 			}
 			return &NgsiLibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(data[s:e])), err}
+		case *json.UnmarshalTypeError:
+			err := err.(*json.UnmarshalTypeError)
+			s := err.Offset - 15
+			if s < 0 {
+				s = 0
+			}
+			e := err.Offset + 15
+			if e > int64(len(data)) {
+				e = int64(len(data))
+			}
+			return &NgsiLibError{funcName, 3, fmt.Sprintf("%s Field:%s (%d) %s", err.Error(), err.Field, err.Offset, string(data[s:e])), err}
 		}
-		return &NgsiLibError{funcName, 3, err.Error(), err}
+		return &NgsiLibError{funcName, 4, err.Error(), err}
 	}
 
 	return nil

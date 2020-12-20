@@ -281,6 +281,16 @@ func TestIndent(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestValid(t *testing.T) {
+	j := &jsonLib{}
+	src := []byte("{}")
+	actual := j.Valid(src)
+
+	expected := true
+
+	assert.Equal(t, expected, actual)
+}
+
 func TestTimeLibNow(t *testing.T) {
 	time := &timeLib{}
 

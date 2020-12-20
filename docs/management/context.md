@@ -4,6 +4,9 @@
 -   [Add context](#add-context)
 -   [Update context](#update-context)
 -   [Delete context](#delete-context)
+-   [Serve context](#serve-context)
+
+<a name="list-contexts">
 
 ## List contexts
 
@@ -18,7 +21,7 @@ ngsi context list [options]
 | --name value, -n value          | specify @context name                        |
 | --help                          | show help (default: false)                   |
 
-#### Example 1
+### Example 1
 
 ```console
 ngsi context list
@@ -31,7 +34,7 @@ tutorial http://context-provider:3000/data-models/ngsi-context.jsonld
 data-model http://context-provider:3000/data-models/ngsi-context.jsonld
 ```
 
-#### Example 2
+### Example 2
 
 ```console
 ngsi context list --name etsi
@@ -40,6 +43,8 @@ ngsi context list --name etsi
 ```text
 https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld
 ```
+
+<a name="add-context">
 
 ## Add context
 
@@ -55,11 +60,13 @@ ngsi context add [options]
 | --url value, -u value  | specify URL for @context (Required) |
 | --help                 | show help (default: false)          |
 
-#### Example
+### Example
 
 ```console
 ngsi context add --name tutorial --url http://context-provider:3000/data-models/ngsi-context.jsonld
 ```
+
+<a name="update-context">
 
 ## Update context
 
@@ -75,11 +82,13 @@ ngsi context update [options]
 | --url value, -u value  | specify URL for @context (Required) |
 | --help                 | show help (default: false)          |
 
-#### Example
+### Example
 
 ```console
 ngsi context update --name data-model --url http://context-provider:3000/data-models/ngsi-context.jsonld
 ```
+
+<a name="delete-context">
 
 ## Delete context
 
@@ -94,8 +103,36 @@ ngsi context delete [options]
 | --name value, -n value | specify @context name (Required)    |
 | --help                 | show help (default: false)          |
 
-#### Example
+### Example
 
 ```console
 ngsi context delete --name data-model
+```
+
+<a name="serve-context">
+
+## Serve context
+
+```console
+ngsi context server [options]
+```
+
+### Options
+
+| Options                | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| --name value, -n value | specify @context name                               |
+| --data value, -d value | specify @context data                               |
+| --host value, -h value | specify host for receiver (default: "0.0.0.0")      |
+| --port value, -p value | specify port for receiver (default: "1028")         |
+| --url value, -u value  | specify url for receiver (default: "/")             |
+| --https, -s            | start in https (default: false)                     |
+| --key value, -k value  | specify key file (only needed if https is enabled)  |
+| --cert value, -c value | specify cert file (only needed if https is enabled) |
+| --help                 | specify show help (default: false)                  |
+
+### Example
+
+```console
+ngsi context server --name ld
 ```

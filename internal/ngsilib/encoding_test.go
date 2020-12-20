@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -154,6 +155,131 @@ func TestIsJSON(t *testing.T) {
 	assert.Equal(t, expected, actual)
 
 	actual = IsJSON([]byte("	a[bc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+}
+
+func TestIsJSONArray(t *testing.T) {
+	testNgsiLibInit()
+
+	actual := IsJSONArray([]byte("["))
+	expected := true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("{"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte(" ["))
+	expected = true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte(" {"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("\t{"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("\t["))
+	expected = true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("	{"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("	["))
+	expected = true
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("abc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("123"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte(" abc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte(" 123"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("\t123"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("\tabc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("	123"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("	abc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("a[bc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("1{23"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte(" a[bc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte(" 1{23"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("\t1{23"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("\ta[bc"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("	1{23"))
+	expected = false
+
+	assert.Equal(t, expected, actual)
+
+	actual = IsJSONArray([]byte("	a[bc"))
 	expected = false
 
 	assert.Equal(t, expected, actual)
@@ -326,12 +452,39 @@ func TestJsonUnmarshalErrorJSONNoSafeString(t *testing.T) {
 	testNgsiLibInit()
 
 	var template subscriptionQuery
-	err := jsonUnmarshal([]byte(`{"name":aa`), template, false, SafeStringEncode)
+	err := jsonUnmarshal([]byte(`{"name":aa`), &template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 'a' looking for beginning of value (9) {\"name\":aa", ngsiErr.Message)
+	}
+}
+
+func TestJsonUnmarshalErrorUnmarshalTypeError(t *testing.T) {
+	testNgsiLibInit()
+
+	var template []interface{}
+	err := jsonUnmarshal([]byte(`{}`), &template, false, SafeStringEncode)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json: cannot unmarshal object into Go value of type []interface {} Field: (1) {}", ngsiErr.Message)
+	}
+}
+
+func TestJsonUnmarshalErrorUnmarshal(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+
+	var template interface{}
+	err := jsonUnmarshal([]byte(`{}`), &template, false, SafeStringEncode)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
 

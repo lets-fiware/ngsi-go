@@ -127,6 +127,11 @@ func (client *Client) SetContentType() {
 	}
 }
 
+// SetAcceptJSON is ...
+func (client *Client) SetAcceptJSON() {
+	client.Headers["Accept"] = "application/json"
+}
+
 // SetPath is ...
 func (client *Client) SetPath(path string) {
 	if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache"}, path) {

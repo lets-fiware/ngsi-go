@@ -332,14 +332,17 @@ func (f *MockFileLib) File() io.Reader {
 // MockJSONLIB
 //
 type MockJSONLib struct {
-	DecodeErr error
-	EncodeErr error
-	IndentErr error
-	Jsonlib   ngsilib.JSONLib
+	DecodeErr  error
+	DecodeErr2 error
+	EncodeErr  error
+	IndentErr  error
+	ValidErr   *bool
+	Jsonlib    ngsilib.JSONLib
 }
 
 func (j *MockJSONLib) Decode(r io.Reader, v interface{}) error {
 	if j.DecodeErr == nil {
+		j.DecodeErr = j.DecodeErr2
 		return j.Jsonlib.Decode(r, v)
 	}
 	return j.DecodeErr
@@ -357,6 +360,13 @@ func (j *MockJSONLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent strin
 		return j.Jsonlib.Indent(dst, src, prefix, indent)
 	}
 	return j.IndentErr
+}
+
+func (j *MockJSONLib) Valid(data []byte) bool {
+	if j.ValidErr != nil {
+		return *j.ValidErr
+	}
+	return j.Jsonlib.Valid(data)
 }
 
 //

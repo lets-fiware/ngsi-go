@@ -72,8 +72,11 @@ func TestIntiConfigBrokerList(t *testing.T) {
 func TestIntiConfigNoFileName(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.ConfigFile = &MockIoLib{}
+	s := `{}`
+	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
+
 	assert.NoError(t, err)
 }
 
@@ -82,8 +85,11 @@ func TestIntiConfigFileName(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{}
 	filename := "config"
 	ngsi.ConfigFile.SetFileName(&filename)
+	s := `{}`
+	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
+
 	assert.NoError(t, err)
 }
 
@@ -92,8 +98,11 @@ func TestIntiConfigExistsFile(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{}
 	filename := "config"
 	ngsi.ConfigFile.SetFileName(&filename)
+	s := `{}`
+	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
+
 	assert.NoError(t, err)
 }
 
@@ -102,11 +111,33 @@ func TestIntiConfigBatchFlag(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{}
 	filename := "config"
 	ngsi.ConfigFile.SetFileName(&filename)
+	s := `{}`
+	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
 	f := true
 	ngsi.BatchFlag = &f
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
+
 	assert.NoError(t, err)
+}
+
+func TestIntiConfigContext(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.ConfigFile = &MockIoLib{}
+	filename := "config"
+	ngsi.ConfigFile.SetFileName(&filename)
+	s := `{"contexts":{"data-model":"context","etsi":1,"json":["context"]}}`
+	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+
+	err := initConfig(ngsi, ngsi.ConfigFile)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "error in config file", ngsiErr.Message)
+	}
 }
 
 func TestIntiConfigErrorNoFileName(t *testing.T) {
@@ -148,22 +179,25 @@ func TestIntiConfigErrorOpen(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "open error", ngsiErr.Message)
+		assert.Equal(t, "open config: no such file or directory", ngsiErr.Message)
 	}
 }
 
 func TestIntiConfigErrorDecode(t *testing.T) {
 	ngsi := testNgsiLibInit()
-	ngsi.ConfigFile = &MockIoLib{DecodeErr: errors.New("decode error")}
+	ngsi.ConfigFile = &MockIoLib{}
 	filename := "config"
 	ngsi.ConfigFile.SetFileName(&filename)
+	s := `{"contexts":{"data-model":"context","etsi":1,"json":["context"]}}`
+	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "decode error", ngsiErr.Message)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
 

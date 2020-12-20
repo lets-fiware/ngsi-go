@@ -187,6 +187,7 @@ type JSONLib interface {
 	Decode(r io.Reader, v interface{}) error
 	Encode(w io.Writer, v interface{}) error
 	Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error
+	Valid(data []byte) bool
 }
 
 type jsonLib struct {
@@ -204,6 +205,10 @@ func (j *jsonLib) Encode(w io.Writer, v interface{}) error {
 
 func (j *jsonLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error {
 	return json.Indent(dst, src, prefix, indent)
+}
+
+func (j *jsonLib) Valid(data []byte) bool {
+	return json.Valid(data)
 }
 
 // TimeLib is ...

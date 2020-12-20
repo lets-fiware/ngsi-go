@@ -62,6 +62,7 @@ type cSourceRegistration struct {
 	OperationSpace      *geometry          `json:"operationSpace,omitempty"`
 	Expires             string             `json:"expires,omitempty"` // expiresAt???
 	Endpoint            string             `json:"endpoint,omitempty"`
+	AtContext           interface{}        `json:"@context,omitempty"`
 }
 
 // 5.2.10 RegistrationInfo
@@ -350,8 +351,18 @@ func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegi
 			r.Endpoint = s
 		} else {
 			e := fmt.Sprintf("provider url error: %s", s)
-			return &ngsiCmdError{funcName, 3, e, nil}
+			return &ngsiCmdError{funcName, 5, e, nil}
 		}
+	}
+
+	if c.IsSet("context") {
+		context := c.String("context")
+		var atContext interface{}
+		atContext, err := getAtContext(ngsi, context)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), nil}
+		}
+		r.AtContext = atContext
 	}
 
 	return nil

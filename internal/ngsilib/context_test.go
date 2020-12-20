@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"encoding/json"
 	"errors"
 	"testing"
 
@@ -43,6 +44,17 @@ func TestAddContex(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
 	err := ngsi.AddContext("fiware", "https://fiware.org/")
+
+	assert.NoError(t, err)
+}
+
+func TestAddContexJSON(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	err := ngsi.AddContext("fiware", `["https://fiware.org/"]`)
 
 	assert.NoError(t, err)
 }
@@ -76,7 +88,7 @@ func TestAddContexErrorNotUrl(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "fiware.org is not url", ngsiErr.Message)
+		assert.Equal(t, "fiware.org is neither url nor json", ngsiErr.Message)
 	}
 }
 
@@ -255,7 +267,7 @@ func TestGetContext(t *testing.T) {
 
 }
 
-func TestGetContextHttp(t *testing.T) {
+func TestGetContextHttpValue(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.contextList = ContextsInfo{}
 
@@ -268,6 +280,76 @@ func TestGetContextHttp(t *testing.T) {
 		assert.Equal(t, expected, actual)
 	}
 
+}
+func TestAddContext(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	err := ngsi.AddContext("fiware", "https://fiware.org/")
+
+	assert.NoError(t, err)
+}
+
+func TestGetContextErrorOtherType(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	ngsi.contextList["fiware"] = 1
+
+	actual, err := ngsi.GetContext("fiware")
+	expected := ""
+
+	if assert.Error(t, err) {
+		assert.Equal(t, expected, actual)
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "fiware neither url nor json", ngsiErr.Message)
+	}
+}
+
+func TestGetContextErrorString(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	ngsi.contextList["fiware"] = "context"
+
+	actual, err := ngsi.GetContext("fiware")
+	expected := ""
+
+	if assert.Error(t, err) {
+		assert.Equal(t, expected, actual)
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "fiware is not url", ngsiErr.Message)
+	}
+}
+
+func TestGetContextErrorJSON(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+
+	var v []interface{}
+	json.Unmarshal([]byte(`[]`), &v)
+	ngsi.contextList["fiware"] = v
+
+	actual, err := ngsi.GetContext("fiware")
+	expected := ""
+
+	if assert.Error(t, err) {
+		assert.Equal(t, expected, actual)
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
 }
 
 func TestGetContextErrorNotFound(t *testing.T) {
@@ -285,10 +367,68 @@ func TestGetContextErrorNotFound(t *testing.T) {
 	if assert.Error(t, err) {
 		assert.Equal(t, expected, actual)
 		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "core not found", ngsiErr.Message)
+	}
+}
+
+func TestGetContextHTTP(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	err := ngsi.AddContext("fiware", "https://fiware.org/")
+	assert.NoError(t, err)
+
+	actual, err := ngsi.GetContextHTTP("fiware")
+	expected := "https://fiware.org/"
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestGetContextHTTPErrorNoFound(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	err := ngsi.AddContext("fiware", "https://fiware.org/")
+	assert.NoError(t, err)
+
+	actual, err := ngsi.GetContextHTTP("core")
+	expected := ""
+
+	if assert.Error(t, err) {
+		assert.Equal(t, expected, actual)
+		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "core not found", ngsiErr.Message)
 	}
+}
 
+func TestGetContextHTTPErrorJSON(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.contextList = ContextsInfo{}
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	array := []string{"https://fiware.org/"}
+	b, _ := json.Marshal(array)
+	err := ngsi.AddContext("fiware", string(b))
+	assert.NoError(t, err)
+
+	actual, err := ngsi.GetContextHTTP("fiware")
+	expected := ""
+
+	if assert.Error(t, err) {
+		assert.Equal(t, expected, actual)
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "fiware is not url", ngsiErr.Message)
+	}
 }
 
 func TestGetContextList(t *testing.T) {

@@ -73,6 +73,7 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"context", "delete", "--name", "abc"}, rc: 1},
 		{args: []string{"context", "list"}, rc: 1},
 		{args: []string{"context", "update", "--name", "abc", "--url", "abc"}, rc: 1},
+		{args: []string{"context", "server"}, rc: 1},
 		{args: []string{"settings", "list"}, rc: 1},
 		{args: []string{"settings", "clear"}, rc: 1},
 		{args: []string{"settings", "delete"}, rc: 1},

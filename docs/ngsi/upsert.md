@@ -31,7 +31,6 @@ ngsi upsert [common options] entity [options]
 | ------------------------- | ---------------------------------- |
 | --data value, -d value    | specify data                       |
 | --keyValues, -k           | specify keyValues (default: false) |
-| --link value, -L value    | specify @context                   |
 | --help                    | show help (default: false)         |
 
 ### Example
@@ -66,7 +65,8 @@ ngsi upsert [common options] entities [options]
 | --data value, -d value    | specify data                     |
 | --replace, -r             | specfiy replace (default: false) |
 | --update, -u              | specify update (default: false)  |
-| --link value, -L value    | specify @context                 |
+| --link value, -L value    | specify @context (LD)            |
+| --context value, -C value | specify @context (LD)            |
 | --help                    | show help (default: false)       |
 
 ### Example

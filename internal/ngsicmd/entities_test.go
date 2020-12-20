@@ -108,9 +108,10 @@ func TestEntitiesList(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	setupFlagString(set, "host,type")
+	setupFlagBool(set, "acceptJson")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion", "--acceptJson"})
 	err := entitiesList(c)
 
 	if assert.NoError(t, err) {

@@ -403,6 +403,27 @@ func TestAttrUpdateLDJSON(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestAttrUpdateLDJSONContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagBool(set, "append,keyValues")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"value":89}`)
+	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:001/attrs/price"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":89}", "--context=[\"http://context\"]"})
+	err := attrUpdate(c)
+
+	assert.NoError(t, err)
+}
+
 func TestAttrUpdateErrorInitCmd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -480,6 +501,32 @@ func TestAttrUpdateErrorReadALl(t *testing.T) {
 	}
 }
 
+func TestAttrUpdateLDJSONContextError(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagBool(set, "append,keyValues")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"value":89}`)
+	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:001/attrs/price"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":89}", "--context=[\"http://context\""})
+	err := attrUpdate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
 func TestAttrUpdateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -500,7 +547,7 @@ func TestAttrUpdateErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "body data error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -527,7 +574,7 @@ func TestAttrUpdateErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}

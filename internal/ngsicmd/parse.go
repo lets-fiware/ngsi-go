@@ -62,7 +62,7 @@ func parseFlags(ngsi *ngsilib.NGSI, c *cli.Context) (*ngsilib.CmdFlags, error) {
 			}
 		case "link":
 			if c.IsSet(flag) {
-				if link, err := ngsi.GetContext(c.String(flag)); err == nil {
+				if link, err := ngsi.GetContextHTTP(c.String(flag)); err == nil {
 					cmdFlags.Link = &link
 				} else {
 					return nil, &ngsiCmdError{funcName, 1, err.Error(), err}
@@ -104,7 +104,7 @@ func parseFlags2(ngsi *ngsilib.NGSI, c *cli.Context) (*ngsilib.CmdFlags, error) 
 			}
 		case "link2":
 			if c.IsSet(flag) {
-				if link, err := ngsi.GetContext(c.String(flag)); err == nil {
+				if link, err := ngsi.GetContextHTTP(c.String(flag)); err == nil {
 					cmdFlags.Link = &link
 				} else {
 					return nil, &ngsiCmdError{funcName, 1, err.Error(), err}

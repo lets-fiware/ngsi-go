@@ -33,6 +33,7 @@ ngsi create [command options] entity [options]
 | --keyValues, -k           | specify keyValues (default: false) |
 | --upsert                  | specify upsert (default: false)    |
 | --link value, -L value    | specify @context                   |
+| --context value, -C value | specify @context (LD)              |
 | --help                    | show help (default: false)         |
 
 ### Example 
@@ -100,6 +101,7 @@ ngsi create [common options] entities [options]
 | --keyValues, -k           | specify keyValues (default: false) |
 | --data value, -d value    | specify data                       |
 | --link value, -L value    | specify @context                   |
+| --context value, -C value | specify @context (LD)              |
 | --help                    | show help (default: false)         |
 
 ### Example 
@@ -203,6 +205,7 @@ ngsi create [command options] subscription [options]
 | --endTimeAt value         | specify endTimeAt (LD)                                         |
 | --timeProperty value      | specify timeProperty (LD)                                      |
 | --link value, -L value    | specify @context (LD)                                          |
+| --context value, -C value | specify @context (LD)                                          |
 | --status value            | specify status                                                 |
 | --headers value           | specify headers (v2)                                           |
 | --qs value                | specify qs (v2)                                                |
@@ -301,7 +304,8 @@ ngsi create [command options] registration [options]
 | Options                    | Description                                     |
 | -------------------------- | ----------------------------------------------- |
 | --data value, -d value     | specify data                                    |
-| --link value, -L value     | specify @context                                |
+| --link value, -L value     | specify @context (LD)                           |
+| --context value, -C value  | specify @context (LD)                           |
 | --providedId value         | specify id                                      |
 | --idPattern value          | specify idPattern                               |
 | --type value, -t value     | specify Entity Type                             |

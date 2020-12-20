@@ -47,7 +47,7 @@ ngsi template subscription [options]
 | --timeAt value            | specify timeAt (LD)                                            |
 | --endTimeAt value         | specify endTimeAt (LD)                                         |
 | --timeProperty value      | specify timeProperty (LD)                                      |
-| --link value, -L value    | specify @context (LD)                                          |
+| --context value, -C value | specify @context (LD)                                          |
 | --status value            | specify status                                                 |
 | --headers value           | specify headers (v2)                                           |
 | --qs value                | specify qs (v2)                                                |
@@ -212,6 +212,7 @@ ngsi template registration
 | --forwardingMode value     | specify forwarding mode                         |
 | --expires value, -e value  | specify expires                                 |
 | --status value             | specify status                                  |
+| --context value, -C value  | specify @context (LD)                           |
 | --pretty, -P               | pretty format (default: false)                  |
 | --help                     | show help (default: false)                      |
 

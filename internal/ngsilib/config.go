@@ -87,14 +87,13 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	}
 
 	if existsFile(io, *io.FileName()) {
-		err := io.Open()
+		b, err := ngsi.FileReader.ReadFile(*io.FileName())
 		if err != nil {
 			return &NgsiLibError{funcName, 3, err.Error(), err}
 		}
-		defer io.Close()
 
 		ngsiConfig := NgsiConfig{}
-		err = io.Decode(&ngsiConfig)
+		err = JSONUnmarshal(b, &ngsiConfig)
 		if err != nil {
 			return &NgsiLibError{funcName, 4, err.Error(), err}
 		}
@@ -123,10 +122,23 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 			errflag = true
 		}
 	}
-	for _, v := range ngsi.contextList {
-		if !IsHTTP(v) {
-			fmt.Fprintf(gNGSI.LogWriter, "%s is not url", v)
+	for k, v := range ngsi.contextList {
+		switch v.(type) {
+		default:
+			fmt.Fprintf(gNGSI.LogWriter, "%s is neither url nor json\n", k)
 			errflag = true
+		case string:
+			s := v.(string)
+			if !IsHTTP(s) {
+				fmt.Fprintf(gNGSI.LogWriter, "%s is not url\n", k)
+				errflag = true
+			}
+		case []interface{}, map[string]interface{}:
+			_, err := JSONMarshal(v)
+			if err != nil {
+				fmt.Fprintf(gNGSI.LogWriter, "%s is not json\n", k)
+				errflag = true
+			}
 		}
 	}
 	if errflag {

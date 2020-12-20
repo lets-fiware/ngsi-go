@@ -62,6 +62,7 @@ type MockJSONLib struct {
 	DecodeErr error
 	EncodeErr error
 	IndentErr error
+	ValidErr  *bool
 	Jsonlib   JSONLib
 }
 
@@ -84,6 +85,13 @@ func (j *MockJSONLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent strin
 		return j.Jsonlib.Indent(dst, src, prefix, indent)
 	}
 	return j.IndentErr
+}
+
+func (j *MockJSONLib) Valid(data []byte) bool {
+	if j.ValidErr != nil {
+		return *j.ValidErr
+	}
+	return j.Jsonlib.Valid(data)
 }
 
 func testNgsiLibInit() *NGSI {
@@ -231,4 +239,58 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 		r.Res.Header = r.ResHeader
 	}
 	return &r.Res, r.ResBody, r.Err
+}
+
+//
+// MockFileLib
+//
+type MockFileLib struct {
+	Name             string
+	openError        error
+	readallError     error
+	readall          []byte
+	filePathAbs      string
+	filePathAbsError error
+	readFile         []byte
+	readFileError    error
+	fileError        io.Reader
+	fileError2       io.Reader
+}
+
+func (f *MockFileLib) Open(path string) (err error) {
+	return f.openError
+}
+
+func (f *MockFileLib) Close() error {
+	return nil
+}
+
+func (f *MockFileLib) FilePathAbs(path string) (string, error) {
+	if f.filePathAbsError == nil {
+		return f.filePathAbs, nil
+	}
+	return "", f.filePathAbsError
+}
+
+func (f *MockFileLib) ReadAll(r io.Reader) ([]byte, error) {
+	if f.readall == nil {
+		return nil, f.readallError
+	}
+	return f.readall, nil
+}
+
+func (f *MockFileLib) ReadFile(filename string) ([]byte, error) {
+	if f.readFileError == nil {
+		return f.readFile, nil
+	}
+	return nil, f.readFileError
+}
+
+func (f *MockFileLib) SetReader(r io.Reader) {
+}
+
+func (f *MockFileLib) File() io.Reader {
+	r := f.fileError
+	f.fileError = f.fileError2
+	return r
 }

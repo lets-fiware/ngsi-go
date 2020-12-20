@@ -26,15 +26,16 @@ ngsi append [common options] attrs [options]
 
 ### Options
 
-| Options                         | Description                        |
-| ------------------------------- | ---------------------------------- |
-| --id value, -i value            | specify id                         |
-| --type value, -t value          | specify entity Type                |
-| --keyValues, -k                 | specify keyValues (default: false) |
-| --append, -a                    | specify append (default: false)    |
-| --data value, -d value          | specify data                       |
-| --link value, -L value          | specify @context                   |
-| --help                          | show help (default: false)         |
+| Options                   | Description                        |
+| ------------------------- | ---------------------------------- |
+| --id value, -i value      | specify id                         |
+| --type value, -t value    | specify entity Type                |
+| --keyValues, -k           | specify keyValues (default: false) |
+| --append, -a              | specify append (default: false)    |
+| --data value, -d value    | specify data                       |
+| --link value, -L value    | specify @context                   |
+| --context value, -C value | specify @context (LD)              |
+| --help                    | show help (default: false)         |
 
 ### Example
 

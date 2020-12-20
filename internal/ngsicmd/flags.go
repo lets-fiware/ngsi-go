@@ -122,6 +122,16 @@ var (
 		Aliases: []string{"L"},
 		Usage:   "@context (LD)",
 	}
+	contextFlag = &cli.StringFlag{
+		Name:    "context",
+		Aliases: []string{"C"},
+		Usage:   "@context (LD)",
+	}
+	acceptJSONFlag = &cli.BoolFlag{
+		Name:  "acceptJson",
+		Usage: "set accecpt header to application/json (LD)",
+		Value: false,
+	}
 	xAuthTokenFlag = &cli.BoolFlag{
 		Name:   "x-auth-token",
 		Usage:  "use X-Auth-Token",
@@ -151,6 +161,11 @@ var (
 		Name:  "link2",
 		Usage: "@context",
 		Value: "",
+	}
+	context2Flag = &cli.StringFlag{
+		Name:    "context2",
+		Aliases: []string{"C"},
+		Usage:   "@context (LD)",
 	}
 	xAuthToken2Flag = &cli.BoolFlag{
 		Name:   "x-auth-token2",
@@ -491,6 +506,11 @@ var (
 		Usage:  "url to be invoked when a notification is generated (v2)",
 		Hidden: true,
 	}
+	context = &cli.StringFlag{
+		Name:    "context",
+		Aliases: []string{"C"},
+		Usage:   "context (ld)",
+	}
 )
 
 // flag for broker config
@@ -547,6 +567,44 @@ var (
 	allFlag = &cli.BoolFlag{
 		Name:  "all",
 		Usage: "ail itmes",
+	}
+)
+
+// flag for server
+var (
+	serverHostFlag = &cli.StringFlag{
+		Name:    "host",
+		Aliases: []string{"h"},
+		Value:   "0.0.0.0",
+		Usage:   "host for server",
+	}
+	serverPortFlag = &cli.StringFlag{
+		Name:    "port",
+		Aliases: []string{"p"},
+		Value:   "3000",
+		Usage:   "port for server",
+	}
+	serverURLFlag = &cli.StringFlag{
+		Name:    "url",
+		Aliases: []string{"u"},
+		Value:   "/",
+		Usage:   "url for server",
+	}
+	serverHTTPSFlag = &cli.BoolFlag{
+		Name:    "https",
+		Aliases: []string{"s"},
+		Value:   false,
+		Usage:   "start in https",
+	}
+	serverKeyFlag = &cli.StringFlag{
+		Name:    "key",
+		Aliases: []string{"k"},
+		Usage:   "key file (only needed if https is enabled)",
+	}
+	serverCertFlag = &cli.StringFlag{
+		Name:    "cert",
+		Aliases: []string{"c"},
+		Usage:   "cert file (only needed if https is enabled)",
 	}
 )
 

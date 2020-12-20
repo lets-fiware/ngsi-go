@@ -36,6 +36,7 @@ ngsi update [common options] entities [options]
 | --noOverwrite, -n         | specify noOverwrite (default: false) |
 | --replace, -r             | specify replace (default: false)     |
 | --link value, -L value    | specify @context                     |
+| --context value, -C value | specify @context (LD)                |
 | --help                    | show help (default: false)           |
 
 ### Example
@@ -56,12 +57,14 @@ ngsi update [common options] attr [options]
 
 ### Options
 
-| Options                | Description                |
-| ---------------------- | -------------------------- |
-| --id value, -i value   | specify id                 |
-| --data value, -d value | specify data               |
-| --attrName value       | specify attribute name     |
-| --help                 | show help (default: false) |
+| Options                   | Description                |
+| ------------------------- | -------------------------- |
+| --id value, -i value      | specify id                 |
+| --data value, -d value    | specify data               |
+| --attrName value          | specify attribute name     |
+| --link value, -L value    | specify @context           |
+| --context value, -C value | specify @context (LD)      |
+| --help                    | show help (default: false) |
 
 ### Example
 
@@ -81,14 +84,15 @@ ngsi update [common options] attrs [options]
 
 ### Options
 
-| Options                | Description                        |
-| ---------------------- | ---------------------------------- |
-| --id value, -i value   | specify id                         |
-| --type value, -t value | specfiy entity type                |
-| --keyValues, -k        | specfiy keyValues (default: false) |
-| --data value, -d value | specify data                       |
-| --attrName value       | specify attribute name             |
-| --help                 | show help (default: false)         |
+| Options                   | Description                        |
+| ------------------------- | ---------------------------------- |
+| --id value, -i value      | specify id                         |
+| --type value, -t value    | specfiy entity type                |
+| --keyValues, -k           | specfiy keyValues (default: false) |
+| --data value, -d value    | specify data                       |
+| --link value, -L value    | specify @context                   |
+| --context value, -C value | specify @context (LD)              |
+| --help                    | show help (default: false)         |
 
 ### Example
 
@@ -142,6 +146,7 @@ ngsi update [common options] subscription [options]
 | --endTimeAt value         | specify endTimeAt (LD)                                         |
 | --timeProperty value      | specify timeProperty (LD)                                      |
 | --link value, -L value    | specify @context (LD)                                          |
+| --context value, -C value | specify @context (LD)                                          |
 | --status value            | specify status                                                 |
 | --headers value           | specify headers (v2)                                           |
 | --qs value                | specify qs (v2)                                                |
