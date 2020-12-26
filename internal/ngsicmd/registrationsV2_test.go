@@ -379,8 +379,8 @@ func TestRegistrationsListV2ErrorJSON(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion", "--json"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	err := registrationsListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -606,7 +606,7 @@ func TestRegistrationsGetV2ErrorSafeString(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 
 	_ = set.Parse([]string{"--host=orion", "--id=5f5dcb551e715bc7f1ad79e3", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
@@ -635,8 +635,7 @@ func TestRegistrationsGetV2ErrorJSONMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 
 	_ = set.Parse([]string{"--host=orion", "--id=5f5dcb551e715bc7f1ad79e3", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
@@ -750,7 +749,7 @@ func TestRegistrationsCreateV2ErrorJSONMarshalEncode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 0)
 
 	setupFlagString(set, "host,data")
 
@@ -1004,8 +1003,8 @@ func TestRegistrationsTemplateV2ErrorMarshal(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--description=test", "--id=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	err := registrationsTemplateV2(c, ngsi)
 
 	if assert.Error(t, err) {

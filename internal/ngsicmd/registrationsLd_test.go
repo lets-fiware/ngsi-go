@@ -379,8 +379,8 @@ func TestRegistrationsListLdErrorJSON(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -606,7 +606,7 @@ func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 
 	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=5f5dcb551e715bc7f1ad79e3"})
 	c := cli.NewContext(app, set, nil)
@@ -635,9 +635,8 @@ func TestRegistrationsLdGetErrorJSONMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
 	setupFlagString(set, "host,id")
+	JSONEncodeErr(ngsi, 0)
 
 	c := cli.NewContext(app, set, nil)
 	client, _ := newClient(ngsi, c, false)
@@ -752,8 +751,7 @@ func TestRegistrationsCreateLdErrorJSONMarshalEncode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 	setupFlagString(set, "host,data")
 
 	c := cli.NewContext(app, set, nil)
@@ -976,8 +974,8 @@ func TestRegistrationsTemplateLdErrorMarshal(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	err := registrationsTemplateLd(c, ngsi)
 
 	if assert.Error(t, err) {
@@ -1108,7 +1106,7 @@ func TestSetRegistrationsValuleLdErrorReadAll(t *testing.T) {
 func TestSetRegistrationsValuleLdErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 
 	setupFlagString(set, "data,description,provider,expires")
 	c := cli.NewContext(app, set, nil)

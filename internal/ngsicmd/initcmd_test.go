@@ -78,9 +78,7 @@ func TestInitCmdTrue(t *testing.T) {
 }
 
 func TestInitCmdDefaultValues(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	ngsi, set, app, _ := setupTest3()
 
 	c := cli.NewContext(app, set, nil)
 
@@ -94,13 +92,11 @@ func TestInitCmdDefaultValues(t *testing.T) {
 }
 
 func TestInitCmdConfig(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest3()
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "host")
-	_ = set.Parse([]string{"--config=config-file", "--host=orion"})
+	_ = set.Parse([]string{"--host=orion"})
 
 	_, err := initCmd(c, "Testing", true)
 
@@ -108,9 +104,7 @@ func TestInitCmdConfig(t *testing.T) {
 }
 
 func TestInitCmdStderr(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest3()
 
 	setupFlagString(set, "stderr,host")
 	c := cli.NewContext(app, set, nil)
@@ -121,28 +115,8 @@ func TestInitCmdStderr(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestInitCmdErrorStderr(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	setupFlagString(set, "stderr")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--stderr=abc"})
-
-	_, err := initCmd(c, "Testing", true)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "stderr logLevel error", ngsiErr.Message)
-	}
-}
-
 func TestInitCmdSyslog(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest3()
 
 	setupFlagString(set, "syslog,host")
 	c := cli.NewContext(app, set, nil)
@@ -154,9 +128,7 @@ func TestInitCmdSyslog(t *testing.T) {
 }
 
 func TestInitCmdSyslogLevelDebug(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	ngsi, set, app, _ := setupTest3()
 
 	setupFlagString(set, "syslog,host")
 	c := cli.NewContext(app, set, nil)
@@ -169,9 +141,7 @@ func TestInitCmdSyslogLevelDebug(t *testing.T) {
 }
 
 func TestInitCmdSyslogWindows(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	ngsi, set, app, _ := setupTest3()
 
 	setupFlagString(set, "syslog,host")
 	c := cli.NewContext(app, set, nil)
@@ -182,80 +152,8 @@ func TestInitCmdSyslogWindows(t *testing.T) {
 
 	assert.NoError(t, err)
 }
-
-func TestInitCmdErrorSyslogLevel(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	setupFlagString(set, "syslog")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--syslog=on"})
-
-	_, err := initCmd(c, "Testing", true)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
-	}
-}
-
-func TestInitCmdErrorSyslog(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	setupFlagString(set, "syslog")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--syslog=debug"})
-	ngsi.SyslogLib = &MockSyslogLib{Err: errors.New("syslog new error")}
-
-	_, err := initCmd(c, "Testing", true)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "syslog new error", ngsiErr.Message)
-	}
-}
-
-func TestInitCmdErrorHostNotFound(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-
-	_, err := initCmd(c, "Testing", true)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
-	}
-}
-
-func TestInitCmdErrorInitTokenMgr(t *testing.T) {
-	ngsi, set, app, _ := setupTest2()
-
-	// setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	setupFlagString(set, "cacheFile")
-	_ = set.Parse([]string{"--cacheFile=abc"})
-	c := cli.NewContext(app, set, nil)
-	ngsi.CacheFile = &MockIoLib{PathAbs: errors.New("error")}
-
-	_, err := initCmd(c, "Testing", false)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "error ", ngsiErr.Message)
-	}
-}
 func TestInitCmdArgs(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest3()
 
 	setupFlagString(set, "margin,timeout,maxCount")
 	c := cli.NewContext(app, set, nil)
@@ -267,9 +165,7 @@ func TestInitCmdArgs(t *testing.T) {
 }
 
 func TestInitCmdArgs2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest3()
 
 	setupFlagString(set, "margin,timeout,maxCount")
 	c := cli.NewContext(app, set, nil)
@@ -281,9 +177,7 @@ func TestInitCmdArgs2(t *testing.T) {
 }
 
 func TestInitCmdArgs3(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest3()
 
 	setupFlagString(set, "margin,timeout,maxCount")
 	c := cli.NewContext(app, set, nil)
@@ -292,4 +186,109 @@ func TestInitCmdArgs3(t *testing.T) {
 	_, err := initCmd(c, "Testing", false)
 
 	assert.NoError(t, err)
+}
+
+func TestInitCmdPreviousArgs(t *testing.T) {
+	ngsi, set, app, _ := setupTest3()
+
+	conf := `{
+		"settings": {
+		"usePreviousArgs": true,
+		"syslog": "info",
+		"stderr": "err",
+		"logfile": "",
+		"loglevel": "",
+		"cachefile": "file",
+		"host": "orion-ld",
+		"tenant": "",
+		"scope": "",
+		"token": ""
+	  }
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	setupFlagString(set, "margin,timeout,maxCount")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--margin=181", "--timeout=61", "--maxCount=101"})
+
+	_, err := initCmd(c, "Testing", false)
+
+	assert.NoError(t, err)
+}
+
+func TestInitCmdErrorStderr(t *testing.T) {
+	ngsi, set, app, _ := setupTest3()
+
+	c := cli.NewContext(app, set, nil)
+	ngsi.ConfigFile = &MockIoLib{HomeDir: errors.New("error")}
+
+	_, err := initCmd(c, "Testing", true)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "error", ngsiErr.Message)
+	}
+}
+
+func TestInitCmdErrorSyslogLevel(t *testing.T) {
+	_, set, app, _ := setupTest3()
+
+	setupFlagString(set, "syslog")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--syslog=on"})
+
+	_, err := initCmd(c, "Testing", true)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
+	}
+}
+
+func TestInitCmdErrorSyslog(t *testing.T) {
+	ngsi, set, app, _ := setupTest3()
+
+	setupFlagString(set, "syslog")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--syslog=debug"})
+	ngsi.SyslogLib = &MockSyslogLib{Err: errors.New("syslog new error")}
+
+	_, err := initCmd(c, "Testing", true)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "syslog new error", ngsiErr.Message)
+	}
+}
+
+func TestInitCmdErrorHostNotFound(t *testing.T) {
+	_, set, app, _ := setupTest3()
+
+	c := cli.NewContext(app, set, nil)
+
+	_, err := initCmd(c, "Testing", true)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "Required host not found", ngsiErr.Message)
+	}
+}
+
+func TestInitCmdErrorInitTokenMgr(t *testing.T) {
+	ngsi, set, app, _ := setupTest3()
+
+	c := cli.NewContext(app, set, nil)
+	ngsi.CacheFile = &MockIoLib{HomeDir: errors.New("error")}
+
+	_, err := initCmd(c, "Testing", false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "error", ngsiErr.Message)
+	}
 }

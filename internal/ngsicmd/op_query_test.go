@@ -507,7 +507,8 @@ func TestOpQueryErrorLinesValues(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
+
 	err := opQuery(c)
 
 	if assert.Error(t, err) {
@@ -536,8 +537,8 @@ func TestOpQueryErrorLinesValues2(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	err := opQuery(c)
 
 	if assert.Error(t, err) {
@@ -564,10 +565,11 @@ func TestOpQueryErrorLines(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{Jsonlib: j, DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
+
 	err := opQuery(c)
 
 	if assert.Error(t, err) {
@@ -596,8 +598,8 @@ func TestOpQueryErrorLines2(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	err := opQuery(c)
 
 	if assert.Error(t, err) {
@@ -657,7 +659,8 @@ func TestOpQueryErrorUnmarshal(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
+
 	err := opQuery(c)
 
 	if assert.Error(t, err) {

@@ -272,7 +272,8 @@ func TestVersionTokenCommandErrorJSON(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--verbose"})
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 0)
+
 	err := tokenCommand(c)
 
 	if assert.Error(t, err) {

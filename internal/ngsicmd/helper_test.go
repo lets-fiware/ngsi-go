@@ -48,6 +48,34 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var configData = `{
+	"brokers": {
+	  "orion": {
+		"brokerHost": "https://orion",
+		"ngsiType": "v2"
+	  },
+	  "orion-ld": {
+		"brokerHost": "https://orion-ld",
+		"ngsiType": "ld"
+	  }
+	},
+	"contexts": {
+	  "data-model": "http://context-provider:3000/data-models/ngsi-context.jsonld",
+	  "etsi": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+	  "ld": "https://schema.lab.fiware.org/ld/context",
+	  "tutorial": "http://context-provider:3000/data-models/ngsi-context.jsonld",
+	  "array": [
+		"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+	  ],
+	  "object": {
+		"ld": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+	  }
+	},
+	"settings": {
+		"usePreviousArgs": true
+	}
+  }`
+
 func setupTest() (*ngsilib.NGSI, *flag.FlagSet, *cli.App, *bytes.Buffer) {
 	ngsilib.Reset()
 	filename := ""
@@ -70,13 +98,22 @@ func setupTest() (*ngsilib.NGSI, *flag.FlagSet, *cli.App, *bytes.Buffer) {
 	return ngsi, set, app, buffer
 }
 
-func setupTest2() (*ngsilib.NGSI, *flag.FlagSet, *cli.App, *bytes.Buffer) {
-	buffer := &bytes.Buffer{}
+func setupTest3() (*ngsilib.NGSI, *flag.FlagSet, *cli.App, *bytes.Buffer) {
+	ngsilib.Reset()
+
+	filename := ""
 	ngsi := ngsilib.NewNGSI()
+	ngsi.ConfigFile = &MockIoLib{}
+	ngsi.ConfigFile.SetFileName(&filename)
+	ngsi.CacheFile = &MockIoLib{}
+	ngsi.CacheFile.SetFileName(&filename)
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(configData)}
+	ngsi.HTTP = NewMockHTTP()
+	buffer := &bytes.Buffer{}
 	ngsi.StdWriter = buffer
+	ngsi.LogWriter = &bytes.Buffer{}
 
 	set := flag.NewFlagSet("test", 0)
-	// setupFlagString(set, "config,cacheFile")
 	app := cli.NewApp()
 
 	return ngsi, set, app, buffer
@@ -208,6 +245,7 @@ type MockIoLib struct {
 	filename  *string
 	HomeDir   error
 	PathAbs   error
+	StatErr   error
 }
 
 func (io *MockIoLib) Open() (err error) {
@@ -251,7 +289,7 @@ func (io *MockIoLib) MkdirAll(path string, perm os.FileMode) error {
 }
 
 func (io *MockIoLib) Stat(filename string) (os.FileInfo, error) {
-	return nil, nil
+	return nil, io.StatErr
 }
 
 func (io *MockIoLib) SetFileName(filename *string) {
@@ -278,20 +316,20 @@ func (io *MockIoLib) FilePathJoin(elem ...string) string {
 // MockFileLib
 //
 type MockFileLib struct {
-	Name             string
-	openError        error
-	readallError     error
-	readall          []byte
-	filePathAbs      string
-	filePathAbsError error
-	readFile         []byte
-	readFileError    error
-	fileError        io.Reader
-	fileError2       io.Reader
+	Name              string
+	OpenError         error
+	ReadallError      error
+	ReadallData       []byte
+	FilePathAbsString string
+	FilePathAbsError  error
+	ReadFileData      []byte
+	ReadFileError     error
+	FileError         io.Reader
+	FileError2        io.Reader
 }
 
 func (f *MockFileLib) Open(path string) (err error) {
-	return f.openError
+	return f.OpenError
 }
 
 func (f *MockFileLib) Close() error {
@@ -299,32 +337,32 @@ func (f *MockFileLib) Close() error {
 }
 
 func (f *MockFileLib) FilePathAbs(path string) (string, error) {
-	if f.filePathAbsError == nil {
-		return f.filePathAbs, nil
+	if f.FilePathAbsError == nil {
+		return f.FilePathAbsString, nil
 	}
-	return "", f.filePathAbsError
+	return "", f.FilePathAbsError
 }
 
 func (f *MockFileLib) ReadAll(r io.Reader) ([]byte, error) {
-	if f.readall == nil {
-		return nil, f.readallError
+	if f.ReadallData == nil {
+		return nil, f.ReadallError
 	}
-	return f.readall, nil
+	return f.ReadallData, nil
 }
 
 func (f *MockFileLib) ReadFile(filename string) ([]byte, error) {
-	if f.readFileError == nil {
-		return f.readFile, nil
+	if f.ReadFileError == nil {
+		return f.ReadFileData, nil
 	}
-	return nil, f.readFileError
+	return nil, f.ReadFileError
 }
 
 func (f *MockFileLib) SetReader(r io.Reader) {
 }
 
 func (f *MockFileLib) File() io.Reader {
-	r := f.fileError
-	f.fileError = f.fileError2
+	r := f.FileError
+	f.FileError = f.FileError2
 	return r
 }
 
@@ -332,27 +370,45 @@ func (f *MockFileLib) File() io.Reader {
 // MockJSONLIB
 //
 type MockJSONLib struct {
-	DecodeErr  error
-	DecodeErr2 error
-	EncodeErr  error
-	IndentErr  error
-	ValidErr   *bool
-	Jsonlib    ngsilib.JSONLib
+	IndentErr error
+	ValidErr  *bool
+	Jsonlib   ngsilib.JSONLib
+	DecodeErr [5]error
+	EncodeErr [5]error
+	dp        int
+	ep        int
 }
 
 func (j *MockJSONLib) Decode(r io.Reader, v interface{}) error {
-	if j.DecodeErr == nil {
-		j.DecodeErr = j.DecodeErr2
+	err := j.DecodeErr[j.dp]
+	j.dp++
+	if err == nil {
 		return j.Jsonlib.Decode(r, v)
 	}
-	return j.DecodeErr
+	return err
 }
 
 func (j *MockJSONLib) Encode(w io.Writer, v interface{}) error {
-	if j.EncodeErr == nil {
+	err := j.EncodeErr[j.ep]
+	j.ep++
+	if err == nil {
 		return j.Jsonlib.Encode(w, v)
 	}
-	return j.EncodeErr
+	return err
+}
+
+func JSONDecodeErr(ngsi *ngsilib.NGSI, p int) {
+	j := ngsi.JSONConverter
+	mockj := &MockJSONLib{Jsonlib: j}
+	mockj.DecodeErr[p] = errors.New("json error")
+	ngsi.JSONConverter = mockj
+}
+
+func JSONEncodeErr(ngsi *ngsilib.NGSI, p int) {
+	j := ngsi.JSONConverter
+	mockj := &MockJSONLib{Jsonlib: j}
+	mockj.EncodeErr[p] = errors.New("json error")
+	ngsi.JSONConverter = mockj
 }
 
 func (j *MockJSONLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error {

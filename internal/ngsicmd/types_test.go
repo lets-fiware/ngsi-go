@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -341,11 +340,11 @@ func TestTypesListV2ErrorJSON(t *testing.T) {
 	ngsi.HTTP = mock
 	set.Bool("json", false, "doc")
 	setupFlagString(set, "host")
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--json"})
+
 	err := typesList(c)
 
 	if assert.Error(t, err) {

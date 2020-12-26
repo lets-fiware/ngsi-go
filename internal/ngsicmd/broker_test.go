@@ -38,10 +38,7 @@ import (
 )
 
 func TestBrokersList(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+	_, set, app, buf := setupTest3()
 
 	c := cli.NewContext(app, set, nil)
 	err := brokersList(c)
@@ -56,10 +53,7 @@ func TestBrokersList(t *testing.T) {
 }
 
 func TestBrokersListJSON(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+	_, set, app, buf := setupTest3()
 
 	setupFlagBool(set, "json")
 
@@ -77,10 +71,7 @@ func TestBrokersListJSON(t *testing.T) {
 }
 
 func TestBrokersListJSONPretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+	_, set, app, buf := setupTest3()
 
 	setupFlagBool(set, "json,pretty")
 
@@ -122,10 +113,11 @@ func TestBrokersListErrorJSON(t *testing.T) {
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
 	setupFlagBool(set, "json")
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 0)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--json"})
+
 	err := brokersList(c)
 
 	if assert.Error(t, err) {
@@ -324,7 +316,7 @@ func TestBrokersGetErrorMarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 0)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
@@ -654,10 +646,11 @@ func TestBrokersDeleteNoItem(t *testing.T) {
 }
 
 func TestBrokersDeleteErrorUpdateBroker(t *testing.T) {
-	ngsi, set, app, _ := setupTest2()
+	ngsi, set, app, _ := setupTest3()
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,ngsiType,items")
+	// ngsi.ConfigFile = &MockIoLib{StatErr: errors.New("stat error"), OpenErr: errors.New("open error")}
 	ngsi.ConfigFile = &MockIoLib{OpenErr: errors.New("open error")}
 
 	c := cli.NewContext(app, set, nil)

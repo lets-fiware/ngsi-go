@@ -152,9 +152,9 @@ func TestSettingsDeleteErrorItem(t *testing.T) {
 }
 
 func TestSettingsDeleteErrorSave(t *testing.T) {
-	ngsi, set, app, _ := setupTest2()
+	ngsi, set, app, _ := setupTest3()
 
-	ngsi.ConfigFile = &MockIoLib{EncodeErr: errors.New("save error")}
+	ngsi.ConfigFile = &MockIoLib{OpenErr: errors.New("save error")}
 	ngsi.PreviousArgs.UsePreviousArgs = true
 	setupFlagString(set, "host,items")
 	c := cli.NewContext(app, set, nil)
@@ -198,11 +198,12 @@ func TestSettingsClearErrInitCmd(t *testing.T) {
 }
 
 func TestSettingsClearErrorSave(t *testing.T) {
-	ngsi, set, app, _ := setupTest2()
+	ngsi, set, app, _ := setupTest3()
 
-	ngsi.ConfigFile = &MockIoLib{EncodeErr: errors.New("save error")}
+	ngsi.ConfigFile = &MockIoLib{OpenErr: errors.New("save error")}
 	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
+
 	err := settingsClear(c)
 
 	if assert.Error(t, err) {
