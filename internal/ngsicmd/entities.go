@@ -61,7 +61,7 @@ func entitiesList(c *cli.Context) error {
 	limit := 100
 
 	verbose := c.IsSet("verbose")
-	if c.Bool("pretty") {
+	if c.Bool("pretty") || c.Bool("keyValues") || isSetOR(c, []string{"attrs", "metadata", "orderBy"}) {
 		verbose = true
 	}
 	values := c.IsSet("values")
