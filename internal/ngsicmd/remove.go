@@ -106,9 +106,10 @@ func remove(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 9, err.Error(), err}
 		}
+		client.RemoveHeader("Content-Type")
 	}
 
-	fmt.Fprintf(ngsi.StdWriter, "%d", total)
+	fmt.Fprintf(ngsi.StdWriter, "%d\n", total)
 
 	return nil
 }
