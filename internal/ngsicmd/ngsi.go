@@ -941,9 +941,7 @@ var listCmd = cli.Command{
 			Name:  "types",
 			Usage: "list types",
 			Flags: []cli.Flag{
-				verboseFlag,
 				jsonFlag,
-				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return typesList(c)

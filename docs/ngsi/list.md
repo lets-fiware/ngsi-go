@@ -33,7 +33,6 @@ ngsi list [common options] types [options]
 | ------------- | ---------------------------------- |
 | --verbose, -v | verbose (default: false)           |
 | --json, -j    | JSON format (default: false)       |
-| --localTime   | specify localTime (default: false) |
 | --help        | show help (default: false)         |
 
 ### Examples
