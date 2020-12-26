@@ -2,7 +2,7 @@ version: "3"
 
 services:
   orion:
-    image: fiware/orion:2.5.0
+    image: fiware/orion:2.5.2
     ports:
       - "1026:1026"
     depends_on:
