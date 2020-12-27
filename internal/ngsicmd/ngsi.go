@@ -272,6 +272,7 @@ var removeCmd = cli.Command{
 		scopeFlag,
 		typeRFlag,
 		runFlag,
+		linkFlag,
 	},
 	Action: func(c *cli.Context) error {
 		return remove(c)

@@ -33,7 +33,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
@@ -47,25 +46,28 @@ func remove(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	entityType := c.String("type")
-
 	client, err := newClient(ngsi, c, false)
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if client.IsNgsiLd() {
-		return &ngsiCmdError{funcName, 3, "only available on NGSIv2", err}
+	if client.IsNgsiV2() {
+		if c.IsSet("link") {
+			return &ngsiCmdError{funcName, 3, "can't specify --link option on NGSIv2", nil}
+		}
+		return removeV2(c, ngsi, client)
 	}
+	return removeLD(c, ngsi, client)
+}
 
-	if !c.IsSet("run") {
-		return &ngsiCmdError{funcName, 4, "run remove with --run option", err}
-	}
+func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+	const funcName = "removeV2"
+
+	entityType := c.String("type")
 
 	limit := 100
 	total := 0
 	for {
-		// get count
 		client.SetPath("/entities")
 
 		v := url.Values{}
@@ -77,16 +79,22 @@ func remove(c *cli.Context) error {
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 		}
 
-		count, err := strconv.Atoi(res.Header.Get("fiware-total-count"))
+		count, err := client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return &ngsiCmdError{funcName, 3, "ResultsCount error", nil}
 		}
+
+		if !c.IsSet("run") {
+			fmt.Fprintf(ngsi.StdWriter, fmt.Sprintf("%d entities will be removed. run remove with --run option", count))
+			return nil
+		}
+
 		if count == 0 {
 			break
 		}
@@ -99,13 +107,93 @@ func remove(c *cli.Context) error {
 		var entities entitiesRespose
 		err = ngsilib.JSONUnmarshalDecode(body, &entities, false)
 		if err != nil {
-			return &ngsiCmdError{funcName, 8, err.Error(), err}
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 
 		_, _, err = client.OpUpdate(&entities, "delete", false, false)
 		if err != nil {
-			return &ngsiCmdError{funcName, 9, err.Error(), err}
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
+		client.RemoveHeader("Content-Type")
+	}
+
+	fmt.Fprintf(ngsi.StdWriter, "%d\n", total)
+
+	return nil
+}
+
+func removeLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+	const funcName = "removeLD"
+
+	entityType := c.String("type")
+
+	limit := 100
+	total := 0
+	for {
+		// get count
+		client.SetPath("/entities")
+
+		v := url.Values{}
+		v.Set("type", entityType)
+		v.Set("count", "true")
+		v.Set("limit", fmt.Sprintf("%d", limit))
+		client.SetQuery(&v)
+
+		res, body, err := client.HTTPGet()
+		if err != nil {
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
+		}
+		if res.StatusCode != http.StatusOK {
+			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		}
+
+		count, err := client.ResultsCount(res)
+		if err != nil {
+			return &ngsiCmdError{funcName, 3, "ResultsCount error", nil}
+		}
+
+		if !c.IsSet("run") {
+			fmt.Fprintf(ngsi.StdWriter, fmt.Sprintf("%d entities will be removed. run remove with --run option", count))
+			return nil
+		}
+
+		if count == 0 {
+			break
+		}
+		if count >= limit {
+			total += limit
+		} else {
+			total += count
+		}
+
+		var entities entitiesRespose
+		err = ngsilib.JSONUnmarshalDecode(body, &entities, false)
+		if err != nil {
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
+		}
+
+		data := []string{}
+		for _, e := range entities {
+			data = append(data, e["id"].(string))
+		}
+		b, err := ngsilib.JSONMarshal(data)
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+
+		client.SetPath("/entityOperations/delete")
+		v = url.Values{}
+		client.SetQuery(&v)
+		client.SetContentType()
+
+		res, body, err = client.HTTPPost(b)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+		if res.StatusCode != http.StatusOK {
+			return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		}
+
 		client.RemoveHeader("Content-Type")
 	}
 
