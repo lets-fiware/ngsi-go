@@ -188,7 +188,7 @@ func TestRemoveV2TestRun(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "191 entities will be removed. run remove with --run option"
+		expected := "191 entities will be removed. run remove with --run option\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -466,7 +466,7 @@ func TestRemoveLDTestRun(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "191 entities will be removed. run remove with --run option"
+		expected := "191 entities will be removed. run remove with --run option\n"
 		assert.Equal(t, expected, actual)
 	}
 }
