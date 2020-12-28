@@ -81,12 +81,19 @@ func entityCreate(c *cli.Context) error {
 		}
 	}
 
+	if client.IsNgsiLd() && c.IsSet("context") {
+		b, err = insertAtContext(ngsi, b, c.String("context"))
+		if err != nil {
+			return &ngsiCmdError{funcName, 7, err.Error(), err}
+		}
+	}
+
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 7, err.Error(), err}
+		return &ngsiCmdError{funcName, 8, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 8, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 9, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil
@@ -112,6 +119,10 @@ func entityRead(c *cli.Context) error {
 	var opts = []string{"keyValues", "values", "unique", "sysAttrs"}
 	v := parseOptions(c, args, opts)
 	client.SetQuery(v)
+
+	if c.Bool("acceptJson") {
+		client.SetAcceptJSON()
+	}
 
 	res, body, err := client.HTTPGet()
 	if err != nil {

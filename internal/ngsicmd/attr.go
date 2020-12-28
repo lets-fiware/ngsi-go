@@ -119,6 +119,12 @@ func attrUpdate(c *cli.Context) error {
 	}
 
 	if ngsilib.IsJSON(b) {
+		if client.IsNgsiLd() && c.IsSet("context") {
+			b, err = insertAtContext(ngsi, b, c.String("context"))
+			if err != nil {
+				return &ngsiCmdError{funcName, 4, err.Error(), err}
+			}
+		}
 		b, _ = ngsilib.JSONSafeStringEncode(b)
 		client.SetContentType()
 	} else {
@@ -134,10 +140,10 @@ func attrUpdate(c *cli.Context) error {
 		res, body, err = client.HTTPPut(b)
 	}
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return &ngsiCmdError{funcName, 5, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil

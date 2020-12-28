@@ -30,16 +30,18 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
+	"errors"
+	"flag"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
-	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
 
 func TestContextList(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, buf := setupTest()
 	setupFlagString(set, "name")
 
@@ -53,9 +55,27 @@ func TestContextList(t *testing.T) {
 	}
 }
 
-func TestContextListName(t *testing.T) {
-	ngsilib.Reset()
+func TestContextListJSON(t *testing.T) {
+	_, set, app, buf := setupTest()
 
+	setupFlagString(set, "name,json")
+	c := cli.NewContext(app, set, nil)
+	set.Parse([]string{"--name=fiware", "--json={}"})
+	err := contextAdd(c)
+	assert.NoError(t, err)
+
+	set = flag.NewFlagSet("test", 0)
+	c = cli.NewContext(app, set, nil)
+	err = contextList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "etsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\nfiware {}\nld https://schema.lab.fiware.org/ld/context\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestContextListName(t *testing.T) {
 	_, set, app, buf := setupTest()
 	setupFlagString(set, "name")
 
@@ -71,8 +91,6 @@ func TestContextListName(t *testing.T) {
 }
 
 func TestContextListErrorInitCmd(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,syslog")
 
@@ -88,8 +106,6 @@ func TestContextListErrorInitCmd(t *testing.T) {
 }
 
 func TestContextListErrorName(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name")
 
@@ -104,9 +120,29 @@ func TestContextListErrorName(t *testing.T) {
 	}
 }
 
-func TestContextAdd(t *testing.T) {
-	ngsilib.Reset()
+func TestContextListErrorJSON(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
 
+	setupFlagString(set, "name,json")
+	c := cli.NewContext(app, set, nil)
+	set.Parse([]string{"--name=fiware", "--json={}"})
+	err := contextAdd(c)
+	assert.NoError(t, err)
+
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+
+	set = flag.NewFlagSet("test", 0)
+	c = cli.NewContext(app, set, nil)
+	err = contextList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestContextAdd(t *testing.T) {
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -124,8 +160,6 @@ func TestContextAdd(t *testing.T) {
 }
 
 func TestContextAddErrorInitCmd(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,syslog")
 
@@ -141,8 +175,6 @@ func TestContextAddErrorInitCmd(t *testing.T) {
 }
 
 func TestContextAddErrorName(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -157,8 +189,6 @@ func TestContextAddErrorName(t *testing.T) {
 }
 
 func TestContextAddErrorNameString(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -174,8 +204,6 @@ func TestContextAddErrorNameString(t *testing.T) {
 }
 
 func TestContextAddErrorUrl(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -186,13 +214,26 @@ func TestContextAddErrorUrl(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "url not found", ngsiErr.Message)
+		assert.Equal(t, "url or json not provided", ngsiErr.Message)
+	}
+}
+
+func TestContextAddErrorUrlJSON(t *testing.T) {
+	_, set, app, _ := setupTest()
+	setupFlagString(set, "name,url,json")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--name=fiware", "--url=http://context", "--json={}"})
+	err := contextAdd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "specify either url or json", ngsiErr.Message)
 	}
 }
 
 func TestContextAddErrorUrlError(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -202,14 +243,44 @@ func TestContextAddErrorUrlError(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "abc is not url", ngsiErr.Message)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	}
+}
+
+func TestContextAddErrorJSONError(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	setupFlagString(set, "name,json")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--name=fiware", "--json=http://context"})
+	err := contextAdd(c)
+	b := false
+	ngsi.JSONConverter = &MockJSONLib{ValidErr: &b}
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	}
+}
+
+func TestContextAddError(t *testing.T) {
+	_, set, app, _ := setupTest()
+	setupFlagString(set, "name,url")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--name=etsi", "--url=http://context"})
+	err := contextAdd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "etsi already exists", ngsiErr.Message)
 	}
 }
 
 func TestContextUpdate(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -221,8 +292,6 @@ func TestContextUpdate(t *testing.T) {
 }
 
 func TestContextUpdateErrorInitCmd(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,syslog")
 
@@ -238,8 +307,6 @@ func TestContextUpdateErrorInitCmd(t *testing.T) {
 }
 
 func TestContextUpdateErrorName(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -254,8 +321,6 @@ func TestContextUpdateErrorName(t *testing.T) {
 }
 
 func TestContextUpdateErrorUrl(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -271,8 +336,6 @@ func TestContextUpdateErrorUrl(t *testing.T) {
 }
 
 func TestContextUpdateErrorUrlError(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -288,8 +351,6 @@ func TestContextUpdateErrorUrlError(t *testing.T) {
 }
 
 func TestContextDelete(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -301,8 +362,6 @@ func TestContextDelete(t *testing.T) {
 }
 
 func TestContextDeleteErrorInitCmd(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,syslog")
 
@@ -318,8 +377,6 @@ func TestContextDeleteErrorInitCmd(t *testing.T) {
 }
 
 func TestContextDeleteErrorName(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -334,8 +391,6 @@ func TestContextDeleteErrorName(t *testing.T) {
 }
 
 func TestContextDeleteErrorUrl(t *testing.T) {
-	ngsilib.Reset()
-
 	_, set, app, _ := setupTest()
 	setupFlagString(set, "name,url")
 
@@ -348,4 +403,472 @@ func TestContextDeleteErrorUrl(t *testing.T) {
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware not found", ngsiErr.Message)
 	}
+}
+
+func TestGetAtContext(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	_, err := getAtContext(ngsi, "{}")
+
+	assert.NoError(t, err)
+}
+
+func TestGetAtContextHTTP(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	actual, err := getAtContext(ngsi, "etsi")
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld", actual)
+	}
+}
+
+func TestGetAtContextErrorNotFound(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	_, err := getAtContext(ngsi, "fiware")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "fiware not found", ngsiErr.Message)
+	}
+}
+
+func TestGetAtContextErrorNotJSON(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	_, err := getAtContext(ngsi, "1")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "data not json: 1", ngsiErr.Message)
+	}
+}
+
+func TestGetAtContextErrorJSON(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+
+	_, err := getAtContext(ngsi, "{}")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestInsertAtContext(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	payload := []byte(`{"id":"I"}`)
+
+	cases := []struct {
+		context  string
+		expected string
+	}{
+		{
+			context:  `https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld`,
+			expected: "{\"@context\":\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\",\"id\":\"I\"}",
+		},
+		{
+			context:  "[\"http://example.org/ngsi-ld/latest/parking.jsonld\",\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"]",
+			expected: "{\"@context\":[\"http://example.org/ngsi-ld/latest/parking.jsonld\",\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"],\"id\":\"I\"}",
+		},
+		{
+			context:  "{\"parking\":\"http://example.org/ngsi-ld/latest/parking.jsonld\"}",
+			expected: "{\"@context\":{\"parking\":\"http://example.org/ngsi-ld/latest/parking.jsonld\"},\"id\":\"I\"}",
+		},
+		{
+			context:  "etsi",
+			expected: "{\"@context\":\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\",\"id\":\"I\"}",
+		},
+	}
+
+	for _, c := range cases {
+		actual, err := insertAtContext(ngsi, payload, c.context)
+
+		if assert.NoError(t, err) {
+			assert.Equal(t, c.expected, string(actual))
+		}
+	}
+}
+
+func TestInsertAtContextErrorPayload(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	payload := []byte(`context`)
+	_, err := insertAtContext(ngsi, payload, "{}")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "data not json", ngsiErr.Message)
+	}
+}
+
+func TestInsertAtContextErrorArrayUnmarshal(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{DecodeErr2: errors.New("json error"), Jsonlib: j}
+
+	payload := []byte(`[]`)
+	_, err := insertAtContext(ngsi, payload, "{}")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestInsertAtContextErrorArrayMarshal(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+
+	payload := []byte(`[]`)
+	_, err := insertAtContext(ngsi, payload, "{}")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestInsertAtContextErrorObjectUnmarshal(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{DecodeErr2: errors.New("json error"), Jsonlib: j}
+
+	payload := []byte(`{}`)
+	_, err := insertAtContext(ngsi, payload, "{}")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestInsertAtContextErrorObjectMarshal(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+
+	payload := []byte(`{}`)
+	_, err := insertAtContext(ngsi, payload, "{}")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestContextServer(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,name")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=etsi"})
+	err := contextServer(c)
+
+	assert.NoError(t, err)
+}
+
+func TestContextServerHTTPS(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,key,cert,name")
+	setupFlagBool(set, "https")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--https", "--key=test.key", "--cert=test.cert", "--port=aaaa", "--url=/context", "--name=etsi"})
+	err := contextServer(c)
+
+	assert.NoError(t, err)
+}
+
+func TestContextServerJSON(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "name,json")
+	c := cli.NewContext(app, set, nil)
+	set.Parse([]string{"--name=fiware", "--json={}"})
+	err := contextAdd(c)
+	assert.NoError(t, err)
+
+	set = flag.NewFlagSet("test", 0)
+	setupFlagString(set, "port,url,name")
+
+	c = cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=fiware"})
+	err = contextServer(c)
+
+	assert.NoError(t, err)
+}
+
+func TestContextServerDataJSON(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,data")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data={}"})
+	err := contextServer(c)
+
+	assert.NoError(t, err)
+}
+
+func TestContextServerDataHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,data")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=http://context"})
+	err := contextServer(c)
+
+	assert.NoError(t, err)
+}
+
+func TestContextServerDataFile(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,data")
+
+	ngsi.FileReader = &MockFileLib{readFile: []byte("{}")}
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+	err := contextServer(c)
+
+	assert.NoError(t, err)
+}
+
+func TestContextServerErrorInitCmd(t *testing.T) {
+	_, set, app, _ := setupTest()
+	setupFlagString(set, "name,syslog")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--syslog="})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorNoArgs(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,name,data")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "name or data  not found", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorTooMuchArgs(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,name,data")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=etsi", "--data=@file"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "specify either name or data", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorNotFoundName(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,name,data")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=fiware"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "fiware not found", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorFilePathAbs(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,data")
+
+	ngsi.FileReader = &MockFileLib{filePathAbsError: errors.New("filePathAbsError")}
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "filePathAbsError", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorReadFileError(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,data")
+
+	ngsi.FileReader = &MockFileLib{readFileError: errors.New("readFileError")}
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "readFileError", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorFileNameError(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,data")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "file name error", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorNotJSON(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,data")
+
+	ngsi.FileReader = &MockFileLib{readFile: []byte("context")}
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "data not json", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorKey(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,key,cert,name")
+	setupFlagBool(set, "https")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--https", "--port=aaaa", "--url=/", "--name=etsi"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, "no key file provided", ngsiErr.Message)
+	}
+}
+
+func TestContextServerErrorCert(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	setupFlagString(set, "port,url,key,cert,name")
+	setupFlagBool(set, "https")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--https", "--key=a", "--port=aaaa", "--url=/", "--name=etsi"})
+	err := contextServer(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 10, ngsiErr.ErrNo)
+		assert.Equal(t, "no cert file provided", ngsiErr.Message)
+	}
+}
+
+func TestServerHander(t *testing.T) {
+	serverGlobal = &serverParam{context: "{\"context\":\"http://context\"}"}
+
+	req := httptest.NewRequest(http.MethodGet, "http://receiver/", nil)
+
+	got := httptest.NewRecorder()
+
+	serverHandler(got, req)
+
+	expected := http.StatusOK
+
+	assert.Equal(t, expected, got.Code)
+}
+
+func TestServerHanderErrorStatusMethodNotAllowed(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	serverGlobal = &serverParam{ngsi: ngsi, context: "{\"context\":\"http://context\"}"}
+
+	req := httptest.NewRequest(http.MethodPost, "http://receiver/", nil)
+
+	got := httptest.NewRecorder()
+
+	serverHandler(got, req)
+
+	expected := http.StatusMethodNotAllowed
+
+	assert.Equal(t, expected, got.Code)
 }

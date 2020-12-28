@@ -78,7 +78,8 @@ func receiver(c *cli.Context) error {
 
 	receiverGlobal = &receiverParam{ngsi: ngsi, pretty: pretty}
 
-	http.HandleFunc(path, http.HandlerFunc(receiverHandler))
+	mux := http.NewServeMux()
+	mux.HandleFunc(path, http.HandlerFunc(receiverHandler))
 
 	if c.Bool("verbose") {
 		fmt.Fprintf(ngsi.Stderr, "%s\n", url)
@@ -86,9 +87,9 @@ func receiver(c *cli.Context) error {
 	ngsi.Logging(ngsilib.LogErr, url)
 
 	if c.Bool("https") {
-		http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), nil)
+		http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
 	} else {
-		http.ListenAndServe(addr, nil)
+		http.ListenAndServe(addr, mux)
 	}
 
 	return nil

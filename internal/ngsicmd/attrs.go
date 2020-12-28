@@ -116,16 +116,23 @@ func attrsAppend(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 
-	if client.IsSafeString() {
-		b, err = ngsilib.JSONSafeStringEncode(b)
+	if client.IsNgsiLd() && c.IsSet("context") {
+		b, err = insertAtContext(ngsi, b, c.String("context"))
 		if err != nil {
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 	}
 
+	if client.IsSafeString() {
+		b, err = ngsilib.JSONSafeStringEncode(b)
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+	}
+
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusNoContent {
 		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
@@ -162,19 +169,26 @@ func attrsUpdate(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 
-	if client.IsSafeString() {
-		b, err = ngsilib.JSONSafeStringEncode(b)
+	if client.IsNgsiLd() && c.IsSet("context") {
+		b, err = insertAtContext(ngsi, b, c.String("context"))
 		if err != nil {
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 	}
 
+	if client.IsSafeString() {
+		b, err = ngsilib.JSONSafeStringEncode(b)
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+	}
+
 	res, body, err := client.HTTPPatch(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil

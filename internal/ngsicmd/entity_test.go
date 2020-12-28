@@ -98,6 +98,27 @@ func TestEntityCreateLd(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestEntityCreateLdContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"id":"urn:ngsi-ld:Product:010","name":{"type":"Text","value":"Lemonade"},"price":{"type":"Integer","value":99},"size":{"type":"Text","value":"S"},"type":"Product"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,data,context")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}", "--context=[\"http://context\"]"})
+	err := entityCreate(c)
+
+	assert.NoError(t, err)
+}
+
 func TestEntityCreateErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -243,6 +264,33 @@ func TestEntityCreateErrorSafeString(t *testing.T) {
 	}
 }
 
+func TestEntityCreateLdErrorContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"id":"urn:ngsi-ld:Product:010","name":{"type":"Text","value":"Lemonade"},"price":{"type":"Integer","value":99},"size":{"type":"Text","value":"S"},"type":"Product"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,data,context")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}", "--context=[\"http://context\""})
+	err := entityCreate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntityCreateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -263,7 +311,7 @@ func TestEntityCreateErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -289,7 +337,7 @@ func TestEntityCreateErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -390,9 +438,10 @@ func TestEntityReadLd(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	setupFlagString(set, "host,id")
+	setupFlagBool(set, "acceptJson")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--acceptJson"})
 	err := entityRead(c)
 
 	if assert.NoError(t, err) {

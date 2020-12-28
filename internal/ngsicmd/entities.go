@@ -52,6 +52,9 @@ func entitiesList(c *cli.Context) error {
 	}
 
 	attrs := "id"
+	if client.IsNgsiLd() {
+		attrs = ""
+	}
 	if c.IsSet("attrs") {
 		attrs = c.String("attrs")
 	}
@@ -108,7 +111,9 @@ func entitiesList(c *cli.Context) error {
 		}
 		client.SetQuery(v)
 
-		client.SetHeader("Accept", "application/json")
+		if c.Bool("acceptJson") {
+			client.SetAcceptJSON()
+		}
 
 		res, body, err := client.HTTPGet()
 		if err != nil {

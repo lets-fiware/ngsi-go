@@ -584,17 +584,14 @@ func setSubscriptionValuesLd(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		}
 	}
 
-	// @context
-	if c.IsSet("link") {
-		link := c.String("link")
-		if !ngsilib.IsHTTP(link) {
-			value, err := ngsi.GetContext(link)
-			if err != nil {
-				return &ngsiCmdError{funcName, 9, err.Error(), err}
-			}
-			link = value
+	if c.IsSet("context") {
+		context := c.String("context")
+		var atContext interface{}
+		atContext, err := getAtContext(ngsi, context)
+		if err != nil {
+			return &ngsiCmdError{funcName, 9, err.Error(), nil}
 		}
-		t.AtContext = link
+		t.AtContext = atContext
 	}
 
 	return nil

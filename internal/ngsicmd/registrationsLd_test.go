@@ -354,7 +354,7 @@ func TestRegistrationsListLdErrorUnmarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "json: cannot unmarshal object into Go value of type []ngsicmd.cSourceRegistration", ngsiErr.Message)
+		assert.Equal(t, "json: cannot unmarshal object into Go value of type []ngsicmd.cSourceRegistration Field: (1) {}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -1068,6 +1068,25 @@ func TestSetRegistrationsValuleLd3(t *testing.T) {
 	}
 }
 
+func TestSetRegistrationsValuleLdContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "data,context")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--data={}", "--context=[\"http://context\"]"})
+
+	var r cSourceRegistration
+
+	err := setRegistrationsValuleLd(c, ngsi, &r)
+
+	if assert.NoError(t, err) {
+		b, _ := json.Marshal(r)
+		actual := string(b)
+		expected := "{\"@context\":[\"http://context\"]}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestSetRegistrationsValuleLdErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -1119,8 +1138,26 @@ func TestSetRegistrationsValuleLdErrorProvider(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "provider url error: csource", ngsiErr.Message)
+	}
+}
+
+func TestSetRegistrationsValuleLdErrorContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "data,context")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--data={}", "--context=[\"http://context\""})
+
+	var r cSourceRegistration
+
+	err := setRegistrationsValuleLd(c, ngsi, &r)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	}
 }
 

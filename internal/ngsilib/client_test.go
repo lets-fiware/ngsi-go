@@ -213,6 +213,16 @@ func TestSetContentType(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestSetAcceptJSON(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+
+	client.SetAcceptJSON()
+
+	actual := client.Headers["Accept"]
+	expected := "application/json"
+	assert.Equal(t, expected, actual)
+}
+
 func TestSetContentTypeLD(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
 	client.NgsiType = ngsiLd

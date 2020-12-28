@@ -325,7 +325,7 @@ var templateCmd = cli.Command{
 				timeAtFlag,
 				endTimeAtFlag,
 				timePropertyFlag,
-				linkFlag,
+				contextFlag,
 				statusFlag,
 				headersFlag,
 				qsFlag,
@@ -360,6 +360,7 @@ var templateCmd = cli.Command{
 				legacyFlag,
 				forwardingModeFlag,
 				statusFlag,
+				contextFlag,
 				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -512,6 +513,7 @@ var contextCmd = cli.Command{
 			Flags: []cli.Flag{
 				nameRFlag,
 				urlFlag,
+				jsonFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return contextAdd(c)
@@ -536,6 +538,23 @@ var contextCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return contextDelete(c)
+			},
+		},
+		{
+			Name:  "server",
+			Usage: "serve @context",
+			Flags: []cli.Flag{
+				nameFlag,
+				dataFlag,
+				serverHostFlag,
+				serverPortFlag,
+				serverURLFlag,
+				serverHTTPSFlag,
+				serverKeyFlag,
+				serverCertFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return contextServer(c)
 			},
 		},
 	},
@@ -613,6 +632,7 @@ var appendCmd = cli.Command{
 				appendFlag,
 				dataFlag,
 				linkFlag,
+				contextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return attrsAppend(c)
@@ -639,6 +659,7 @@ var createCmd = cli.Command{
 				keyValuesFlag,
 				dataFlag,
 				linkFlag,
+				contextFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -653,6 +674,7 @@ var createCmd = cli.Command{
 				keyValuesFlag,
 				upsertFlag,
 				linkFlag,
+				contextFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -694,6 +716,7 @@ var createCmd = cli.Command{
 				endTimeAtFlag,
 				timePropertyFlag,
 				linkFlag,
+				contextFlag,
 				statusFlag,
 				headersFlag,
 				qsFlag,
@@ -716,6 +739,7 @@ var createCmd = cli.Command{
 			Flags: []cli.Flag{
 				dataFlag,
 				linkFlag,
+				contextFlag,
 				providedIDFlag,
 				idPatternFlag,
 				typeFlag,
@@ -848,6 +872,7 @@ var getCmd = cli.Command{
 				uniqueFlag,
 				sysAttrsFlag,
 				linkFlag,
+				acceptJSONFlag,
 				prettyFlag,
 				safeStringFlag,
 			},
@@ -969,6 +994,7 @@ var listCmd = cli.Command{
 				uniqueFlag,
 				idFlag,
 				linkFlag,
+				acceptJSONFlag,
 				verboseFlag,
 				linesFlag,
 				prettyFlag,
@@ -1071,6 +1097,7 @@ var updateCmd = cli.Command{
 				dataFlag,
 				attrNameRFlag,
 				linkFlag,
+				contextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return attrUpdate(c)
@@ -1085,6 +1112,7 @@ var updateCmd = cli.Command{
 				keyValuesFlag,
 				dataFlag,
 				linkFlag,
+				contextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return attrsUpdate(c)
@@ -1126,6 +1154,7 @@ var updateCmd = cli.Command{
 				endTimeAtFlag,
 				timePropertyFlag,
 				linkFlag,
+				contextFlag,
 				statusFlag,
 				headersFlag,
 				qsFlag,
@@ -1151,6 +1180,7 @@ var updateCmd = cli.Command{
 				noOverwriteFlag,
 				replaceFlag,
 				linkFlag,
+				contextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return batch(c, "update")
@@ -1176,7 +1206,6 @@ var upsertCmd = cli.Command{
 			Flags: []cli.Flag{
 				dataFlag,
 				keyValuesFlag,
-				linkFlag,
 				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -1191,6 +1220,7 @@ var upsertCmd = cli.Command{
 				replaceFlag,
 				updateFlag,
 				linkFlag,
+				contextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return batch(c, "upsert")

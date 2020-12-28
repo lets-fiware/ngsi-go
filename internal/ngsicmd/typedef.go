@@ -31,3 +31,4 @@ package ngsicmd
 
 type entitiesRespose []map[string]interface{}
 type ngsiEntity map[string]interface{}
+type ngsiEntities []ngsiEntity

@@ -300,7 +300,7 @@ func TestCopyErrorJSONUnmarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 10, ngsiErr.ErrNo)
-		assert.Equal(t, "json: cannot unmarshal object into Go value of type ngsicmd.entitiesRespose", ngsiErr.Message)
+		assert.Equal(t, "json: cannot unmarshal object into Go value of type ngsicmd.entitiesRespose Field: (1) {}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

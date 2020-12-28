@@ -90,12 +90,19 @@ func batchCreate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
+	if client.IsNgsiLd() && c.IsSet("context") {
+		b, err = insertAtContext(ngsi, b, c.String("context"))
+		if err != nil {
+			return &ngsiCmdError{funcName, 2, err.Error(), err}
+		}
+	}
+
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	fmt.Fprintln(ngsi.StdWriter, string(body))
@@ -119,12 +126,19 @@ func batchUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
+	if client.IsNgsiLd() && c.IsSet("context") {
+		b, err = insertAtContext(ngsi, b, c.String("context"))
+		if err != nil {
+			return &ngsiCmdError{funcName, 2, err.Error(), err}
+		}
+	}
+
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil
@@ -145,12 +159,19 @@ func batchUpsert(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
+	if client.IsNgsiLd() && c.IsSet("context") {
+		b, err = insertAtContext(ngsi, b, c.String("context"))
+		if err != nil {
+			return &ngsiCmdError{funcName, 2, err.Error(), err}
+		}
+	}
+
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil

@@ -354,7 +354,7 @@ func TestRegistrationsListV2ErrorUnmarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "json: cannot unmarshal object into Go value of type []ngsicmd.registrationResposeV2", ngsiErr.Message)
+		assert.Equal(t, "json: cannot unmarshal object into Go value of type []ngsicmd.registrationResposeV2 Field: (1) {}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

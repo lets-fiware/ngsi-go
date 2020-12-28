@@ -292,7 +292,7 @@ func TestAttrsAppendV2(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsAppend(c)
 
 	assert.NoError(t, err)
@@ -312,7 +312,28 @@ func TestAttrsAppendV2SafeString(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
+	err := attrsAppend(c)
+
+	assert.NoError(t, err)
+}
+
+func TestAttrsAppendLD(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagBool(set, "append,keyValues")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
+	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
 	err := attrsAppend(c)
 
 	assert.NoError(t, err)
@@ -331,7 +352,7 @@ func TestAttrsAppendErrorInitCmd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsAppend(c)
 
 	if assert.Error(t, err) {
@@ -357,7 +378,7 @@ func TestAttrsAppendErrorNewClient(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsAppend(c)
 
 	if assert.Error(t, err) {
@@ -395,6 +416,33 @@ func TestAttrsAppendErrorData(t *testing.T) {
 	}
 }
 
+func TestAttrsAppendLDErrorContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagBool(set, "append,keyValues")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
+	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
+	err := attrsAppend(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestAttrsAppendV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -414,7 +462,7 @@ func TestAttrsAppendV2SafeStringError(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -435,12 +483,12 @@ func TestAttrsAppendErrorHTTP(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsAppend(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -461,7 +509,7 @@ func TestAttrsAppendErrorHTTPStatus(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsAppend(c)
 
 	if assert.Error(t, err) {
@@ -486,7 +534,7 @@ func TestAttrsUpdateV2(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsUpdate(c)
 
 	assert.NoError(t, err)
@@ -506,7 +554,28 @@ func TestAttrsUpdateV2SafeString(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
+	err := attrsUpdate(c)
+
+	assert.NoError(t, err)
+}
+
+func TestAttrsUpdateLD(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagBool(set, "append,keyValues")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
+	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
 	err := attrsUpdate(c)
 
 	assert.NoError(t, err)
@@ -525,7 +594,7 @@ func TestAttrsUpdateErrorInitCmd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsUpdate(c)
 
 	if assert.Error(t, err) {
@@ -551,7 +620,7 @@ func TestAttrsUpdateErrorNewClient(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsUpdate(c)
 
 	if assert.Error(t, err) {
@@ -589,6 +658,33 @@ func TestAttrsUpdateErrorData(t *testing.T) {
 	}
 }
 
+func TestAttrsUpdateLDErrorContext(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
+	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagBool(set, "append,keyValues")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
+	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
+	err := attrsUpdate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestAttrsUpdateV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -607,7 +703,7 @@ func TestAttrsUpdateV2SafeStringError(t *testing.T) {
 	err := attrsUpdate(c)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: :{\"value\":true}", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -628,12 +724,12 @@ func TestAttrsUpdateErrorHTTP(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsUpdate(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -654,12 +750,12 @@ func TestAttrsUpdateErrorHTTPStatus(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsUpdate(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -679,7 +775,7 @@ func TestAttrsReplaceV2(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsReplace(c)
 
 	assert.NoError(t, err)
@@ -699,7 +795,7 @@ func TestAttrsReplaceV2SafeString(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsReplace(c)
 
 	assert.NoError(t, err)
@@ -718,7 +814,7 @@ func TestAttrsReplaceErrorInitCmd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsReplace(c)
 
 	if assert.Error(t, err) {
@@ -744,7 +840,7 @@ func TestAttrsReplaceErrorNewClient(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsReplace(c)
 
 	if assert.Error(t, err) {
@@ -822,7 +918,7 @@ func TestAttrsReplaceErrorHTTP(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
 	err := attrsReplace(c)
 
 	if assert.Error(t, err) {
