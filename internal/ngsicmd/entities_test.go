@@ -41,8 +41,6 @@ import (
 func TestEntitiesListCountV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -69,8 +67,6 @@ func TestEntitiesListCountV2(t *testing.T) {
 func TestEntitiesListCountLD(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -82,7 +78,7 @@ func TestEntitiesListCountLD(t *testing.T) {
 	setupFlagBool(set, "count")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--count"})
+	_ = set.Parse([]string{"--host=orion-ld", "--count"})
 	err := entitiesList(c)
 
 	if assert.NoError(t, err) {
@@ -96,8 +92,6 @@ func TestEntitiesListCountLD(t *testing.T) {
 
 func TestEntitiesList(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -125,8 +119,6 @@ func TestEntitiesList(t *testing.T) {
 
 func TestEntitiesListPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -160,8 +152,6 @@ func TestEntitiesListPage(t *testing.T) {
 func TestEntitiesListVerbose(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -188,8 +178,6 @@ func TestEntitiesListVerbose(t *testing.T) {
 
 func TestEntitiesListVerbosePretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -218,8 +206,6 @@ func TestEntitiesListVerbosePretty(t *testing.T) {
 func TestEntitiesListVerboseLines(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -247,8 +233,6 @@ func TestEntitiesListVerboseLines(t *testing.T) {
 func TestEntitiesListValues(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -275,8 +259,6 @@ func TestEntitiesListValues(t *testing.T) {
 
 func TestEntitiesListValuesLines(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -318,9 +300,7 @@ func TestEntitiesListErrorInitCmd(t *testing.T) {
 }
 
 func TestEntitiesListErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -339,8 +319,6 @@ func TestEntitiesListErrorNewClient(t *testing.T) {
 
 func TestEntitiesListErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -367,8 +345,6 @@ func TestEntitiesListErrorHTTP(t *testing.T) {
 func TestEntitiesListErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities"
@@ -392,8 +368,6 @@ func TestEntitiesListErrorHTTPStatus(t *testing.T) {
 
 func TestEntitiesListErrorResultsCount1(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -420,8 +394,6 @@ func TestEntitiesListErrorResultsCount1(t *testing.T) {
 func TestEntitiesListErrorResultsCount2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -445,8 +417,6 @@ func TestEntitiesListErrorResultsCount2(t *testing.T) {
 
 func TestEntitiesListErrorVerboseSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -475,9 +445,7 @@ func TestEntitiesListErrorVerboseSafeString(t *testing.T) {
 func TestEntitiesListErrorVerboseLinesValues(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -505,9 +473,7 @@ func TestEntitiesListErrorVerboseLinesValues(t *testing.T) {
 func TestEntitiesListErrorVerboseLinesValues2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -535,9 +501,7 @@ func TestEntitiesListErrorVerboseLinesValues2(t *testing.T) {
 func TestEntitiesListErrorVerboseLines(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -565,9 +529,7 @@ func TestEntitiesListErrorVerboseLines(t *testing.T) {
 func TestEntitiesListErrorVerboseLines2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -594,8 +556,6 @@ func TestEntitiesListErrorVerboseLines2(t *testing.T) {
 
 func TestEntitiesListErrorVerbosePretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -627,9 +587,7 @@ func TestEntitiesListErrorVerbosePretty(t *testing.T) {
 func TestEntitiesListErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -656,8 +614,6 @@ func TestEntitiesListErrorUnmarshal(t *testing.T) {
 func TestEntitiesListErrorResultsCount3(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -676,8 +632,6 @@ func TestEntitiesListErrorResultsCount3(t *testing.T) {
 
 func TestEntitiesCountV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -704,8 +658,6 @@ func TestEntitiesCountV2(t *testing.T) {
 func TestEntitiesCountV2Type(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -731,8 +683,6 @@ func TestEntitiesCountV2Type(t *testing.T) {
 func TestEntitiesCountLD(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -757,8 +707,6 @@ func TestEntitiesCountLD(t *testing.T) {
 
 func TestEntitiesCountLDType(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -798,9 +746,7 @@ func TestEntitiesCountErrorInitCmd(t *testing.T) {
 }
 
 func TestEntitiesCountErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -819,8 +765,6 @@ func TestEntitiesCountErrorNewClient(t *testing.T) {
 
 func TestEntitiesCountErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -847,8 +791,6 @@ func TestEntitiesCountErrorHTTP(t *testing.T) {
 func TestEntitiesCountErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities"
@@ -872,8 +814,6 @@ func TestEntitiesCountErrorHTTPStatus(t *testing.T) {
 
 func TestEntitiesCountErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK

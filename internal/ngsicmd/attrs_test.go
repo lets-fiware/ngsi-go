@@ -41,7 +41,6 @@ import (
 func TestAttrsReadV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -68,7 +67,6 @@ func TestAttrsReadV2(t *testing.T) {
 func TestAttrsReadV2Pretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues,pretty")
 	reqRes := MockHTTPReqRes{}
@@ -95,7 +93,6 @@ func TestAttrsReadV2Pretty(t *testing.T) {
 func TestAttrsReadV2SafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -147,7 +144,6 @@ func TestAttrsReadErrorInitCmd(t *testing.T) {
 func TestAttrsReadErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -173,7 +169,6 @@ func TestAttrsReadErrorNewClient(t *testing.T) {
 func TestAttrsReadErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -199,7 +194,6 @@ func TestAttrsReadErrorHTTP(t *testing.T) {
 func TestAttrsReadErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -224,7 +218,6 @@ func TestAttrsReadErrorHTTPStatus(t *testing.T) {
 func TestAttrsReadV2ErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -252,7 +245,6 @@ func TestAttrsReadV2ErrorSafeString(t *testing.T) {
 func TestAttrsReadV2ErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues,pretty")
 	reqRes := MockHTTPReqRes{}
@@ -281,7 +273,6 @@ func TestAttrsReadV2ErrorPretty(t *testing.T) {
 func TestAttrsAppendV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -301,7 +292,6 @@ func TestAttrsAppendV2(t *testing.T) {
 func TestAttrsAppendV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -321,7 +311,6 @@ func TestAttrsAppendV2SafeString(t *testing.T) {
 func TestAttrsAppendLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,id,type,attrName,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -333,7 +322,7 @@ func TestAttrsAppendLD(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
 	err := attrsAppend(c)
 
 	assert.NoError(t, err)
@@ -367,7 +356,6 @@ func TestAttrsAppendErrorInitCmd(t *testing.T) {
 func TestAttrsAppendErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -393,7 +381,6 @@ func TestAttrsAppendErrorNewClient(t *testing.T) {
 func TestAttrsAppendErrorData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -419,7 +406,6 @@ func TestAttrsAppendErrorData(t *testing.T) {
 func TestAttrsAppendLDErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,id,type,attrName,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -431,7 +417,7 @@ func TestAttrsAppendLDErrorContext(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
 	err := attrsAppend(c)
 
 	if assert.Error(t, err) {
@@ -446,7 +432,6 @@ func TestAttrsAppendLDErrorContext(t *testing.T) {
 func TestAttrsAppendV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -472,7 +457,6 @@ func TestAttrsAppendV2SafeStringError(t *testing.T) {
 func TestAttrsAppendErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -498,7 +482,6 @@ func TestAttrsAppendErrorHTTP(t *testing.T) {
 func TestAttrsAppendErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -523,7 +506,6 @@ func TestAttrsAppendErrorHTTPStatus(t *testing.T) {
 func TestAttrsUpdateV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -543,7 +525,6 @@ func TestAttrsUpdateV2(t *testing.T) {
 func TestAttrsUpdateV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -563,7 +544,6 @@ func TestAttrsUpdateV2SafeString(t *testing.T) {
 func TestAttrsUpdateLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,id,type,attrName,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -575,7 +555,7 @@ func TestAttrsUpdateLD(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
 	err := attrsUpdate(c)
 
 	assert.NoError(t, err)
@@ -609,7 +589,6 @@ func TestAttrsUpdateErrorInitCmd(t *testing.T) {
 func TestAttrsUpdateErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -635,7 +614,6 @@ func TestAttrsUpdateErrorNewClient(t *testing.T) {
 func TestAttrsUpdateErrorData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -661,7 +639,6 @@ func TestAttrsUpdateErrorData(t *testing.T) {
 func TestAttrsUpdateLDErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,id,type,attrName,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -673,7 +650,7 @@ func TestAttrsUpdateLDErrorContext(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
 	err := attrsUpdate(c)
 
 	if assert.Error(t, err) {
@@ -688,7 +665,6 @@ func TestAttrsUpdateLDErrorContext(t *testing.T) {
 func TestAttrsUpdateV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -713,7 +689,6 @@ func TestAttrsUpdateV2SafeStringError(t *testing.T) {
 func TestAttrsUpdateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -739,7 +714,6 @@ func TestAttrsUpdateErrorHTTP(t *testing.T) {
 func TestAttrsUpdateErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -764,7 +738,6 @@ func TestAttrsUpdateErrorHTTPStatus(t *testing.T) {
 func TestAttrsReplaceV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -784,7 +757,6 @@ func TestAttrsReplaceV2(t *testing.T) {
 func TestAttrsReplaceV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -829,7 +801,6 @@ func TestAttrsReplaceErrorInitCmd(t *testing.T) {
 func TestAttrsReplaceErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -855,7 +826,6 @@ func TestAttrsReplaceErrorNewClient(t *testing.T) {
 func TestAttrsReplaceErrorData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -881,7 +851,6 @@ func TestAttrsReplaceErrorData(t *testing.T) {
 func TestAttrsReplaceV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -907,7 +876,6 @@ func TestAttrsReplaceV2SafeStringError(t *testing.T) {
 func TestAttrsReplaceErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
@@ -933,7 +901,6 @@ func TestAttrsReplaceErrorHTTP(t *testing.T) {
 func TestAttrsReplaceErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,id,type,attrName,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}

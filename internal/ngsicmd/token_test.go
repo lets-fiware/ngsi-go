@@ -41,7 +41,19 @@ import (
 func TestVersionTokenCommand(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -65,7 +77,19 @@ func TestVersionTokenCommand(t *testing.T) {
 func TestVersionTokenCommandJSON(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -90,7 +114,19 @@ func TestVersionTokenCommandJSON(t *testing.T) {
 func TestVersionTokenCommandJSONPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -115,7 +151,19 @@ func TestVersionTokenCommandJSONPretty(t *testing.T) {
 func TestVersionTokenCommandJSONExpiresZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -142,7 +190,19 @@ func TestVersionTokenCommandJSONExpiresZero(t *testing.T) {
 func TestVersionTokenCommandExpires(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -168,7 +228,19 @@ func TestVersionTokenCommandExpires(t *testing.T) {
 func TestVersionTokenCommandExpiresZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -209,8 +281,6 @@ func TestTokenCommandErrorInitCmd(t *testing.T) {
 func TestTokenCommandErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
@@ -233,7 +303,6 @@ func TestTokenCommandErrorNewClient(t *testing.T) {
 func TestVersionTokenCommandErrorHostNotFound(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "http://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -259,7 +328,19 @@ func TestVersionTokenCommandErrorHostNotFound(t *testing.T) {
 func TestVersionTokenCommandErrorJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -272,7 +353,7 @@ func TestVersionTokenCommandErrorJSON(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--verbose"})
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 0)
 
 	err := tokenCommand(c)
 
@@ -287,7 +368,19 @@ func TestVersionTokenCommandErrorJSON(t *testing.T) {
 func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker2(t, ngsi, "orion", "http://orion", "v2", "tokenproxy", "/token", "testuser", "1234")
+	conf := `{
+		"brokers": {
+			"orion": {
+				"brokerHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK

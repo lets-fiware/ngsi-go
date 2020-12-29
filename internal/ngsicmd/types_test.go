@@ -43,7 +43,6 @@ import (
 func TestTypesListV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -71,7 +70,6 @@ func TestTypesListV2(t *testing.T) {
 func TestTypesListV2CountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -99,7 +97,6 @@ func TestTypesListV2CountZero(t *testing.T) {
 func TestTypesListV2CountPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -128,7 +125,6 @@ func TestTypesListV2CountPage(t *testing.T) {
 func TestTypesListV2JSON(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -173,7 +169,6 @@ func TestTypesListErrorInitCmd(t *testing.T) {
 func TestTypesListErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -199,7 +194,6 @@ func TestTypesListErrorNewClient(t *testing.T) {
 func TestTypesListErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -225,7 +219,6 @@ func TestTypesListErrorOnlyV2(t *testing.T) {
 func TestTypesListErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -251,7 +244,6 @@ func TestTypesListErrorHTTP(t *testing.T) {
 func TestTypesListErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -276,7 +268,6 @@ func TestTypesListErrorStatusCode(t *testing.T) {
 func TestTypesListErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -302,7 +293,6 @@ func TestTypesListErrorResultsCount(t *testing.T) {
 func TestTypesListErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -328,8 +318,6 @@ func TestTypesListErrorJSONUnmarshal(t *testing.T) {
 func TestTypesListV2ErrorJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types"
@@ -340,7 +328,7 @@ func TestTypesListV2ErrorJSON(t *testing.T) {
 	ngsi.HTTP = mock
 	set.Bool("json", false, "doc")
 	setupFlagString(set, "host")
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--json"})
@@ -363,7 +351,6 @@ func TestTypesListV2ErrorJSON(t *testing.T) {
 func TestTypesGetV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -405,7 +392,6 @@ func TestTypesGetErrorInitCmd(t *testing.T) {
 func TestTypesGetErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -432,7 +418,6 @@ func TestTypesGetErrorNewClient(t *testing.T) {
 func TestTypesGetErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -458,7 +443,6 @@ func TestTypesGetErrorOnlyV2(t *testing.T) {
 func TestTypesGetErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -485,7 +469,6 @@ func TestTypesGetErrorHTTP(t *testing.T) {
 func TestTypesGetErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -516,7 +499,6 @@ func TestTypesGetErrorStatusCode(t *testing.T) {
 func TestTypesCountV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -558,7 +540,6 @@ func TestTypesCountErrorInitCmd(t *testing.T) {
 func TestTypesCountErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -584,7 +565,6 @@ func TestTypesCountErrorNewClient(t *testing.T) {
 func TestTypesCountErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -610,7 +590,6 @@ func TestTypesCountErrorOnlyV2(t *testing.T) {
 func TestTypesCountErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -637,7 +616,6 @@ func TestTypesCountErrorHTTP(t *testing.T) {
 func TestTypesCountErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -663,7 +641,6 @@ func TestTypesCountErrorStatusCode(t *testing.T) {
 func TestTypesErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK

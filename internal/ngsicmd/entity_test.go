@@ -41,8 +41,6 @@ import (
 func TestEntityCreateV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/v2/entities"
@@ -60,8 +58,6 @@ func TestEntityCreateV2(t *testing.T) {
 
 func TestEntityCreateV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
@@ -81,8 +77,6 @@ func TestEntityCreateV2SafeString(t *testing.T) {
 func TestEntityCreateLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -92,7 +86,7 @@ func TestEntityCreateLd(t *testing.T) {
 	setupFlagString(set, "host,data")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}"})
 	err := entityCreate(c)
 
 	assert.NoError(t, err)
@@ -100,8 +94,6 @@ func TestEntityCreateLd(t *testing.T) {
 
 func TestEntityCreateLdContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
@@ -113,7 +105,7 @@ func TestEntityCreateLdContext(t *testing.T) {
 	setupFlagString(set, "host,data,context")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}", "--context=[\"http://context\"]"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}", "--context=[\"http://context\"]"})
 	err := entityCreate(c)
 
 	assert.NoError(t, err)
@@ -135,9 +127,7 @@ func TestEntityCreateErrorInitCmd(t *testing.T) {
 }
 
 func TestEntityCreateErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -157,8 +147,6 @@ func TestEntityCreateErrorNewClient(t *testing.T) {
 func TestEntityCreateErrorLdKeyValues(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -170,7 +158,7 @@ func TestEntityCreateErrorLdKeyValues(t *testing.T) {
 	setupFlagBool(set, "keyValues")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--keyValues"})
+	_ = set.Parse([]string{"--host=orion-ld", "--keyValues"})
 	err := entityCreate(c)
 
 	if assert.Error(t, err) {
@@ -185,8 +173,6 @@ func TestEntityCreateErrorLdKeyValues(t *testing.T) {
 func TestEntityCreateErrorLdUpsert(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -198,7 +184,7 @@ func TestEntityCreateErrorLdUpsert(t *testing.T) {
 	setupFlagBool(set, "upsert")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--upsert"})
+	_ = set.Parse([]string{"--host=orion-ld", "--upsert"})
 	err := entityCreate(c)
 
 	if assert.Error(t, err) {
@@ -211,8 +197,6 @@ func TestEntityCreateErrorLdUpsert(t *testing.T) {
 }
 func TestEntityCreateErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -239,8 +223,6 @@ func TestEntityCreateErrorReadAll(t *testing.T) {
 func TestEntityCreateErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -249,7 +231,7 @@ func TestEntityCreateErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	setupFlagString(set, "host,data,safeString")
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={", "--safeString=on"})
@@ -267,8 +249,6 @@ func TestEntityCreateErrorSafeString(t *testing.T) {
 func TestEntityCreateLdErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -279,7 +259,7 @@ func TestEntityCreateLdErrorContext(t *testing.T) {
 	setupFlagString(set, "host,data,context")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}", "--context=[\"http://context\""})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}", "--context=[\"http://context\""})
 	err := entityCreate(c)
 
 	if assert.Error(t, err) {
@@ -293,8 +273,6 @@ func TestEntityCreateLdErrorContext(t *testing.T) {
 
 func TestEntityCreateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -321,8 +299,6 @@ func TestEntityCreateErrorHTTP(t *testing.T) {
 func TestEntityCreateErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities"
@@ -345,8 +321,6 @@ func TestEntityCreateErrorHTTPStatus(t *testing.T) {
 
 func TestEntityReadV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -372,8 +346,6 @@ func TestEntityReadV2(t *testing.T) {
 
 func TestEntityReadV2Pretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -401,8 +373,6 @@ func TestEntityReadV2Pretty(t *testing.T) {
 func TestEntityReadV2SafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type":"Product","name%25":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
@@ -428,8 +398,6 @@ func TestEntityReadV2SafeString(t *testing.T) {
 func TestEntityReadLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade"},"size":{"type":"Text","value":"S"},"price":{"type":"Integer","value":99}}`)
@@ -441,7 +409,7 @@ func TestEntityReadLd(t *testing.T) {
 	setupFlagBool(set, "acceptJson")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--acceptJson"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--acceptJson"})
 	err := entityRead(c)
 
 	if assert.NoError(t, err) {
@@ -469,9 +437,7 @@ func TestEntityReadErrorInitCmd(t *testing.T) {
 }
 
 func TestEntityReadErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -490,8 +456,6 @@ func TestEntityReadErrorNewClient(t *testing.T) {
 
 func TestEntityReadErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -517,8 +481,6 @@ func TestEntityReadErrorHTTP(t *testing.T) {
 func TestEntityReadErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010"
@@ -541,8 +503,6 @@ func TestEntityReadErrorHTTPStatus(t *testing.T) {
 
 func TestEntityReadV2ErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -569,8 +529,6 @@ func TestEntityReadV2ErrorSafeString(t *testing.T) {
 
 func TestEntityReadV2ErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -601,8 +559,6 @@ func TestEntityReadV2ErrorPretty(t *testing.T) {
 func TestEntityUpsertV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities"
@@ -621,8 +577,6 @@ func TestEntityUpsertV2(t *testing.T) {
 
 func TestEntityUpsertV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -655,9 +609,7 @@ func TestEntityUpsertErrorInitCmd(t *testing.T) {
 }
 
 func TestEntityUpsertErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -677,8 +629,6 @@ func TestEntityUpsertErrorNewClient(t *testing.T) {
 func TestEntityUpsertErrorLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -688,7 +638,7 @@ func TestEntityUpsertErrorLd(t *testing.T) {
 	setupFlagString(set, "host,data")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={\"id\":\"urn:ngsi-ld:Product:010\",\"type\":\"Product\",\"name\":{\"type\":\"Text\",\"value\":\"Lemonade\"},\"size\":{\"type\":\"Text\",\"value\":\"S\"},\"price\":{\"type\":\"Integer\",\"value\":99}}"})
 	err := entityUpsert(c)
 
 	if assert.Error(t, err) {
@@ -702,8 +652,6 @@ func TestEntityUpsertErrorLd(t *testing.T) {
 
 func TestEntityUpsertErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -730,8 +678,6 @@ func TestEntityUpsertErrorReadAll(t *testing.T) {
 func TestEntityUpsertErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -756,8 +702,6 @@ func TestEntityUpsertErrorSafeString(t *testing.T) {
 
 func TestEntityUpsertErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -784,8 +728,6 @@ func TestEntityUpsertErrorHTTP(t *testing.T) {
 func TestEntityUpsertErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities"
@@ -809,8 +751,6 @@ func TestEntityUpsertErrorHTTPStatus(t *testing.T) {
 func TestEntityDeleteV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010"
@@ -830,8 +770,6 @@ func TestEntityDeleteV2(t *testing.T) {
 func TestEntityDeleteLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010"
@@ -842,7 +780,7 @@ func TestEntityDeleteLd(t *testing.T) {
 	setupFlagString(set, "host,id")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010"})
 	err := entityDelete(c)
 
 	assert.NoError(t, err)
@@ -864,9 +802,7 @@ func TestEntityDeleteErrorInitCmd(t *testing.T) {
 }
 
 func TestEntityDeleteErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -885,8 +821,6 @@ func TestEntityDeleteErrorNewClient(t *testing.T) {
 
 func TestEntityDeleteErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -912,8 +846,6 @@ func TestEntityDeleteErrorHTTP(t *testing.T) {
 
 func TestEntityDeleteErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest

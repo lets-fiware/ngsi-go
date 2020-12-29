@@ -38,7 +38,7 @@ import (
 )
 
 func TestBrokersList(t *testing.T) {
-	_, set, app, buf := setupTest3()
+	_, set, app, buf := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	err := brokersList(c)
@@ -53,7 +53,7 @@ func TestBrokersList(t *testing.T) {
 }
 
 func TestBrokersListJSON(t *testing.T) {
-	_, set, app, buf := setupTest3()
+	_, set, app, buf := setupTest()
 
 	setupFlagBool(set, "json")
 
@@ -71,7 +71,7 @@ func TestBrokersListJSON(t *testing.T) {
 }
 
 func TestBrokersListJSONPretty(t *testing.T) {
-	_, set, app, buf := setupTest3()
+	_, set, app, buf := setupTest()
 
 	setupFlagBool(set, "json,pretty")
 
@@ -109,11 +109,8 @@ func TestBrokersListErrorInitCmd(t *testing.T) {
 func TestBrokersListErrorJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	setupFlagBool(set, "json")
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--json"})
@@ -131,9 +128,6 @@ func TestBrokersListErrorJSON(t *testing.T) {
 
 func TestBrokersListErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
 	setupFlagBool(set, "json,pretty")
 
@@ -154,9 +148,8 @@ func TestBrokersListErrorJSONPretty(t *testing.T) {
 }
 
 func TestBrokersGet(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	_, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)
@@ -173,9 +166,8 @@ func TestBrokersGet(t *testing.T) {
 }
 
 func TestBrokersGetJSON(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	_, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json")
 
@@ -193,9 +185,8 @@ func TestBrokersGetJSON(t *testing.T) {
 }
 
 func TestBrokersGetJSONPretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	_, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json,pretty")
 
@@ -231,9 +222,8 @@ func TestBrokersGetErrorInitCmd(t *testing.T) {
 }
 
 func TestBrokersGetErrorHostNotFound(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)
@@ -250,20 +240,19 @@ func TestBrokersGetErrorHostNotFound(t *testing.T) {
 }
 
 func TestBrokersGetErrorBrokerListErrorJSON(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--json"})
+	_ = set.Parse([]string{"--host=orion-v2", "--json"})
 	err := brokersGet(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
+		assert.Equal(t, "orion-v2 not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -272,7 +261,6 @@ func TestBrokersGetErrorBrokerListErrorJSON(t *testing.T) {
 func TestBrokersGetErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json,pretty")
 
@@ -293,19 +281,18 @@ func TestBrokersGetErrorJSONPretty(t *testing.T) {
 }
 
 func TestBrokersGetErrorBrokerList(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	_ = set.Parse([]string{"--host=orion-v2"})
 	err := brokersGet(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
+		assert.Equal(t, "orion-v2 not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -314,9 +301,8 @@ func TestBrokersGetErrorBrokerList(t *testing.T) {
 func TestBrokersGetErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
@@ -337,7 +323,7 @@ func TestBrokersAdd(t *testing.T) {
 	setupFlagString(set, "host,ngsiType,brokerHost")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--brokerHost=http://orion", "--ngsiType=v2"})
+	_ = set.Parse([]string{"--host=orion-v2", "--brokerHost=http://orion", "--ngsiType=v2"})
 	err := brokersAdd(c)
 
 	assert.NoError(t, err)
@@ -349,7 +335,7 @@ func TestBrokersAddLD(t *testing.T) {
 	setupFlagString(set, "host,ngsiType,brokerHost")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--brokerHost=http://orion", "--ngsiType=ld"})
+	_ = set.Parse([]string{"--host=orionld", "--brokerHost=http://orion", "--ngsiType=ld"})
 	err := brokersAdd(c)
 
 	assert.NoError(t, err)
@@ -361,7 +347,7 @@ func TestBrokersAddLDSafeString(t *testing.T) {
 	setupFlagString(set, "host,ngsiType,brokerHost,safeString")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--brokerHost=http://orion", "--ngsiType=ld", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orionld", "--brokerHost=http://orion", "--ngsiType=ld", "--safeString=on"})
 	err := brokersAdd(c)
 
 	assert.NoError(t, err)
@@ -403,9 +389,8 @@ func TestBrokersAddErrorNameString(t *testing.T) {
 }
 
 func TestBrokersAddErrorAlreadyExists(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)
@@ -426,7 +411,7 @@ func TestBrokersAddErrorBrokerHost(t *testing.T) {
 	setupFlagString(set, "host,ngsiType,brokerHost")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-v2"})
 	err := brokersAdd(c)
 
 	if assert.Error(t, err) {
@@ -444,7 +429,7 @@ func TestBrokersAddErrorNgsiType(t *testing.T) {
 	setupFlagString(set, "host,ngsiType,brokerHost")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--brokerHost=http://orion"})
+	_ = set.Parse([]string{"--host=orionv2", "--brokerHost=http://orion"})
 	err := brokersAdd(c)
 
 	if assert.Error(t, err) {
@@ -462,7 +447,7 @@ func TestBrokersAddErrorNgsiType2(t *testing.T) {
 	setupFlagString(set, "host,ngsiType,brokerHost")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--brokerHost=orion2", "--ngsiType=v2"})
+	_ = set.Parse([]string{"--host=orionv2", "--brokerHost=orion2", "--ngsiType=v2"})
 	err := brokersAdd(c)
 
 	if assert.Error(t, err) {
@@ -479,7 +464,7 @@ func TestBrokersAddErrorCreateBroker(t *testing.T) {
 
 	setupFlagString(set, "host,ngsiType,brokerHost,safeString")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--ngsiType=ld", "--brokerHost=http://orion-ld", "--safeString=123"})
+	_ = set.Parse([]string{"--host=orionld", "--ngsiType=ld", "--brokerHost=http://orion-ld", "--safeString=123"})
 	err := brokersAdd(c)
 
 	if assert.Error(t, err) {
@@ -492,9 +477,7 @@ func TestBrokersAddErrorCreateBroker(t *testing.T) {
 }
 
 func TestBrokersUpdate(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,ngsiType")
 
@@ -524,29 +507,24 @@ func TestBrokersUpdateErrorInitCmd(t *testing.T) {
 }
 
 func TestBrokersUpdateErrorAlreadyExists(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host")
-
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	_ = set.Parse([]string{"--host=orionld"})
 	err := brokersUpdate(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
+		assert.Equal(t, "orionld not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
 func TestBrokersUpdateErrorCreateBroker(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,ngsiType")
 
@@ -564,9 +542,8 @@ func TestBrokersUpdateErrorCreateBroker(t *testing.T) {
 }
 
 func TestBrokersDelete(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,ngsiType")
 
 	c := cli.NewContext(app, set, nil)
@@ -577,9 +554,8 @@ func TestBrokersDelete(t *testing.T) {
 }
 
 func TestBrokersDeleteNgsiType(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,items")
 
 	c := cli.NewContext(app, set, nil)
@@ -608,28 +584,26 @@ func TestBrokersDeleteErrorInitCmd(t *testing.T) {
 }
 
 func TestBrokersDeleteErrorAlreadyExists(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	_ = set.Parse([]string{"--host=orionld"})
 	err := brokersDelete(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
+		assert.Equal(t, "orionld not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
 func TestBrokersDeleteNoItem(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,items")
 
 	c := cli.NewContext(app, set, nil)
@@ -646,9 +620,8 @@ func TestBrokersDeleteNoItem(t *testing.T) {
 }
 
 func TestBrokersDeleteErrorUpdateBroker(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,ngsiType,items")
 	// ngsi.ConfigFile = &MockIoLib{StatErr: errors.New("stat error"), OpenErr: errors.New("open error")}
 	ngsi.ConfigFile = &MockIoLib{OpenErr: errors.New("open error")}
@@ -669,8 +642,19 @@ func TestBrokersDeleteErrorUpdateBroker(t *testing.T) {
 func TestBrokersDeleteErrorReference(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupAddBroker(t, ngsi, "orion2", "orion", "v2")
+	conf := `{
+		"brokers": {
+			"orion": {
+				  "brokerHost": "https://orion",
+				  "ngsiType": "v2"
+			},
+			"orion-ld": {
+				  "brokerHost": "orion"
+			}
+		}
+	}`
+
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,ngsiType")
 

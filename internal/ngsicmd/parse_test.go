@@ -39,8 +39,6 @@ import (
 func TestParseFlagsNoset(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	c := cli.NewContext(app, set, nil)
 
 	flag, err := parseFlags(ngsi, c)
@@ -59,8 +57,6 @@ func TestParseFlagsNoset(t *testing.T) {
 
 func TestParseFlagsSet(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "token,service,path,link,safeString")
@@ -86,8 +82,6 @@ func TestParseFlagsSet(t *testing.T) {
 func TestParseFlagsError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "token,service,path,link,safeString")
 	setupFlagBool(set, "xAuthToken")
@@ -108,8 +102,6 @@ func TestParseFlagsError(t *testing.T) {
 func TestParseFlags2Noset(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	c := cli.NewContext(app, set, nil)
 	// setupFlagString(set, "data")
 
@@ -129,8 +121,6 @@ func TestParseFlags2Noset(t *testing.T) {
 
 func TestParseFlags2Set(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "token2,service2,path2,link2,safeString2")
@@ -156,8 +146,6 @@ func TestParseFlags2Set(t *testing.T) {
 func TestParseFlags2Error(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "token2,service2,path2,link2,safeString2")
 	setupFlagBool(set, "xAuthToken2")
@@ -176,9 +164,7 @@ func TestParseFlags2Error(t *testing.T) {
 }
 
 func TestParseOptions(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "limit,offset,link,query")
@@ -199,9 +185,7 @@ func TestParseOptions(t *testing.T) {
 }
 
 func TestParseOptions2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "limit,offset,link,query")

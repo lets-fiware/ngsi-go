@@ -53,9 +53,7 @@ func TestRegistrationsListErrorInitCmd(t *testing.T) {
 }
 
 func TestRegistrationsListErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -74,8 +72,6 @@ func TestRegistrationsListErrorNewClient(t *testing.T) {
 
 func TestRegistrationsListErrorV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
@@ -101,8 +97,6 @@ func TestRegistrationsListErrorV2(t *testing.T) {
 func TestRegistrationsListErrorLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -112,7 +106,7 @@ func TestRegistrationsListErrorLd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := registrationsList(c)
 
 	if assert.Error(t, err) {
@@ -140,9 +134,7 @@ func TestRegistrationsGetErrorInitCmd(t *testing.T) {
 }
 
 func TestRegistrationsGetErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -161,8 +153,6 @@ func TestRegistrationsGetErrorNewClient(t *testing.T) {
 
 func TestRegistrationsGetErrorV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
@@ -188,8 +178,6 @@ func TestRegistrationsGetErrorV2(t *testing.T) {
 func TestRegistrationsGetErrorLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -199,7 +187,7 @@ func TestRegistrationsGetErrorLd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := registrationsGet(c)
 
 	if assert.Error(t, err) {
@@ -227,9 +215,7 @@ func TestRegistrationsCreateErrorInitCmd(t *testing.T) {
 }
 
 func TestRegistrationsCreateErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -248,8 +234,6 @@ func TestRegistrationsCreateErrorNewClient(t *testing.T) {
 
 func TestRegistrationsCreateErrorV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
@@ -275,8 +259,6 @@ func TestRegistrationsCreateErrorV2(t *testing.T) {
 func TestRegistrationsCreateErrorLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -287,7 +269,7 @@ func TestRegistrationsCreateErrorLd(t *testing.T) {
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
 	err := registrationsCreate(c)
 
 	if assert.Error(t, err) {
@@ -315,9 +297,7 @@ func TestRegistrationsDeleteErrorInitCmd(t *testing.T) {
 }
 
 func TestRegistrationsDeleteErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -336,8 +316,6 @@ func TestRegistrationsDeleteErrorNewClient(t *testing.T) {
 
 func TestRegistrationsDeleteErrorV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
@@ -363,8 +341,6 @@ func TestRegistrationsDeleteErrorV2(t *testing.T) {
 func TestRegistrationsDeleteErrorLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -374,7 +350,7 @@ func TestRegistrationsDeleteErrorLd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := registrationsDelete(c)
 
 	if assert.Error(t, err) {
@@ -407,8 +383,6 @@ func TestRegistrationsTemplateErrorInitCmd(t *testing.T) {
 func TestRegistrationsTemplateNgsiV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,ngsiType")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -427,8 +401,6 @@ func TestRegistrationsTemplateNgsiV2(t *testing.T) {
 func TestRegistrationsTemplateNgsiLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host,ngsiType")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -446,8 +418,6 @@ func TestRegistrationsTemplateNgsiLd(t *testing.T) {
 
 func TestRegistrationsTemplateErrorNgsiTypeMissing(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,ngsiType")
 	reqRes := MockHTTPReqRes{}
@@ -471,8 +441,6 @@ func TestRegistrationsTemplateErrorNgsiTypeMissing(t *testing.T) {
 
 func TestRegistrationsTemplateErrorNgsiTypeError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,ngsiType")
 	reqRes := MockHTTPReqRes{}
@@ -498,8 +466,6 @@ func TestRegistrationsTemplateErrorNgsiTypeError(t *testing.T) {
 func TestRegistrationsCountV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/registrations"
@@ -523,8 +489,6 @@ func TestRegistrationsCountV2(t *testing.T) {
 }
 func TestRegistrationsCountLD(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -564,9 +528,7 @@ func TestRegistrationsCountErrorInitCmd(t *testing.T) {
 }
 
 func TestRegistrationsCountErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 
@@ -585,8 +547,6 @@ func TestRegistrationsCountErrorNewClient(t *testing.T) {
 
 func TestRegistrationsCountErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -612,8 +572,6 @@ func TestRegistrationsCountErrorHTTP(t *testing.T) {
 func TestRegistrationsCountErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/registrations"
@@ -637,8 +595,6 @@ func TestRegistrationsCountErrorStatusCode(t *testing.T) {
 
 func TestRegistrationsCountErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK

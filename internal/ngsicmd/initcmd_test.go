@@ -38,9 +38,7 @@ import (
 )
 
 func TestInitCmdFalse(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 
@@ -50,9 +48,7 @@ func TestInitCmdFalse(t *testing.T) {
 }
 
 func TestInitCmdBatch(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagBool(set, "batch")
 	c := cli.NewContext(app, set, nil)
@@ -64,9 +60,7 @@ func TestInitCmdBatch(t *testing.T) {
 }
 
 func TestInitCmdTrue(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "host")
@@ -78,7 +72,7 @@ func TestInitCmdTrue(t *testing.T) {
 }
 
 func TestInitCmdDefaultValues(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 
@@ -92,7 +86,7 @@ func TestInitCmdDefaultValues(t *testing.T) {
 }
 
 func TestInitCmdConfig(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "host")
@@ -103,8 +97,20 @@ func TestInitCmdConfig(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestInitCmdConfigCacheFile(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	c := cli.NewContext(app, set, nil)
+	setupFlagString(set, "host,config,cacheFile")
+	_ = set.Parse([]string{"--host=orion", "--config=config.json", "--cacheFile=cache.json"})
+
+	_, err := initCmd(c, "Testing", true)
+
+	assert.NoError(t, err)
+}
+
 func TestInitCmdStderr(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "stderr,host")
 	c := cli.NewContext(app, set, nil)
@@ -116,7 +122,7 @@ func TestInitCmdStderr(t *testing.T) {
 }
 
 func TestInitCmdSyslog(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "syslog,host")
 	c := cli.NewContext(app, set, nil)
@@ -128,7 +134,7 @@ func TestInitCmdSyslog(t *testing.T) {
 }
 
 func TestInitCmdSyslogLevelDebug(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	setupFlagString(set, "syslog,host")
 	c := cli.NewContext(app, set, nil)
@@ -141,7 +147,7 @@ func TestInitCmdSyslogLevelDebug(t *testing.T) {
 }
 
 func TestInitCmdSyslogWindows(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	setupFlagString(set, "syslog,host")
 	c := cli.NewContext(app, set, nil)
@@ -153,7 +159,7 @@ func TestInitCmdSyslogWindows(t *testing.T) {
 	assert.NoError(t, err)
 }
 func TestInitCmdArgs(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "margin,timeout,maxCount")
 	c := cli.NewContext(app, set, nil)
@@ -165,7 +171,7 @@ func TestInitCmdArgs(t *testing.T) {
 }
 
 func TestInitCmdArgs2(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "margin,timeout,maxCount")
 	c := cli.NewContext(app, set, nil)
@@ -177,7 +183,7 @@ func TestInitCmdArgs2(t *testing.T) {
 }
 
 func TestInitCmdArgs3(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "margin,timeout,maxCount")
 	c := cli.NewContext(app, set, nil)
@@ -189,7 +195,7 @@ func TestInitCmdArgs3(t *testing.T) {
 }
 
 func TestInitCmdPreviousArgs(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	conf := `{
 		"settings": {
@@ -217,7 +223,7 @@ func TestInitCmdPreviousArgs(t *testing.T) {
 }
 
 func TestInitCmdErrorStderr(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	ngsi.ConfigFile = &MockIoLib{HomeDir: errors.New("error")}
@@ -232,7 +238,7 @@ func TestInitCmdErrorStderr(t *testing.T) {
 }
 
 func TestInitCmdErrorSyslogLevel(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "syslog")
 	c := cli.NewContext(app, set, nil)
@@ -248,7 +254,7 @@ func TestInitCmdErrorSyslogLevel(t *testing.T) {
 }
 
 func TestInitCmdErrorSyslog(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	setupFlagString(set, "syslog")
 	c := cli.NewContext(app, set, nil)
@@ -265,7 +271,7 @@ func TestInitCmdErrorSyslog(t *testing.T) {
 }
 
 func TestInitCmdErrorHostNotFound(t *testing.T) {
-	_, set, app, _ := setupTest3()
+	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 
@@ -279,7 +285,7 @@ func TestInitCmdErrorHostNotFound(t *testing.T) {
 }
 
 func TestInitCmdErrorInitTokenMgr(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	ngsi.CacheFile = &MockIoLib{HomeDir: errors.New("error")}

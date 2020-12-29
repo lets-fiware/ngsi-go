@@ -31,7 +31,6 @@ package ngsicmd
 
 import (
 	"bytes"
-	"errors"
 	"flag"
 	"net/http"
 	"net/http/httptest"
@@ -50,13 +49,13 @@ func TestContextList(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "etsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\nld https://schema.lab.fiware.org/ld/context\n"
+		expected := "array [\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"]\ndata-model http://context-provider:3000/data-models/ngsi-context.jsonld\netsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\nld https://schema.lab.fiware.org/ld/context\nobject {\"ld\":\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"}\ntutorial http://context-provider:3000/data-models/ngsi-context.jsonld\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestContextListJSON(t *testing.T) {
-	_, set, app, buf := setupTest3()
+	_, set, app, buf := setupTest()
 
 	setupFlagString(set, "name,json")
 	c := cli.NewContext(app, set, nil)
@@ -70,7 +69,7 @@ func TestContextListJSON(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "array [\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\"]\ndata-model http://context-provider:3000/data-models/ngsi-context.jsonld\netsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\nld https://schema.lab.fiware.org/ld/context\nobject {\"ld\":\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\"}\ntutorial http://context-provider:3000/data-models/ngsi-context.jsonld\n"
+		expected := "array [\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"]\ndata-model http://context-provider:3000/data-models/ngsi-context.jsonld\netsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\nld https://schema.lab.fiware.org/ld/context\nobject {\"ld\":\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\"}\ntutorial http://context-provider:3000/data-models/ngsi-context.jsonld\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -121,7 +120,7 @@ func TestContextListErrorName(t *testing.T) {
 }
 
 func TestContextListErrorJSON(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	setupFlagString(set, "name,json")
 	c := cli.NewContext(app, set, nil)
@@ -129,7 +128,7 @@ func TestContextListErrorJSON(t *testing.T) {
 	err := contextAdd(c)
 	assert.NoError(t, err)
 
-	JSONEncodeErr(ngsi, 2)
+	setJSONEncodeErr(ngsi, 2)
 
 	set = flag.NewFlagSet("test", 0)
 	c = cli.NewContext(app, set, nil)
@@ -450,7 +449,7 @@ func TestGetAtContextErrorNotJSON(t *testing.T) {
 
 func TestGetAtContextErrorJSON(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 0)
 
 	_, err := getAtContext(ngsi, "{}")
 
@@ -512,7 +511,7 @@ func TestInsertAtContextErrorPayload(t *testing.T) {
 
 func TestInsertAtContextErrorArrayUnmarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	JSONDecodeErr(ngsi, 1)
+	setJSONDecodeErr(ngsi, 1)
 
 	payload := []byte(`[]`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -526,7 +525,7 @@ func TestInsertAtContextErrorArrayUnmarshal(t *testing.T) {
 
 func TestInsertAtContextErrorArrayMarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 0)
 
 	payload := []byte(`[]`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -540,7 +539,7 @@ func TestInsertAtContextErrorArrayMarshal(t *testing.T) {
 
 func TestInsertAtContextErrorObjectUnmarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	JSONDecodeErr(ngsi, 1)
+	setJSONDecodeErr(ngsi, 1)
 
 	payload := []byte(`{}`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -554,7 +553,7 @@ func TestInsertAtContextErrorObjectUnmarshal(t *testing.T) {
 
 func TestInsertAtContextErrorObjectMarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 0)
 
 	payload := []byte(`{}`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -596,7 +595,7 @@ func TestContextServerHTTPS(t *testing.T) {
 }
 
 func TestContextServerJSON(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
@@ -724,12 +723,13 @@ func TestContextServerErrorNotFoundName(t *testing.T) {
 
 func TestContextServerErrorFilePathAbs(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
+
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
 	setupFlagString(set, "port,url,data")
 
-	ngsi.FileReader = &MockFileLib{FilePathAbsError: errors.New("filePathAbsError")}
+	setFilePatAbsError(ngsi, 0)
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
 	err := contextServer(c)
@@ -737,7 +737,7 @@ func TestContextServerErrorFilePathAbs(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "filePathAbsError", ngsiErr.Message)
+		assert.Equal(t, "filepathabs error", ngsiErr.Message)
 	}
 }
 
@@ -748,7 +748,7 @@ func TestContextServerErrorReadFileError(t *testing.T) {
 
 	setupFlagString(set, "port,url,data")
 
-	ngsi.FileReader = &MockFileLib{ReadFileError: errors.New("readFileError")}
+	setReadFileError(ngsi, 1)
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
 	err := contextServer(c)
@@ -756,7 +756,7 @@ func TestContextServerErrorReadFileError(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
-		assert.Equal(t, "readFileError", ngsiErr.Message)
+		assert.Equal(t, "readfile error", ngsiErr.Message)
 	}
 }
 
@@ -785,9 +785,10 @@ func TestContextServerErrorNotJSON(t *testing.T) {
 
 	setupFlagString(set, "port,url,data")
 
-	ngsi.FileReader = &MockFileLib{ReadFileData: []byte("context")}
+	setReadFileError(ngsi, 1)
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=file"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {

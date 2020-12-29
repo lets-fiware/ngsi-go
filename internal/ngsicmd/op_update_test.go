@@ -42,27 +42,27 @@ import (
 func TestOpUpdateArrayData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/op/update"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	ngsi.Host = "orion"
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateArrayData})
-	client, _ := newClient(ngsi, c, false)
-	err := opUpdate(c, ngsi, client, "append_strict")
+
+	ngsi, err := initCmd(c, "", true)
+	client, err := newClient(ngsi, c, false)
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	assert.NoError(t, err)
 }
 
 func TestOpUpdateArrayDataOver100(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	testData := "["
 	for i := 0; i < 105; i++ {
@@ -82,16 +82,17 @@ func TestOpUpdateArrayDataOver100(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
-	client, _ := newClient(ngsi, c, false)
-	err := opUpdate(c, ngsi, client, "append_strict")
+
+	ngsi, err := initCmd(c, "", true)
+	client, err := newClient(ngsi, c, false)
+
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	assert.NoError(t, err)
 }
 
 func TestOpUpdateLineData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
@@ -102,7 +103,10 @@ func TestOpUpdateLineData(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateLineData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	assert.NoError(t, err)
@@ -111,12 +115,13 @@ func TestOpUpdateLineData(t *testing.T) {
 func TestOpUpdateErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data="})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -131,18 +136,20 @@ func TestOpUpdateErrorReadAll(t *testing.T) {
 func TestOpUpdateErrorToken(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=}"})
+
+	ngsi, err := initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	err := opUpdate(c, ngsi, client, "append_strict")
+
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -156,8 +163,6 @@ func TestOpUpdateErrorToken(t *testing.T) {
 func TestOpUpdateErrorJSONDelim(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -166,7 +171,10 @@ func TestOpUpdateErrorJSONDelim(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=1"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -181,8 +189,6 @@ func TestOpUpdateErrorJSONDelim(t *testing.T) {
 func TestOpUpdateErrorJSONDelim2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -191,7 +197,10 @@ func TestOpUpdateErrorJSONDelim2(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={{"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -206,8 +215,6 @@ func TestOpUpdateErrorJSONDelim2(t *testing.T) {
 func TestOpUpdateErrorDecode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -217,7 +224,10 @@ func TestOpUpdateErrorDecode(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=[" + testOpUpdateArrayData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -230,8 +240,6 @@ func TestOpUpdateErrorDecode(t *testing.T) {
 }
 func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	testData := "["
 	for i := 0; i < 105; i++ {
@@ -252,7 +260,10 @@ func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -266,8 +277,6 @@ func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
 
 func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	testData := "["
 	for i := 0; i < 105; i++ {
@@ -287,7 +296,10 @@ func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -302,8 +314,6 @@ func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 func TestOpUpdateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -313,7 +323,10 @@ func TestOpUpdateErrorHTTP(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -328,8 +341,6 @@ func TestOpUpdateErrorHTTP(t *testing.T) {
 func TestOpUpdateErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -339,7 +350,10 @@ func TestOpUpdateErrorHTTPStatus(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
@@ -353,8 +367,6 @@ func TestOpUpdateErrorHTTPStatus(t *testing.T) {
 func TestOpUpdateArrayDataError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -364,7 +376,10 @@ func TestOpUpdateArrayDataError(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateArrayDataError})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {

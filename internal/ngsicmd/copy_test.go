@@ -54,9 +54,7 @@ func TestCopyErrorInitCmd(t *testing.T) {
 }
 
 func TestCopyErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 	c := cli.NewContext(app, set, nil)
@@ -73,9 +71,7 @@ func TestCopyErrorNewClient(t *testing.T) {
 }
 
 func TestCopyErrorParse2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link2,destination")
 	c := cli.NewContext(app, set, nil)
@@ -92,28 +88,24 @@ func TestCopyErrorParse2(t *testing.T) {
 }
 
 func TestCopyErrorNewClientDestination(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link,destination")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--destination=orion-ld"})
+	_ = set.Parse([]string{"--host=orion", "--destination=orion-v2"})
 	err := copy(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "error host: orion-ld (destination)", ngsiErr.Message)
+		assert.Equal(t, "error host: orion-v2 (destination)", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
 func TestCopyErrorIsNgsiLdSrc(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,destination")
 	c := cli.NewContext(app, set, nil)
@@ -130,10 +122,7 @@ func TestCopyErrorIsNgsiLdSrc(t *testing.T) {
 }
 
 func TestCopyErrorIsNgsiLdDest(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,destination")
 	c := cli.NewContext(app, set, nil)
@@ -152,8 +141,19 @@ func TestCopyErrorIsNgsiLdDest(t *testing.T) {
 func TestCopyErrorRunFlag(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	c := cli.NewContext(app, set, nil)
@@ -172,8 +172,19 @@ func TestCopyErrorRunFlag(t *testing.T) {
 func TestCopyErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	setupFlagBool(set, "run")
@@ -199,8 +210,19 @@ func TestCopyErrorHTTP(t *testing.T) {
 func TestCopyErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	setupFlagBool(set, "run")
@@ -225,8 +247,19 @@ func TestCopyErrorHTTPStatus(t *testing.T) {
 func TestCopyErrorResultCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	setupFlagBool(set, "run")
@@ -252,8 +285,19 @@ func TestCopyErrorResultCount(t *testing.T) {
 func TestCopyResultCountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	setupFlagBool(set, "run")
@@ -280,8 +324,19 @@ func TestCopyResultCountZero(t *testing.T) {
 func TestCopyErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	setupFlagBool(set, "run")
@@ -309,8 +364,19 @@ func TestCopyErrorJSONUnmarshal(t *testing.T) {
 func TestCopyErrorOpUpdate(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	setupFlagBool(set, "run")
@@ -342,8 +408,19 @@ func TestCopyErrorOpUpdate(t *testing.T) {
 func TestCopyPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-src", "https://orion-src", "v2")
-	setupAddBroker(t, ngsi, "orion-dest", "https://orion-dest", "v2")
+	conf := `{
+		"brokers": {
+			"orion-src": {
+				"brokerHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"brokerHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
 	setupFlagString(set, "host,destination")
 	setupFlagBool(set, "run")

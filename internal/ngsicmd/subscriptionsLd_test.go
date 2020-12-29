@@ -42,8 +42,6 @@ import (
 func TestSubscriptionsListLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -52,7 +50,12 @@ func TestSubscriptionsListLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -69,8 +72,6 @@ func TestSubscriptionsListLd(t *testing.T) {
 func TestSubscriptionsListLdCount(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -79,10 +80,14 @@ func TestSubscriptionsListLdCount(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
 	setupFlagBool(set, "count")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--count"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--count"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -98,8 +103,6 @@ func TestSubscriptionsListLdCount(t *testing.T) {
 func TestSubscriptionsListLdPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte(subscriptionLdData)
@@ -114,7 +117,13 @@ func TestSubscriptionsListLdPage(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
+
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -131,8 +140,6 @@ func TestSubscriptionsListLdPage(t *testing.T) {
 func TestSubscriptionsListLdStatus(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -141,11 +148,13 @@ func TestSubscriptionsListLdStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status")
 
+	setupFlagString(set, "host,status")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--status=active"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=active"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -161,8 +170,6 @@ func TestSubscriptionsListLdStatus(t *testing.T) {
 func TestSubscriptionsListLdQuery(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -171,11 +178,13 @@ func TestSubscriptionsListLdQuery(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "query")
 
+	setupFlagString(set, "host,query")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--query=FIWARE*"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--query=FIWARE*"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -191,8 +200,6 @@ func TestSubscriptionsListLdQuery(t *testing.T) {
 func TestSubscriptionsListLdCountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -201,7 +208,12 @@ func TestSubscriptionsListLdCountZero(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -218,8 +230,6 @@ func TestSubscriptionsListLdCountZero(t *testing.T) {
 func TestSubscriptionsListLdJson(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -228,11 +238,14 @@ func TestSubscriptionsListLdJson(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	set.Bool("json", false, "doc")
+
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "json")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--json"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--json"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -248,8 +261,6 @@ func TestSubscriptionsListLdJson(t *testing.T) {
 func TestSubscriptionsListLdJsonPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -258,12 +269,14 @@ func TestSubscriptionsListLdJsonPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	setupFlagBool(set, "json,pretty")
 
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "json,pretty")
 	c := cli.NewContext(app, set, nil)
+
+	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--json", "--pretty"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -279,8 +292,6 @@ func TestSubscriptionsListLdJsonPretty(t *testing.T) {
 func TestSubscriptionsListLdJsonCount0(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -289,11 +300,14 @@ func TestSubscriptionsListLdJsonCount0(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	set.Bool("json", false, "doc")
+
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "json")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--json"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--json"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -309,8 +323,6 @@ func TestSubscriptionsListLdJsonCount0(t *testing.T) {
 func TestSubscriptionsListLdVerbose(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -319,11 +331,14 @@ func TestSubscriptionsListLdVerbose(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	set.Bool("verbose", false, "doc")
+
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "verbose")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--verbose"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--verbose"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -339,8 +354,6 @@ func TestSubscriptionsListLdVerbose(t *testing.T) {
 func TestSubscriptionsListLdLocaltime(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -349,11 +362,14 @@ func TestSubscriptionsListLdLocaltime(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagBool(set, "verbose,localTime")
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "verbose,localTime")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--localTime"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--verbose", "--localTime"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -369,8 +385,6 @@ func TestSubscriptionsListLdLocaltime(t *testing.T) {
 func TestSubscriptionsListLdErrorStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -379,11 +393,14 @@ func TestSubscriptionsListLdErrorStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status")
+
+	setupFlagString(set, "host,status")
 
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--status=err"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=err"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -399,8 +416,6 @@ func TestSubscriptionsListLdErrorStatus(t *testing.T) {
 func TestSubscriptionsListLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -409,7 +424,12 @@ func TestSubscriptionsListLdErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -426,8 +446,6 @@ func TestSubscriptionsListLdErrorHTTP(t *testing.T) {
 func TestSubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -436,7 +454,12 @@ func TestSubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -452,8 +475,6 @@ func TestSubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 func TestSubscriptionsListLdErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -461,7 +482,12 @@ func TestSubscriptionsListLdErrorResultsCount(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -478,9 +504,7 @@ func TestSubscriptionsListLdErrorResultsCount(t *testing.T) {
 func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -490,7 +514,12 @@ func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -507,10 +536,7 @@ func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
-	setupFlagBool(set, "json")
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -520,8 +546,13 @@ func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "json")
+	_ = set.Parse([]string{"--host=orion-ld", "--json"})
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--json"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListLd(c, ngsi, client)
@@ -538,8 +569,6 @@ func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 func TestSubscriptionsListLdErrorJsonPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -548,15 +577,17 @@ func TestSubscriptionsListLdErrorJsonPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	setupFlagBool(set, "json,pretty")
 
 	j := ngsi.JSONConverter
 	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "json,pretty")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--json", "--pretty"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -573,8 +604,6 @@ func TestSubscriptionsListLdErrorJsonPretty(t *testing.T) {
 func TestSubscriptionsListLdErrorItems(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -583,12 +612,14 @@ func TestSubscriptionsListLdErrorItems(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query,items")
-	setupFlagBool(set, "verbose")
 
+	setupFlagString(set, "host,status,query,items")
+	setupFlagBool(set, "verbose")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--items=id"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--verbose", "--items=id"})
 
 	err := subscriptionsListLd(c, ngsi, client)
 
@@ -604,8 +635,6 @@ func TestSubscriptionsListLdErrorItems(t *testing.T) {
 func TestSubscriptionsGetLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id": "3ea2e78f675f2d199d3025ff", "description": "ngsi source subscription", "expires": "2020-09-01T01:24:01.00Z"}`)
@@ -613,9 +642,12 @@ func TestSubscriptionsGetLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -632,8 +664,6 @@ func TestSubscriptionsGetLd(t *testing.T) {
 func TestSubscriptionsGetLdPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id": "3ea2e78f675f2d199d3025ff", "description": "ngsi source subscription", "expires": "2020-09-01T01:24:01.00Z"}`)
@@ -641,11 +671,13 @@ func TestSubscriptionsGetLdPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
-	setupFlagBool(set, "pretty")
 
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--pretty"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -662,8 +694,6 @@ func TestSubscriptionsGetLdPretty(t *testing.T) {
 func TestSubscriptionsGetLdLocalTime(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id": "3ea2e78f675f2d199d3025ff", "description": "ngsi source subscription", "expires": "2020-09-01T01:24:01.00Z"}`)
@@ -671,11 +701,13 @@ func TestSubscriptionsGetLdLocalTime(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
-	setupFlagBool(set, "localTime")
 
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "localTime")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--localTime"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--localTime"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -692,8 +724,6 @@ func TestSubscriptionsGetLdLocalTime(t *testing.T) {
 func TestSubscriptionsGetLdSafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte("{}")
@@ -701,9 +731,12 @@ func TestSubscriptionsGetLdSafeString(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,safeString")
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
+
+	setupFlagString(set, "host,id,safeString")
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -720,15 +753,18 @@ func TestSubscriptionsGetLdSafeString(t *testing.T) {
 func TestSubscriptionsGetLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ld/subscription"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -745,17 +781,18 @@ func TestSubscriptionsGetLdErrorHTTP(t *testing.T) {
 func TestSubscriptionsGetLdErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/subscriptions/3ea2e78f675f2d199d3025ff"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -771,8 +808,6 @@ func TestSubscriptionsGetLdErrorHTTPStatus(t *testing.T) {
 func TestSubscriptionsGetLdErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte("{}")
@@ -780,11 +815,13 @@ func TestSubscriptionsGetLdErrorSafeString(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
-	setupFlagString(set, "id,safeString")
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
+	setupFlagString(set, "host,id,safeString")
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -801,9 +838,7 @@ func TestSubscriptionsGetLdErrorSafeString(t *testing.T) {
 func TestSubscriptionsGetLdErrorJSONMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -813,9 +848,11 @@ func TestSubscriptionsGetLdErrorJSONMarshal(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "id,safeString")
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
+	setupFlagString(set, "host,id,safeString")
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionGetLd(c, ngsi, client)
@@ -832,8 +869,6 @@ func TestSubscriptionsGetLdErrorJSONMarshal(t *testing.T) {
 func TestSubscriptionsGetLdErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id": "3ea2e78f675f2d199d3025ff", "description": "ngsi source subscription", "expires": "2020-09-01T01:24:01.00Z"}`)
@@ -841,15 +876,17 @@ func TestSubscriptionsGetLdErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
-	setupFlagBool(set, "pretty")
-
 	j := ngsi.JSONConverter
 	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--pretty"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := subscriptionGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -864,8 +901,6 @@ func TestSubscriptionsGetLdErrorPretty(t *testing.T) {
 func TestSubscriptionsCreateLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/ngsi-ld/v1/subscriptions"
@@ -873,10 +908,13 @@ func TestSubscriptionsCreateLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "data")
+
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--data={}"})
 
 	err := subscriptionsCreateLd(c, ngsi, client)
 
@@ -892,8 +930,6 @@ func TestSubscriptionsCreateLd(t *testing.T) {
 func TestSubscriptionsCreateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
@@ -901,10 +937,13 @@ func TestSubscriptionsCreateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "data")
+
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--data="})
 
 	err := subscriptionsCreateLd(c, ngsi, client)
 
@@ -920,9 +959,7 @@ func TestSubscriptionsCreateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
@@ -931,10 +968,13 @@ func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "data")
+
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--data={}"})
 
 	err := subscriptionsCreateLd(c, ngsi, client)
 
@@ -950,8 +990,6 @@ func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
 func TestSubscriptionsCreateLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/ngsi-ld/subscriptions"
@@ -959,10 +997,13 @@ func TestSubscriptionsCreateLdErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "data")
+
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--data={}"})
 
 	err := subscriptionsCreateLd(c, ngsi, client)
 
@@ -978,18 +1019,19 @@ func TestSubscriptionsCreateLdErrorHTTP(t *testing.T) {
 func TestSubscriptionsCreateLdErrorStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/subscriptions"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
-	setupFlagString(set, "data")
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--data={}"})
 
 	err := subscriptionsCreateLd(c, ngsi, client)
 
@@ -1004,8 +1046,6 @@ func TestSubscriptionsCreateLdErrorStatus(t *testing.T) {
 func TestSubscriptionsUpdateLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
@@ -1013,12 +1053,13 @@ func TestSubscriptionsUpdateLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateLd(c, ngsi, client)
 
@@ -1028,8 +1069,6 @@ func TestSubscriptionsUpdateLd(t *testing.T) {
 func TestSubscriptionsUpdateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
@@ -1037,13 +1076,15 @@ func TestSubscriptionsUpdateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "data,id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,data,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--data="})
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateLd(c, ngsi, client)
 
@@ -1059,9 +1100,7 @@ func TestSubscriptionsUpdateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 func TestSubscriptionsUpdateLdErrorJSONMarshalEncode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -1070,12 +1109,14 @@ func TestSubscriptionsUpdateLdErrorJSONMarshalEncode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateLd(c, ngsi, client)
 
@@ -1091,8 +1132,6 @@ func TestSubscriptionsUpdateLdErrorJSONMarshalEncode(t *testing.T) {
 func TestSubscriptionsUpdateLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
@@ -1100,12 +1139,14 @@ func TestSubscriptionsUpdateLdErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateLd(c, ngsi, client)
 
@@ -1121,8 +1162,6 @@ func TestSubscriptionsUpdateLdErrorHTTP(t *testing.T) {
 func TestSubscriptionsUpdateLdErrorStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ReqData = []byte(`{"type":"Subscription","expires":"2020-10-05T00:58:26.929Z","throttling":1}`)
@@ -1130,12 +1169,14 @@ func TestSubscriptionsUpdateLdErrorStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateLd(c, ngsi, client)
 
@@ -1150,18 +1191,19 @@ func TestSubscriptionsUpdateLdErrorStatus(t *testing.T) {
 func TestSubscriptionsDeleteLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 
 	err := subscriptionsDeleteLd(c, ngsi, client)
 
@@ -1171,18 +1213,19 @@ func TestSubscriptionsDeleteLd(t *testing.T) {
 func TestSubscriptionsDeleteLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ld/subscription/5f0a44789dd803416ccbf15c"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 
 	err := subscriptionsDeleteLd(c, ngsi, client)
 
@@ -1198,18 +1241,19 @@ func TestSubscriptionsDeleteLdErrorHTTP(t *testing.T) {
 func TestSubscriptionsDeleteLdErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/subscriptions/5f0a44789dd803416ccbf15c"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 
 	err := subscriptionsDeleteLd(c, ngsi, client)
 
@@ -1253,8 +1297,6 @@ func TestSubscriptionsTemplateLdKeyValues(t *testing.T) {
 func TestSubscriptionsTemplateLdArgs(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
-
 	setupFlagString(set, "type,uri,query,link,wAttrs,nAttrs,description")
 	setupFlagBool(set, "keyValues")
 	c := cli.NewContext(app, set, nil)
@@ -1273,8 +1315,6 @@ func TestSubscriptionsTemplateLdArgs(t *testing.T) {
 
 func TestSubscriptionsTemplateLdArgsPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
 	setupFlagString(set, "type,uri,query,link,wAttrs,nAttrs,description")
 	setupFlagBool(set, "keyValues,pretty")
@@ -1331,7 +1371,7 @@ func TestSubscriptionsTemplateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 func TestSubscriptionsTemplateLdErrorJSONMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 0)
 
 	c := cli.NewContext(app, set, nil)
 
@@ -1348,8 +1388,6 @@ func TestSubscriptionsTemplateLdErrorJSONMarshal(t *testing.T) {
 
 func TestSubscriptionsTemplateLdArgsErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
 	setupFlagString(set, "type,uri,query,link,wAttrs,nAttrs,description")
 	setupFlagBool(set, "keyValues,pretty")
@@ -1572,7 +1610,7 @@ func TestSetSubscriptionValuesLdContext(t *testing.T) {
 func TestSetSubscriptionValuesLdErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 0)
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -1594,7 +1632,7 @@ func TestSetSubscriptionValuesLdErrorReadAll(t *testing.T) {
 func TestSetSubscriptionValuesLdErrorJSONUnMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 0)
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)

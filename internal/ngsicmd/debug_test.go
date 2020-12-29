@@ -38,9 +38,8 @@ import (
 )
 
 func TestDebugCommand(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)

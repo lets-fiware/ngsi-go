@@ -40,9 +40,7 @@ import (
 )
 
 func TestSettingsList(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
+	_, set, app, buf := setupTest()
 
 	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
@@ -56,9 +54,7 @@ func TestSettingsList(t *testing.T) {
 }
 
 func TestSettingsListAll(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
+	_, set, app, buf := setupTest()
 
 	setupFlagString(set, "host")
 	set.Bool("all", false, "doc")
@@ -152,7 +148,7 @@ func TestSettingsDeleteErrorItem(t *testing.T) {
 }
 
 func TestSettingsDeleteErrorSave(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	ngsi.ConfigFile = &MockIoLib{OpenErr: errors.New("save error")}
 	ngsi.PreviousArgs.UsePreviousArgs = true
@@ -198,7 +194,7 @@ func TestSettingsClearErrInitCmd(t *testing.T) {
 }
 
 func TestSettingsClearErrorSave(t *testing.T) {
-	ngsi, set, app, _ := setupTest3()
+	ngsi, set, app, _ := setupTest()
 
 	ngsi.ConfigFile = &MockIoLib{OpenErr: errors.New("save error")}
 	setupFlagString(set, "host")

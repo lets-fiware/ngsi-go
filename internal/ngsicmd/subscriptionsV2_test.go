@@ -42,8 +42,6 @@ import (
 func TestSubscriptionssubscriptionsListV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -52,7 +50,12 @@ func TestSubscriptionssubscriptionsListV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListV2(c, ngsi, client)
@@ -69,8 +72,6 @@ func TestSubscriptionssubscriptionsListV2(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Count(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -79,10 +80,14 @@ func TestSubscriptionssubscriptionsListV2Count(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
 	setupFlagBool(set, "count")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--count"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--count"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -98,8 +103,6 @@ func TestSubscriptionssubscriptionsListV2Count(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2CountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -108,7 +111,12 @@ func TestSubscriptionssubscriptionsListV2CountZero(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListV2(c, ngsi, client)
@@ -125,8 +133,6 @@ func TestSubscriptionssubscriptionsListV2CountZero(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Page(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte(subscriptionData)
@@ -141,7 +147,12 @@ func TestSubscriptionssubscriptionsListV2Page(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListV2(c, ngsi, client)
@@ -158,8 +169,6 @@ func TestSubscriptionssubscriptionsListV2Page(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Status(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -168,10 +177,13 @@ func TestSubscriptionssubscriptionsListV2Status(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status")
+
+	setupFlagString(set, "host,status")
+	_ = set.Parse([]string{"--host=orion", "--status=active"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=active"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -187,8 +199,6 @@ func TestSubscriptionssubscriptionsListV2Status(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Query(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -197,10 +207,13 @@ func TestSubscriptionssubscriptionsListV2Query(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
+
+	setupFlagString(set, "host,status,query")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--query=FIWARE*"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--query=FIWARE*"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -216,8 +229,6 @@ func TestSubscriptionssubscriptionsListV2Query(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Json(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -226,11 +237,14 @@ func TestSubscriptionssubscriptionsListV2Json(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	set.Bool("json", false, "doc")
+
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "json")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--json"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -246,8 +260,6 @@ func TestSubscriptionssubscriptionsListV2Json(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2JsonPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -256,12 +268,14 @@ func TestSubscriptionssubscriptionsListV2JsonPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	setupFlagBool(set, "json,pretty")
 
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "json,pretty")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--json", "--pretty"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -277,8 +291,6 @@ func TestSubscriptionssubscriptionsListV2JsonPretty(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2JsonCount0(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -287,11 +299,14 @@ func TestSubscriptionssubscriptionsListV2JsonCount0(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
+
+	setupFlagString(set, "host,status,query")
 	set.Bool("json", false, "doc")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--json"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -307,8 +322,6 @@ func TestSubscriptionssubscriptionsListV2JsonCount0(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Verbose(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -317,11 +330,14 @@ func TestSubscriptionssubscriptionsListV2Verbose(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	set.Bool("verbose", false, "doc")
+
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "verbose")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--verbose"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -337,8 +353,6 @@ func TestSubscriptionssubscriptionsListV2Verbose(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Localtime(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -347,11 +361,14 @@ func TestSubscriptionssubscriptionsListV2Localtime(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
+
+	setupFlagString(set, "host,status,query")
 	setupFlagBool(set, "verbose,localTime")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--verbose", "--localTime"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -367,8 +384,6 @@ func TestSubscriptionssubscriptionsListV2Localtime(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2Items(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -377,11 +392,14 @@ func TestSubscriptionssubscriptionsListV2Items(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query,items")
+
+	setupFlagString(set, "host,status,query,items")
 	setupFlagBool(set, "verbose,localTime")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -397,8 +415,6 @@ func TestSubscriptionssubscriptionsListV2Items(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -407,12 +423,14 @@ func TestSubscriptionssubscriptionsListV2ErrorStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query,items")
+
+	setupFlagString(set, "host,status,query,items")
 	setupFlagBool(set, "verbose,localTime")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=abc", "--verbose", "--localTime", "--items=status,expires"})
+	_ = set.Parse([]string{"--host=orion", "--status=abc", "--verbose", "--localTime", "--items=status,expires"})
 
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := subscriptionsListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -427,8 +445,6 @@ func TestSubscriptionssubscriptionsListV2ErrorStatus(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -437,11 +453,14 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query,items")
+
+	setupFlagString(set, "host,status,query,items")
 	setupFlagBool(set, "verbose,localTime")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -457,8 +476,6 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTP(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ResBody = []byte(subscriptionData)
@@ -467,11 +484,14 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTPStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query,items")
+
+	setupFlagString(set, "host,status,query,items")
 	setupFlagBool(set, "verbose,localTime")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -486,8 +506,6 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTPStatus(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorRessultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -495,7 +513,12 @@ func TestSubscriptionssubscriptionsListV2ErrorRessultsCount(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListV2(c, ngsi, client)
@@ -512,9 +535,7 @@ func TestSubscriptionssubscriptionsListV2ErrorRessultsCount(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -524,7 +545,12 @@ func TestSubscriptionssubscriptionsListV2ErrorUnmarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListV2(c, ngsi, client)
@@ -541,11 +567,8 @@ func TestSubscriptionssubscriptionsListV2ErrorUnmarshal(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	setJSONEncodeErr(ngsi, 2)
 
-	JSONEncodeErr(ngsi, 0)
-
-	setupFlagBool(set, "json")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -554,8 +577,13 @@ func TestSubscriptionssubscriptionsListV2ErrorMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "json")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--json"})
+	_ = set.Parse([]string{"--host=orion", "--json"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsListV2(c, ngsi, client)
@@ -572,8 +600,6 @@ func TestSubscriptionssubscriptionsListV2ErrorMarshal(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -582,15 +608,17 @@ func TestSubscriptionssubscriptionsListV2ErrorJSONPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query")
-	setupFlagBool(set, "json,pretty")
 
 	j := ngsi.JSONConverter
 	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
+	setupFlagString(set, "host,status,query")
+	setupFlagBool(set, "json,pretty")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--json", "--pretty"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -606,8 +634,6 @@ func TestSubscriptionssubscriptionsListV2ErrorJSONPretty(t *testing.T) {
 func TestSubscriptionssubscriptionsListV2ErrorHTTPItems(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -616,11 +642,14 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTPItems(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "status,query,items")
+
+	setupFlagString(set, "host,status,query,items")
 	setupFlagBool(set, "verbose,localTime")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires,error"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--status=inactive", "--verbose", "--localTime", "--items=status,expires,error"})
 
 	err := subscriptionsListV2(c, ngsi, client)
 
@@ -635,20 +664,20 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTPItems(t *testing.T) {
 func TestSubscriptionsGetV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
-	setupFlagString(set, "id")
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 
+	setupFlagString(set, "id,host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := subscriptionGetV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -663,11 +692,7 @@ func TestSubscriptionsGetV2(t *testing.T) {
 func TestSubscriptionsGetV2Pretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
-	setupFlagString(set, "id")
-	setupFlagBool(set, "pretty")
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
@@ -675,9 +700,13 @@ func TestSubscriptionsGetV2Pretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c", "--pretty"})
 
 	err := subscriptionGetV2(c, ngsi, client)
 
@@ -693,20 +722,21 @@ func TestSubscriptionsGetV2Pretty(t *testing.T) {
 func TestSubscriptionsGetV2LocalTime(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
-	setupFlagString(set, "id")
-	setupFlagBool(set, "localTime")
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "localTime")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c", "--localTime"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c", "--localTime"})
 
 	err := subscriptionGetV2(c, ngsi, client)
 
@@ -721,18 +751,19 @@ func TestSubscriptionsGetV2LocalTime(t *testing.T) {
 func TestSubscriptionsGetV2ErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
-	setupFlagString(set, "id")
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 
 	err := subscriptionGetV2(c, ngsi, client)
 
@@ -748,21 +779,22 @@ func TestSubscriptionsGetV2ErrorHTTP(t *testing.T) {
 func TestSubscriptionsGetV2ErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	reqRes := MockHTTPReqRes{}
-	setupFlagString(set, "id")
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 
 	err := subscriptionGetV2(c, ngsi, client)
 
@@ -778,21 +810,22 @@ func TestSubscriptionsGetV2ErrorUnmarshal(t *testing.T) {
 func TestSubscriptionsGetV2ErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	reqRes := MockHTTPReqRes{}
-	setupFlagString(set, "id")
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 
 	err := subscriptionGetV2(c, ngsi, client)
 
@@ -808,11 +841,7 @@ func TestSubscriptionsGetV2ErrorMarshal(t *testing.T) {
 func TestSubscriptionsGetV2ErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
-	setupFlagString(set, "id")
-	setupFlagBool(set, "pretty")
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
@@ -823,9 +852,13 @@ func TestSubscriptionsGetV2ErrorPretty(t *testing.T) {
 	j := ngsi.JSONConverter
 	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c", "--pretty"})
 
 	err := subscriptionGetV2(c, ngsi, client)
 
@@ -841,8 +874,6 @@ func TestSubscriptionsGetV2ErrorPretty(t *testing.T) {
 func TestSubscriptionsCreateV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -851,12 +882,15 @@ func TestSubscriptionsCreateV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,entityId,uri")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires,entityId,uri")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--entityId=abc", "--uri=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsCreateV2(c, ngsi, client)
 
@@ -872,19 +906,19 @@ func TestSubscriptionsCreateV2(t *testing.T) {
 func TestSubscriptionsCreateV2ErrorsetSubscriptionValuesV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/v2/subscriptions"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,data")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires,data")
 	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--data=", "--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
-	_ = set.Parse([]string{"--data=", "--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
 	err := subscriptionsCreateV2(c, ngsi, client)
 
@@ -899,9 +933,7 @@ func TestSubscriptionsCreateV2ErrorsetSubscriptionValuesV2(t *testing.T) {
 func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
@@ -911,12 +943,15 @@ func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,entityId,url")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsCreateV2(c, ngsi, client)
 
@@ -932,8 +967,6 @@ func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
 func TestSubscriptionsCreateV2ErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -941,12 +974,15 @@ func TestSubscriptionsCreateV2ErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,entityId,url")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsCreateV2(c, ngsi, client)
 
@@ -962,8 +998,6 @@ func TestSubscriptionsCreateV2ErrorHTTP(t *testing.T) {
 func TestSubscriptionsCreateV2ErrorStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -971,12 +1005,15 @@ func TestSubscriptionsCreateV2ErrorStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires,entityId,url")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires,entityId,url")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsCreateV2(c, ngsi, client)
 
@@ -991,8 +1028,6 @@ func TestSubscriptionsCreateV2ErrorStatus(t *testing.T) {
 func TestSubscriptionsUpdateV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -1000,12 +1035,15 @@ func TestSubscriptionsUpdateV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateV2(c, ngsi, client)
 
@@ -1015,8 +1053,6 @@ func TestSubscriptionsUpdateV2(t *testing.T) {
 func TestSubscriptionsUpdateV2wAttr(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"subject":{"condition":{"attrs":["Temp"]}}}`)
@@ -1024,12 +1060,15 @@ func TestSubscriptionsUpdateV2wAttr(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,wAttrs")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,wAttrs")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--wAttrs=Temp"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateV2(c, ngsi, client)
 
@@ -1039,8 +1078,6 @@ func TestSubscriptionsUpdateV2wAttr(t *testing.T) {
 func TestSubscriptionsUpdateV2ErrotsetSubscriptionValuesV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -1048,12 +1085,15 @@ func TestSubscriptionsUpdateV2ErrotsetSubscriptionValuesV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateV2(c, ngsi, client)
 
@@ -1067,9 +1107,7 @@ func TestSubscriptionsUpdateV2ErrotsetSubscriptionValuesV2(t *testing.T) {
 func TestSubscriptionsUpdateV2Marshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -1078,12 +1116,15 @@ func TestSubscriptionsUpdateV2Marshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateV2(c, ngsi, client)
 
@@ -1098,8 +1139,6 @@ func TestSubscriptionsUpdateV2Marshal(t *testing.T) {
 func TestSubscriptionsUpdateV2ErrotHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -1107,12 +1146,15 @@ func TestSubscriptionsUpdateV2ErrotHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateV2(c, ngsi, client)
 
@@ -1128,8 +1170,6 @@ func TestSubscriptionsUpdateV2ErrotHTTP(t *testing.T) {
 func TestSubscriptionsUpdateV2ErrorStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -1137,12 +1177,15 @@ func TestSubscriptionsUpdateV2ErrorStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id,throttling,expires")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id,throttling,expires")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsUpdateV2(c, ngsi, client)
 
@@ -1157,19 +1200,20 @@ func TestSubscriptionsUpdateV2ErrorStatus(t *testing.T) {
 func TestSubscriptionsDeleteV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsDeleteV2(c, ngsi, client)
 
@@ -1179,19 +1223,20 @@ func TestSubscriptionsDeleteV2(t *testing.T) {
 func TestSubscriptionsDeleteV2ErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/subscription/5f0a44789dd803416ccbf15c"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsDeleteV2(c, ngsi, client)
 
@@ -1207,19 +1252,20 @@ func TestSubscriptionsDeleteV2ErrorHTTP(t *testing.T) {
 func TestSubscriptionsDeleteV2ErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "id")
-	set.Bool("get", false, "doc")
+
+	setupFlagString(set, "id,host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
+	_ = set.Parse([]string{"--host=orion"})
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 
 	err := subscriptionsDeleteV2(c, ngsi, client)
 
@@ -1282,7 +1328,7 @@ func TestSubscriptionsTemplateV2Error(t *testing.T) {
 func TestSubscriptionsTemplateV2ErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 0)
 	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
@@ -1337,8 +1383,6 @@ func TestSetSubscriptionValuesV2Data(t *testing.T) {
 func TestSetSubscriptionValuesV2getAttributes(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	sub := subscriptionV2{}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -1347,10 +1391,14 @@ func TestSetSubscriptionValuesV2getAttributes(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "data,entityId,url,host,type,link")
-	set.Bool("get", false, "doc")
+	setupFlagBool(set, "get")
+
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get"})
+
+	ngsi, _ = initCmd(c, "", true)
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1617,17 +1665,18 @@ func TestSetSubscriptionValuesV2Error3(t *testing.T) {
 
 	sub := subscriptionV2{}
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/abc"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "data,entityId,url,host,type,get,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get", "--link=abc"})
+
+	ngsi, _ = initCmd(c, "", true)
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
@@ -1756,8 +1805,6 @@ func TestSetSubscriptionValuesV2Error10(t *testing.T) {
 func TestGtAttributesV2Ok1(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/abc"
@@ -1778,8 +1825,6 @@ func TestGtAttributesV2Ok1(t *testing.T) {
 
 func TestGtAttributesV2Ok2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -1805,8 +1850,6 @@ func TestGtAttributesV2Ok2(t *testing.T) {
 func TestGtAttributesV2NoError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,type")
 	sub := subscriptionV2{}
 
@@ -1820,14 +1863,15 @@ func TestGtAttributesV2NoError(t *testing.T) {
 func TestGtAttributesV2ErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,type,link")
 	set.Bool("get", false, "")
 	sub := subscriptionV2{}
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get", "--link=abc"})
+
+	ngsi, _ = initCmd(c, "", true)
+
 	err := getAttributesV2(c, ngsi, &sub)
 
 	if assert.Error(t, err) {
@@ -1842,8 +1886,6 @@ func TestGtAttributesV2ErrorNewClient(t *testing.T) {
 func TestGtAttributesV2ErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Path = "/v2/types"
 	mock := NewMockHTTP()
@@ -1855,6 +1897,9 @@ func TestGtAttributesV2ErrorHTTP(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get"})
+
+	ngsi, _ = initCmd(c, "", true)
+
 	err := getAttributesV2(c, ngsi, &sub)
 
 	if assert.Error(t, err) {
@@ -1869,8 +1914,6 @@ func TestGtAttributesV2ErrorHTTP(t *testing.T) {
 func TestGtAttributesV2ErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/types/abc"
@@ -1883,6 +1926,9 @@ func TestGtAttributesV2ErrorStatusCode(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get"})
+
+	ngsi, _ = initCmd(c, "", true)
+
 	err := getAttributesV2(c, ngsi, &sub)
 
 	if assert.Error(t, err) {

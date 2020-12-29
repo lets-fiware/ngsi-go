@@ -41,8 +41,6 @@ import (
 func TestRemoveV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -76,8 +74,6 @@ func TestRemoveV2(t *testing.T) {
 
 func TestRemoveLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -126,9 +122,7 @@ func TestRemoveErrorInitCmd(t *testing.T) {
 }
 
 func TestRemoveErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 	c := cli.NewContext(app, set, nil)
@@ -144,9 +138,7 @@ func TestRemoveErrorNewClient(t *testing.T) {
 	}
 }
 func TestRemoveErrorV2Link(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
 	c := cli.NewContext(app, set, nil)
@@ -165,8 +157,6 @@ func TestRemoveErrorV2Link(t *testing.T) {
 func TestRemoveV2TestRun(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -182,6 +172,8 @@ func TestRemoveV2TestRun(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -195,8 +187,6 @@ func TestRemoveV2TestRun(t *testing.T) {
 
 func TestRemoveV2Page(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -224,6 +214,8 @@ func TestRemoveV2Page(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -233,8 +225,6 @@ func TestRemoveV2Page(t *testing.T) {
 
 func TestRemoveV2CountZero(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -250,6 +240,8 @@ func TestRemoveV2CountZero(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -259,8 +251,6 @@ func TestRemoveV2CountZero(t *testing.T) {
 
 func TestRemoveV2ErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -275,6 +265,8 @@ func TestRemoveV2ErrorHTTP(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -291,8 +283,6 @@ func TestRemoveV2ErrorHTTP(t *testing.T) {
 func TestRemoveV2ErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -306,6 +296,8 @@ func TestRemoveV2ErrorHTTPStatus(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -321,8 +313,6 @@ func TestRemoveV2ErrorHTTPStatus(t *testing.T) {
 func TestRemoveV2ErrorResultCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -336,6 +326,8 @@ func TestRemoveV2ErrorResultCount(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -352,8 +344,6 @@ func TestRemoveV2ErrorResultCount(t *testing.T) {
 func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -379,10 +369,12 @@ func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -399,8 +391,6 @@ func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 func TestRemoveV2ErrorOpUpdate(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -428,6 +418,8 @@ func TestRemoveV2ErrorOpUpdate(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -444,8 +436,6 @@ func TestRemoveV2ErrorOpUpdate(t *testing.T) {
 func TestRemoveLDTestRun(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -460,7 +450,9 @@ func TestRemoveLDTestRun(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -474,8 +466,6 @@ func TestRemoveLDTestRun(t *testing.T) {
 
 func TestRemoveLDPage(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -502,7 +492,9 @@ func TestRemoveLDPage(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -512,8 +504,6 @@ func TestRemoveLDPage(t *testing.T) {
 
 func TestRemoveLDCountZero(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -528,7 +518,9 @@ func TestRemoveLDCountZero(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -538,8 +530,6 @@ func TestRemoveLDCountZero(t *testing.T) {
 
 func TestRemoveLDErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -553,7 +543,9 @@ func TestRemoveLDErrorHTTP(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -570,8 +562,6 @@ func TestRemoveLDErrorHTTP(t *testing.T) {
 func TestRemoveLDErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -584,7 +574,9 @@ func TestRemoveLDErrorHTTPStatus(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -600,8 +592,6 @@ func TestRemoveLDErrorHTTPStatus(t *testing.T) {
 func TestRemoveLDErrorResultCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -614,7 +604,9 @@ func TestRemoveLDErrorResultCount(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -631,8 +623,6 @@ func TestRemoveLDErrorResultCount(t *testing.T) {
 func TestRemoveLDErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -652,10 +642,12 @@ func TestRemoveLDErrorUnmarshal(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
 
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -672,8 +664,6 @@ func TestRemoveLDErrorUnmarshal(t *testing.T) {
 func TestRemoveLDErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -693,10 +683,12 @@ func TestRemoveLDErrorMarshal(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
 
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -713,8 +705,6 @@ func TestRemoveLDErrorMarshal(t *testing.T) {
 func TestRemoveLDErrorHTTP2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
-
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
 
@@ -735,7 +725,9 @@ func TestRemoveLDErrorHTTP2(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -751,8 +743,6 @@ func TestRemoveLDErrorHTTP2(t *testing.T) {
 
 func TestRemoveLDErrorStatus2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "run")
@@ -773,7 +763,9 @@ func TestRemoveLDErrorStatus2(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)

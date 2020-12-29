@@ -40,11 +40,9 @@ import (
 	"os"
 	"reflect"
 	"strings"
-	"testing"
 	"time"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
 
@@ -61,14 +59,14 @@ var configData = `{
 	},
 	"contexts": {
 	  "data-model": "http://context-provider:3000/data-models/ngsi-context.jsonld",
-	  "etsi": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+	  "etsi": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld",
 	  "ld": "https://schema.lab.fiware.org/ld/context",
 	  "tutorial": "http://context-provider:3000/data-models/ngsi-context.jsonld",
 	  "array": [
-		"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+		"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
 	  ],
 	  "object": {
-		"ld": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+		"ld": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
 	  }
 	},
 	"settings": {
@@ -77,28 +75,6 @@ var configData = `{
   }`
 
 func setupTest() (*ngsilib.NGSI, *flag.FlagSet, *cli.App, *bytes.Buffer) {
-	ngsilib.Reset()
-	filename := ""
-	ngsi := ngsilib.NewNGSI()
-	ngsi.ConfigFile = &MockIoLib{}
-	ngsi.ConfigFile.SetFileName(&filename)
-	ngsi.CacheFile = &MockIoLib{}
-	ngsi.CacheFile.SetFileName(&filename)
-	ngsi.HTTP = NewMockHTTP()
-	buffer := &bytes.Buffer{}
-	ngsi.StdWriter = buffer
-	ngsi.LogWriter = &bytes.Buffer{}
-
-	set := flag.NewFlagSet("test", 0)
-	setupFlagString(set, "config,cacheFile")
-	app := cli.NewApp()
-
-	_ = set.Parse([]string{"--config=", "--cacheFile="})
-
-	return ngsi, set, app, buffer
-}
-
-func setupTest3() (*ngsilib.NGSI, *flag.FlagSet, *cli.App, *bytes.Buffer) {
 	ngsilib.Reset()
 
 	filename := ""
@@ -135,32 +111,6 @@ func setupFlagInt64(set *flag.FlagSet, s string) {
 	for _, flag := range strings.Split(s, ",") {
 		set.Int64(flag, 0, "doc")
 	}
-}
-
-func setupAddBroker(t *testing.T, ngsi *ngsilib.NGSI, host string, brokerHost string, ngsiType string) {
-	broker := ngsilib.Broker{BrokerHost: brokerHost, NgsiType: ngsiType}
-
-	list := ngsi.BrokerList()
-	(*list)[host] = &broker
-	ngsi.Host = host
-}
-
-func setupAddBroker2(t *testing.T, ngsi *ngsilib.NGSI, host, brokerHost, ngsiType, idmType, idmHost, username, password string) {
-	broker := ngsilib.Broker{BrokerHost: brokerHost, NgsiType: ngsiType, IdmType: idmType, IdmHost: idmHost, Username: username, Password: password}
-
-	list := ngsi.BrokerList()
-	(*list)[host] = &broker
-	ngsi.Host = host
-}
-
-func setupDeleteBroker(t *testing.T, host string) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=" + host})
-	err := brokersDelete(c)
-	assert.NoError(t, err)
 }
 
 func NewMockHTTP() *MockHTTP {
@@ -321,11 +271,14 @@ type MockFileLib struct {
 	ReadallError      error
 	ReadallData       []byte
 	FilePathAbsString string
-	FilePathAbsError  error
+	FilePathAbsError  [5]error
+	ab                int
 	ReadFileData      []byte
-	ReadFileError     error
+	ReadFileError     [5]error
+	rf                int
 	FileError         io.Reader
 	FileError2        io.Reader
+	IoReader          io.Reader
 }
 
 func (f *MockFileLib) Open(path string) (err error) {
@@ -337,10 +290,18 @@ func (f *MockFileLib) Close() error {
 }
 
 func (f *MockFileLib) FilePathAbs(path string) (string, error) {
-	if f.FilePathAbsError == nil {
+	err := f.FilePathAbsError[f.ab]
+	f.ab++
+	if err == nil {
 		return f.FilePathAbsString, nil
 	}
-	return "", f.FilePathAbsError
+	return "", err
+}
+
+func setFilePatAbsError(ngsi *ngsilib.NGSI, p int) {
+	f := ngsi.FileReader.(*MockFileLib)
+	f.FilePathAbsError[p] = errors.New("filepathabs error")
+	ngsi.FileReader = f
 }
 
 func (f *MockFileLib) ReadAll(r io.Reader) ([]byte, error) {
@@ -351,19 +312,31 @@ func (f *MockFileLib) ReadAll(r io.Reader) ([]byte, error) {
 }
 
 func (f *MockFileLib) ReadFile(filename string) ([]byte, error) {
-	if f.ReadFileError == nil {
+	err := f.ReadFileError[f.rf]
+	f.rf++
+	if err == nil {
 		return f.ReadFileData, nil
 	}
-	return nil, f.ReadFileError
+	return nil, err
+}
+
+func setReadFileError(ngsi *ngsilib.NGSI, p int) {
+	f := ngsi.FileReader.(*MockFileLib)
+	f.ReadFileError[p] = errors.New("readfile error")
+	ngsi.FileReader = f
 }
 
 func (f *MockFileLib) SetReader(r io.Reader) {
+	f.IoReader = r
 }
 
 func (f *MockFileLib) File() io.Reader {
-	r := f.FileError
+	err := f.FileError
 	f.FileError = f.FileError2
-	return r
+	if err == nil {
+		return f.IoReader
+	}
+	return err
 }
 
 //
@@ -397,14 +370,14 @@ func (j *MockJSONLib) Encode(w io.Writer, v interface{}) error {
 	return err
 }
 
-func JSONDecodeErr(ngsi *ngsilib.NGSI, p int) {
+func setJSONDecodeErr(ngsi *ngsilib.NGSI, p int) {
 	j := ngsi.JSONConverter
 	mockj := &MockJSONLib{Jsonlib: j}
 	mockj.DecodeErr[p] = errors.New("json error")
 	ngsi.JSONConverter = mockj
 }
 
-func JSONEncodeErr(ngsi *ngsilib.NGSI, p int) {
+func setJSONEncodeErr(ngsi *ngsilib.NGSI, p int) {
 	j := ngsi.JSONConverter
 	mockj := &MockJSONLib{Jsonlib: j}
 	mockj.EncodeErr[p] = errors.New("json error")
