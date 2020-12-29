@@ -111,12 +111,14 @@ func TestNGSICommand(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		setupTest()
+		setupTest3()
+
 		syslog := []string{"ngsi", "--stderr", "no"}
 		args := append(syslog, c.args...)
 		in := new(bytes.Buffer)
 		out := new(bytes.Buffer)
 		err := new(bytes.Buffer)
+
 		if Run(args, in, out, err) != c.rc {
 			t.Error(fmt.Printf("*** %s *** is wrong (%d)\n", strings.Join(c.args, " "), c.rc))
 		}
@@ -124,7 +126,8 @@ func TestNGSICommand(t *testing.T) {
 }
 
 func TestInitCmdNormal(t *testing.T) {
-	setupTest()
+	setupTest3()
+
 	args := []string{"ngsi", "man"}
 	in := new(bytes.Buffer)
 	out := new(bytes.Buffer)
@@ -143,7 +146,8 @@ func TestNGSIMessage(t *testing.T) {
 }
 
 func TestIsSetsORTrue(t *testing.T) {
-	_, set, app, _ := setupTest()
+	_, set, app, _ := setupTest3()
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "count")
 
@@ -156,7 +160,8 @@ func TestIsSetsORTrue(t *testing.T) {
 }
 
 func TestIsSetsORFalse(t *testing.T) {
-	_, set, app, _ := setupTest()
+	_, set, app, _ := setupTest3()
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "count")
 
@@ -169,7 +174,8 @@ func TestIsSetsORFalse(t *testing.T) {
 }
 
 func TestIsSetsANDTrue(t *testing.T) {
-	_, set, app, _ := setupTest()
+	_, set, app, _ := setupTest3()
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "count")
 
@@ -182,7 +188,8 @@ func TestIsSetsANDTrue(t *testing.T) {
 }
 
 func TestIsSetsANDFalse(t *testing.T) {
-	_, set, app, _ := setupTest()
+	_, set, app, _ := setupTest3()
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "count")
 

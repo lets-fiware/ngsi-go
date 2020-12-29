@@ -63,7 +63,7 @@ func TestReadAllStdReader(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=stdin"})
-	ngsi.FileReader = &MockFileLib{readall: []byte("test data")}
+	ngsi.FileReader = &MockFileLib{ReadallData: []byte("test data")}
 
 	b, err := readAll(c, ngsi)
 
@@ -82,7 +82,7 @@ func TestReadAllAt(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{filePathAbs: "file", readFile: []byte(`{"id":test"}`)}
+	ngsi.FileReader = &MockFileLib{FilePathAbsString: "file", ReadFileData: []byte(`{"id":test"}`)}
 
 	b, err := readAll(c, ngsi)
 
@@ -119,7 +119,7 @@ func TestReadAllErrorStdReader(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=stdin"})
-	ngsi.FileReader = &MockFileLib{readallError: errors.New("ReadAll error")}
+	ngsi.FileReader = &MockFileLib{ReadallError: errors.New("ReadAll error")}
 
 	_, err := readAll(c, ngsi)
 
@@ -140,7 +140,7 @@ func TestReadAllAt3(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{filePathAbsError: errors.New("error @file")}
+	ngsi.FileReader = &MockFileLib{FilePathAbsError: errors.New("error @file")}
 
 	_, err := readAll(c, ngsi)
 
@@ -161,7 +161,7 @@ func TestReadAllAt4(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{filePathAbs: "file", readFileError: errors.New("error @file")}
+	ngsi.FileReader = &MockFileLib{FilePathAbsString: "file", ReadFileError: errors.New("error @file")}
 
 	_, err := readAll(c, ngsi)
 
@@ -216,7 +216,7 @@ func TestGetReaderFIle(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{filePathAbs: "file", readFile: []byte(`{"id":test"}`)}
+	ngsi.FileReader = &MockFileLib{FilePathAbsString: "file", ReadFileData: []byte(`{"id":test"}`)}
 
 	_, err := getReader(c, ngsi)
 
@@ -269,7 +269,7 @@ func TestGetReaderAt3(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{filePathAbsError: errors.New("error @file")}
+	ngsi.FileReader = &MockFileLib{FilePathAbsError: errors.New("error @file")}
 
 	_, err := getReader(c, ngsi)
 
@@ -290,7 +290,7 @@ func TestGetReaderAt4(t *testing.T) {
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{filePathAbs: "file", openError: errors.New("error @file")}
+	ngsi.FileReader = &MockFileLib{FilePathAbsString: "file", OpenError: errors.New("error @file")}
 
 	_, err := getReader(c, ngsi)
 

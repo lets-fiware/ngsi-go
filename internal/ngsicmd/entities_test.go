@@ -477,7 +477,7 @@ func TestEntitiesListErrorVerboseLinesValues(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -507,8 +507,7 @@ func TestEntitiesListErrorVerboseLinesValues2(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -538,7 +537,7 @@ func TestEntitiesListErrorVerboseLines(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -568,8 +567,7 @@ func TestEntitiesListErrorVerboseLines2(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -631,7 +629,7 @@ func TestEntitiesListErrorUnmarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"

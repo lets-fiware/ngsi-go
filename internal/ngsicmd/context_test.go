@@ -56,7 +56,7 @@ func TestContextList(t *testing.T) {
 }
 
 func TestContextListJSON(t *testing.T) {
-	_, set, app, buf := setupTest()
+	_, set, app, buf := setupTest3()
 
 	setupFlagString(set, "name,json")
 	c := cli.NewContext(app, set, nil)
@@ -70,7 +70,7 @@ func TestContextListJSON(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "etsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\nfiware {}\nld https://schema.lab.fiware.org/ld/context\n"
+		expected := "array [\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\"]\ndata-model http://context-provider:3000/data-models/ngsi-context.jsonld\netsi https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\nld https://schema.lab.fiware.org/ld/context\nobject {\"ld\":\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\"}\ntutorial http://context-provider:3000/data-models/ngsi-context.jsonld\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -121,7 +121,7 @@ func TestContextListErrorName(t *testing.T) {
 }
 
 func TestContextListErrorJSON(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	ngsi, set, app, _ := setupTest3()
 
 	setupFlagString(set, "name,json")
 	c := cli.NewContext(app, set, nil)
@@ -129,10 +129,11 @@ func TestContextListErrorJSON(t *testing.T) {
 	err := contextAdd(c)
 	assert.NoError(t, err)
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 2)
 
 	set = flag.NewFlagSet("test", 0)
 	c = cli.NewContext(app, set, nil)
+
 	err = contextList(c)
 
 	if assert.Error(t, err) {
@@ -449,7 +450,7 @@ func TestGetAtContextErrorNotJSON(t *testing.T) {
 
 func TestGetAtContextErrorJSON(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 
 	_, err := getAtContext(ngsi, "{}")
 
@@ -511,8 +512,7 @@ func TestInsertAtContextErrorPayload(t *testing.T) {
 
 func TestInsertAtContextErrorArrayUnmarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{DecodeErr2: errors.New("json error"), Jsonlib: j}
+	JSONDecodeErr(ngsi, 1)
 
 	payload := []byte(`[]`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -526,8 +526,7 @@ func TestInsertAtContextErrorArrayUnmarshal(t *testing.T) {
 
 func TestInsertAtContextErrorArrayMarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 
 	payload := []byte(`[]`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -541,8 +540,7 @@ func TestInsertAtContextErrorArrayMarshal(t *testing.T) {
 
 func TestInsertAtContextErrorObjectUnmarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{DecodeErr2: errors.New("json error"), Jsonlib: j}
+	JSONDecodeErr(ngsi, 1)
 
 	payload := []byte(`{}`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -556,8 +554,7 @@ func TestInsertAtContextErrorObjectUnmarshal(t *testing.T) {
 
 func TestInsertAtContextErrorObjectMarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 
 	payload := []byte(`{}`)
 	_, err := insertAtContext(ngsi, payload, "{}")
@@ -599,22 +596,16 @@ func TestContextServerHTTPS(t *testing.T) {
 }
 
 func TestContextServerJSON(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	ngsi, set, app, _ := setupTest3()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
-
-	setupFlagString(set, "name,json")
-	c := cli.NewContext(app, set, nil)
-	set.Parse([]string{"--name=fiware", "--json={}"})
-	err := contextAdd(c)
-	assert.NoError(t, err)
 
 	set = flag.NewFlagSet("test", 0)
 	setupFlagString(set, "port,url,name")
 
-	c = cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=fiware"})
-	err = contextServer(c)
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=array"})
+	err := contextServer(c)
 
 	assert.NoError(t, err)
 }
@@ -654,7 +645,7 @@ func TestContextServerDataFile(t *testing.T) {
 
 	setupFlagString(set, "port,url,data")
 
-	ngsi.FileReader = &MockFileLib{readFile: []byte("{}")}
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte("{}")}
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
 	err := contextServer(c)
@@ -738,7 +729,7 @@ func TestContextServerErrorFilePathAbs(t *testing.T) {
 
 	setupFlagString(set, "port,url,data")
 
-	ngsi.FileReader = &MockFileLib{filePathAbsError: errors.New("filePathAbsError")}
+	ngsi.FileReader = &MockFileLib{FilePathAbsError: errors.New("filePathAbsError")}
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
 	err := contextServer(c)
@@ -757,7 +748,7 @@ func TestContextServerErrorReadFileError(t *testing.T) {
 
 	setupFlagString(set, "port,url,data")
 
-	ngsi.FileReader = &MockFileLib{readFileError: errors.New("readFileError")}
+	ngsi.FileReader = &MockFileLib{ReadFileError: errors.New("readFileError")}
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
 	err := contextServer(c)
@@ -794,7 +785,7 @@ func TestContextServerErrorNotJSON(t *testing.T) {
 
 	setupFlagString(set, "port,url,data")
 
-	ngsi.FileReader = &MockFileLib{readFile: []byte("context")}
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte("context")}
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
 	err := contextServer(c)

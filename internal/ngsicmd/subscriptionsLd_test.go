@@ -480,7 +480,8 @@ func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -509,8 +510,8 @@ func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
 	setupFlagBool(set, "json")
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionLdData)
@@ -779,7 +780,7 @@ func TestSubscriptionsGetLdErrorSafeString(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 
 	setupFlagString(set, "id,safeString")
 	_ = set.Parse([]string{"--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
@@ -802,8 +803,7 @@ func TestSubscriptionsGetLdErrorJSONMarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -922,8 +922,8 @@ func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/ngsi-ld/v1/subscriptions/"
@@ -1061,8 +1061,7 @@ func TestSubscriptionsUpdateLdErrorJSONMarshalEncode(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion-ld", "https://orion-ld", "ld")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -1332,7 +1331,8 @@ func TestSubscriptionsTemplateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 func TestSubscriptionsTemplateLdErrorJSONMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 0)
+
 	c := cli.NewContext(app, set, nil)
 
 	err := subscriptionsTemplateLd(c, ngsi)
@@ -1572,7 +1572,8 @@ func TestSetSubscriptionValuesLdContext(t *testing.T) {
 func TestSetSubscriptionValuesLdErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
+
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data="})
@@ -1593,7 +1594,8 @@ func TestSetSubscriptionValuesLdErrorReadAll(t *testing.T) {
 func TestSetSubscriptionValuesLdErrorJSONUnMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
+
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data={}"})

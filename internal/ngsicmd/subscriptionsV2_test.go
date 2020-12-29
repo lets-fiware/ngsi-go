@@ -514,7 +514,8 @@ func TestSubscriptionssubscriptionsListV2ErrorUnmarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -542,9 +543,9 @@ func TestSubscriptionssubscriptionsListV2ErrorMarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
+	JSONEncodeErr(ngsi, 0)
+
 	setupFlagBool(set, "json")
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
@@ -749,7 +750,7 @@ func TestSubscriptionsGetV2ErrorUnmarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONDecodeErr(ngsi, 0)
 
 	reqRes := MockHTTPReqRes{}
 	setupFlagString(set, "id")
@@ -779,8 +780,7 @@ func TestSubscriptionsGetV2ErrorMarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 
 	reqRes := MockHTTPReqRes{}
 	setupFlagString(set, "id")
@@ -901,7 +901,8 @@ func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 0)
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -1068,7 +1069,8 @@ func TestSubscriptionsUpdateV2Marshal(t *testing.T) {
 
 	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	JSONEncodeErr(ngsi, 0)
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
@@ -1280,8 +1282,7 @@ func TestSubscriptionsTemplateV2Error(t *testing.T) {
 func TestSubscriptionsTemplateV2ErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	JSONEncodeErr(ngsi, 0)
 	setupFlagString(set, "data,entityId,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})

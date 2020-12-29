@@ -379,9 +379,10 @@ func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
+	JSONDecodeErr(ngsi, 0)
+
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeV2(c, ngsi, client)
@@ -651,9 +652,10 @@ func TestRemoveLDErrorUnmarshal(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
 
+	JSONDecodeErr(ngsi, 0)
+
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)
@@ -691,10 +693,10 @@ func TestRemoveLDErrorMarshal(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
 
+	JSONEncodeErr(ngsi, 0)
+
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
 	client, _ := newClient(ngsi, c, false)
 
 	err := removeLD(c, ngsi, client)

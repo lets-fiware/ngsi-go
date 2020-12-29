@@ -55,7 +55,11 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 		s := c.String("config")
 		file = &s
 	}
-	ngsi.InitConfig(file)
+
+	err := ngsi.InitConfig(file)
+	if err != nil {
+		return nil, &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
 
 	d := ngsi.GetPreviousArgs()
 
@@ -70,7 +74,7 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 	}
 	level, err := ngsilib.LogLevel(s)
 	if err != nil {
-		return nil, &ngsiCmdError{funcName, 1, "stderr logLevel error", err}
+		return nil, &ngsiCmdError{funcName, 2, "stderr logLevel error", err}
 	}
 	ngsi.LogWriter = &ngsilib.LogWriter{Writer: os.Stderr, LogLevel: level}
 
@@ -85,12 +89,12 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 	}
 	level, err = ngsilib.LogLevel(s)
 	if err != nil {
-		return nil, &ngsiCmdError{funcName, 2, "syslog logLevel error", err}
+		return nil, &ngsiCmdError{funcName, 3, "syslog logLevel error", err}
 	}
 	if level != ngsilib.LogOff && ngsi.OsType != "windows" {
 		syslog, err := ngsi.SyslogLib.New()
 		if err != nil {
-			return nil, &ngsiCmdError{funcName, 3, err.Error(), err}
+			return nil, &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 		syslogWriter := ngsilib.LogWriter{Writer: syslog, LogLevel: level}
 		ngsi.LogWriter = io.MultiWriter(ngsi.LogWriter, &syslogWriter)
@@ -140,7 +144,7 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 	ngsi.Destination = c.String("destination")
 
 	if requiredHost && ngsi.Host == "" {
-		return nil, &ngsiCmdError{funcName, 4, "Required host not found", err}
+		return nil, &ngsiCmdError{funcName, 5, "Required host not found", err}
 	}
 
 	var cacheFile *string
@@ -155,7 +159,7 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 
 	err = ngsi.InitTokenMgr(cacheFile)
 	if err != nil {
-		return nil, &ngsiCmdError{funcName, 5, err.Error(), err}
+		return nil, &ngsiCmdError{funcName, 6, err.Error(), err}
 	}
 
 	return ngsi, nil
