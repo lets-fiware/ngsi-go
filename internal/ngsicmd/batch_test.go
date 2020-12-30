@@ -38,14 +38,13 @@ import (
 )
 
 func TestBatchCreateLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := batch(c, "create")
 
 	if assert.Error(t, err) {
@@ -58,14 +57,13 @@ func TestBatchCreateLd(t *testing.T) {
 }
 
 func TestBatchUpdateLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := batch(c, "update")
 
 	if assert.Error(t, err) {
@@ -78,14 +76,13 @@ func TestBatchUpdateLd(t *testing.T) {
 }
 
 func TestBatchUsertLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
 	err := batch(c, "upsert")
 
 	if assert.Error(t, err) {
@@ -98,14 +95,13 @@ func TestBatchUsertLd(t *testing.T) {
 }
 
 func TestBatchDeleteLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "ld")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := batch(c, "delete")
 
 	if assert.Error(t, err) {
@@ -118,9 +114,8 @@ func TestBatchDeleteLd(t *testing.T) {
 }
 
 func TestBatchCreateV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
@@ -138,9 +133,8 @@ func TestBatchCreateV2(t *testing.T) {
 }
 
 func TestBatchUpdateV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
@@ -158,9 +152,8 @@ func TestBatchUpdateV2(t *testing.T) {
 }
 
 func TestBatchAppendV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
@@ -177,14 +170,14 @@ func TestBatchAppendV2(t *testing.T) {
 	}
 }
 func TestBatchReplaceV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion", "--data="})
+
 	err := batch(c, "replace")
 
 	if assert.Error(t, err) {
@@ -197,9 +190,8 @@ func TestBatchReplaceV2(t *testing.T) {
 }
 
 func TestBatchDeleteV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "append,keyValues")
 
@@ -235,13 +227,12 @@ func TestBatchErrorInitCmd(t *testing.T) {
 }
 
 func TestBatchErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,data,link")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion-ld"})
 	err := batch(c, "create")
 
 	if assert.Error(t, err) {
@@ -254,13 +245,12 @@ func TestBatchErrorNewClient(t *testing.T) {
 }
 
 func TestBatchErrorModeV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 	setupFlagString(set, "host,data,link")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := batch(c, "get")
 
 	if assert.Error(t, err) {
@@ -273,13 +263,12 @@ func TestBatchErrorModeV2(t *testing.T) {
 }
 
 func TestBatchErrorModeLD(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := batch(c, "get")
 
 	if assert.Error(t, err) {
@@ -294,7 +283,6 @@ func TestBatchErrorModeLD(t *testing.T) {
 func TestBatchCreate(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -304,8 +292,11 @@ func TestBatchCreate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchCreate(c, ngsi, client)
 
 	assert.NoError(t, err)
@@ -314,7 +305,6 @@ func TestBatchCreate(t *testing.T) {
 func TestBatchCreateContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link,context")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -324,8 +314,11 @@ func TestBatchCreateContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData, "--context=[\"http://context\"]"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\"]"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchCreate(c, ngsi, client)
 
 	assert.NoError(t, err)
@@ -334,10 +327,11 @@ func TestBatchCreateContext(t *testing.T) {
 func TestBatchCreateErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 	err := batchCreate(c, ngsi, client)
 
@@ -353,7 +347,6 @@ func TestBatchCreateErrorReadAll(t *testing.T) {
 func TestBatchCreateErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link,context")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -363,7 +356,9 @@ func TestBatchCreateErrorContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData, "--context=[\"http://context\""})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\""})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 	err := batchCreate(c, ngsi, client)
 
@@ -379,7 +374,6 @@ func TestBatchCreateErrorContext(t *testing.T) {
 func TestBatchCreateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -388,7 +382,9 @@ func TestBatchCreateErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 	err := batchCreate(c, ngsi, client)
 
@@ -404,7 +400,6 @@ func TestBatchCreateErrorHTTP(t *testing.T) {
 func TestBatchCreateErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -413,7 +408,9 @@ func TestBatchCreateErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 	err := batchCreate(c, ngsi, client)
 
@@ -428,7 +425,6 @@ func TestBatchCreateErrorHTTPStatus(t *testing.T) {
 func TestBatchUpdate(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -438,7 +434,9 @@ func TestBatchUpdate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 	err := batchUpdate(c, ngsi, client)
 
@@ -448,7 +446,6 @@ func TestBatchUpdate(t *testing.T) {
 func TestBatchUpdateContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link,context")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -458,7 +455,9 @@ func TestBatchUpdateContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData, "--context=[\"http://context\"]"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\"]"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 	err := batchUpdate(c, ngsi, client)
 
@@ -468,11 +467,13 @@ func TestBatchUpdateContext(t *testing.T) {
 func TestBatchUpdateErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpdate(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -487,7 +488,6 @@ func TestBatchUpdateErrorReadAll(t *testing.T) {
 func TestBatchUpdateErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link,context")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -497,8 +497,11 @@ func TestBatchUpdateErrorContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData, "--context=[\"http://context\""})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\""})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpdate(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -513,7 +516,6 @@ func TestBatchUpdateErrorContext(t *testing.T) {
 func TestBatchUpdateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -522,8 +524,11 @@ func TestBatchUpdateErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpdate(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -538,7 +543,6 @@ func TestBatchUpdateErrorHTTP(t *testing.T) {
 func TestBatchUpdateErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -547,8 +551,11 @@ func TestBatchUpdateErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpdate(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -562,7 +569,6 @@ func TestBatchUpdateErrorHTTPStatus(t *testing.T) {
 func TestBatchUpsert(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -572,8 +578,11 @@ func TestBatchUpsert(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpsert(c, ngsi, client)
 
 	assert.NoError(t, err)
@@ -582,7 +591,6 @@ func TestBatchUpsert(t *testing.T) {
 func TestBatchUpsertContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link,context")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -592,8 +600,11 @@ func TestBatchUpsertContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData, "--context=[\"http://context\"]"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\"]"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpsert(c, ngsi, client)
 
 	assert.NoError(t, err)
@@ -602,11 +613,13 @@ func TestBatchUpsertContext(t *testing.T) {
 func TestBatchUpsertErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpsert(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -621,7 +634,6 @@ func TestBatchUpsertErrorReadAll(t *testing.T) {
 func TestBatchUpsertErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link,context")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -631,8 +643,11 @@ func TestBatchUpsertErrorContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData, "--context=[\"http://context\""})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\""})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpsert(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -647,7 +662,6 @@ func TestBatchUpsertErrorContext(t *testing.T) {
 func TestBatchUpsertErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -656,8 +670,11 @@ func TestBatchUpsertErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpsert(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -672,7 +689,6 @@ func TestBatchUpsertErrorHTTP(t *testing.T) {
 func TestBatchUpsertErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -681,8 +697,11 @@ func TestBatchUpsertErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchUpsert(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -696,7 +715,6 @@ func TestBatchUpsertErrorHTTPStatus(t *testing.T) {
 func TestBatchDelete(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -706,8 +724,11 @@ func TestBatchDelete(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchDelete(c, ngsi, client)
 
 	assert.NoError(t, err)
@@ -716,11 +737,13 @@ func TestBatchDelete(t *testing.T) {
 func TestBatchDeleteErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
+	_ = set.Parse([]string{"--host=orion-ld", "--data="})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchDelete(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -735,7 +758,6 @@ func TestBatchDeleteErrorReadAll(t *testing.T) {
 func TestBatchDeleteErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -744,8 +766,11 @@ func TestBatchDeleteErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchDelete(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -760,7 +785,6 @@ func TestBatchDeleteErrorHTTP(t *testing.T) {
 func TestBatchDeleteErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -769,8 +793,11 @@ func TestBatchDeleteErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := batchDelete(c, ngsi, client)
 
 	if assert.Error(t, err) {

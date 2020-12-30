@@ -39,10 +39,11 @@ import (
 func TestNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion"})
 	c := cli.NewContext(app, set, nil)
 
+	ngsi, _ = initCmd(c, "", true)
 	_, err := newClient(ngsi, c, false)
 
 	assert.NoError(t, err)
@@ -50,8 +51,6 @@ func TestNewClient(t *testing.T) {
 
 func TestNewClientError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "link")
 	c := cli.NewContext(app, set, nil)

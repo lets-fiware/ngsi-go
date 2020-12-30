@@ -41,8 +41,6 @@ import (
 func TestAdminLog(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"level":"DEBUG"}`)
@@ -66,8 +64,6 @@ func TestAdminLog(t *testing.T) {
 
 func TestAdminLogPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -107,8 +103,6 @@ func TestAdminLogErrorInitCmd(t *testing.T) {
 func TestAdminLogErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/admin/log"
@@ -133,8 +127,6 @@ func TestAdminLogErrorNewClient(t *testing.T) {
 func TestAdminLogErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/admin/log"
@@ -158,8 +150,6 @@ func TestAdminLogErrorOnlyV2(t *testing.T) {
 
 func TestAdminLogErrorHTTPLevelError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -186,8 +176,6 @@ func TestAdminLogErrorHTTPLevelError(t *testing.T) {
 func TestAdminLogErrorHTTPLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/admin/log"
@@ -213,8 +201,6 @@ func TestAdminLogErrorHTTPLevel(t *testing.T) {
 func TestAdminLogErrorStatusCodeLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/admin/log"
@@ -238,8 +224,6 @@ func TestAdminLogErrorStatusCodeLevel(t *testing.T) {
 
 func TestAdminLogErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -266,8 +250,6 @@ func TestAdminLogErrorHTTP(t *testing.T) {
 func TestAdminLogErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/admin/log"
@@ -291,8 +273,6 @@ func TestAdminLogErrorStatusCode(t *testing.T) {
 
 func TestAdminLogErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	j := ngsi.JSONConverter
 	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
@@ -321,8 +301,6 @@ func TestAdminLogErrorPretty(t *testing.T) {
 func TestAdminTrace(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"tracelevels":"empty"}`)
@@ -346,8 +324,6 @@ func TestAdminTrace(t *testing.T) {
 
 func TestAdminTraceSet(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -387,8 +363,6 @@ func TestAdminTraceErrorInitCmd(t *testing.T) {
 func TestAdminTraceErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/log/trace"
@@ -413,8 +387,6 @@ func TestAdminTraceErrorNewClient(t *testing.T) {
 func TestAdminTraceErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/log/trace"
@@ -438,8 +410,6 @@ func TestAdminTraceErrorOnlyV2(t *testing.T) {
 
 func TestAdminTraceErrorParam(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -466,8 +436,6 @@ func TestAdminTraceErrorParam(t *testing.T) {
 func TestAdminTraceErrorLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/log/trace"
@@ -492,8 +460,6 @@ func TestAdminTraceErrorLevel(t *testing.T) {
 
 func TestAdminTraceErrorSetHTTPLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -521,8 +487,6 @@ func TestAdminTraceErrorSetHTTPLevel(t *testing.T) {
 func TestAdminTraceErrorSetStatusCodeLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/log/trace/t1"
@@ -547,8 +511,6 @@ func TestAdminTraceErrorSetStatusCodeLevel(t *testing.T) {
 
 func TestAdminTraceErrorDeleteHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -576,8 +538,6 @@ func TestAdminTraceErrorDeleteHTTP(t *testing.T) {
 func TestAdminTraceErrorDeleteStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/log/trace/t1"
@@ -602,8 +562,6 @@ func TestAdminTraceErrorDeleteStatusCode(t *testing.T) {
 
 func TestAdminTraceErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -630,8 +588,6 @@ func TestAdminTraceErrorHTTP(t *testing.T) {
 func TestAdminTraceErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/log/trace"
@@ -655,8 +611,6 @@ func TestAdminTraceErrorStatusCode(t *testing.T) {
 
 func TestAdminMetrics(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -682,8 +636,6 @@ func TestAdminMetrics(t *testing.T) {
 func TestAdminMetricsPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"services":{"default-service":{"subservs":{"root-subserv":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}},"sum":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}}},"sum":{"subservs":{"root-subserv":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}},"sum":{"incomingTransactionResponseSize":1103,"serviceTime":0.000524,"incomingTransactions":7}}}`)
@@ -707,8 +659,6 @@ func TestAdminMetricsPretty(t *testing.T) {
 
 func TestAdminMetricsDelete(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -748,8 +698,6 @@ func TestAdminMetricsErrorInitCmd(t *testing.T) {
 func TestAdminMetricsErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/admin/metrics"
@@ -773,8 +721,6 @@ func TestAdminMetricsErrorNewClient(t *testing.T) {
 
 func TestAdminMetricsErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -800,8 +746,6 @@ func TestAdminMetricsErrorOnlyV2(t *testing.T) {
 func TestAdminMetricsErrorParam(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/admin/metrics"
@@ -826,8 +770,6 @@ func TestAdminMetricsErrorParam(t *testing.T) {
 
 func TestAdminMetricsErrorDeleteHTTPLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -855,8 +797,6 @@ func TestAdminMetricsErrorDeleteHTTPLevel(t *testing.T) {
 func TestAdminMetricsErrorDeleteStatusCodeLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/admin/metrics"
@@ -881,8 +821,6 @@ func TestAdminMetricsErrorDeleteStatusCodeLevel(t *testing.T) {
 
 func TestAdminMetricsErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -909,8 +847,6 @@ func TestAdminMetricsErrorHTTP(t *testing.T) {
 func TestAdminMetricsErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/admin/metrics"
@@ -934,8 +870,6 @@ func TestAdminMetricsErrorStatusCode(t *testing.T) {
 
 func TestAdminMetricsErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -965,8 +899,6 @@ func TestAdminMetricsErrorPretty(t *testing.T) {
 func TestAdminSemaphore(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"dbConnectionPool":{"status":"free"},"dbConnection":{"status":"free"},"request":{"status":"free"},"subCache":{"status":"free"},"transaction":{"status":"free"},"timeStat":{"status":"free"},"logMsg":{"status":"free"},"alarmMgr":{"status":"free"},"metricsMgr":{"status":"free"},"connectionContext":{"status":"free"},"connectionEndpoints":{"status":"free"}}`)
@@ -990,8 +922,6 @@ func TestAdminSemaphore(t *testing.T) {
 
 func TestAdminSemaphorePretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -1031,8 +961,6 @@ func TestAdminSemaphoreErrorInitCmd(t *testing.T) {
 func TestAdminSemaphoreErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/admin/sem"
@@ -1057,8 +985,6 @@ func TestAdminSemaphoreErrorNewClient(t *testing.T) {
 func TestAdminSemaphoreErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/admin/sem"
@@ -1082,8 +1008,6 @@ func TestAdminSemaphoreErrorOnlyV2(t *testing.T) {
 
 func TestAdminSemaphoreErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -1110,8 +1034,6 @@ func TestAdminSemaphoreErrorHTTP(t *testing.T) {
 func TestAdminSemaphoreErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/admin/sem"
@@ -1135,8 +1057,6 @@ func TestAdminSemaphoreErrorStatusCode(t *testing.T) {
 
 func TestAdminSemaphoreErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -1166,8 +1086,6 @@ func TestAdminSemaphoreErrorPretty(t *testing.T) {
 func TestAdminStatistics(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"uptime_in_secs":152275,"measuring_interval_in_secs":152275}`)
@@ -1192,8 +1110,6 @@ func TestAdminStatistics(t *testing.T) {
 func TestAdminStatisticsPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"uptime_in_secs":152275,"measuring_interval_in_secs":152275}`)
@@ -1217,8 +1133,6 @@ func TestAdminStatisticsPretty(t *testing.T) {
 
 func TestAdminStatisticsDelete(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -1258,8 +1172,6 @@ func TestAdminStatisticsErrorInitCmd(t *testing.T) {
 func TestAdminStatisticsErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/statistics"
@@ -1284,8 +1196,6 @@ func TestAdminStatisticsErrorNewClient(t *testing.T) {
 func TestAdminStatisticsErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/statistics"
@@ -1309,8 +1219,6 @@ func TestAdminStatisticsErrorOnlyV2(t *testing.T) {
 
 func TestAdminStatisticsErrorDeleteHTTPLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -1338,8 +1246,6 @@ func TestAdminStatisticsErrorDeleteHTTPLevel(t *testing.T) {
 func TestAdminStatisticsErrorDeleteStatusCodeLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/statistics"
@@ -1364,8 +1270,6 @@ func TestAdminStatisticsErrorDeleteStatusCodeLevel(t *testing.T) {
 
 func TestAdminStatisticsErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -1392,8 +1296,6 @@ func TestAdminStatisticsErrorHTTP(t *testing.T) {
 func TestAdminStatisticsErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/statistics"
@@ -1417,8 +1319,6 @@ func TestAdminStatisticsErrorStatusCode(t *testing.T) {
 
 func TestAdminStatisticsErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -1448,8 +1348,6 @@ func TestAdminStatisticsErrorPretty(t *testing.T) {
 func TestAdminCacheStatistics(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"ids":"","refresh":1949,"inserts":0,"removes":0,"updates":0,"items":0}`)
@@ -1474,8 +1372,6 @@ func TestAdminCacheStatistics(t *testing.T) {
 func TestAdminCacheStatisticsPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"ids":"","refresh":1949,"inserts":0,"removes":0,"updates":0,"items":0}`)
@@ -1499,8 +1395,6 @@ func TestAdminCacheStatisticsPretty(t *testing.T) {
 
 func TestAdminCacheStatisticsDelete(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -1540,8 +1434,6 @@ func TestAdminCacheStatisticsErrorInitCmd(t *testing.T) {
 func TestAdminCacheStatisticsErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/cache/statistics"
@@ -1566,8 +1458,6 @@ func TestAdminCacheStatisticsErrorNewClient(t *testing.T) {
 func TestAdminCacheStatisticsErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/cache/statistics"
@@ -1591,8 +1481,6 @@ func TestAdminCacheStatisticsErrorOnlyV2(t *testing.T) {
 
 func TestAdminCacheStatisticsErrorDeleteHTTPLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -1620,8 +1508,6 @@ func TestAdminCacheStatisticsErrorDeleteHTTPLevel(t *testing.T) {
 func TestAdminCacheStatisticsErrorDeleteStatusCodeLevel(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/cache/statistics"
@@ -1646,8 +1532,6 @@ func TestAdminCacheStatisticsErrorDeleteStatusCodeLevel(t *testing.T) {
 
 func TestAdminCacheStatisticsErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -1674,8 +1558,6 @@ func TestAdminCacheStatisticsErrorHTTP(t *testing.T) {
 func TestAdminCacheStatisticsErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/cache/statistics"
@@ -1699,8 +1581,6 @@ func TestAdminCacheStatisticsErrorStatusCode(t *testing.T) {
 
 func TestAdminCacheStatisticsErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK

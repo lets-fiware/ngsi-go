@@ -42,8 +42,6 @@ import (
 func TestRegistrationsListLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
@@ -52,11 +50,14 @@ func TestRegistrationsListLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -71,8 +72,6 @@ func TestRegistrationsListLd(t *testing.T) {
 func TestRegistrationsListLdLocalTime(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"expires": "2020-09-01T01:24:01.00Z", "id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
@@ -81,12 +80,14 @@ func TestRegistrationsListLdLocalTime(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "verbose,localTime")
-
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--localTime"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -101,8 +102,6 @@ func TestRegistrationsListLdLocalTime(t *testing.T) {
 func TestRegistrationsListLdCountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
@@ -111,11 +110,13 @@ func TestRegistrationsListLdCountZero(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -129,8 +130,6 @@ func TestRegistrationsListLdCountZero(t *testing.T) {
 
 func TestRegistrationsListLdCountPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -146,11 +145,13 @@ func TestRegistrationsListLdCountPage(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -165,8 +166,6 @@ func TestRegistrationsListLdCountPage(t *testing.T) {
 func TestRegistrationsListLdVerbose(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
@@ -175,12 +174,15 @@ func TestRegistrationsListLdVerbose(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "verbose")
-
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--verbose"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -194,8 +196,6 @@ func TestRegistrationsListLdVerbose(t *testing.T) {
 func TestRegistrationsListLdJSON(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
@@ -204,12 +204,15 @@ func TestRegistrationsListLdJSON(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json")
-
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -224,8 +227,6 @@ func TestRegistrationsListLdJSON(t *testing.T) {
 func TestRegistrationsListLdJSONPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
@@ -234,12 +235,14 @@ func TestRegistrationsListLdJSONPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json,pretty")
-
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -254,19 +257,19 @@ func TestRegistrationsListLdJSONPretty(t *testing.T) {
 func TestRegistrationsListLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/csourceRegistrations"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -281,8 +284,6 @@ func TestRegistrationsListLdErrorHTTP(t *testing.T) {
 func TestRegistrationsListLdErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
@@ -290,11 +291,13 @@ func TestRegistrationsListLdErrorStatusCode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
+	setupFlagString(set, "host,type")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--type=AirQualityObserved"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -308,19 +311,20 @@ func TestRegistrationsListLdErrorStatusCode(t *testing.T) {
 func TestRegistrationsListLdErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -334,8 +338,6 @@ func TestRegistrationsListLdErrorResultsCount(t *testing.T) {
 func TestRegistrationsListLdErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{}`)
@@ -347,8 +349,11 @@ func TestRegistrationsListLdErrorUnmarshal(t *testing.T) {
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -363,8 +368,6 @@ func TestRegistrationsListLdErrorUnmarshal(t *testing.T) {
 func TestRegistrationsListLdErrorJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
@@ -373,13 +376,15 @@ func TestRegistrationsListLdErrorJSON(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json")
-
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
-	JSONEncodeErr(ngsi, 0)
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+	setJSONEncodeErr(ngsi, 0)
 
 	err := registrationsListLd(c, ngsi, client)
 
@@ -394,8 +399,6 @@ func TestRegistrationsListLdErrorJSON(t *testing.T) {
 
 func TestRegistrationsListLdErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -412,8 +415,10 @@ func TestRegistrationsListLdErrorJSONPretty(t *testing.T) {
 	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -428,8 +433,6 @@ func TestRegistrationsListLdErrorJSONPretty(t *testing.T) {
 func TestRegistrationsLdGet(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
@@ -437,11 +440,14 @@ func TestRegistrationsLdGet(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,id")
 
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -456,8 +462,6 @@ func TestRegistrationsLdGet(t *testing.T) {
 func TestRegistrationsLdGetPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
@@ -469,8 +473,10 @@ func TestRegistrationsLdGetPretty(t *testing.T) {
 	setupFlagBool(set, "pretty")
 
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -485,8 +491,6 @@ func TestRegistrationsLdGetPretty(t *testing.T) {
 func TestRegistrationsLdGetLocalTime(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"expires": "2020-09-01T01:24:01.00Z", "id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
@@ -494,12 +498,15 @@ func TestRegistrationsLdGetLocalTime(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,id")
 	setupFlagBool(set, "localTime")
-
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--localTime", "--id=5f5dcb551e715bc7f1ad79e3"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -514,7 +521,6 @@ func TestRegistrationsLdGetLocalTime(t *testing.T) {
 func TestRegistrationsLdGetSafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 	setupFlagString(set, "host,id,safeString")
 
 	reqRes := MockHTTPReqRes{}
@@ -527,7 +533,10 @@ func TestRegistrationsLdGetSafeString(t *testing.T) {
 
 	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=5f5dcb551e715bc7f1ad79e3"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -542,19 +551,20 @@ func TestRegistrationsLdGetSafeString(t *testing.T) {
 func TestRegistrationsGetLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/csourceRegistrations"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -569,8 +579,6 @@ func TestRegistrationsGetLdErrorHTTP(t *testing.T) {
 func TestRegistrationsGetLdErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
@@ -578,11 +586,14 @@ func TestRegistrationsGetLdErrorStatusCode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,id")
 
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -596,7 +607,6 @@ func TestRegistrationsGetLdErrorStatusCode(t *testing.T) {
 func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 	setupFlagString(set, "host,id,safeString")
 
 	reqRes := MockHTTPReqRes{}
@@ -606,10 +616,12 @@ func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	JSONDecodeErr(ngsi, 0)
 
+	setJSONDecodeErr(ngsi, 1)
 	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=5f5dcb551e715bc7f1ad79e3"})
 	c := cli.NewContext(app, set, nil)
+
+	ngsi, _ = initCmd(c, "", true)
 	client, _ := newClient(ngsi, c, false)
 
 	err := registrationsGetLd(c, ngsi, client)
@@ -626,8 +638,6 @@ func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
 func TestRegistrationsLdGetErrorJSONMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
@@ -635,12 +645,15 @@ func TestRegistrationsLdGetErrorJSONMarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,id")
-	JSONEncodeErr(ngsi, 0)
 
+	setupFlagString(set, "host,id")
+	setJSONEncodeErr(ngsi, 2)
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -654,8 +667,6 @@ func TestRegistrationsLdGetErrorJSONMarshal(t *testing.T) {
 
 func TestRegistrationsLdGetErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -671,8 +682,11 @@ func TestRegistrationsLdGetErrorPretty(t *testing.T) {
 	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3", "--pretty"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -687,8 +701,6 @@ func TestRegistrationsLdGetErrorPretty(t *testing.T) {
 func TestRegistrationsCreateLd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ResHeader = http.Header{"Location": []string{"/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"}}
@@ -696,11 +708,14 @@ func TestRegistrationsCreateLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,data")
 
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsCreateLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
@@ -715,8 +730,6 @@ func TestRegistrationsCreateLd(t *testing.T) {
 func TestRegistrationsCreateLdErrorSetRegistrationsValuleLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ResHeader = http.Header{"Location": []string{"/ngsi-ld/v1/registrations/5f5dcb551e715bc7f1ad79e3"}}
@@ -724,11 +737,14 @@ func TestRegistrationsCreateLdErrorSetRegistrationsValuleLd(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,data")
 
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--data="})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -743,20 +759,21 @@ func TestRegistrationsCreateLdErrorSetRegistrationsValuleLd(t *testing.T) {
 func TestRegistrationsCreateLdErrorJSONMarshalEncode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/csourceRegistrations"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	JSONEncodeErr(ngsi, 0)
-	setupFlagString(set, "host,data")
 
+	setJSONEncodeErr(ngsi, 2)
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -771,19 +788,20 @@ func TestRegistrationsCreateLdErrorJSONMarshalEncode(t *testing.T) {
 func TestRegistrationsCreateLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/csourceRegistrations"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,data")
 
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -798,8 +816,6 @@ func TestRegistrationsCreateLdErrorHTTP(t *testing.T) {
 func TestRegistrationsCreateLdErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations"
@@ -807,11 +823,14 @@ func TestRegistrationsCreateLdErrorStatusCode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,data")
 
+	setupFlagString(set, "host,data")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -825,19 +844,20 @@ func TestRegistrationsCreateLdErrorStatusCode(t *testing.T) {
 func TestRegistrationsDeleteLd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,id")
 
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsDeleteLd(c, ngsi, client)
 
 	assert.NoError(t, err)
@@ -846,19 +866,20 @@ func TestRegistrationsDeleteLd(t *testing.T) {
 func TestRegistrationsDeleteLdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/csourceRegistrations"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsDeleteLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -873,8 +894,6 @@ func TestRegistrationsDeleteLdErrorHTTP(t *testing.T) {
 func TestRegistrationsDeleteLdErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion-ld", "https://orion", "ld")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
@@ -882,11 +901,14 @@ func TestRegistrationsDeleteLdErrorStatusCode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,id")
 
+	setupFlagString(set, "host,id")
 	c := cli.NewContext(app, set, nil)
-	client, _ := newClient(ngsi, c, false)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+
+	ngsi, _ = initCmd(c, "", true)
+	client, _ := newClient(ngsi, c, false)
+
 	err := registrationsDeleteLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
@@ -974,7 +996,7 @@ func TestRegistrationsTemplateLdErrorMarshal(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 0)
 
 	err := registrationsTemplateLd(c, ngsi)
 
@@ -1106,7 +1128,7 @@ func TestSetRegistrationsValuleLdErrorReadAll(t *testing.T) {
 func TestSetRegistrationsValuleLdErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 0)
 
 	setupFlagString(set, "data,description,provider,expires")
 	c := cli.NewContext(app, set, nil)

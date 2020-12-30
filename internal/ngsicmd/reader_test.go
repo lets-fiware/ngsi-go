@@ -40,7 +40,6 @@ import (
 func TestReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -58,7 +57,6 @@ func TestReadAll(t *testing.T) {
 func TestReadAllStdReader(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -77,7 +75,6 @@ func TestReadAllStdReader(t *testing.T) {
 func TestReadAllAt(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -96,7 +93,6 @@ func TestReadAllAt(t *testing.T) {
 func TestReadAllErrorEmpty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	c := cli.NewContext(app, set, nil)
 
@@ -114,7 +110,6 @@ func TestReadAllErrorEmpty(t *testing.T) {
 func TestReadAllErrorStdReader(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -135,19 +130,17 @@ func TestReadAllErrorStdReader(t *testing.T) {
 func TestReadAllAt3(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{FilePathAbsError: errors.New("error @file")}
+	setFilePatAbsError(ngsi, 0)
 
 	_, err := readAll(c, ngsi)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "error @file", ngsiErr.Message)
+		assert.Equal(t, "filepathabs error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -156,19 +149,18 @@ func TestReadAllAt3(t *testing.T) {
 func TestReadAllAt4(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{FilePathAbsString: "file", ReadFileError: errors.New("error @file")}
+	setReadFileError(ngsi, 0)
 
 	_, err := readAll(c, ngsi)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "error @file", ngsiErr.Message)
+		assert.Equal(t, "readfile error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -177,7 +169,6 @@ func TestReadAllAt4(t *testing.T) {
 func TestReadAllErrorAt5(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -197,7 +188,6 @@ func TestReadAllErrorAt5(t *testing.T) {
 func TestGetReader(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -211,7 +201,6 @@ func TestGetReader(t *testing.T) {
 func TestGetReaderFIle(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -226,7 +215,6 @@ func TestGetReaderFIle(t *testing.T) {
 func TestGetReaderStdin(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -246,7 +234,6 @@ func TestGetReaderStdin(t *testing.T) {
 func TestGetReaderErrorEmpty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	c := cli.NewContext(app, set, nil)
 
@@ -264,19 +251,18 @@ func TestGetReaderErrorEmpty(t *testing.T) {
 func TestGetReaderAt3(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
-	ngsi.FileReader = &MockFileLib{FilePathAbsError: errors.New("error @file")}
+	setFilePatAbsError(ngsi, 0)
 
 	_, err := getReader(c, ngsi)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "error @file", ngsiErr.Message)
+		assert.Equal(t, "filepathabs error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -285,7 +271,6 @@ func TestGetReaderAt3(t *testing.T) {
 func TestGetReaderAt4(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -306,7 +291,6 @@ func TestGetReaderAt4(t *testing.T) {
 func TestGetReaderErrorAt5(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)

@@ -41,8 +41,6 @@ import (
 func TestOpQuery(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -65,8 +63,6 @@ func TestOpQuery(t *testing.T) {
 
 func TestOpQueryCountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data")
 	reqRes := MockHTTPReqRes{}
@@ -91,8 +87,6 @@ func TestOpQueryCountZero(t *testing.T) {
 func TestOpQuerylines(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "lines")
 	reqRes := MockHTTPReqRes{}
@@ -105,6 +99,7 @@ func TestOpQuerylines(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
+
 	err := opQuery(c)
 
 	if assert.NoError(t, err) {
@@ -116,8 +111,6 @@ func TestOpQuerylines(t *testing.T) {
 
 func TestOpQueryValues(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "values")
@@ -143,8 +136,6 @@ func TestOpQueryValues(t *testing.T) {
 func TestOpQueryLinesValues(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "lines,values")
 	reqRes := MockHTTPReqRes{}
@@ -168,8 +159,6 @@ func TestOpQueryLinesValues(t *testing.T) {
 
 func TestOpQueryPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data")
 	reqRes1 := MockHTTPReqRes{}
@@ -200,8 +189,6 @@ func TestOpQueryPage(t *testing.T) {
 func TestOpQueryVerbose(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	set.Bool("verbose", false, "dock")
 	reqRes := MockHTTPReqRes{}
@@ -226,8 +213,6 @@ func TestOpQueryVerbose(t *testing.T) {
 func TestOpQueryVerbosePretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "verbose,pretty")
 	reqRes := MockHTTPReqRes{}
@@ -251,8 +236,6 @@ func TestOpQueryVerbosePretty(t *testing.T) {
 
 func TestOpQueryCount(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data")
 	set.Bool("count", false, "doc")
@@ -292,9 +275,7 @@ func TestOpQueryInitCmd(t *testing.T) {
 }
 
 func TestOpQueryErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
@@ -311,13 +292,11 @@ func TestOpQueryErrorNewClient(t *testing.T) {
 }
 
 func TestOpQueryErrorOnlyV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "LD")
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld"})
 	err := opQuery(c)
 
 	if assert.Error(t, err) {
@@ -331,8 +310,6 @@ func TestOpQueryErrorOnlyV2(t *testing.T) {
 
 func TestOpQueryErrorReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data")
 	reqRes := MockHTTPReqRes{}
@@ -359,8 +336,6 @@ func TestOpQueryErrorReadAll(t *testing.T) {
 func TestOpQueryErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -386,8 +361,6 @@ func TestOpQueryErrorHTTP(t *testing.T) {
 func TestOpQueryErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -411,8 +384,6 @@ func TestOpQueryErrorHTTPStatus(t *testing.T) {
 
 func TestOpQueryErrorResultsCountCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data")
 	set.Bool("count", false, "doc")
@@ -439,8 +410,6 @@ func TestOpQueryErrorResultsCountCount(t *testing.T) {
 func TestOpQueryErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -464,8 +433,6 @@ func TestOpQueryErrorResultsCount(t *testing.T) {
 
 func TestOpQueryVerboseErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data,safeString")
 	set.Bool("verbose", false, "dock")
@@ -493,8 +460,6 @@ func TestOpQueryVerboseErrorSafeString(t *testing.T) {
 func TestOpQueryErrorLinesValues(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "lines,values")
 	reqRes := MockHTTPReqRes{}
@@ -507,7 +472,7 @@ func TestOpQueryErrorLinesValues(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	err := opQuery(c)
 
@@ -523,8 +488,6 @@ func TestOpQueryErrorLinesValues(t *testing.T) {
 func TestOpQueryErrorLinesValues2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "lines,values")
 	reqRes := MockHTTPReqRes{}
@@ -537,7 +500,7 @@ func TestOpQueryErrorLinesValues2(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	err := opQuery(c)
 
@@ -553,8 +516,6 @@ func TestOpQueryErrorLinesValues2(t *testing.T) {
 func TestOpQueryErrorLines(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "lines")
 	reqRes := MockHTTPReqRes{}
@@ -568,7 +529,7 @@ func TestOpQueryErrorLines(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	err := opQuery(c)
 
@@ -584,8 +545,6 @@ func TestOpQueryErrorLines(t *testing.T) {
 func TestOpQueryErrorLines2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "lines")
 	reqRes := MockHTTPReqRes{}
@@ -598,7 +557,7 @@ func TestOpQueryErrorLines2(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	JSONEncodeErr(ngsi, 0)
+	setJSONEncodeErr(ngsi, 2)
 
 	err := opQuery(c)
 
@@ -613,8 +572,6 @@ func TestOpQueryErrorLines2(t *testing.T) {
 
 func TestOpQueryErrorVerbosePretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
 
 	setupFlagString(set, "host,data")
 	setupFlagBool(set, "verbose,pretty")
@@ -646,8 +603,6 @@ func TestOpQueryErrorVerbosePretty(t *testing.T) {
 func TestOpQueryErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupAddBroker(t, ngsi, "orion", "https://orion", "v2")
-
 	setupFlagString(set, "host,data")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -659,7 +614,7 @@ func TestOpQueryErrorUnmarshal(t *testing.T) {
 	ngsi.HTTP = mock
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	JSONDecodeErr(ngsi, 0)
+	setJSONDecodeErr(ngsi, 1)
 
 	err := opQuery(c)
 
