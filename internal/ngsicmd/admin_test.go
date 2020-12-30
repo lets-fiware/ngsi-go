@@ -274,8 +274,6 @@ func TestAdminLogErrorStatusCode(t *testing.T) {
 func TestAdminLogErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"level":"DEBUG"}`)
@@ -283,11 +281,14 @@ func TestAdminLogErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "logging,pretty")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := adminLog(c)
 
 	if assert.Error(t, err) {
@@ -878,13 +879,14 @@ func TestAdminMetricsErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "logging,reset,pretty")
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--reset", "--logging", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := adminMetrics(c)
 
 	if assert.Error(t, err) {
@@ -1065,13 +1067,14 @@ func TestAdminSemaphoreErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "logging,pretty")
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := adminSemaphore(c)
 
 	if assert.Error(t, err) {
@@ -1327,13 +1330,14 @@ func TestAdminStatisticsErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "logging,pretty")
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := adminStatistics(c)
 
 	if assert.Error(t, err) {
@@ -1589,13 +1593,14 @@ func TestAdminCacheStatisticsErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "logging,pretty")
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--logging", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := adminCacheStatistics(c)
 
 	if assert.Error(t, err) {

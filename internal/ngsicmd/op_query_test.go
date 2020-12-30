@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -573,8 +572,6 @@ func TestOpQueryErrorLines2(t *testing.T) {
 func TestOpQueryErrorVerbosePretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "verbose,pretty")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
@@ -584,11 +581,13 @@ func TestOpQueryErrorVerbosePretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
+	setupFlagString(set, "host,data")
+	setupFlagBool(set, "verbose,pretty")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
+
+	setJSONIndentError(ngsi)
+
 	err := opQuery(c)
 
 	if assert.Error(t, err) {

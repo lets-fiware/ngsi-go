@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -245,8 +244,6 @@ func TestAttrsReadV2ErrorSafeString(t *testing.T) {
 func TestAttrsReadV2ErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
-	setupFlagBool(set, "append,keyValues,pretty")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
@@ -254,11 +251,14 @@ func TestAttrsReadV2ErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
+	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagBool(set, "append,keyValues,pretty")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := attrsRead(c)
 
 	if assert.Error(t, err) {

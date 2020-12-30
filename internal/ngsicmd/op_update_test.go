@@ -69,7 +69,6 @@ func TestOpUpdateArrayDataOver100(t *testing.T) {
 		testData = testData + fmt.Sprintf("{\"id\":\"urn:ngsi-ld:Product:%d\",\"type\":\"Product\"},", i)
 	}
 	testData = testData[:len(testData)-1] + "]"
-	setupFlagString(set, "host,data,link")
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusNoContent
 	reqRes1.Path = "/v2/op/update"
@@ -80,6 +79,8 @@ func TestOpUpdateArrayDataOver100(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
 
@@ -94,20 +95,23 @@ func TestOpUpdateArrayDataOver100(t *testing.T) {
 func TestOpUpdateLineData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/op/update"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateLineData})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	assert.NoError(t, err)
 }
@@ -119,10 +123,12 @@ func TestOpUpdateErrorReadAll(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data="})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -136,18 +142,19 @@ func TestOpUpdateErrorReadAll(t *testing.T) {
 func TestOpUpdateErrorToken(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=}"})
 
 	ngsi, err := initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
 
@@ -163,19 +170,22 @@ func TestOpUpdateErrorToken(t *testing.T) {
 func TestOpUpdateErrorJSONDelim(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=1"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -189,19 +199,22 @@ func TestOpUpdateErrorJSONDelim(t *testing.T) {
 func TestOpUpdateErrorJSONDelim2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={{"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -215,20 +228,23 @@ func TestOpUpdateErrorJSONDelim2(t *testing.T) {
 func TestOpUpdateErrorDecode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/op/update"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=[" + testOpUpdateArrayData})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -246,7 +262,6 @@ func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
 		testData = testData + fmt.Sprintf("{\"id\":\"urn:ngsi-ld:Product:%d\",\"type\":\"Product\"},", i)
 	}
 	testData = testData[:len(testData)-1] + "]"
-	setupFlagString(set, "host,data,link")
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusNoContent
 	reqRes1.Err = errors.New("error")
@@ -258,13 +273,17 @@ func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -283,7 +302,6 @@ func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 		testData = testData + fmt.Sprintf("{\"id\":\"urn:ngsi-ld:Product:%d\",\"type\":\"Product\"},", i)
 	}
 	testData = testData[:len(testData)-1] + "]"
-	setupFlagString(set, "host,data,link")
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusBadRequest
 	reqRes1.Path = "/v2/op/update"
@@ -294,13 +312,17 @@ func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -314,20 +336,23 @@ func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 func TestOpUpdateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/op/update"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -341,20 +366,23 @@ func TestOpUpdateErrorHTTP(t *testing.T) {
 func TestOpUpdateErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/op/update"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -367,20 +395,23 @@ func TestOpUpdateErrorHTTPStatus(t *testing.T) {
 func TestOpUpdateArrayDataError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/op/update"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateArrayDataError})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := opUpdate(c, ngsi, client, "append_strict")
+	err = opUpdate(c, ngsi, client, "append_strict")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)

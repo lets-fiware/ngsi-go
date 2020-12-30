@@ -43,8 +43,10 @@ func TestNewClient(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	_, err := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
+	_, err = newClient(ngsi, c, false)
 
 	assert.NoError(t, err)
 }

@@ -31,7 +31,6 @@ package ngsicmd
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"testing"
 
@@ -55,10 +54,12 @@ func TestSubscriptionsListLd(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -86,10 +87,12 @@ func TestSubscriptionsListLdCount(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--count"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -122,11 +125,13 @@ func TestSubscriptionsListLdPage(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
 
-	client, _ := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -153,10 +158,12 @@ func TestSubscriptionsListLdStatus(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--status=active"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -183,10 +190,12 @@ func TestSubscriptionsListLdQuery(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--query=FIWARE*"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -213,10 +222,12 @@ func TestSubscriptionsListLdCountZero(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -244,10 +255,12 @@ func TestSubscriptionsListLdJson(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -275,10 +288,12 @@ func TestSubscriptionsListLdJsonPretty(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 
 	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -306,10 +321,12 @@ func TestSubscriptionsListLdJsonCount0(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -337,10 +354,12 @@ func TestSubscriptionsListLdVerbose(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--verbose"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -368,10 +387,12 @@ func TestSubscriptionsListLdLocaltime(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--localTime"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -399,10 +420,12 @@ func TestSubscriptionsListLdErrorStatus(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--status=err"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -429,10 +452,12 @@ func TestSubscriptionsListLdErrorHTTP(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -459,10 +484,12 @@ func TestSubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -487,10 +514,12 @@ func TestSubscriptionsListLdErrorResultsCount(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -519,10 +548,12 @@ func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -552,10 +583,12 @@ func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -578,18 +611,19 @@ func TestSubscriptionsListLdErrorJsonPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	setupFlagString(set, "host,status,query")
 	setupFlagBool(set, "json,pretty")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	setJSONIndentError(ngsi)
+
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -618,10 +652,12 @@ func TestSubscriptionsListLdErrorItems(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--items=id"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsListLd(c, ngsi, client)
+	err = subscriptionsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -647,10 +683,12 @@ func TestSubscriptionsGetLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -677,10 +715,12 @@ func TestSubscriptionsGetLdPretty(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--pretty"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -707,10 +747,12 @@ func TestSubscriptionsGetLdLocalTime(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--localTime"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -736,10 +778,12 @@ func TestSubscriptionsGetLdSafeString(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -764,10 +808,12 @@ func TestSubscriptionsGetLdErrorHTTP(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -792,10 +838,12 @@ func TestSubscriptionsGetLdErrorHTTPStatus(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -821,10 +869,12 @@ func TestSubscriptionsGetLdErrorSafeString(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -852,10 +902,12 @@ func TestSubscriptionsGetLdErrorJSONMarshal(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--safeString=on"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -876,18 +928,20 @@ func TestSubscriptionsGetLdErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
 
 	setupFlagString(set, "host,id")
 	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=3ea2e78f675f2d199d3025ff", "--pretty"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionGetLd(c, ngsi, client)
+	setJSONIndentError(ngsi)
+
+	err = subscriptionGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -913,10 +967,12 @@ func TestSubscriptionsCreateLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsCreateLd(c, ngsi, client)
+	err = subscriptionsCreateLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -942,10 +998,12 @@ func TestSubscriptionsCreateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data="})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsCreateLd(c, ngsi, client)
+	err = subscriptionsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -973,10 +1031,12 @@ func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsCreateLd(c, ngsi, client)
+	err = subscriptionsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1002,10 +1062,12 @@ func TestSubscriptionsCreateLdErrorHTTP(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsCreateLd(c, ngsi, client)
+	err = subscriptionsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1030,10 +1092,12 @@ func TestSubscriptionsCreateLdErrorStatus(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsCreateLd(c, ngsi, client)
+	err = subscriptionsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1058,10 +1122,12 @@ func TestSubscriptionsUpdateLd(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsUpdateLd(c, ngsi, client)
+	err = subscriptionsUpdateLd(c, ngsi, client)
 
 	assert.NoError(t, err)
 }
@@ -1083,10 +1149,12 @@ func TestSubscriptionsUpdateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsUpdateLd(c, ngsi, client)
+	err = subscriptionsUpdateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1115,10 +1183,12 @@ func TestSubscriptionsUpdateLdErrorJSONMarshalEncode(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsUpdateLd(c, ngsi, client)
+	err = subscriptionsUpdateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1145,10 +1215,12 @@ func TestSubscriptionsUpdateLdErrorHTTP(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsUpdateLd(c, ngsi, client)
+	err = subscriptionsUpdateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1175,10 +1247,12 @@ func TestSubscriptionsUpdateLdErrorStatus(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsUpdateLd(c, ngsi, client)
+	err = subscriptionsUpdateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1202,10 +1276,12 @@ func TestSubscriptionsDeleteLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsDeleteLd(c, ngsi, client)
+	err = subscriptionsDeleteLd(c, ngsi, client)
 
 	assert.NoError(t, err)
 }
@@ -1224,10 +1300,12 @@ func TestSubscriptionsDeleteLdErrorHTTP(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsDeleteLd(c, ngsi, client)
+	err = subscriptionsDeleteLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1252,10 +1330,12 @@ func TestSubscriptionsDeleteLdErrorStatusCode(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f0a44789dd803416ccbf15c"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := subscriptionsDeleteLd(c, ngsi, client)
+	err = subscriptionsDeleteLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1391,14 +1471,12 @@ func TestSubscriptionsTemplateLdArgsErrorPretty(t *testing.T) {
 
 	setupFlagString(set, "type,uri,query,link,wAttrs,nAttrs,description")
 	setupFlagBool(set, "keyValues,pretty")
-
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--type=Device", "--uri=http://ngsiproxy", "--query=abc"})
 	_ = set.Parse([]string{"--link=ld", "--wAttrs=abc,xyz", "--nAttrs=abc,xyz"})
 	_ = set.Parse([]string{"--description=test", "--pretty"})
+
+	setJSONIndentError(ngsi)
 
 	err := subscriptionsTemplateLd(c, ngsi)
 

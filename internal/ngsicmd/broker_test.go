@@ -130,12 +130,11 @@ func TestBrokersListErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupFlagBool(set, "json,pretty")
-
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--json", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := brokersList(c)
 
 	if assert.Error(t, err) {
@@ -263,12 +262,11 @@ func TestBrokersGetErrorJSONPretty(t *testing.T) {
 
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json,pretty")
-
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--json", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := brokersGet(c)
 
 	if assert.Error(t, err) {
