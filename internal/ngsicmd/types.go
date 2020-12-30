@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -50,10 +51,14 @@ func typesList(c *cli.Context) error {
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
-
-	if client.IsNgsiLd() {
-		return &ngsiCmdError{funcName, 3, "Only available on NGSIv2", nil}
+	if client.IsNgsiV2() {
+		return typesListV2(c, ngsi, client)
 	}
+	return typesListLd(c, ngsi, client)
+}
+
+func typesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+	const funcName = "typesListV2"
 
 	page := 0
 	count := 0
@@ -72,15 +77,15 @@ func typesList(c *cli.Context) error {
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+			return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 		}
 
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, "ResultsCount error", err}
+			return &ngsiCmdError{funcName, 3, "ResultsCount error", err}
 		}
 		if count == 0 {
 			break
@@ -89,7 +94,7 @@ func typesList(c *cli.Context) error {
 		var t []string
 		err = ngsilib.JSONUnmarshal(body, &t)
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 		types = append(types, t...)
 
@@ -103,11 +108,55 @@ func typesList(c *cli.Context) error {
 	if c.IsSet("json") {
 		b, err := ngsilib.JSONMarshal(types)
 		if err != nil {
-			return &ngsiCmdError{funcName, 8, err.Error(), err}
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
 		fmt.Fprintln(ngsi.StdWriter, string(b))
 	} else {
 		for _, e := range types {
+			fmt.Fprintln(ngsi.StdWriter, e)
+		}
+	}
+
+	return nil
+}
+
+// 5.2.24 EntityTypeList
+type entityTypeList struct {
+	AtContext interface{} `json:"@context,omitempty"`
+	ID        string      `json:"id,omitempty"`
+	Type      string      `json:"type,omitempty"`
+	TypeList  []string    `json:"typeList,omitempty"`
+}
+
+func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+	const funcName = "typesListLd"
+
+	client.SetPath("/types")
+
+	res, body, err := client.HTTPGet()
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 3, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+	} else if c.IsSet("json") {
+		fmt.Fprintln(ngsi.StdWriter, string(body))
+	} else {
+		var list entityTypeList
+		err := ngsilib.JSONUnmarshal(body, &list)
+		if err != nil {
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
+		}
+		for _, e := range list.TypeList {
 			fmt.Fprintln(ngsi.StdWriter, e)
 		}
 	}
