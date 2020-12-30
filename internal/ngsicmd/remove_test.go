@@ -41,9 +41,6 @@ import (
 func TestRemoveV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
-
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte("[{\"id\":\"9f6c254ac4a6068bb276774e\",\"description\":\"ngsi source subscription\",\"subject\":{\"entities\":[{\"idPattern\":\".*\"}],\"condition\":{\"attrs\":[\"dateObserved\"]}},\"notification\":{\"timesSent\":28,\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:13.00Z\",\"status\":\"inactive\"}]\n")
@@ -65,8 +62,11 @@ func TestRemoveV2(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
+
 	err := remove(c)
 
 	assert.NoError(t, err)
@@ -74,9 +74,6 @@ func TestRemoveV2(t *testing.T) {
 
 func TestRemoveLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -99,8 +96,11 @@ func TestRemoveLD(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+
 	err := remove(c)
 
 	assert.NoError(t, err)
@@ -110,6 +110,7 @@ func TestRemoveErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
+
 	err := remove(c)
 
 	if assert.Error(t, err) {
@@ -127,6 +128,7 @@ func TestRemoveErrorNewClient(t *testing.T) {
 	setupFlagString(set, "host,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--link=abc", "--host=orion"})
+
 	err := remove(c)
 
 	if assert.Error(t, err) {
@@ -143,6 +145,7 @@ func TestRemoveErrorV2Link(t *testing.T) {
 	setupFlagString(set, "host,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--link=ld", "--host=orion"})
+
 	err := remove(c)
 
 	if assert.Error(t, err) {
@@ -157,9 +160,6 @@ func TestRemoveErrorV2Link(t *testing.T) {
 func TestRemoveV2TestRun(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
-
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte("[{\"id\":\"9f6c254ac4a6068bb276774e\",\"description\":\"ngsi source subscription\",\"subject\":{\"entities\":[{\"idPattern\":\".*\"}],\"condition\":{\"attrs\":[\"dateObserved\"]}},\"notification\":{\"timesSent\":28,\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:13.00Z\",\"status\":\"inactive\"}]\n")
@@ -170,13 +170,17 @@ func TestRemoveV2TestRun(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -187,9 +191,6 @@ func TestRemoveV2TestRun(t *testing.T) {
 
 func TestRemoveV2Page(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -212,22 +213,23 @@ func TestRemoveV2Page(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	assert.NoError(t, err)
 }
 
 func TestRemoveV2CountZero(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -238,22 +240,23 @@ func TestRemoveV2CountZero(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	assert.NoError(t, err)
 }
 
 func TestRemoveV2ErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -263,13 +266,17 @@ func TestRemoveV2ErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -283,9 +290,6 @@ func TestRemoveV2ErrorHTTP(t *testing.T) {
 func TestRemoveV2ErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities"
@@ -294,13 +298,17 @@ func TestRemoveV2ErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -313,9 +321,6 @@ func TestRemoveV2ErrorHTTPStatus(t *testing.T) {
 func TestRemoveV2ErrorResultCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/entities"
@@ -324,13 +329,17 @@ func TestRemoveV2ErrorResultCount(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -343,9 +352,6 @@ func TestRemoveV2ErrorResultCount(t *testing.T) {
 
 func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -371,13 +377,17 @@ func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 
 	setJSONDecodeErr(ngsi, 1)
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -390,9 +400,6 @@ func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 
 func TestRemoveV2ErrorOpUpdate(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -416,13 +423,17 @@ func TestRemoveV2ErrorOpUpdate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -436,9 +447,6 @@ func TestRemoveV2ErrorOpUpdate(t *testing.T) {
 func TestRemoveLDTestRun(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
-
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte(`[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor"},{"id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor"},{"id":"urn:ngsi-ld:TemperatureSensor:003","type":"TemperatureSensor"}]`)
@@ -449,13 +457,17 @@ func TestRemoveLDTestRun(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -466,9 +478,6 @@ func TestRemoveLDTestRun(t *testing.T) {
 
 func TestRemoveLDPage(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -491,22 +500,23 @@ func TestRemoveLDPage(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	assert.NoError(t, err)
 }
 
 func TestRemoveLDCountZero(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -517,22 +527,23 @@ func TestRemoveLDCountZero(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	assert.NoError(t, err)
 }
 
 func TestRemoveLDErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -542,13 +553,17 @@ func TestRemoveLDErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -562,9 +577,6 @@ func TestRemoveLDErrorHTTP(t *testing.T) {
 func TestRemoveLDErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -573,13 +585,17 @@ func TestRemoveLDErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -592,9 +608,6 @@ func TestRemoveLDErrorHTTPStatus(t *testing.T) {
 func TestRemoveLDErrorResultCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/entities"
@@ -603,13 +616,17 @@ func TestRemoveLDErrorResultCount(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -622,9 +639,6 @@ func TestRemoveLDErrorResultCount(t *testing.T) {
 
 func TestRemoveLDErrorUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -644,13 +658,17 @@ func TestRemoveLDErrorUnmarshal(t *testing.T) {
 
 	setJSONDecodeErr(ngsi, 1)
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -663,9 +681,6 @@ func TestRemoveLDErrorUnmarshal(t *testing.T) {
 
 func TestRemoveLDErrorMarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -685,13 +700,17 @@ func TestRemoveLDErrorMarshal(t *testing.T) {
 
 	setJSONEncodeErr(ngsi, 2)
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -704,9 +723,6 @@ func TestRemoveLDErrorMarshal(t *testing.T) {
 
 func TestRemoveLDErrorHTTP2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -724,13 +740,17 @@ func TestRemoveLDErrorHTTP2(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -743,9 +763,6 @@ func TestRemoveLDErrorHTTP2(t *testing.T) {
 
 func TestRemoveLDErrorStatus2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setupFlagBool(set, "run")
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
@@ -762,13 +779,17 @@ func TestRemoveLDErrorStatus2(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--run"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)

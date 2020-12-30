@@ -391,6 +391,11 @@ func (j *MockJSONLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent strin
 	return j.IndentErr
 }
 
+func setJSONIndentError(ngsi *ngsilib.NGSI) {
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+}
+
 func (j *MockJSONLib) Valid(data []byte) bool {
 	if j.ValidErr != nil {
 		return *j.ValidErr

@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -537,14 +536,14 @@ func TestEntityReadV2ErrorPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,id")
 	setupFlagBool(set, "pretty")
-
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := entityRead(c)
 
 	if assert.Error(t, err) {

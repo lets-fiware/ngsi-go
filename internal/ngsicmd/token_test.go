@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -303,7 +302,6 @@ func TestTokenCommandErrorNewClient(t *testing.T) {
 func TestVersionTokenCommandErrorHostNotFound(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":0,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
@@ -388,14 +386,14 @@ func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host")
 	setupFlagBool(set, "verbose,pretty")
-
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
 	err := tokenCommand(c)
 
 	if assert.Error(t, err) {

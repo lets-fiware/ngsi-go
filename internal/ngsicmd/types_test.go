@@ -30,7 +30,6 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"errors"
 	"net/http"
 	"testing"
 
@@ -473,8 +472,7 @@ func TestTypesListV2ErrorPretty(t *testing.T) {
 	client, err := newClient(ngsi, c, false)
 	assert.NoError(t, err)
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+	setJSONIndentError(ngsi)
 
 	err = typesListV2(c, ngsi, client)
 
@@ -695,8 +693,7 @@ func TestTypesListLDErrorPretty(t *testing.T) {
 	client, err := newClient(ngsi, c, false)
 	assert.NoError(t, err)
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+	setJSONIndentError(ngsi)
 
 	err = typesListLd(c, ngsi, client)
 
@@ -1090,8 +1087,7 @@ func TestTypesGetV2ErrorPretty(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=AirQualityObserved", "--pretty"})
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+	setJSONIndentError(ngsi)
 
 	err := typeGet(c)
 

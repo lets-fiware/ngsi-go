@@ -31,7 +31,6 @@ package ngsicmd
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"testing"
 
@@ -55,10 +54,12 @@ func TestRegistrationsListLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsListLd(c, ngsi, client)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -86,9 +87,11 @@ func TestRegistrationsListLdLocalTime(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--localTime"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsListLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -115,9 +118,11 @@ func TestRegistrationsListLdCountZero(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsListLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -150,9 +155,12 @@ func TestRegistrationsListLdCountPage(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsListLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -180,10 +188,12 @@ func TestRegistrationsListLdVerbose(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--verbose"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsListLd(c, ngsi, client)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -210,10 +220,12 @@ func TestRegistrationsListLdJSON(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsListLd(c, ngsi, client)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -241,9 +253,12 @@ func TestRegistrationsListLdJSONPretty(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsListLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -268,9 +283,12 @@ func TestRegistrationsListLdErrorHTTP(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsListLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -296,9 +314,12 @@ func TestRegistrationsListLdErrorStatusCode(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--type=AirQualityObserved"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsListLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -322,10 +343,12 @@ func TestRegistrationsListLdErrorResultsCount(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsListLd(c, ngsi, client)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -346,15 +369,17 @@ func TestRegistrationsListLdErrorUnmarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsListLd(c, ngsi, client)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -382,11 +407,13 @@ func TestRegistrationsListLdErrorJSON(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--json"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 	setJSONEncodeErr(ngsi, 0)
 
-	err := registrationsListLd(c, ngsi, client)
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -411,15 +438,17 @@ func TestRegistrationsListLdErrorJSONPretty(t *testing.T) {
 	setupFlagString(set, "host")
 	setupFlagBool(set, "json,pretty")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsListLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	setJSONIndentError(ngsi)
+
+	err = registrationsListLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -445,10 +474,12 @@ func TestRegistrationsLdGet(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -469,15 +500,18 @@ func TestRegistrationsLdGetPretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,id")
 	setupFlagBool(set, "pretty")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3", "--pretty"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
-	err := registrationsGetLd(c, ngsi, client)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -504,10 +538,12 @@ func TestRegistrationsLdGetLocalTime(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--localTime", "--id=5f5dcb551e715bc7f1ad79e3"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -521,8 +557,6 @@ func TestRegistrationsLdGetLocalTime(t *testing.T) {
 func TestRegistrationsLdGetSafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupFlagString(set, "host,id,safeString")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
@@ -531,13 +565,16 @@ func TestRegistrationsLdGetSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
+	setupFlagString(set, "host,id,safeString")
 	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=5f5dcb551e715bc7f1ad79e3"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -562,10 +599,12 @@ func TestRegistrationsGetLdErrorHTTP(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -591,10 +630,12 @@ func TestRegistrationsGetLdErrorStatusCode(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -607,8 +648,6 @@ func TestRegistrationsGetLdErrorStatusCode(t *testing.T) {
 func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,safeString")
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
@@ -618,13 +657,17 @@ func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
 	ngsi.HTTP = mock
 
 	setJSONDecodeErr(ngsi, 1)
+
+	setupFlagString(set, "host,id,safeString")
 	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=5f5dcb551e715bc7f1ad79e3"})
 	c := cli.NewContext(app, set, nil)
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -651,10 +694,12 @@ func TestRegistrationsLdGetErrorJSONMarshal(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -678,16 +723,17 @@ func TestRegistrationsLdGetErrorPretty(t *testing.T) {
 	setupFlagString(set, "host,id")
 	setupFlagBool(set, "pretty")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3", "--pretty"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsGetLd(c, ngsi, client)
+	setJSONIndentError(ngsi)
+
+	err = registrationsGetLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -713,10 +759,12 @@ func TestRegistrationsCreateLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsCreateLd(c, ngsi, client)
+	err = registrationsCreateLd(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -742,10 +790,12 @@ func TestRegistrationsCreateLdErrorSetRegistrationsValuleLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data="})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsCreateLd(c, ngsi, client)
+	err = registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -771,10 +821,12 @@ func TestRegistrationsCreateLdErrorJSONMarshalEncode(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsCreateLd(c, ngsi, client)
+	err = registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -799,10 +851,12 @@ func TestRegistrationsCreateLdErrorHTTP(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsCreateLd(c, ngsi, client)
+	err = registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -828,10 +882,12 @@ func TestRegistrationsCreateLdErrorStatusCode(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsCreateLd(c, ngsi, client)
+	err = registrationsCreateLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -855,10 +911,12 @@ func TestRegistrationsDeleteLd(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsDeleteLd(c, ngsi, client)
+	err = registrationsDeleteLd(c, ngsi, client)
 
 	assert.NoError(t, err)
 }
@@ -877,10 +935,12 @@ func TestRegistrationsDeleteLdErrorHTTP(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsDeleteLd(c, ngsi, client)
+	err = registrationsDeleteLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -906,10 +966,12 @@ func TestRegistrationsDeleteLdErrorStatusCode(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
 
-	ngsi, _ = initCmd(c, "", true)
-	client, _ := newClient(ngsi, c, false)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
-	err := registrationsDeleteLd(c, ngsi, client)
+	err = registrationsDeleteLd(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -1015,11 +1077,11 @@ func TestRegistrationsTemplateLdErrorArgsPretty(t *testing.T) {
 	setupFlagString(set, "description,providedId,type,attrs,provider")
 	setupFlagBool(set, "pretty")
 
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--pretty", "--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
+
+	setJSONIndentError(ngsi)
+
 	err := registrationsTemplateLd(c, ngsi)
 
 	if assert.Error(t, err) {
