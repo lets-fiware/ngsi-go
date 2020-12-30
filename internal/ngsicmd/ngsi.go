@@ -968,6 +968,8 @@ var listCmd = cli.Command{
 			Usage: "list types",
 			Flags: []cli.Flag{
 				jsonFlag,
+				prettyFlag,
+				linkFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return typesList(c)

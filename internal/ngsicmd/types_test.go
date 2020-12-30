@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -37,12 +38,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-//
-// ngsi list types
-//
 func TestTypesListV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -52,10 +49,11 @@ func TestTypesListV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
+
 	err := typesList(c)
 
 	if assert.NoError(t, err) {
@@ -67,94 +65,37 @@ func TestTypesListV2(t *testing.T) {
 	}
 }
 
-func TestTypesListV2CountZero(t *testing.T) {
+func TestTypesListLD(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/types"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
-	reqRes.ResBody = []byte(`["AEDFacilities","AirQualityObserved"]`)
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	_ = set.Parse([]string{"--host=orion-ld", "--link=etsi"})
+
 	err := typesList(c)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := ""
+		expected := "TemperatureSensor\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestTypesListV2CountPage(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/types"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"12"}}
-	reqRes.ResBody = []byte(`["AEDFacilities","AirQualityObserved"]`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := typesList(c)
-
-	if assert.NoError(t, err) {
-		actual := buf.String()
-		expected := "AEDFacilities\nAirQualityObserved\nAEDFacilities\nAirQualityObserved\n"
-		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestTypesListV2JSON(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/types"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"2"}}
-	reqRes.ResBody = []byte(`["AEDFacilities","AirQualityObserved"]`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	set.Bool("json", false, "doc")
-	setupFlagString(set, "host")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--json"})
-	err := typesList(c)
-
-	if assert.NoError(t, err) {
-		actual := buf.String()
-		expected := "[\"AEDFacilities\",\"AirQualityObserved\"]\n"
-		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
-	}
-}
-
-// initCmd() Error: no host
 func TestTypesListErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
+
 	err := typesList(c)
 
 	if assert.Error(t, err) {
@@ -168,7 +109,6 @@ func TestTypesListErrorInitCmd(t *testing.T) {
 
 func TestTypesListErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -191,34 +131,141 @@ func TestTypesListErrorNewClient(t *testing.T) {
 	}
 }
 
-func TestTypesListErrorOnlyV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
+//
+// ngsi list types
+//
+func TestTypesListV2V2(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/Path"
+	reqRes.Path = "/v2/types"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"2"}}
+	reqRes.ResBody = []byte(`["AEDFacilities","AirQualityObserved"]`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,link")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := typesList(c)
+	_ = set.Parse([]string{"--host=orion"})
 
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "Only available on NGSIv2", ngsiErr.Message)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "AEDFacilities\nAirQualityObserved\n"
+		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestTypesListErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+func TestTypesListV2CountZero(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
 
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/types"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes.ResBody = []byte(`["AEDFacilities","AirQualityObserved"]`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := ""
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListV2CountPage(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/types"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"12"}}
+	reqRes.ResBody = []byte(`["AEDFacilities","AirQualityObserved"]`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "AEDFacilities\nAirQualityObserved\nAEDFacilities\nAirQualityObserved\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListV2JSON(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/types"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"2"}}
+	reqRes.ResBody = []byte(`["AEDFacilities","AirQualityObserved"]`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "json")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--json"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "[\"AEDFacilities\",\"AirQualityObserved\"]\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListV2ErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -226,24 +273,29 @@ func TestTypesListErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
-	err := typesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestTypesListErrorStatusCode(t *testing.T) {
+func TestTypesListV2ErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -251,23 +303,28 @@ func TestTypesListErrorStatusCode(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
-	err := typesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestTypesListErrorResultsCount(t *testing.T) {
+func TestTypesListV2ErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -275,24 +332,29 @@ func TestTypesListErrorResultsCount(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
-	err := typesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestTypesListErrorJSONUnmarshal(t *testing.T) {
+func TestTypesListV2ErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -301,15 +363,21 @@ func TestTypesListErrorJSONUnmarshal(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
-	err := typesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -326,19 +394,279 @@ func TestTypesListV2ErrorJSON(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	set.Bool("json", false, "doc")
-	setupFlagString(set, "host")
+
 	setJSONEncodeErr(ngsi, 2)
 
+	setupFlagString(set, "host")
+	setupFlagBool(set, "json")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--json"})
 
-	err := typesList(c)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDLD(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:419047fa-4ae6-11eb-b8c1-0242ac140003","type":"EntityTypeList","typeList":["https://uri.fiware.org/ns/data-models#TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "https://uri.fiware.org/ns/data-models#TemperatureSensor\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDLink(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--link=etsi"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "TemperatureSensor\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,link")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--link=etsi", "--pretty"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"@context\": \"http://context/ngsi-context.jsonld\",\n  \"id\": \"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003\",\n  \"type\": \"EntityTypeList\",\n  \"typeList\": [\n    \"TemperatureSensor\"\n  ]\n}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDJSON(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "json")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--json"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"@context\":\"http://context/ngsi-context.jsonld\",\"id\":\"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003\",\"type\":\"EntityTypeList\",\"typeList\":[\"TemperatureSensor\"]}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/ngsi-ld/v1/type"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDErrorStatusCode(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,link")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--link=etsi", "--pretty"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDErrorJSONUnmarshal(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`{"@context":"http://context/ngsi-context.jsonld","id":"urn:ngsi-ld:EntityTypeList:b4d7fa50-4ae6-11eb-9f5b-0242ac140003","type":"EntityTypeList","typeList":["TemperatureSensor"]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	setJSONDecodeErr(ngsi, 0)
+
+	err = typesListLd(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -351,7 +679,6 @@ func TestTypesListV2ErrorJSON(t *testing.T) {
 func TestTypesGetV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/AirQualityObserved"
@@ -359,8 +686,8 @@ func TestTypesGetV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
+	setupFlagString(set, "host,type")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=AirQualityObserved"})
 	err := typeGet(c)
@@ -392,7 +719,6 @@ func TestTypesGetErrorInitCmd(t *testing.T) {
 func TestTypesGetErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/AirQualityObserved"
@@ -418,7 +744,6 @@ func TestTypesGetErrorNewClient(t *testing.T) {
 func TestTypesGetErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/AirQualityObserved"
@@ -442,7 +767,6 @@ func TestTypesGetErrorOnlyV2(t *testing.T) {
 
 func TestTypesGetErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -468,7 +792,6 @@ func TestTypesGetErrorHTTP(t *testing.T) {
 
 func TestTypesGetErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -498,7 +821,6 @@ func TestTypesGetErrorStatusCode(t *testing.T) {
 // ngsi wc --host fisudalab types
 func TestTypesCountV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -540,7 +862,6 @@ func TestTypesCountErrorInitCmd(t *testing.T) {
 func TestTypesCountErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types"
@@ -565,7 +886,6 @@ func TestTypesCountErrorNewClient(t *testing.T) {
 func TestTypesCountErrorOnlyV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/AirQualityObserved"
@@ -589,7 +909,6 @@ func TestTypesCountErrorOnlyV2(t *testing.T) {
 
 func TestTypesCountErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -616,7 +935,6 @@ func TestTypesCountErrorHTTP(t *testing.T) {
 func TestTypesCountErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/types"
@@ -640,7 +958,6 @@ func TestTypesCountErrorStatusCode(t *testing.T) {
 
 func TestTypesErrorResultsCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK

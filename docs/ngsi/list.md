@@ -29,11 +29,13 @@ ngsi list [common options] types [options]
 
 ### Options
 
-| Options       | Description                        |
-| ------------- | ---------------------------------- |
-| --verbose, -v | verbose (default: false)           |
-| --json, -j    | JSON format (default: false)       |
-| --help        | show help (default: false)         |
+| Options                | Description                    |
+| ---------------------- | ------------------------------ |
+| --verbose, -v          | verbose (default: false)       |
+| --json, -j             | JSON format (default: false)   |
+| --pretty, -P           | pretty format (default: false) |
+| --link value, -L value | specify @context               |
+| --help                 | show help (default: false)     |
 
 ### Examples
 
