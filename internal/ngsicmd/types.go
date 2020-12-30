@@ -105,12 +105,21 @@ func typesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		}
 	}
 
-	if c.IsSet("json") {
+	if isSetOR(c, []string{"json", "pretty"}) {
 		b, err := ngsilib.JSONMarshal(types)
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(b))
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 6, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		} else {
+			fmt.Fprintln(ngsi.StdWriter, string(b))
+		}
 	} else {
 		for _, e := range types {
 			fmt.Fprintln(ngsi.StdWriter, e)
@@ -190,7 +199,16 @@ func typeGet(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	fmt.Fprintln(ngsi.StdWriter, string(body))
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+	} else {
+		fmt.Fprintln(ngsi.StdWriter, string(body))
+	}
 
 	return nil
 }
