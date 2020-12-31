@@ -75,5 +75,5 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 
 ## Copyright and License
 
-Copyright (c) 2020 Kazuhito Suda<br>
+Copyright (c) 2020-2021 Kazuhito Suda<br>
 Licensed under the [MIT license](https://raw.githubusercontent.com/lets-fiware/ngsi-go/main/LICENSE).

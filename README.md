@@ -169,7 +169,7 @@ GLOBAL OPTIONS:
    --version, -v   print the version (default: false)
 
 COPYRIGHT:
-   (c) 2020 Kazuhito Suda
+   (c) 2020-2021 Kazuhito Suda
 ```
 
 ## Install
@@ -217,5 +217,5 @@ The dependencies of dependencies have been omitted from the list.
 
 ## Copyright and License
 
-Copyright (c) 2020 Kazuhito Suda<br>
+Copyright (c) 2020-2021 Kazuhito Suda<br>
 Licensed under the [MIT license](./LICENSE).
