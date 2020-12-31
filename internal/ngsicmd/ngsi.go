@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2020 Kazuhito Suda
+Copyright (c) 2020-2021 Kazuhito Suda
 
 This file is part of NGSI Go
 
@@ -45,7 +45,7 @@ var Version = ""
 // Revision has a git hash value
 var Revision = ""
 
-const copyright = "(c) 2020 Kazuhito Suda"
+const copyright = "(c) 2020-2021 Kazuhito Suda"
 const usage = "unix-like command-line tool for FIWARE NGSI and NGSI-LD"
 
 // Run is a main rouitne of NGSI Go

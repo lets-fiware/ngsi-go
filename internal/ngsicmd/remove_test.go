@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Removeright (c) 2020 Kazuhito Suda
+Removeright (c) 2020-2021 Kazuhito Suda
 
 This file is part of NGSI Go
 
