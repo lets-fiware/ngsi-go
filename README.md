@@ -53,17 +53,17 @@ ngsi version -h localhost:1026
 ```json
 {
  "orion" : {
-   "version" : "2.5.0",
-   "uptime" : "0 d, 5 h, 7 m, 50 s",
-   "git_hash" : "63cc107657ae10aa03f1c83bdea0be869d8e26a1",
-   "compile_time" : "Fri Oct 30 09:02:37 UTC 2020",
+   "version" : "2.5.2",
+   "uptime" : "0 d, 13 h, 54 m, 48 s",
+   "git_hash" : "11e4cbfef30d28347162e5c4ef4de3a5d2797c69",
+   "compile_time" : "Thu Dec 17 08:43:46 UTC 2020",
    "compiled_by" : "root",
-   "compiled_in" : "320890801dd4",
-   "release_date" : "Fri Oct 30 09:02:37 UTC 2020",
-   "doc" : "https://fiware-orion.rtfd.io/en/2.5.0/",
+   "compiled_in" : "5a4a8800b1fa",
+   "release_date" : "Thu Dec 17 08:43:46 UTC 2020",
+   "doc" : "https://fiware-orion.rtfd.io/en/2.5.2/",
    "libversions": {
       "boost": "1_53",
-      "libcurl": "libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
+      "libcurl": "libcurl/7.29.0 NSS/3.53.1 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
       "libmicrohttpd": "0.9.70",
       "openssl": "1.0.2k",
       "rapidjson": "1.1.0",
@@ -88,17 +88,17 @@ ngsi version -h letsfiware
 ```json
 {
  "orion" : {
-   "version" : "2.5.0",
-   "uptime" : "0 d, 5 h, 7 m, 50 s",
-   "git_hash" : "63cc107657ae10aa03f1c83bdea0be869d8e26a1",
-   "compile_time" : "Fri Oct 30 09:02:37 UTC 2020",
+   "version" : "2.5.2",
+   "uptime" : "0 d, 13 h, 54 m, 48 s",
+   "git_hash" : "11e4cbfef30d28347162e5c4ef4de3a5d2797c69",
+   "compile_time" : "Thu Dec 17 08:43:46 UTC 2020",
    "compiled_by" : "root",
-   "compiled_in" : "320890801dd4",
-   "release_date" : "Fri Oct 30 09:02:37 UTC 2020",
-   "doc" : "https://fiware-orion.rtfd.io/en/2.5.0/",
+   "compiled_in" : "5a4a8800b1fa",
+   "release_date" : "Thu Dec 17 08:43:46 UTC 2020",
+   "doc" : "https://fiware-orion.rtfd.io/en/2.5.2/",
    "libversions": {
       "boost": "1_53",
-      "libcurl": "libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
+      "libcurl": "libcurl/7.29.0 NSS/3.53.1 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
       "libmicrohttpd": "0.9.70",
       "openssl": "1.0.2k",
       "rapidjson": "1.1.0",
@@ -130,7 +130,7 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.4.0 (git_hash:92b31f9c7fd1e0aad13e2aca14e73e6566adab2e)
+   0.5.0 (git_hash:bd14dc0bcd75e80723bb6399bf3db0213df350e6)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -181,17 +181,17 @@ The NGSI Go binary is installed in `/usr/local/bin`.
 #### Installation on UNIX
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.4.0/ngsi-v0.4.0-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.4.0-linux-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.5.0/ngsi-v0.5.0-linux-amd64.tar.gz
+sudo tar zxvf ngsi-v0.5.0-linux-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.4.0-linux-arm.tar.gz` and `ngsi-v0.4.0-linux-arm64.tar.gz` binaries are also available.
+`ngsi-v0.5.0-linux-arm.tar.gz` and `ngsi-v0.5.0-linux-arm64.tar.gz` binaries are also available.
 
 #### Installation on Mac
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.4.0/ngsi-v0.4.0-darwin-amd64.tar.gz
-sudo tar zxvf ngsi-v0.4.0-darwin-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.5.0/ngsi-v0.5.0-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.5.0-darwin-amd64.tar.gz -C /usr/local/bin
 ```
 
 ### Install bash autocomplete file for NGSI Go

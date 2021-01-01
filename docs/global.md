@@ -42,7 +42,7 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.4.0 (git_hash:92b31f9c7fd1e0aad13e2aca14e73e6566adab2e)
+   0.5.0 (git_hash:bd14dc0bcd75e80723bb6399bf3db0213df350e6)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -93,5 +93,5 @@ ngsi --version
 ```
 
 ```text
-ngsi version 0.4.0 (git_hash:92b31f9c7fd1e0aad13e2aca14e73e6566adab2e)
+ngsi version 0.5.0 (git_hash:bd14dc0bcd75e80723bb6399bf3db0213df350e6)
 ```
