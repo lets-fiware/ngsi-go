@@ -139,19 +139,21 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	}
 
 	if c.IsSet("json") || c.Bool("pretty") {
-		b, err := ngsilib.JSONMarshal(registrations)
-		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
-		}
-		if c.Bool("pretty") {
-			newBuf := new(bytes.Buffer)
-			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+		if len(registrations) > 0 {
+			b, err := ngsilib.JSONMarshal(registrations)
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
-		} else {
-			fmt.Fprintln(ngsi.StdWriter, string(b))
+			if c.Bool("pretty") {
+				newBuf := new(bytes.Buffer)
+				err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+				if err != nil {
+					return &ngsiCmdError{funcName, 6, err.Error(), err}
+				}
+				fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			} else {
+				fmt.Fprintln(ngsi.StdWriter, string(b))
+			}
 		}
 	} else if c.IsSet("verbose") {
 		local := c.IsSet("localTime")
