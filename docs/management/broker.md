@@ -105,7 +105,7 @@ ngsi broker list [options]
 | --clientId value, -I value      | specify client id                            |
 | --clientSecret value, -S value  | specify client secret                        |
 | --token value                   | specify oauth token                          |
-| --service value, -s value       | specify FIWARE Service.                      | 
+| --service value, -s value       | specify FIWARE Service                       | 
 | --path value, -p value          | specify FIWARE ServicePath                   |
 | --safeString value              | Use safe string: `off` or `on` (default: on) |
 | --help                          | show help (default: false)                   |
