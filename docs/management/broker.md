@@ -170,8 +170,8 @@ Specify the `--service` and/or `--path` parameter when adding a new alias.
 ngsi broker add \
   --host myinstance \
   --brokerHost http://localhost:1026 \
-  --ngsiType v2
-  --service open
+  --ngsiType v2 \
+  --service open \
   --path /iot
 ```
 
@@ -184,7 +184,7 @@ Specify an existing alias to the `--brokerHost` parameter when adding a new alia
 ngsi broker add \
   --host myinstance \
   --brokerHost orion \
-  --service open
+  --service open \
   --path /iot
 ```
 
