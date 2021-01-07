@@ -105,10 +105,14 @@ ngsi broker list [options]
 | --clientId value, -I value      | specify client id                            |
 | --clientSecret value, -S value  | specify client secret                        |
 | --token value                   | specify oauth token                          |
-| --service value, -s value       | specify FIWARE Service                       |
+| --service value, -s value       | specify FIWARE Service                       | 
 | --path value, -p value          | specify FIWARE ServicePath                   |
 | --safeString value              | Use safe string: `off` or `on` (default: on) |
 | --help                          | show help (default: false)                   |
+
+> **Note:** Orion interprets the FIWARE Service name (tenant name) in lowercase. To use a coherent FIWARE Service name,
+> NGSI Go allows only lowercase letters in FIWARE Service name. Please have a look at
+> [MULTI TENANCY section in Orion documentation](https://fiware-orion.readthedocs.io/en/master/user/multitenancy/index.html).
 
 #### Example 1
 
