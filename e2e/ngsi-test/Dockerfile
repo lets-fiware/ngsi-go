@@ -1,4 +1,3 @@
-#!/bin/sh
 # MIT License
 #
 # Copyright (c) 2020-2021 Kazuhito Suda
@@ -25,13 +24,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-git clone "https://github.com/lets-fiware/ngsi-go.git"
-cd ngsi-go
-rm -fr build
-ln -s /build
-rm -fr build/*
-touch build/.gitkeep
-make devel-deps
-echo "TARGET: $NGSIGO_TARGET"
-make $NGSIGO_TARGET
-chown -R $USER_ID:$GROUP_ID /build
+FROM golang:1.15.6-alpine3.12 AS builder
+
+WORKDIR /opt/ngsi-test/
+
+COPY *.go /opt/ngsi-test/
+
+RUN CGO_ENABLED=0 go build -ldflags "-w -s"
+
+FROM ubuntu:20.04 AS runner
+
+COPY --from=builder /opt/ngsi-test/ngsi-test /usr/local/bin/
+COPY ngsi-test-config.json /root/.ngsi-test-config.json
+COPY ngsi-go-config.json /root/.config/fiware/
+COPY 9999_HALT /root/
+
+WORKDIR /root/e2e
+
+ENTRYPOINT ["/usr/local/bin/ngsi-test"]
+CMD ["-verbose", "/root/9999_HALT"]

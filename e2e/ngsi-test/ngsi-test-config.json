@@ -1,0 +1,10 @@
+{
+  "valiables": {
+    "orion": "http://orion:1026",
+    "orion-ld": "http://orion-ld:1026",
+    "accumulator": "http://accumulator:8000",
+    "atcontext": "http://atcontext:8000",
+    "csource": "http://csource:8000",
+    "oauth": "http://oauth:8000"
+  }
+}

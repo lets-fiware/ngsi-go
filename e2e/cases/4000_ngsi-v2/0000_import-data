@@ -1,0 +1,328 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-v2
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+#
+# Create four Store Entities in various locations across Berlin
+#
+ngsi upsert --host orion entities \
+--data '[
+  	{
+  		"id":"urn:ngsi-ld:Store:001","type":"Store",
+  		"address":{"type":"PostalAddress","value":{"streetAddress":"Bornholmer Straße 65","addressRegion":"Berlin","addressLocality":"Prenzlauer Berg","postalCode":"10439"}},
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.3986,52.5547]}},
+  		"name":{"type":"Text","value":"Bösebrücke Einkauf"}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:Store:002","type":"Store",
+  		"address":{"type":"PostalAddress","value":{"streetAddress":"Friedrichstraße 44","addressRegion":"Berlin","addressLocality":"Kreuzberg","postalCode":"10969"}},
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.3903,52.5075]}},
+  		"name":{"type":"Text","value":"Checkpoint Markt"}},
+  	{
+  		"id":"urn:ngsi-ld:Store:003","type":"Store",
+  		"address":{"type":"PostalAddress","value":{"streetAddress":"Mühlenstrasse 10","addressRegion":"Berlin","addressLocality":"Friedrichshain","postalCode":"10243"}},
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.4447,52.5031]}},
+  		"name":{"type":"Text","value":"East Side Galleria"}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:Store:004","type":"Store",
+  		"address":{"type":"PostalAddress","value":{"streetAddress":"Panoramastraße 1A","addressRegion":"Berlin","addressLocality":"Mitte","postalCode":"10178"}},
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.4094,52.5208]}},
+  		"name":{"type":"Text","value":"Tower Trödelmarkt"}
+  	}
+]'
+
+```0
+```
+
+
+#
+# Create a series of Shelf Entities and place the in each Store.
+# Each shelf is designed to hold one product.
+#
+ngsi upsert --host orion entities \
+--data '[
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit001","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.3986112,52.554699]}},
+  		"maxCapacity":{"type":"Integer","value":50},
+  		"name":{"type":"Text","value":"Corner Unit"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:001"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit002","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.3987221,52.554664]}},
+  		"maxCapacity":{"type":"Integer","value":100},
+  		"name":{"type":"Text","value":"Wall Unit 1"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:001"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit003","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.3987221,52.554664]}},
+  		"maxCapacity":{"type":"Integer","value":100},
+  		"name":{"type":"Text","value":"Wall Unit 2"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:001"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit004","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.390311,52.507522]}},
+  		"maxCapacity":{"type":"Integer","value":50},
+  		"name":{"type":"Text","value":"Corner Unit"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:002"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit005","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.390309,52.50751]}},
+  		"maxCapacity":{"type":"Integer","value":200},
+  		"name":{"type":"Text","value":"Long Wall Unit"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:002"}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:Shelf:unit006","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.4447112,52.503199]}},
+  		"maxCapacity":{"type":"Integer","value":50},
+  		"name":{"type":"Text","value":"Corner Unit"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:003"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit007","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.4447221,52.503164]}},
+  		"maxCapacity":{"type":"Integer","value":100},
+  		"name":{"type":"Text","value":"Wall Unit 1"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:003"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit008","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.4447221,52.503164]}},
+  		"maxCapacity":{"type":"Integer","value":100},
+  		"name":{"type":"Text","value":"Wall Unit 2"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:003"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit009","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.444711,52.503122]}},
+  		"maxCapacity":{"type":"Integer","value":50},
+  		"name":{"type":"Text","value":"Corner Unit"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:003"}
+  	},
+	{
+  		"id":"urn:ngsi-ld:Shelf:unit010","type":"Shelf",
+  		"location":{"type":"geo:json","value":{"type":"Point","coordinates":[13.4094111,52.5208028]}},
+  		"maxCapacity":{"type":"Integer","value":200},
+  		"name":{"type":"Text","value":"Long Wall Unit"},
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:004"}
+  	}
+]'
+
+```0
+```
+
+#
+# Create a series of Product Entities. 
+# These are a series of alcoholc and non-alcoholic drinks which are available to sell.
+#
+ngsi upsert --host orion entities \
+--data '[
+    {
+      "id":"urn:ngsi-ld:Product:001", "type":"Product",
+      "name":{"type":"Text", "value":"Beer"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:002", "type":"Product",
+      "name":{"type":"Text", "value":"Red Wine"},
+      "size":{"type":"Text", "value": "M"},
+      "price":{"type":"Integer", "value": 1099}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:003", "type":"Product",
+      "name":{"type":"Text", "value":"White Wine"},
+      "size":{"type":"Text", "value": "M"},
+      "price":{"type":"Integer", "value": 1499}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:004", "type":"Product",
+      "name":{"type":"Text", "value":"Vodka"},
+      "size":{"type":"Text", "value": "XL"},
+      "price":{"type":"Integer", "value": 5000}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:005", "type":"Product",
+      "name":{"type":"Text", "value":"Lager"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:006", "type":"Product",
+      "name":{"type":"Text", "value":"Whisky"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:007", "type":"Product",
+      "name":{"type":"Text", "value":"Gin"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:008", "type":"Product",
+      "name":{"type":"Text", "value":"Apple Juice"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+    },
+    {
+      "id":"urn:ngsi-ld:Product:009", "type":"Product",
+      "name":{"type":"Text", "value":"Orange Juice"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+    }
+]'
+
+```0
+```
+
+#
+# Create a series of InventoryItems Entities. 
+# These the drinks on order in Store:001
+#
+ngsi upsert --host orion entities \
+--data '[
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:001","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:001"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit001"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:001"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":15}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:002","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:001"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit002"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:003"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":15}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:003","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:001"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit003"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:004"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":15}
+  	}
+   
+]'
+
+```0
+```
+
+#
+# Create a series of InventoryItems Entities. 
+# These the drinks on order in Store:002
+#
+ngsi upsert --host orion entities \
+--data '[
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:004","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:002"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit004"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:001"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":12}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:005","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:002"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit005"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:002"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":15}
+  	}
+]'
+
+```0
+```
+
+#
+# Create a series of InventoryItems Entities. 
+# These the drinks on order in Store:003
+# Note that Shelf Unit009 is currently unused
+#
+ngsi upsert --host orion entities \
+--data '[
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:006","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:003"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit006"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:001"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":50}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:007","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:003"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit007"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:008"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":50}
+  	},
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:008","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:003"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit008"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:009"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":50}
+  	}
+   
+]'
+
+```0
+```
+
+#
+# Create a series of InventoryItems Entities. 
+# These the drinks on order in Store:004
+#
+ngsi upsert --host orion entities \
+--data '[
+  	{
+  		"id":"urn:ngsi-ld:InventoryItem:401","type":"InventoryItem",
+  		"refStore":{"type":"Relationship","value":"urn:ngsi-ld:Store:004"},
+  		"refShelf":{"type":"Relationship","value":"urn:ngsi-ld:Shelf:unit010"},
+  		"refProduct":{"type":"Relationship","value":"urn:ngsi-ld:Product:001"},
+  		"stockCount":{"type":"Integer","value":10000},
+  		"shelfCount":{"type":"Integer","value":50}
+  	}
+   
+]'
+
+```0
+```

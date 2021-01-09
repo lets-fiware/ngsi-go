@@ -30,16 +30,43 @@ SOFTWARE.
 package main
 
 import (
-	"os"
-
-	"github.com/lets-fiware/ngsi-go/internal/ngsicmd"
+	"errors"
+	"fmt"
+	"syscall"
 )
 
-var version = "0.5.0-next"
-var revision = ""
+type ngsiCmdError struct {
+	Function string
+	ErrNo    int
+	Message  string
+	Err      error
+}
 
-func main() {
-	ngsicmd.Version = version
-	ngsicmd.Revision = revision
-	os.Exit(ngsicmd.Run(os.Args, os.Stdin, os.Stdout, os.Stderr))
+func (e *ngsiCmdError) String() string {
+	var errno syscall.Errno
+	var s string
+	if errors.As(e, &errno) {
+		s = fmt.Sprintf(": %s", errno)
+	}
+	return fmt.Sprintf("%s%03d %s%s", e.Function, e.ErrNo, e.Message, s)
+}
+
+func (e *ngsiCmdError) Error() string {
+	return e.Message
+}
+
+func (e *ngsiCmdError) Unwrap() error { return e.Err }
+
+func printError(err error) {
+	for err != nil {
+		if e, ok := err.(*ngsiCmdError); ok {
+			fmt.Println(e.String())
+		} else {
+			fmt.Println(err.Error())
+		}
+		err = errors.Unwrap(err)
+		if err == nil {
+			break
+		}
+	}
 }

@@ -31,15 +31,8 @@ package main
 
 import (
 	"os"
-
-	"github.com/lets-fiware/ngsi-go/internal/ngsicmd"
 )
 
-var version = "0.5.0-next"
-var revision = ""
-
 func main() {
-	ngsicmd.Version = version
-	ngsicmd.Revision = revision
-	os.Exit(ngsicmd.Run(os.Args, os.Stdin, os.Stdout, os.Stderr))
+	os.Exit(ngsiTest())
 }

@@ -25,13 +25,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-git clone "https://github.com/lets-fiware/ngsi-go.git"
-cd ngsi-go
-rm -fr build
-ln -s /build
-rm -fr build/*
-touch build/.gitkeep
-make devel-deps
-echo "TARGET: $NGSIGO_TARGET"
-make $NGSIGO_TARGET
-chown -R $USER_ID:$GROUP_ID /build
+if [ ! -e $1 ]; then
+  echo "$1 not found."
+fi
+docker-compose exec ngsi-test /usr/local/bin/ngsi-test -verbose $1

@@ -1,4 +1,3 @@
-#!/bin/sh
 # MIT License
 #
 # Copyright (c) 2020-2021 Kazuhito Suda
@@ -25,13 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-git clone "https://github.com/lets-fiware/ngsi-go.git"
-cd ngsi-go
-rm -fr build
-ln -s /build
-rm -fr build/*
-touch build/.gitkeep
-make devel-deps
-echo "TARGET: $NGSIGO_TARGET"
-make $NGSIGO_TARGET
-chown -R $USER_ID:$GROUP_ID /build
+#
+# 9999 halt
+#
+halt
