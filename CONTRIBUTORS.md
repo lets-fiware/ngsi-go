@@ -1,5 +1,9 @@
-# Contributors
+# NGSI Go Contributors
 
-Kazuhito Suda <fisuda>
+Thanks for the contribution!
 
-Jason Fox <jason-fox>
+| Name          | GitHub                                         | Contribution  |
+| ------------- | ---------------------------------------------- | ------------- |
+| Kazuhito Suda | [@fisuda](https://github.com/fisuda)           | Project owner | 
+| Jason Fox     | [@jason-fox](https://github.com/jason-fox)     | Documentation |
+|               | [@modularTaco](https://github.com/modularTaco) | Documentation |
