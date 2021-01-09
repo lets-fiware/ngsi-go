@@ -1,0 +1,759 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-LD
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 000 Clean up
+#
+ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
+
+```0
+REGEX(.*)
+```
+
+#
+# 001 Create entity
+#
+ngsi create --host orion-ld entity --link ctx \
+--data '{
+      "id": "urn:ngsi-ld:TemperatureSensor:001",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 25,
+            "unitCode": "CEL"
+      }
+}'
+
+```0
+```
+#
+# 002 Get Entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "category": {
+    "type": "Property",
+    "value": "sensor"
+  },
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  }
+}
+```
+
+#
+# 003 Create New Attributes
+#
+ngsi append attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
+--data '{
+       "batteryLevel": {
+            "type": "Property",
+            "value": 0.9,
+            "unitCode": "C62"
+      },
+      "controlledAsset": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Building:barn002"
+      }
+}'
+
+```0
+```
+
+#
+# 004 Get entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "category": {
+    "type": "Property",
+    "value": "sensor"
+  },
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  },
+  "batteryLevel": {
+    "value": 0.9,
+    "type": "Property",
+    "unitCode": "C62"
+  },
+  "controlledAsset": {
+    "object": "urn:ngsi-ld:Building:barn002",
+    "type": "Relationship"
+  }
+}
+```
+
+#
+# 005 Create New Attributes
+#
+ngsi create entities --link ctx \
+--data '[
+    {
+      "id": "urn:ngsi-ld:TemperatureSensor:002",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 20,
+            "unitCode": "CEL"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:TemperatureSensor:003",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 2,
+            "unitCode": "CEL"
+      }
+    },
+     {
+      "id": "urn:ngsi-ld:TemperatureSensor:004",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 100,
+            "unitCode": "CEL"
+      }
+    }
+]'
+
+```0
+{"@context":"http://REGEX(.*)/ngsi-context.jsonld","success":\["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003","urn:ngsi-ld:TemperatureSensor:004"\],"errors":\[\]}
+```
+
+#
+# 006 Batch Create/Overwrite New Data Entities
+#
+ngsi upsert entities --link ctx \
+--data '[
+    {
+      "id": "urn:ngsi-ld:TemperatureSensor:002",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 21,
+            "unitCode": "CEL"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:TemperatureSensor:003",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 27,
+            "unitCode": "CEL"
+      }
+    }
+]'
+
+```0
+```
+
+#
+# 007 Read a Data Entity (verbose)
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --sysAttrs -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "createdAt": "REGEX(.*)",
+  "modifiedAt": "REGEX(.*)",
+  "category": {
+    "type": "Property",
+    "createdAt": "REGEX(.*)",
+    "modifiedAt": "REGEX(.*)",
+    "value": "sensor"
+  },
+  "temperature": {
+    "type": "Property",
+    "createdAt": "REGEX(.*)",
+    "modifiedAt": "REGEX(.*)",
+    "value": 25,
+    "unitCode": "CEL"
+  },
+  "batteryLevel": {
+    "value": 0.9,
+    "type": "Property",
+    "createdAt": "REGEX(.*)",
+    "modifiedAt": "REGEX(.*)",
+    "unitCode": "C62"
+  },
+  "controlledAsset": {
+    "object": "urn:ngsi-ld:Building:barn002",
+    "type": "Relationship",
+    "createdAt": "REGEX(.*)",
+    "modifiedAt": "REGEX(.*)"
+  }
+}
+```
+
+#
+# 008 Read an Attribute from a Data Entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrs temperature -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  }
+}
+```
+
+#
+# 009 Read a Data Entity (key-value pairs)
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "category": "sensor",
+  "temperature": 25,
+  "batteryLevel": 0.9,
+  "controlledAsset": "urn:ngsi-ld:Building:barn002"
+}
+```
+
+#
+# 010 Read Multiple attributes values from a Data Entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues --attrs category,temperature -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "category": "sensor",
+  "temperature": 25
+}
+```
+
+#
+# 011 List all Data Entities (verbose)
+#
+ngsi list entities --link ctx --type TemperatureSensor -P
+
+```0
+[
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "TemperatureSensor",
+    "batteryLevel": {
+      "type": "Property",
+      "value": 0.9,
+      "unitCode": "C62"
+    },
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "controlledAsset": {
+      "type": "Relationship",
+      "object": "urn:ngsi-ld:Building:barn002"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 25,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 100,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 27,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 012 List all Data Entities (key-value pairs)
+#
+ngsi list entities -link ctx --type TemperatureSensor --attrs temperature --keyValues --verbose -P
+
+```0
+[
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "TemperatureSensor",
+    "temperature": 25
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "temperature": 100
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "TemperatureSensor",
+    "temperature": 21
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "temperature": 27
+  }
+]
+```
+
+#
+# 013 Filter Data Entities by ID
+#
+ngsi list entities --link ctx --id urn:ngsi-ld:TemperatureSensor:001,urn:ngsi-ld:TemperatureSensor:002 --attrs temperature --keyValues -P
+
+```0
+[
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "TemperatureSensor",
+    "temperature": 25
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "TemperatureSensor",
+    "temperature": 21
+  }
+]
+```
+
+#
+# 014 Overwrite the value of an Attribute value
+#
+ngsi update attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName category \
+--data '{
+    "value": ["sensor", "actuator"],
+    "type": "Property"
+}'
+
+```0
+```
+
+#
+# 015 Overwrite Multiple Attributes of a Data Entity
+#
+ngsi update attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
+--data '{
+      "category": {
+            "value": [
+                  "sensor",
+                  "actuator"
+            ],
+            "type": "Property"
+      },
+      "controlledAsset": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Building:barn001"
+      }
+}'
+
+```0
+```
+
+#
+# Get entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  },
+  "batteryLevel": {
+    "type": "Property",
+    "value": 0.9,
+    "unitCode": "C62"
+  },
+  "category": {
+    "type": "Property",
+    "value": [
+      "sensor",
+      "actuator"
+    ]
+  },
+  "controlledAsset": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:Building:barn001"
+  }
+}
+```
+
+#
+# 016 Batch Update Attributes of Multiple Data Entities
+#
+ngsi upsert entities --link ctx --update \
+--data '[
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    }
+  }
+]'
+
+```0
+```
+
+#
+# Get Entity
+#
+ngsi list entities --link ctx --type TemperatureSensor --idPattern urn:ngsi-ld:TemperatureSensor:00[3-4] -P
+
+```0
+[
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 100,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 27,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 017 Batch Replace Entity Data
+#
+ngsi update entities --link ctx --replace \
+--data '[
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    }
+  }
+]'
+
+```0
+```
+
+#
+# Get entity
+#
+ngsi list entities --link ctx --type TemperatureSensor --idPattern urn:ngsi-ld:TemperatureSensor:00[3-4] -P
+
+```0
+[
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    },
+    "temperature": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ],
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": [
+        "actuator",
+        "sensor"
+      ]
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 27,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 018 Delete an Entity
+#
+ngsi delete entity --link ctx --id urn:ngsi-ld:TemperatureSensor:004
+
+```0
+```
+
+#
+# Get entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  },
+  "batteryLevel": {
+    "type": "Property",
+    "value": 0.9,
+    "unitCode": "C62"
+  },
+  "category": {
+    "type": "Property",
+    "value": [
+      "sensor",
+      "actuator"
+    ]
+  },
+  "controlledAsset": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:Building:barn001"
+  }
+}
+```
+
+#
+# 019 Delete an Attribute from an Entity
+#
+ngsi delete attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName batteryLevel
+
+```0
+```
+
+#
+# Get entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
+
+```0
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  },
+  "category": {
+    "type": "Property",
+    "value": [
+      "sensor",
+      "actuator"
+    ]
+  },
+  "controlledAsset": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:Building:barn001"
+  }
+}
+```
+
+#
+# 020 Batch Delete Multiple Attributes from an Entity
+#
+ngsi delete entities --link ctx \
+--data '[
+  "urn:ngsi-ld:TemperatureSensor:002",
+  "urn:ngsi-ld:TemperatureSensor:003"
+]'
+
+```0
+{"success":["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"],"errors":[]}
+```
+
+#
+# 999 Delete entities
+#
+ngsi rm --type TemperatureSensor --link ctx --run
+
+```0
+REGEX(.*)
+```

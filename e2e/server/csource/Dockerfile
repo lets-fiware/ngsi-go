@@ -1,4 +1,3 @@
-#!/bin/sh
 # MIT License
 #
 # Copyright (c) 2020-2021 Kazuhito Suda
@@ -25,13 +24,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-git clone "https://github.com/lets-fiware/ngsi-go.git"
-cd ngsi-go
-rm -fr build
-ln -s /build
-rm -fr build/*
-touch build/.gitkeep
-make devel-deps
-echo "TARGET: $NGSIGO_TARGET"
-make $NGSIGO_TARGET
-chown -R $USER_ID:$GROUP_ID /build
+FROM golang:1.15.6-alpine3.12 AS builder
+
+RUN \
+    apk add --no-cache --update sed && \
+    cat /etc/passwd | sed -n -e '/^nobody/p' > /opt/passwd && \
+    chmod 444 /opt/passwd
+
+WORKDIR /opt/csource/
+
+COPY ./main.go /opt/csource
+
+RUN CGO_ENABLED=0 go build -ldflags "-w -s"
+
+FROM scratch AS runner
+
+COPY --from=builder /opt/csource/csource /opt/csource/
+COPY --from=builder /opt/passwd /etc/passwd
+
+WORKDIR /opt/csource/
+
+USER nobody 
+
+ENTRYPOINT ["/opt/csource/csource"]

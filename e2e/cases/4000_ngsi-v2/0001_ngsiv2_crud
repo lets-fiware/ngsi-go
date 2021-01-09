@@ -1,0 +1,613 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-v2
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 Create a New Data Entity
+#
+ngsi create --host orion entity \
+--data '{
+      "id":"urn:ngsi-ld:Product:010", "type":"Product",
+      "name":{"type":"Text", "value":"Lemonade"},
+      "size":{"type":"Text", "value": "S"},
+      "price":{"type":"Integer", "value": 99}
+}'
+
+```0
+```
+
+#
+# 0002 Get entity
+#
+ngsi get entity --id urn:ngsi-ld:Product:010 --type Product -P
+
+```0
+{
+  "id": "urn:ngsi-ld:Product:010",
+  "type": "Product",
+  "name": {
+    "type": "Text",
+    "value": "Lemonade",
+    "metadata": {}
+  },
+  "price": {
+    "type": "Integer",
+    "value": 99,
+    "metadata": {}
+  },
+  "size": {
+    "type": "Text",
+    "value": "S",
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0003 Create a New Attribute
+#
+ngsi append attrs --id urn:ngsi-ld:Product:001 \
+--data '{
+      "specialOffer":{"value": true}
+}'
+
+```0
+```
+
+#
+# 0004 Get entity
+#
+ngsi get entity --id urn:ngsi-ld:Product:001 --type Product -P
+
+```0
+{
+  "id": "urn:ngsi-ld:Product:001",
+  "type": "Product",
+  "name": {
+    "type": "Text",
+    "value": "Beer",
+    "metadata": {}
+  },
+  "price": {
+    "type": "Integer",
+    "value": 99,
+    "metadata": {}
+  },
+  "size": {
+    "type": "Text",
+    "value": "S",
+    "metadata": {}
+  },
+  "specialOffer": {
+    "type": "Boolean",
+    "value": true,
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0005 Batch Create New Data Entities or Attributes
+#
+ngsi create entities \
+--data '[
+  {
+    "id":"urn:ngsi-ld:Product:011", "type":"Product",
+    "name":{"type":"Text", "value":"Brandy"},
+    "size":{"type":"Text", "value": "M"},
+    "price":{"type":"Integer", "value": 1199}
+  },
+  {
+    "id":"urn:ngsi-ld:Product:012", "type":"Product",
+    "name":{"type":"Text", "value":"Port"},
+    "size":{"type":"Text", "value": "M"},
+    "price":{"type":"Integer", "value": 1099}
+  },
+  {
+    "id":"urn:ngsi-ld:Product:001", "type":"Product",
+    "offerPrice":{"type":"Integer", "value": 89}
+  }
+]'
+
+```0
+```
+
+#
+# 0006 Upsert entities
+#
+ngsi upsert entities \
+--data '[
+  {
+    "id":"urn:ngsi-ld:Product:011", "type":"Product",
+    "name":{"type":"Text", "value":"Brandy"},
+    "size":{"type":"Text", "value": "M"},
+    "price":{"type":"Integer", "value": 1199}
+  },
+  {
+    "id":"urn:ngsi-ld:Product:012", "type":"Product",
+    "name":{"type":"Text", "value":"Port"},
+    "size":{"type":"Text", "value": "M"},
+    "price":{"type":"Integer", "value": 1099}
+  }
+]'
+
+```0
+```
+
+#
+# 0007 Read a Data Entity (verbose)
+#
+ngsi get entity --id urn:ngsi-ld:Product:010 --type Product -P
+
+```0
+{
+  "id": "urn:ngsi-ld:Product:010",
+  "type": "Product",
+  "name": {
+    "type": "Text",
+    "value": "Lemonade",
+    "metadata": {}
+  },
+  "price": {
+    "type": "Integer",
+    "value": 99,
+    "metadata": {}
+  },
+  "size": {
+    "type": "Text",
+    "value": "S",
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0008 Read an Attribute from a Data Entity
+#
+ngsi get attr --id urn:ngsi-ld:Product:001 --attrName name
+
+```0
+"Beer"
+```
+
+#
+# 0009 Read a Data Entity (key-value pairs)
+#
+ngsi get entity --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs name,price -P
+
+```0
+{
+  "id": "urn:ngsi-ld:Product:001",
+  "type": "Product",
+  "name": "Beer",
+  "price": 99
+}
+```
+
+#
+# 0009 Read a Data Entity (key-value pairs)
+#
+ngsi get attrs --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs name,price -P
+
+```0
+{
+  "name": "Beer",
+  "price": 99
+}
+```
+
+#
+# 0010 Read Multiple attributes values from a Data Entity
+#
+ngsi get attrs --id urn:ngsi-ld:Product:001 --attrs name,price --values
+
+```0
+["Beer",99]
+```
+
+#
+# 0011 List all Data Entities (verbose)
+#
+ngsi list entities --type Product --verbose
+
+```0
+[{"id":"urn:ngsi-ld:Product:001","type":"Product","name":{"type":"Text","value":"Beer","metadata":{}},"offerPrice":{"type":"Integer","value":89,"metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}},"specialOffer":{"type":"Boolean","value":true,"metadata":{}}},{"id":"urn:ngsi-ld:Product:002","type":"Product","name":{"type":"Text","value":"Red Wine","metadata":{}},"price":{"type":"Integer","value":1099,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}},{"id":"urn:ngsi-ld:Product:003","type":"Product","name":{"type":"Text","value":"White Wine","metadata":{}},"price":{"type":"Integer","value":1499,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}},{"id":"urn:ngsi-ld:Product:004","type":"Product","name":{"type":"Text","value":"Vodka","metadata":{}},"price":{"type":"Integer","value":5000,"metadata":{}},"size":{"type":"Text","value":"XL","metadata":{}}},{"id":"urn:ngsi-ld:Product:005","type":"Product","name":{"type":"Text","value":"Lager","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:006","type":"Product","name":{"type":"Text","value":"Whisky","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:007","type":"Product","name":{"type":"Text","value":"Gin","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:008","type":"Product","name":{"type":"Text","value":"Apple Juice","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:009","type":"Product","name":{"type":"Text","value":"Orange Juice","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:011","type":"Product","name":{"type":"Text","value":"Brandy","metadata":{}},"price":{"type":"Integer","value":1199,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}},{"id":"urn:ngsi-ld:Product:012","type":"Product","name":{"type":"Text","value":"Port","metadata":{}},"price":{"type":"Integer","value":1099,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}}]
+```
+
+#
+# 0012 List all Data Entities (key-value pairs)
+#
+ngsi list entities --type Product -attrs name,price --keyValues --verbose
+
+```0
+[{"id":"urn:ngsi-ld:Product:001","type":"Product","name":"Beer","price":99},{"id":"urn:ngsi-ld:Product:002","type":"Product","name":"Red Wine","price":1099},{"id":"urn:ngsi-ld:Product:003","type":"Product","name":"White Wine","price":1499},{"id":"urn:ngsi-ld:Product:004","type":"Product","name":"Vodka","price":5000},{"id":"urn:ngsi-ld:Product:005","type":"Product","name":"Lager","price":99},{"id":"urn:ngsi-ld:Product:006","type":"Product","name":"Whisky","price":99},{"id":"urn:ngsi-ld:Product:007","type":"Product","name":"Gin","price":99},{"id":"urn:ngsi-ld:Product:008","type":"Product","name":"Apple Juice","price":99},{"id":"urn:ngsi-ld:Product:009","type":"Product","name":"Orange Juice","price":99},{"id":"urn:ngsi-ld:Product:010","type":"Product","name":"Lemonade","price":99},{"id":"urn:ngsi-ld:Product:011","type":"Product","name":"Brandy","price":1199},{"id":"urn:ngsi-ld:Product:012","type":"Product","name":"Port","price":1099}]
+```
+
+#
+# 0013 List Data Entity by ID
+#
+ngsi list entities --type Product -attrs id --verbose
+
+```0
+[{"id":"urn:ngsi-ld:Product:001","type":"Product"},{"id":"urn:ngsi-ld:Product:002","type":"Product"},{"id":"urn:ngsi-ld:Product:003","type":"Product"},{"id":"urn:ngsi-ld:Product:004","type":"Product"},{"id":"urn:ngsi-ld:Product:005","type":"Product"},{"id":"urn:ngsi-ld:Product:006","type":"Product"},{"id":"urn:ngsi-ld:Product:007","type":"Product"},{"id":"urn:ngsi-ld:Product:008","type":"Product"},{"id":"urn:ngsi-ld:Product:009","type":"Product"},{"id":"urn:ngsi-ld:Product:010","type":"Product"},{"id":"urn:ngsi-ld:Product:011","type":"Product"},{"id":"urn:ngsi-ld:Product:012","type":"Product"}]
+```
+
+#
+# 0014 Overwrite the value of an Attribute value
+#
+ngsi update attr --id urn:ngsi-ld:Product:001 --attrName price --data 89
+
+```0
+```
+
+#
+# 0014 Get attribute value
+#
+ngsi get attr --id urn:ngsi-ld:Product:001 --attrName price
+
+```0
+89
+```
+
+#
+# 0015 Overwrite Multiple Attributes of a Data Entity
+#
+ngsi update attrs --id urn:ngsi-ld:Product:001 \
+--data ' {
+    "price":{"type":"Integer", "value": 88},
+    "name": {"type":"Text", "value": "Ale"}
+}'
+
+```0
+```
+
+#
+# 0015 Get attribute values
+#
+ngsi get attrs --id urn:ngsi-ld:Product:001 --attrs name,price --values
+
+```0
+["Ale",88]
+```
+
+#
+# 0016 Batch Overwrite Attributes of Multiple Data Entities
+#
+ngsi update entities \
+--data '[
+  {
+    "id":"urn:ngsi-ld:Product:001", "type":"Product",
+    "price":{"type":"Integer", "value": 1199}
+  },
+  {
+    "id":"urn:ngsi-ld:Product:002", "type":"Product",
+    "price":{"type":"Integer", "value": 1199},
+    "size": {"type":"Text", "value": "L"}
+  }
+]'
+
+```0
+```
+
+#
+# 0016 Get entities
+#
+ngsi list entities --idPattern urn:ngsi-ld:Product:00[1-2] -P
+
+```0
+[
+  {
+    "id": "urn:ngsi-ld:Product:001",
+    "type": "Product",
+    "name": {
+      "type": "Text",
+      "value": "Ale",
+      "metadata": {}
+    },
+    "offerPrice": {
+      "type": "Integer",
+      "value": 89,
+      "metadata": {}
+    },
+    "price": {
+      "type": "Integer",
+      "value": 1199,
+      "metadata": {}
+    },
+    "size": {
+      "type": "Text",
+      "value": "S",
+      "metadata": {}
+    },
+    "specialOffer": {
+      "type": "Boolean",
+      "value": true,
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:Product:002",
+    "type": "Product",
+    "name": {
+      "type": "Text",
+      "value": "Red Wine",
+      "metadata": {}
+    },
+    "price": {
+      "type": "Integer",
+      "value": 1199,
+      "metadata": {}
+    },
+    "size": {
+      "type": "Text",
+      "value": "L",
+      "metadata": {}
+    }
+  }
+]
+```
+
+#
+# 0017 Batch Create/Overwrite Attributes of Multiple Data Entities
+#
+ngsi upsert entities \
+--data '[
+{
+    "id":"urn:ngsi-ld:Product:001", "type":"Product",
+    "price":{"type":"Integer", "value": 1188}
+  },
+  {
+    "id":"urn:ngsi-ld:Product:002", "type":"Product",
+    "price":{"type":"Integer", "value": 1188},
+    "specialOffer": {"type":"Boolean", "value":  true}
+  }
+]'
+
+```0
+```
+
+#
+# 0017 Get entities
+#
+ngsi list entities --idPattern urn:ngsi-ld:Product:00[1-2] -P
+
+```0
+[
+  {
+    "id": "urn:ngsi-ld:Product:001",
+    "type": "Product",
+    "name": {
+      "type": "Text",
+      "value": "Ale",
+      "metadata": {}
+    },
+    "offerPrice": {
+      "type": "Integer",
+      "value": 89,
+      "metadata": {}
+    },
+    "price": {
+      "type": "Integer",
+      "value": 1188,
+      "metadata": {}
+    },
+    "size": {
+      "type": "Text",
+      "value": "S",
+      "metadata": {}
+    },
+    "specialOffer": {
+      "type": "Boolean",
+      "value": true,
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:Product:002",
+    "type": "Product",
+    "name": {
+      "type": "Text",
+      "value": "Red Wine",
+      "metadata": {}
+    },
+    "price": {
+      "type": "Integer",
+      "value": 1188,
+      "metadata": {}
+    },
+    "size": {
+      "type": "Text",
+      "value": "L",
+      "metadata": {}
+    },
+    "specialOffer": {
+      "type": "Boolean",
+      "value": true,
+      "metadata": {}
+    }
+  }
+]
+```
+
+#
+# 0018 Get attribute value
+#
+ngsi get attr --id urn:ngsi-ld:Product:010 --attrName price
+
+```0
+99
+```
+
+#
+# 0018 Batch Replace Entity Data
+#
+ngsi replace entities \
+--data '[
+{
+    "id":"urn:ngsi-ld:Product:010", "type":"Product",
+    "price":{"type":"Integer", "value": 1199}
+  }
+]'
+
+```0
+```
+
+#
+# 0018 Get attribute value
+#
+ngsi get attr --id urn:ngsi-ld:Product:010 --attrName price
+
+```0
+1199
+```
+
+#
+# 0019 Delete an Entity
+#
+ngsi delete entity --id urn:ngsi-ld:Product:010
+
+```0
+```
+
+#
+# 0020 Get entity
+#
+ngsi get entity --id urn:ngsi-ld:Product:001
+
+```0
+{"id":"urn:ngsi-ld:Product:001","type":"Product","name":{"type":"Text","value":"Ale","metadata":{}},"offerPrice":{"type":"Integer","value":89,"metadata":{}},"price":{"type":"Integer","value":1188,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}},"specialOffer":{"type":"Boolean","value":true,"metadata":{}}}
+```
+
+#
+# 0020 Delete an Attribute from an Entity
+#
+ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
+
+```0
+```
+
+#
+# 0020 Get entity
+#
+ngsi get entity --id urn:ngsi-ld:Product:001
+
+```0
+{"id":"urn:ngsi-ld:Product:001","type":"Product","name":{"type":"Text","value":"Ale","metadata":{}},"offerPrice":{"type":"Integer","value":89,"metadata":{}},"price":{"type":"Integer","value":1188,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}}
+```
+
+#
+# 0021 Batch Delete Multiple Entities
+#
+ngsi delete entities \
+--data '[
+  {
+    "id":"urn:ngsi-ld:Product:001", "type":"Product"
+  },
+  {
+    "id":"urn:ngsi-ld:Product:002", "type":"Product"
+  }
+]'
+
+```0
+```
+
+#
+# 0022 Get entity
+#
+ngsi get entity --id urn:ngsi-ld:Product:003
+
+```0
+{"id":"urn:ngsi-ld:Product:003","type":"Product","name":{"type":"Text","value":"White Wine","metadata":{}},"price":{"type":"Integer","value":1499,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}}
+```
+
+#
+# 0022 Batch Delete Multiple Attributes from an Entity
+#
+ngsi delete entities \
+--data '[
+  {
+    "id":"urn:ngsi-ld:Product:003", "type":"Product",
+    "price":{},
+    "name": {}
+  }
+]'
+
+```0
+```
+
+#
+# 0023 Find existing data relationships
+#
+ngsi list entities -q refProduct==urn:ngsi-ld:Product:001 --attrs type -P
+
+```0
+[
+  {
+    "id": "urn:ngsi-ld:InventoryItem:001",
+    "type": "InventoryItem"
+  },
+  {
+    "id": "urn:ngsi-ld:InventoryItem:004",
+    "type": "InventoryItem"
+  },
+  {
+    "id": "urn:ngsi-ld:InventoryItem:006",
+    "type": "InventoryItem"
+  },
+  {
+    "id": "urn:ngsi-ld:InventoryItem:401",
+    "type": "InventoryItem"
+  }
+]
+```
+
+#
+# 0024 Delete entities
+#
+ngsi rm --type InventoryItem --run
+
+```0
+9
+```
+
+ngsi rm --type Product --run
+
+```0
+9
+```
+
+ngsi rm --type Shelf --run
+
+```0
+10
+```
+
+ngsi rm --type Store --run
+
+```0
+4
+```
