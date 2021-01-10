@@ -60,14 +60,20 @@ coverage:
 e2e_test:
 	script/e2e_test.sh
 
+.PHONY: lint-dockerfile
+lint-dockerfile:
+	script/lint-dockerfile.sh
+
+.PHONY: all-tests
+all-tests:
+	script/all-tests.sh
+
 .PHONY: wc
 wc:
 	wc $(SOURCES)
 
 .PHONY: build
 build: bin/ngsi
-
-.PHONY: all clean linux darwin
 
 .PHONY: release
 release:
@@ -79,8 +85,8 @@ release:
 release_github:
 	ghr -c $(REVISION) v$(VERSION) build/
 
-.PHONY: all
-all: linux darwin 
+.PHONY: build-all
+build-all: linux darwin 
 
 .PHONY: clean
 clean:
