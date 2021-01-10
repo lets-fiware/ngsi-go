@@ -47,31 +47,31 @@ services:
 
   accumulator:
     build: ./server/accumulator
-    image: lets-fiware/accumulator
+    image: letsfiware/accumulator
 
   atcontext:
     build: ./server/atcontext
-    image: lets-fiware/atcontext
+    image: letsfiware/atcontext
     volumes:
       - ./config/ldContext:/opt/atcontext/ldContext:ro
 
   csource:
     build: ./server/csource
-    image: lets-fiware/csource
+    image: letsfiware/csource
     command: -config /opt/csource/config/config.json
     volumes:
       - ./config/csource:/opt/csource/config:ro
 
   oauth:
     build: ./server/oauth
-    image: lets-fiware/oauth
+    image: letsfiware/oauth
     command: -config /opt/oauth/config/config.json
     volumes:
       - ./config/oauth:/opt/oauth/config:ro
 
   ngsi-test:
     build: ./ngsi-test
-    image: lets-fiware/ngsi-test
+    image: letsfiware/ngsi-test
     depends_on:
       - mongo
       - orion
