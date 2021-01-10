@@ -55,7 +55,7 @@ func (client *Client) OpUpdate(entities interface{}, actionType string, keyValue
 	}
 	client.SetHeader("Content-Type", "application/json")
 
-	b, err := JSONMarshalDecode(&body, safeString)
+	b, err := JSONMarshalEncode(&body, safeString)
 	if err != nil {
 		return nil, nil, &NgsiLibError{funcName, 1, "json.Marshal error", err}
 	}
