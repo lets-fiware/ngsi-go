@@ -39,49 +39,74 @@ import (
 func TestSafeStringEncode(t *testing.T) {
 	testNgsiLibInit()
 
-	actual := SafeStringEncode((`<>"'=;()%`))
-	expected := "%3C%3E%22%27%3D%3B%28%29%25"
-
-	assert.Equal(t, expected, actual)
-
-	actual = SafeStringEncode(("%%%%%"))
-	expected = "%25%25%25%25%25"
-
-	assert.Equal(t, expected, actual)
-
-	actual = SafeStringEncode((`123abc<>"'=;()%`))
-	expected = "123abc%3C%3E%22%27%3D%3B%28%29%25"
-
-	assert.Equal(t, expected, actual)
+	cases := []struct {
+		testdata string
+		expected string
+	}{
+		{
+			testdata: `<>"'=;()%`,
+			expected: "%3C%3E%22%27%3D%3B%28%29%25",
+		},
+		{
+			testdata: "%%%%%",
+			expected: "%25%25%25%25%25",
+		},
+		{
+			testdata: `123abc<>"'=;()%`,
+			expected: "123abc%3C%3E%22%27%3D%3B%28%29%25",
+		},
+	}
+	for _, c := range cases {
+		actual := SafeStringEncode(c.testdata)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestSafeStringDecode(t *testing.T) {
 	testNgsiLibInit()
 
-	actual := SafeStringDecode(("%3C%3E%22%27%3D%3B%28%29%25"))
-	expected := `<>"'=;()%`
+	cases := []struct {
+		testdata string
+		expected string
+	}{
+		{
+			testdata: "%3C%3E%22%27%3D%3B%28%29%25",
+			expected: `<>\"'=;()%`,
+		},
+		{
 
-	assert.Equal(t, expected, actual)
-
-	actual = SafeStringDecode(("%3c%3e%22%27%3d%3b%28%29%25"))
-	expected = `<>"'=;()%`
-
-	assert.Equal(t, expected, actual)
-
-	actual = SafeStringDecode(("%25%25%25%25%25"))
-	expected = "%%%%%"
-
-	assert.Equal(t, expected, actual)
-
-	actual = SafeStringDecode(("123abc%3c%3e%22%27%3d%3b%28%29%25"))
-	expected = `123abc<>"'=;()%`
-
-	assert.Equal(t, expected, actual)
-
-	actual = SafeStringDecode(("123abc%3C%3E%22%27%3D%3B%28%29%25"))
-	expected = `123abc<>"'=;()%`
-
-	assert.Equal(t, expected, actual)
+			testdata: "%3c%3e%22%27%3d%3b%28%29%25",
+			expected: `<>\"'=;()%`,
+		},
+		{
+			testdata: "%25%25%25%25%25",
+			expected: "%%%%%",
+		},
+		{
+			testdata: "123abc%3c%3e%22%27%3d%3b%28%29%25",
+			expected: `123abc<>\"'=;()%`,
+		},
+		{
+			testdata: "123abc%3C%3E%22%27%3D%3B%28%29%25",
+			expected: `123abc<>\"'=;()%`,
+		},
+		{
+			testdata: "123abc%3C%3E%22%27%3D%3B%28%29%25%11",
+			expected: `123abc<>\"'=;()%%11`,
+		},
+		{
+			testdata: "123abc%3C%3E%22%27%3D%3B%28%29%25%a",
+			expected: `123abc<>\"'=;()%%a`,
+		},
+		{
+			testdata: "123abc%3C%3E%22%27%3D%3B%28%29%25%",
+			expected: `123abc<>\"'=;()%%`,
+		},
+	}
+	for _, c := range cases {
+		actual := SafeStringDecode(c.testdata)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestJSONSafeStringEncode(t *testing.T) {

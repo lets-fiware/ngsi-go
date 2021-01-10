@@ -143,6 +143,11 @@ func waitCmd(args []string) error {
 func ngsiCmd(args []string) error {
 	const funcName = "ngsiCmd"
 
+	if *gArgs {
+		for i, s := range args {
+			fmt.Printf("%d: %s\n", i, s)
+		}
+	}
 	param := []string{}
 	if *gNgsiConfig != "" {
 		param = append(param, "--config", *gNgsiConfig)

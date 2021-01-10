@@ -35,24 +35,24 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"strings"
 )
 
 // https://fiware-orion.readthedocs.io/en/master/user/forbidden_characters/index.html
 
-var forbiddenCharsEncode = map[string]string{
-	`"`: "%22",
-	"'": "%27",
-	"(": "%28",
-	")": "%29",
-	";": "%3B",
-	"<": "%3C",
-	"=": "%3D",
-	">": "%3E",
+var forbiddenCharsEncode = map[rune]string{
+	'%':  "%25",
+	'"':  "%22",
+	'\'': "%27",
+	'(':  "%28",
+	')':  "%29",
+	';':  "%3B",
+	'<':  "%3C",
+	'=':  "%3D",
+	'>':  "%3E",
 }
 
 var forbiddenCharsDecode = map[string]string{
-	"%22": `"`,
+	"%22": `\"`,
 	"%25": `%`,
 	"%27": "'",
 	"%28": "(",
@@ -69,19 +69,49 @@ var forbiddenCharsDecode = map[string]string{
 
 // SafeStringEncode is ...
 func SafeStringEncode(s string) string {
-	s = strings.ReplaceAll(s, "%", "%25")
-	for k, v := range forbiddenCharsEncode {
-		s = strings.ReplaceAll(s, k, v)
+	ss := ""
+	for _, c := range s {
+		if cc, ok := forbiddenCharsEncode[c]; ok {
+			ss += cc
+		} else {
+			ss += string(c)
+		}
 	}
-	return s
+	return ss
 }
 
 // SafeStringDecode is ...
 func SafeStringDecode(s string) string {
-	for k, v := range forbiddenCharsDecode {
-		s = strings.ReplaceAll(s, k, v)
+	ss := ""
+	escape := 0
+	escapeStr := ""
+
+	for _, c := range s {
+		switch escape {
+		case 0:
+			if c == '%' {
+				escapeStr = "%"
+				escape = 1
+			} else {
+				ss += string(c)
+			}
+		case 1:
+			escapeStr += string(c)
+			escape = 2
+		case 2:
+			escapeStr += string(c)
+			if cc, ok := forbiddenCharsDecode[escapeStr]; ok {
+				ss += cc
+			} else {
+				ss += escapeStr
+			}
+			escape = 0
+		}
 	}
-	return s
+	if escape > 0 {
+		ss += escapeStr
+	}
+	return ss
 }
 
 // JSONSafeStringEncode is ...

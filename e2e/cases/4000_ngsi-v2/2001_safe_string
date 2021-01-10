@@ -1,0 +1,315 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-v2
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+#
+# 0001 Clean up
+#
+ngsi rm --host orion --type SafeString --run
+
+```0
+REGEX(.*)
+```
+
+#
+# 0002 Create entity with safeString on (value)
+#
+ngsi create entity --safeString on \
+--data '{
+  "id": "urn:ngsi-ld:SafeString:001",
+  "type": "SafeString",
+  "name": {
+    "type": "Text",
+    "value": "<>\\"\'=;()%"
+  }
+}'
+
+```0
+```
+
+#
+# 0003 Get entity with safeString off
+#
+ngsi get entity --id urn:ngsi-ld:SafeString:001 --safeString off -P
+
+```0
+{
+  "id": "urn:ngsi-ld:SafeString:001",
+  "type": "SafeString",
+  "name": {
+    "type": "Text",
+    "value": "%3C%3E%22%27%3D%3B%28%29%25",
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0004 Get entity with safeString on
+#
+ngsi get entity --id urn:ngsi-ld:SafeString:001 --safeString on -P
+
+```0
+{
+  "id": "urn:ngsi-ld:SafeString:001",
+  "type": "SafeString",
+  "name": {
+    "type": "Text",
+    "value": "<>\"'=;()%",
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0005 Create entities with safeString on (value)
+#
+ngsi create entities --safeString on \
+--data '[
+  {
+    "id": "urn:ngsi-ld:SafeString:002",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "%%%<日本語>%%%"
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:SafeString:003",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "123abc<>\\"\'=;()%"
+    }
+  }
+]'
+
+```0
+```
+
+#
+# 0006 List entities with safeString off
+#
+ngsi list entities --safeString off -P
+
+```0
+[
+  {
+    "id": "urn:ngsi-ld:SafeString:001",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "%3C%3E%22%27%3D%3B%28%29%25",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:SafeString:002",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "%25%25%25%3C日本語%3E%25%25%25",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:SafeString:003",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "123abc%3C%3E%22%27%3D%3B%28%29%25",
+      "metadata": {}
+    }
+  }
+]
+```
+
+#
+# 0007 List entities with safeString on
+#
+ngsi list entities --safeString on -P
+
+```0
+[
+  {
+    "id": "urn:ngsi-ld:SafeString:001",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "<>\"'=;()%",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:SafeString:002",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "%%%<日本語>%%%",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:SafeString:003",
+    "type": "SafeString",
+    "name": {
+      "type": "Text",
+      "value": "123abc<>\"'=;()%",
+      "metadata": {}
+    }
+  }
+]
+```
+
+#
+# 0010 Create entity with safeString on (attr name)
+#
+ngsi create entity --safeString on \
+--data '{
+  "id": "urn:ngsi-ld:SafeString:010",
+  "type": "SafeString",
+  "<name>": {
+    "type": "Text",
+    "value": "<>"
+  }
+}'
+
+```0
+```
+
+#
+# 0011 Get entity with safeString off
+#
+ngsi get entity --id urn:ngsi-ld:SafeString:010 --safeString off -P
+
+```0
+{
+  "id": "urn:ngsi-ld:SafeString:010",
+  "type": "SafeString",
+  "%3Cname%3E": {
+    "type": "Text",
+    "value": "%3C%3E",
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0012 Get entity with safeString on
+#
+ngsi get entity --id urn:ngsi-ld:SafeString:010 --safeString on -P
+
+```0
+{
+  "id": "urn:ngsi-ld:SafeString:010",
+  "type": "SafeString",
+  "<name>": {
+    "type": "Text",
+    "value": "<>",
+    "metadata": {}
+  }
+}
+```
+
+#
+# 1000 entityCreate009 400 Bad Request Invalid characters in attribute value
+#
+ngsi create entity \
+--data '{
+  "id":"urn:ngsi-ld:SafeString:001",
+  "type":"SafeString",
+  "name": {
+    "type": "Text",
+    "value": "<>"
+  }
+}'
+
+```1
+entityCreate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
+```
+
+#
+# 1001 entityCreate009 400 Bad Request Invalid characters in attribute value
+#
+ngsi create entity --safeString off \
+--data '{
+  "id": "urn:ngsi-ld:SafeString:011",
+  "type": "SafeString",
+  "<name>": {
+    "type": "Text",
+    "value": ""
+  }
+}'
+
+```1
+entityCreate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute name"}
+```
+
+#
+# 1002 entityCreate009 400 Bad Request Invalid characters in attribute value
+#
+ngsi create entity --safeString off \
+--data '{
+  "id": "urn:ngsi-ld:SafeString:012",
+  "type": "SafeString",
+  "<name>": {
+    "type": "Text",
+    "value": "<>"
+  }
+}'
+
+```1
+entityCreate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute name"}
+```
+
+#
+# 1003 opUpdate009 400 Bad Request Invalid characters in attribute value
+#
+ngsi create entities \
+--data '[
+{
+  "id":"urn:ngsi-ld:SafeString:001",
+  "type":"SafeString",
+  "name": {
+    "type": "Text",
+    "value": "<>"
+  }
+}]'
+
+```1
+opUpdate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
+```
+
+#
+# 9999 Clean up
+#
+ngsi rm --host orion --type SafeString --run
+
+```0
+REGEX(.*)
+```

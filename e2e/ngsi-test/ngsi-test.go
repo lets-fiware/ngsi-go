@@ -48,6 +48,7 @@ var (
 	gNgsiConfig = flag.String("ngsi-config", "", "config file for NGSI Go")
 	gNgsiCache  = flag.String("ngsi-cache", "", "cahce file for NGSI Go")
 	gVerbose    = flag.Bool("verbose", false, "verobose")
+	gArgs       = flag.Bool("args", false, "")
 )
 
 var val map[string][]string

@@ -43,23 +43,27 @@ func diffLines(expected, actual []string) error {
 	r := regexp.MustCompile(`(.*)REGEX\((.*)\)(.*)`)
 
 	if len(expected) != len(actual) {
-		printDiff(expected, actual)
-		return &ngsiCmdError{funcName, 1, fmt.Sprintf("Number of lines error: expected %d, actual %d", len(expected), len(actual)), nil}
+		fmt.Printf("Number of lines error: expected %d, actual %d\n", len(expected), len(actual))
 	}
 
 	diff := false
+	actualLen := len(actual)
 	for i, s := range expected {
+		if i >= actualLen {
+			diff = true
+			break
+		}
 		result := r.FindAllStringSubmatch(s, -1)
 		if result != nil {
 			rs := strings.Join(result[0][1:], "")
 			r2 := regexp.MustCompile(rs)
 			if r2.Match([]byte(actual[i])) == false {
-				fmt.Printf("diff error line %d\nExpected:\n%s\nActual:\n%s\n", i, s, actual[i])
+				fmt.Printf("%d\n- %s\n+ %s\n", i+1, s, actual[i])
 				diff = true
 			}
 		} else {
 			if s != actual[i] {
-				fmt.Printf("diff error line %d\nExpected:\n%s\nActual:\n%s\n", i, s, actual[i])
+				fmt.Printf("%d\n- %s\n+ %s\n", i+1, s, actual[i])
 				diff = true
 			}
 		}
