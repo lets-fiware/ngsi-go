@@ -31,5 +31,6 @@ if [ ! `docker-compose ps -a | wc -l` = "2" ]; then
   make down
 fi
 make build
+make rmi
 make up
 make run_e2e_test
