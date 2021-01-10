@@ -26,6 +26,7 @@
 
 FROM ubuntu:20.04
 
+# hadolint ignore=DL3008
 RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -33,7 +34,9 @@ RUN \
         git \
         curl \
         ca-certificates \
-        make
+        make && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN \
     mkdir -p /root/go/src/github.com/lets-fiware && \

@@ -26,9 +26,10 @@
 
 FROM golang:1.15.6-alpine3.12 AS builder
 
+# hadolint ignore=DL3018
 RUN \
     apk add --no-cache --update sed && \
-    cat /etc/passwd | sed -n -e '/^nobody/p' > /opt/passwd && \
+    sed -n -e '/^nobody/p' /etc/passwd > /opt/passwd && \
     chmod 444 /opt/passwd
 
 WORKDIR /opt/csource/
