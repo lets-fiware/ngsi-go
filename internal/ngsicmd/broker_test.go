@@ -327,6 +327,22 @@ func TestBrokersAdd(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestBrokersAddTenant(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,ngsiType,brokerHost,service")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-v2", "--brokerHost=http://orion", "--ngsiType=v2", "--service=Foo"})
+	err := brokersAdd(c)
+
+	if assert.NoError(t, err) {
+		list := ngsi.BrokerList()
+		v := (*list)["orion-v2"]
+		assert.Equal(t, "foo", v.Tenant)
+	}
+}
+
 func TestBrokersAddLD(t *testing.T) {
 	_, set, app, _ := setupTest()
 
