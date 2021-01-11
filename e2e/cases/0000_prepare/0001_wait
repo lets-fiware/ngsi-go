@@ -31,5 +31,5 @@ wait ${accumulator}/health
 wait ${atcontext}/health
 wait ${csource}/health
 wait ${oauth}/health
-wait http://orion:1026/version
-wait http://orion-ld:1026/version
+wait ${orion}/version
+wait ${orion-ld}/version

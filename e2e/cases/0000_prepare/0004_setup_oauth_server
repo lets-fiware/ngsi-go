@@ -23,55 +23,29 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+#
 
-version: "3"
+#
+# 0001 register user to oauth server
+#
 
-services:
-  orion:
-    image: fiware/orion:2.5.2
-    depends_on:
-      - mongo
-    command: -dbhost mongo
+http post ${oauth}/admin/ \
+--data '{
+  "grantType": "password",
+  "username": "fiware",
+  "password": "1234",
+  "clientId": "12345678-9012-2345-6789-012345678901",
+  "clientSecret": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+  "token": {
+    "access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+    "expires_in": 3599,
+    "refresh_token": "03e33a311e03317b390956729bcac2794b695670",
+    "scope": [
+      "bearer"
+    ],
+    "token_type": "Bearer"
+  }
+}'
 
-  orion-ld:
-    image: fiware/orion-ld:latest
-    depends_on:
-      - mongo
-    command: -dbhost mongo -db orionld
-
-  mongo:
-    image: mongo:3.6
-    command: --nojournal
-    volumes:
-      - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-
-  accumulator:
-    build: ./server/accumulator
-    image: letsfiware/accumulator
-
-  atcontext:
-    build: ./server/atcontext
-    image: letsfiware/atcontext
-
-  csource:
-    build: ./server/csource
-    image: letsfiware/csource
-
-  oauth:
-    build: ./server/oauth
-    image: letsfiware/oauth
-
-  ngsi-test:
-    build: ./ngsi-test
-    image: letsfiware/ngsi-test
-    depends_on:
-      - mongo
-      - orion
-      - orion-ld
-      - accumulator
-      - atcontext
-      - csource
-      - oauth
-    volumes:
-      - ../bin/ngsi:/usr/local/bin/ngsi:ro
-      - .:/root/e2e
+```0
+```
