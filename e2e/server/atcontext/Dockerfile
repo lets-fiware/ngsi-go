@@ -27,17 +27,14 @@
 FROM golang:1.15.6-alpine3.12 AS builder
 LABEL stage=ngsi-builder
 
-# hadolint ignore=DL3018
-RUN \
-    apk add --no-cache --update sed && \
-    sed -n -e '/^nobody/p' /etc/passwd > /opt/passwd && \
-    chmod 444 /opt/passwd
-
 WORKDIR /opt/atcontext/
 
 COPY ./main.go /opt/atcontext
 
-RUN CGO_ENABLED=0 go build -ldflags "-w -s"
+RUN \
+    sed -n -e '/^nobody/p' /etc/passwd > /opt/passwd && \
+    chmod 444 /opt/passwd && \
+    CGO_ENABLED=0 go build -ldflags "-w -s"
 
 FROM scratch AS runner
 
