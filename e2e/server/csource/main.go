@@ -33,6 +33,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -48,15 +49,17 @@ import (
 )
 
 const (
-	urlRoot   = "/"
-	urlHealth = "/health"
-	urlKill   = "/kill"
-	urlQuery  = "/v2/op/query"
-	urlUpdate = "/v2/op/update"
+	urlRoot     = "/"
+	urlHealth   = "/health"
+	urlKill     = "/kill"
+	urlRegister = "/register"
+	urlQuery    = "/v2/op/query"
+	urlUpdate   = "/v2/op/update"
 )
 
 type entityDef map[string]interface{}
-type entitiesDef []entityDef
+type entitiesDef map[string]entityDef      // key is entity id
+type allEntitiesDef map[string]entitiesDef // key is entity type
 
 var mutex = &sync.Mutex{}
 
@@ -70,12 +73,12 @@ type queryDef struct {
 	Attrs    []string `json:"attrs"`
 }
 
-var entities entitiesDef
+var allEntities allEntitiesDef
 
 var (
 	gHost       = flag.String("host", "0.0.0.0", "host")
 	gPort       = flag.String("port", "8000", "port")
-	gConfigFile = flag.String("config", "entities.json", "entities file")
+	gConfigFile = flag.String("config", "", "entities file")
 )
 
 func main() {
@@ -89,6 +92,8 @@ func csourceServer() int {
 
 	flag.Parse()
 
+	allEntities = make(map[string]entitiesDef)
+
 	if err := loadEntitites(); err != nil {
 		printMsg(funcName, 2, err.Error())
 		return 1
@@ -101,6 +106,7 @@ func csourceServer() int {
 	m.HandleFunc(urlRoot, http.HandlerFunc(rootHandler))
 	m.HandleFunc(urlQuery, http.HandlerFunc(queryHandler))
 	m.HandleFunc(urlUpdate, http.HandlerFunc(updateHandler))
+	m.HandleFunc(urlRegister, http.HandlerFunc(registerHandler))
 	m.HandleFunc(urlHealth, http.HandlerFunc(healthHandler))
 	m.HandleFunc(urlKill, func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(r.URL.Path)
@@ -139,6 +145,10 @@ func csourceServer() int {
 func loadEntitites() error {
 	const funcName = "loadEntitites"
 
+	if *gConfigFile == "" {
+		return nil
+	}
+
 	printMsg(funcName, 1, *gConfigFile)
 
 	b, err := ioutil.ReadFile(*gConfigFile)
@@ -147,15 +157,77 @@ func loadEntitites() error {
 		return err
 	}
 
-	mutex.Lock()
-	err = json.Unmarshal(b, &entities)
-	mutex.Unlock()
+	return storeEntities(b)
+}
+
+func storeEntities(b []byte) error {
+	const funcName = "storeEntities"
+
+	var entities []entityDef
+
+	err := json.Unmarshal(b, &entities)
 	if err != nil {
-		printMsg(funcName, 3, err.Error())
+		printMsg(funcName, 1, err.Error())
 		return err
 	}
 
+	for _, e := range entities {
+		t, ok := e["type"].(string)
+		if ok == false {
+			s := sprintMsg(funcName, 2, "entity type error")
+			printJSONIndent(s, b)
+			return errors.New(s)
+		}
+		if t == "" {
+			s := sprintMsg(funcName, 3, "entity type is empty")
+			printJSONIndent(s, b)
+			return errors.New(s)
+		}
+		i, ok := e["id"].(string)
+		if ok == false {
+			s := sprintMsg(funcName, 4, "entity id error")
+			printJSONIndent(s, b)
+			return errors.New(s)
+		}
+		if i == "" {
+			s := sprintMsg(funcName, 5, "entity id is empty")
+			printJSONIndent(s, b)
+			return errors.New(s)
+		}
+		mutex.Lock()
+		if allEntities[t] == nil {
+			allEntities[t] = make(entitiesDef)
+		}
+		allEntities[t][i] = e
+		mutex.Unlock()
+	}
+
 	return nil
+}
+
+func registerHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "registerhandler"
+
+	printMsg(funcName, 1, r.URL.Path)
+
+	if r.Method != http.MethodPost {
+		printMsg(funcName, 2, "Method not allowed.")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	body := r.Body
+	defer body.Close()
+	buf := new(bytes.Buffer)
+	io.Copy(buf, body)
+
+	err := storeEntities(buf.Bytes())
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -219,21 +291,19 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id := query.Entities[0].ID
-	newEntities := new(entitiesDef)
+	t := query.Entities[0].Type
+
+	newEntities := []entityDef{}
 
 	mutex.Lock()
-	for _, e := range entities {
-		if v, ok := e["id"]; ok {
-			if i, ok := v.(string); ok {
-				if id == i {
-					*newEntities = append(*newEntities, e)
-				}
-			}
+	if entities, ok := allEntities[t]; ok {
+		if e, ok := entities[id]; ok {
+			newEntities = append(newEntities, e)
 		}
 	}
 	mutex.Unlock()
 
-	if len(*newEntities) == 0 {
+	if len(newEntities) == 0 {
 		w.WriteHeader(http.StatusNotFound)
 	} else {
 		b, err := json.Marshal(newEntities)
@@ -278,6 +348,8 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	printJSONIndent("Request:", body)
+
+	w.WriteHeader(http.StatusBadRequest)
 }
 
 func printJSONIndent(s string, b []byte) {

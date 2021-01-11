@@ -72,7 +72,7 @@ var gTokens sync.Map
 var (
 	gHost        = flag.String("host", "0.0.0.0", "host")
 	gPort        = flag.String("port", "8000", "port")
-	gCconfigFile = flag.String("config", "config.json", "config file")
+	gCconfigFile = flag.String("config", "", "config file")
 )
 
 func main() {
@@ -86,7 +86,7 @@ func oauthServer() int {
 
 	flag.Parse()
 
-	if err := readTokens(); err != nil {
+	if err := readTokens(*gCconfigFile); err != nil {
 		printMsg(funcName, 2, err.Error())
 		return 1
 	}
@@ -212,10 +212,14 @@ func parseParam(d string) map[string]string {
 	return params
 }
 
-func readTokens() error {
+func readTokens(fileName string) error {
 	const funcName = "readTokens"
 
-	b, err := ioutil.ReadFile(*gCconfigFile)
+	if fileName == "" {
+		return nil
+	}
+
+	b, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		printMsg(funcName, 1, err.Error())
 		return err

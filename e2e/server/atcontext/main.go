@@ -35,6 +35,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -57,7 +58,7 @@ var gContext sync.Map
 var (
 	gHost = flag.String("host", "0.0.0.0", "host")
 	gPort = flag.String("port", "8000", "port")
-	gDir  = flag.String("dir", "./ldContext", "context directory")
+	gDir  = flag.String("dir", "", "context directory")
 )
 
 func main() {
@@ -138,26 +139,66 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 	printMsg(funcName, 1, r.URL.Path)
 
-	if r.Method != http.MethodGet {
+	switch r.Method {
+	default:
 		fmt.Println("Method not allowed.")
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
+	case http.MethodGet:
+		if v, ok := gContext.Load(r.URL.Path[1:]); ok {
+			w.Header().Set("Content-Type", "application/ld+json")
+			w.WriteHeader(http.StatusOK)
+			_, err := w.Write(v.([]byte))
+			if err != nil {
+				printMsg(funcName, 1, err.Error())
+			}
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+		}
+	case http.MethodPost:
+		body := r.Body
+		defer body.Close()
+		buf := new(bytes.Buffer)
+		io.Copy(buf, body)
+
+		status := storeContext(r.URL.Path[1:], buf.Bytes())
+		w.WriteHeader(status)
+	case http.MethodDelete:
+		status := deleteContext(r.URL.Path[1:])
+		w.WriteHeader(status)
+	}
+}
+
+func storeContext(name string, b []byte) int {
+	const funcName = "storeContext"
+
+	if json.Valid(b) == false {
+		printMsg(funcName, 1, "json error: "+string(b))
+		return http.StatusBadRequest
+	}
+	gContext.Store(name, b)
+
+	return http.StatusCreated
+}
+
+func deleteContext(name string) int {
+	const funcName = "deleteContext"
+
+	if _, ok := gContext.Load(name); ok {
+		gContext.Delete(name)
+	} else {
+		printMsg(funcName, 1, name+" not found")
+		return http.StatusBadRequest
 	}
 
-	if v, ok := gContext.Load(r.URL.Path[1:]); ok {
-		w.Header().Set("Content-Type", "application/ld+json")
-		w.WriteHeader(http.StatusOK)
-		_, err := w.Write(v.([]byte))
-		if err != nil {
-			printMsg(funcName, 1, err.Error())
-		}
-	} else {
-		w.WriteHeader(http.StatusNotFound)
-	}
+	return http.StatusNoContent
 }
 
 func loadContext() error {
 	const funcName = "loadContext"
+
+	if *gDir == "" {
+		return nil
+	}
 
 	printMsg(funcName, 1, "dir: "+*gDir)
 
@@ -176,8 +217,8 @@ func loadContext() error {
 				printMsg(funcName, 3, "ReadFile: "+err.Error())
 				return err
 			}
-			if !json.Valid(b) {
-				printMsg(funcName, 4, "json error: "+err.Error())
+			if json.Valid(b) == false {
+				printMsg(funcName, 4, "json error")
 				return err
 			}
 			gContext.Store(fname, b)
