@@ -34,7 +34,7 @@ ngsi broker add --host tenant --brokerHost http://orion:1026 --ngsiType v2 --ser
 ```
 
 #
-# 1001 Chech tenant name
+# 1001 Check tenant name
 #
 ngsi broker get --host tenant
 
