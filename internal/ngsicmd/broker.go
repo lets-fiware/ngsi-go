@@ -148,6 +148,9 @@ func brokersAdd(c *cli.Context) error {
 		key := args[i]
 		if c.IsSet(key) {
 			value := c.String(key)
+			if key == "service" {
+				value = strings.ToLower(value)
+			}
 			if value != "" {
 				param[key] = value
 			}
