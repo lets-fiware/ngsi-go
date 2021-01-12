@@ -79,6 +79,16 @@ ngsi broker get --host orion
 ```
 
 ```text
+brokerHost http://orion:1026
+ngsiType v2
+```
+#### Example 2
+
+```console
+ngsi broker get --host orion --json
+```
+
+```text
 {"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"off"}
 ```
 
@@ -142,6 +152,7 @@ Orion-LD with Keyrock
 ```console
 ngsi broker add \
   --host orion-ld \
+  --ngsiType ld \
   --brokerHost https://orion-ld \
   --idmType keyrock \
   --idmHost https://keyrock \

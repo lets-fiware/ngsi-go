@@ -33,6 +33,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
@@ -52,13 +53,31 @@ func TestBrokersList(t *testing.T) {
 	}
 }
 
+func TestBrokersListHost(t *testing.T) {
+	_, set, app, buf := setupTest()
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion"})
+	c := cli.NewContext(app, set, nil)
+
+	err := brokersList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "brokerHost https://orion\nngsiType v2\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersListJSON(t *testing.T) {
 	_, set, app, buf := setupTest()
 
 	setupFlagBool(set, "json")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--json"})
+
 	err := brokersList(c)
 
 	if assert.NoError(t, err) {
@@ -106,6 +125,24 @@ func TestBrokersListErrorInitCmd(t *testing.T) {
 	}
 }
 
+func TestBrokersListErrorHost(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion-v2"})
+	c := cli.NewContext(app, set, nil)
+
+	err := brokersList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "orion-v2 not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersListErrorJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -119,7 +156,7 @@ func TestBrokersListErrorJSON(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json.Marshl error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -139,7 +176,7 @@ func TestBrokersListErrorJSONPretty(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -157,7 +194,7 @@ func TestBrokersGet(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"brokerHost\":\"https://orion\",\"ngsiType\":\"v2\"}\n"
+		expected := "brokerHost https://orion\nngsiType v2\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -296,25 +333,6 @@ func TestBrokersGetErrorBrokerList(t *testing.T) {
 	}
 }
 
-func TestBrokersGetErrorMarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host")
-	setJSONEncodeErr(ngsi, 2)
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := brokersGet(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestBrokersAdd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -385,6 +403,23 @@ func TestBrokersAddErrorInitCmd(t *testing.T) {
 	}
 }
 
+func TestBrokersAddErrorHost(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host="})
+	err := brokersAdd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "Required host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersAddErrorNameString(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -395,7 +430,7 @@ func TestBrokersAddErrorNameString(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "name error @orion", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -413,7 +448,7 @@ func TestBrokersAddErrorAlreadyExists(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "orion already exists", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -430,7 +465,7 @@ func TestBrokersAddErrorBrokerHost(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "brokerHost is missing", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -448,7 +483,7 @@ func TestBrokersAddErrorNgsiType(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "ngsiType is missing", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -466,7 +501,7 @@ func TestBrokersAddErrorNgsiType2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "can't specify ngsiType", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -483,7 +518,7 @@ func TestBrokersAddErrorCreateBroker(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: 123", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -497,6 +532,18 @@ func TestBrokersUpdate(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--ngsiType=ld"})
+	err := brokersUpdate(c)
+
+	assert.NoError(t, err)
+}
+
+func TestBrokersUpdateService(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,ngsiType,service")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--ngsiType=ld", "--service=Foo"})
 	err := brokersUpdate(c)
 
 	assert.NoError(t, err)
@@ -520,6 +567,23 @@ func TestBrokersUpdateErrorInitCmd(t *testing.T) {
 	}
 }
 
+func TestBrokersUpdateErrorHost(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host="})
+	err := brokersUpdate(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "Required host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersUpdateErrorAlreadyExists(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -530,7 +594,7 @@ func TestBrokersUpdateErrorAlreadyExists(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "orionld not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -548,7 +612,7 @@ func TestBrokersUpdateErrorCreateBroker(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "v1 not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -597,6 +661,24 @@ func TestBrokersDeleteErrorInitCmd(t *testing.T) {
 	}
 }
 
+func TestBrokersDeleteErrorHost(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host="})
+	err := brokersDelete(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "Required host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBrokersDeleteErrorAlreadyExists(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -608,7 +690,7 @@ func TestBrokersDeleteErrorAlreadyExists(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "orionld not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -626,7 +708,7 @@ func TestBrokersDeleteNoItem(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "delete error - noitem", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -646,7 +728,7 @@ func TestBrokersDeleteErrorUpdateBroker(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -678,9 +760,54 @@ func TestBrokersDeleteErrorReference(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "orion is referenced", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
+}
+
+func TestPrintBrokerInfoV2(t *testing.T) {
+	ngsi, _, _, buf := setupTest()
+
+	broker := ngsilib.Broker{
+		BrokerHost:   "http://orion",
+		NgsiType:     "v2",
+		Tenant:       "openiot",
+		Scope:        "/iot",
+		Context:      "http://context",
+		SafeString:   "on",
+		IdmType:      "keyrock",
+		IdmHost:      "http://keyrock",
+		Username:     "fiware",
+		Password:     "1234",
+		ClientID:     "clientid",
+		ClientSecret: "clientsecret",
+		XAuthToken:   "false",
+		Token:        "token",
+		APIPath:      "/path",
+	}
+
+	printBrokerInfo(ngsi, &broker)
+
+	actual := buf.String()
+	expected := "brokerHost http://orion\nngsiType v2\nFIWARE-Serivce openiot\nFIWARE-SerivcePath /iot\nContext http://context\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword 1234\nClientID clientid\nClientSecret clientsecret\nXAuthToken false\nToken token\nAPIPath /path\n"
+	assert.Equal(t, expected, actual)
+}
+
+func TestPrintBrokerInfoLD(t *testing.T) {
+	ngsi, _, _, buf := setupTest()
+
+	broker := ngsilib.Broker{
+		BrokerHost: "http://orion-ld",
+		NgsiType:   "ld",
+		Tenant:     "openiot",
+		Scope:      "/iot",
+	}
+
+	printBrokerInfo(ngsi, &broker)
+
+	actual := buf.String()
+	expected := "brokerHost http://orion-ld\nngsiType ld\nTenant openiot\nScope /iot\n"
+	assert.Equal(t, expected, actual)
 }
