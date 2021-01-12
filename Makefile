@@ -31,7 +31,7 @@ REVISION := $(shell git rev-parse HEAD)
 LDFLAGS := -X main.revision=$(REVISION) -w -s
 NAMEVER := $(NAME)-v$(VERSION)
 
-build = rm -f build/$(3) && GOOS=$(1) GOARCH=$(2) go build -ldflags "$(LDFLAGS)" -o build/$(3) cmd/$(NAME)/main.go
+build = rm -f build/$(3) && CGO_ENABLED=0 GOOS=$(1) GOARCH=$(2) go build -ldflags "$(LDFLAGS)" -o build/$(3) cmd/$(NAME)/main.go
 buildx = script/release_buildx.sh build/$(1).tar.gz
 tar = cd build && tar -cvzf $(NAMEVER)-$(1)-$(2).tar.gz $(3) && rm $(3)
 sum = cd build && sha256sum *.tar.gz > $(NAMEVER)-sha256sum.txt
@@ -46,7 +46,7 @@ devel-deps:
 	golang.org/x/tools/cmd/cover
 
 bin/%: cmd/%/main.go $(SOURCES)
-	go build -ldflags "$(LDFLAGS)" -o $@ $<
+	CGO_ENABLED=0 go build -ldflags "$(LDFLAGS)" -o $@ $<
 
 .PHONY: test
 test:

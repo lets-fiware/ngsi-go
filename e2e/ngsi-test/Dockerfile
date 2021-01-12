@@ -33,7 +33,7 @@ COPY *.go /opt/ngsi-test/
 
 RUN CGO_ENABLED=0 go build -ldflags "-w -s"
 
-FROM ubuntu:20.04 AS runner
+FROM golang:1.15.6-alpine3.12 AS runner
 LABEL stage=ngsi-runner
 
 COPY --from=builder /opt/ngsi-test/ngsi-test /usr/local/bin/

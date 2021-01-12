@@ -4,6 +4,6 @@ if [ -z "$NGSIGO_TARGET" ]; then
   NGSIGO_TARGET=all
 fi
 export NGSIGO_TARGET
-cd docker
-make build
-make run
+cd docker || exit 1
+make build || exit 1
+make run || exit 1
