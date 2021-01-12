@@ -25,12 +25,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-make build
-cd e2e
+make build || exit 1
+cd e2e || exit 1
 if [ ! `docker-compose ps -a | wc -l` = "2" ]; then
-  make down
+  make down || exit 1
 fi
-make build
-make rmi
-make up
-make run_e2e_test
+make build || exit 1
+make rmi || exit 1
+make up || exit 1
+make run_e2e_test || exit 1

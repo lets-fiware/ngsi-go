@@ -37,6 +37,7 @@ RUN \
     CGO_ENABLED=0 go build -ldflags "-w -s"
 
 FROM scratch AS runner
+LABEL stage=ngsi-runner
 
 COPY --from=builder /opt/oauth/oauth /opt/oauth/
 COPY --from=builder /opt/passwd /etc/passwd

@@ -35,7 +35,7 @@ ps:
 logs:
 	docker-compose logs
 rmi:
-	docker image prune --filter label=stage=ngsi-builder -f
+	script/rmi.sh
 shell:
 	docker-compose exec ngsi-test bash
 run_e2e_test:
