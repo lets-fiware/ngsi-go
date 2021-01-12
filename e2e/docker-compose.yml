@@ -47,23 +47,23 @@ services:
 
   accumulator:
     build: ./server/accumulator
-    image: letsfiware/accumulator
+    image: letsfiware/accumulator:latest
 
   atcontext:
     build: ./server/atcontext
-    image: letsfiware/atcontext
+    image: letsfiware/atcontext:latest
 
   csource:
     build: ./server/csource
-    image: letsfiware/csource
+    image: letsfiware/csource:latest
 
   oauth:
     build: ./server/oauth
-    image: letsfiware/oauth
+    image: letsfiware/oauth:latest
 
   ngsi-test:
     build: ./ngsi-test
-    image: letsfiware/ngsi-test
+    image: letsfiware/ngsi-test:latest
     depends_on:
       - mongo
       - orion

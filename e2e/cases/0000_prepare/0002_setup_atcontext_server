@@ -26,7 +26,7 @@
 #
 
 #
-# 0001 http get ${atcontext}/ngsi-context.jsonld
+# 0001 http post ${atcontext}/ngsi-context.jsonld
 #
 
 http post ${atcontext}/ngsi-context.jsonld \

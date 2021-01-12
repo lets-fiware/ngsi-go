@@ -34,6 +34,7 @@ COPY *.go /opt/ngsi-test/
 RUN CGO_ENABLED=0 go build -ldflags "-w -s"
 
 FROM ubuntu:20.04 AS runner
+LABEL stage=ngsi-runner
 
 COPY --from=builder /opt/ngsi-test/ngsi-test /usr/local/bin/
 COPY ngsi-test-config.json /root/.ngsi-test-config.json
