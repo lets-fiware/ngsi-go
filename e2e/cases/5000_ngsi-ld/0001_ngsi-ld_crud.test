@@ -27,7 +27,7 @@
 # SOFTWARE.
 
 #
-# 000 Clean up
+# 0000 Clean up
 #
 ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
 
@@ -36,7 +36,7 @@ REGEX(.*)
 ```
 
 #
-# 001 Create entity
+# 0001 Create entity
 #
 ngsi create --host orion-ld entity --link ctx \
 --data '{
@@ -56,7 +56,7 @@ ngsi create --host orion-ld entity --link ctx \
 ```0
 ```
 #
-# 002 Get Entity
+# 0002 Get Entity
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
@@ -78,7 +78,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 ```
 
 #
-# 003 Create New Attributes
+# 0003 Create New Attributes
 #
 ngsi append attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
 --data '{
@@ -97,7 +97,7 @@ ngsi append attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
 ```
 
 #
-# 004 Get entity
+# 0004 Get entity
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
@@ -128,7 +128,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 ```
 
 #
-# 005 Create New Attributes
+# 0005 Create New Attributes
 #
 ngsi create entities --link ctx \
 --data '[
@@ -178,7 +178,7 @@ ngsi create entities --link ctx \
 ```
 
 #
-# 006 Batch Create/Overwrite New Data Entities
+# 0006 Batch Create/Overwrite New Data Entities
 #
 ngsi upsert entities --link ctx \
 --data '[
@@ -214,7 +214,7 @@ ngsi upsert entities --link ctx \
 ```
 
 #
-# 007 Read a Data Entity (verbose)
+# 0007 Read a Data Entity (verbose)
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --sysAttrs -P
 
@@ -255,7 +255,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --sysAttrs -P
 ```
 
 #
-# 008 Read an Attribute from a Data Entity
+# 0008 Read an Attribute from a Data Entity
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrs temperature -P
 
@@ -273,7 +273,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrs temper
 ```
 
 #
-# 009 Read a Data Entity (key-value pairs)
+# 0009 Read a Data Entity (key-value pairs)
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues -P
 
@@ -290,7 +290,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues -P
 ```
 
 #
-# 010 Read Multiple attributes values from a Data Entity
+# 0010 Read Multiple attributes values from a Data Entity
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues --attrs category,temperature -P
 
@@ -305,7 +305,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues --
 ```
 
 #
-# 011 List all Data Entities (verbose)
+# 0011 List all Data Entities (verbose)
 #
 ngsi list entities --link ctx --type TemperatureSensor -P
 
@@ -380,7 +380,7 @@ ngsi list entities --link ctx --type TemperatureSensor -P
 ```
 
 #
-# 012 List all Data Entities (key-value pairs)
+# 0012 List all Data Entities (key-value pairs)
 #
 ngsi list entities -link ctx --type TemperatureSensor --attrs temperature --keyValues --verbose -P
 
@@ -414,7 +414,7 @@ ngsi list entities -link ctx --type TemperatureSensor --attrs temperature --keyV
 ```
 
 #
-# 013 Filter Data Entities by ID
+# 0013 Filter Data Entities by ID
 #
 ngsi list entities --link ctx --id urn:ngsi-ld:TemperatureSensor:001,urn:ngsi-ld:TemperatureSensor:002 --attrs temperature --keyValues -P
 
@@ -436,7 +436,7 @@ ngsi list entities --link ctx --id urn:ngsi-ld:TemperatureSensor:001,urn:ngsi-ld
 ```
 
 #
-# 014 Overwrite the value of an Attribute value
+# 0014 Overwrite the value of an Attribute value
 #
 ngsi update attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName category \
 --data '{
@@ -448,7 +448,7 @@ ngsi update attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName ca
 ```
 
 #
-# 015 Overwrite Multiple Attributes of a Data Entity
+# 0015 Overwrite Multiple Attributes of a Data Entity
 #
 ngsi update attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
 --data '{
@@ -503,7 +503,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 ```
 
 #
-# 016 Batch Update Attributes of Multiple Data Entities
+# 0016 Batch Update Attributes of Multiple Data Entities
 #
 ngsi upsert entities --link ctx --update \
 --data '[
@@ -579,7 +579,7 @@ ngsi list entities --link ctx --type TemperatureSensor --idPattern urn:ngsi-ld:T
 ```
 
 #
-# 017 Batch Replace Entity Data
+# 0017 Batch Replace Entity Data
 #
 ngsi update entities --link ctx --replace \
 --data '[
@@ -658,7 +658,7 @@ ngsi list entities --link ctx --type TemperatureSensor --idPattern urn:ngsi-ld:T
 ```
 
 #
-# 018 Delete an Entity
+# 0018 Delete an Entity
 #
 ngsi delete entity --link ctx --id urn:ngsi-ld:TemperatureSensor:004
 
@@ -700,7 +700,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 ```
 
 #
-# 019 Delete an Attribute from an Entity
+# 0019 Delete an Attribute from an Entity
 #
 ngsi delete attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName batteryLevel
 
@@ -737,7 +737,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 ```
 
 #
-# 020 Batch Delete Multiple Attributes from an Entity
+# 0020 Batch Delete Multiple Attributes from an Entity
 #
 ngsi delete entities --link ctx \
 --data '[
@@ -750,7 +750,7 @@ ngsi delete entities --link ctx \
 ```
 
 #
-# 999 Delete entities
+# 9999 Delete entities
 #
 ngsi rm --type TemperatureSensor --link ctx --run
 

@@ -1,0 +1,119 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi list --help
+#
+ngsi list --help
+
+```0
+NAME:
+   ngsi list - list types, entities, subscriptions or registrations
+
+USAGE:
+   ngsi list command [command options] [arguments...]
+
+COMMANDS:
+   types          list types
+   entities       list entities
+   subscriptions  list subscriptions
+   registrations  list registrations
+   help, h        Shows a list of commands or help for one command
+
+OPTIONS:
+   --host value, -h value     host or alias
+   --token value              oauth token
+   --service value, -s value  FIWARE Service
+   --path value, -p value     FIWARE ServicePath
+   --help                     show help (default: false)
+   --version, -v              print the version (default: false)
+   
+```
+
+#
+# 0002 List broker
+#
+ngsi broker list
+
+```0
+orion orion-ld
+```
+
+#
+# 0003 List broker with --json
+#
+ngsi broker list --json
+
+```0
+{"orion":{"brokerHost":"http://orion:1026","ngsiType":"v2"},"orion-ld":{"brokerHost":"http://orion-ld:1026","ngsiType":"ld"}}
+```
+
+#
+# 0004 List broker with --json and --pretty
+#
+ngsi broker list --json --pretty
+
+```0
+{
+  "orion": {
+    "brokerHost": "http://orion:1026",
+    "ngsiType": "v2"
+  },
+  "orion-ld": {
+    "brokerHost": "http://orion-ld:1026",
+    "ngsiType": "ld"
+  }
+}
+```
+
+#
+# 0005 List broker with --host
+#
+ngsi broker list --host orion
+
+```0
+brokerHost http://orion:1026
+ngsiType v2
+```
+
+#
+# 0006 List broker with --host
+#
+ngsi broker list --host orion-ld
+
+```0
+brokerHost http://orion-ld:1026
+ngsiType ld
+```
+
+#
+# 0100 brokersList002 fiware not found
+#
+ngsi broker list --host fiware
+
+```1
+brokersList002 fiware not found
+```

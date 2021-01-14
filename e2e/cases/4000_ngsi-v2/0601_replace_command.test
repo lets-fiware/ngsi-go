@@ -6,6 +6,8 @@
 #
 # https://github.com/lets-fiware/ngsi-go
 #
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-v2
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -23,12 +25,32 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+#
 
 #
-# version error
+# 0001 ngsi replace --help
 #
-ngsi version --host abc
+ngsi replace --help
 
-```1
-cbVersion002 error host: abc
+```0
+NAME:
+   ngsi replace - replace entities or attributes
+
+USAGE:
+   ngsi replace command [command options] [arguments...]
+
+COMMANDS:
+   entities  replace entities
+   attrs     replace attrs
+   help, h   Shows a list of commands or help for one command
+
+OPTIONS:
+   --host value, -h value     host or alias
+   --token value              oauth token
+   --service value, -s value  FIWARE Service
+   --path value, -p value     FIWARE ServicePath
+   --link value, -L value     @context (LD)
+   --help                     show help (default: false)
+   --version, -v              print the version (default: false)
+   
 ```

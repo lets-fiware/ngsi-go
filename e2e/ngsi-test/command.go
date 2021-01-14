@@ -43,7 +43,7 @@ import (
 	"time"
 )
 
-type cmdDef func([]string) error
+type cmdDef func(int, []string) error
 
 var cmdTable map[string]cmdDef
 
@@ -59,14 +59,14 @@ func initCmdTable() {
 	}
 }
 
-func printCmd(args []string) error {
+func printCmd(line int, args []string) error {
 	if len(args) == 2 {
 		fmt.Println(args[1])
 	}
 	return nil
 }
 
-func sleepCmd(args []string) error {
+func sleepCmd(line int, args []string) error {
 	const funcName = "sleepCmd"
 
 	if len(args) == 2 {
@@ -93,7 +93,7 @@ func sleepCmd(args []string) error {
 	return &ngsiCmdError{funcName, 4, "param error" + args[1], nil}
 }
 
-func haltCmd(args []string) error {
+func haltCmd(line int, args []string) error {
 	const funcName = "haltCmd"
 
 	sig := make(chan os.Signal)
@@ -108,10 +108,10 @@ func haltCmd(args []string) error {
 	return nil
 }
 
-func waitCmd(args []string) error {
-	const funcName = "sleepCmd"
+func waitCmd(line int, args []string) error {
+	const funcName = "waitCmd"
 
-	retry := 60
+	retry := 600
 	if len(args) == 2 {
 		if !isHTTP(args[1]) {
 			return &ngsiCmdError{funcName, 1, "url error: " + args[1], nil}
@@ -140,7 +140,7 @@ func waitCmd(args []string) error {
 	return &ngsiCmdError{funcName, 4, "param error" + args[1], nil}
 }
 
-func ngsiCmd(args []string) error {
+func ngsiCmd(line int, args []string) error {
 	const funcName = "ngsiCmd"
 
 	if *gArgs {
@@ -169,19 +169,35 @@ func ngsiCmd(args []string) error {
 		}
 		rc = strconv.Itoa(cmd.ProcessState.ExitCode())
 	}
-	s := strings.TrimRight(string(result), "\n")
-	val["$"] = strings.Split(s, "\n")
 	val["?"] = []string{rc}
+
+	if len(result) > 0 {
+		s := strings.TrimRight(string(result), "\n")
+		val["$"] = strings.Split(s, "\n")
+	} else {
+		val["$"] = []string{}
+	}
+
 	return nil
 }
 
-func compareCmd(args []string) error {
+func compareCmd(line int, args []string) error {
 	const funcName = "compareCmd"
 
 	var err error
 
+	line = line - len(args) + 1
+
+	if len(args[0]) < 3 {
+		return &ngsiCmdError{funcName, 1, "expected code error", nil}
+	}
 	expectedCode := args[0][3:]
-	actualCode := val["?"][0]
+
+	v, ok := val["?"]
+	if !ok {
+		return &ngsiCmdError{funcName, 2, "acttual code error", nil}
+	}
+	actualCode := v[0]
 
 	if expectedCode != actualCode {
 		fmt.Printf("Exit code error, expected:%s, actual:%s\n", expectedCode, actualCode)
@@ -189,19 +205,19 @@ func compareCmd(args []string) error {
 	}
 
 	expected := args[1 : len(args)-1]
-	if len(expected) == 0 {
-		expected = []string{""}
-	}
 	actual := val["$"]
+	if actual == nil {
+		actual = []string{}
+	}
 
-	if err := diffLines(expected, actual); err != nil {
+	if err := diffLines(line, expected, actual); err != nil {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 
 	return err
 }
 
-func httpCmd(args []string) error {
+func httpCmd(line int, args []string) error {
 	const funcName = "httpCmd"
 
 	if len(args) < 2 {
@@ -225,9 +241,10 @@ func httpCmd(args []string) error {
 		if args[3] != "--data" {
 			return &ngsiCmdError{funcName, 4, "http post url --data \"{\"data\":\"post data\"}", nil}
 		}
-		return httpPost(args)
+		header := map[string]string{"Content-Type": "application/json"}
+		return httpRequest(http.MethodPost, header, args)
 	case "delete":
-		return httpDelete(args)
+		return httpRequest(http.MethodDelete, nil, args)
 	}
 
 }
@@ -250,51 +267,32 @@ func httpGet(args []string) error {
 	if res.StatusCode != http.StatusOK {
 		status = "1"
 	}
-	s := strings.TrimRight(string(b), "\n")
-	val["$"] = strings.Split(s, "\n")
 	val["?"] = []string{status}
+
+	if len(b) > 0 {
+		s := strings.TrimRight(string(b), "\n")
+		val["$"] = strings.Split(s, "\n")
+	} else {
+		val["$"] = []string{}
+	}
 
 	return nil
 }
 
-func httpPost(args []string) error {
-	const funcName = "httpPost"
+func httpRequest(method string, header map[string]string, args []string) error {
+	const funcName = "httpRequest"
 
-	req, err := http.NewRequest("POST", args[2], bytes.NewBuffer([]byte(args[4])))
+	b := []byte(nil)
+	if method == http.MethodPost {
+		b = []byte(args[4])
+	}
+	req, err := http.NewRequest(method, args[2], bytes.NewBuffer(b))
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
-	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-	defer res.Body.Close()
-
-	b, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
-	}
-
-	status := "0"
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent && res.StatusCode != http.StatusCreated {
-		status = "1"
-	}
-	s := strings.TrimRight(string(b), "\n")
-	val["$"] = strings.Split(s, "\n")
-	val["?"] = []string{status}
-
-	return nil
-}
-
-func httpDelete(args []string) error {
-	const funcName = "httpDelete"
-
-	req, err := http.NewRequest("DELETE", args[2], nil)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	for k, v := range header {
+		req.Header.Set(k, v)
 	}
 
 	client := &http.Client{}
@@ -304,7 +302,7 @@ func httpDelete(args []string) error {
 	}
 	defer res.Body.Close()
 
-	b, err := ioutil.ReadAll(res.Body)
+	b, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
@@ -313,9 +311,14 @@ func httpDelete(args []string) error {
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent && res.StatusCode != http.StatusCreated {
 		status = "1"
 	}
-	s := strings.TrimRight(string(b), "\n")
-	val["$"] = strings.Split(s, "\n")
 	val["?"] = []string{status}
+
+	if len(b) > 0 {
+		s := strings.TrimRight(string(b), "\n")
+		val["$"] = strings.Split(s, "\n")
+	} else {
+		val["$"] = []string{}
+	}
 
 	return nil
 }
