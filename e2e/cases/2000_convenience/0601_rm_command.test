@@ -24,54 +24,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-version: "3"
+#
+# 0001 ngsi rm --help
+#
+ngsi rm --help
 
-services:
-  orion:
-    image: fiware/orion:2.5.2
-    depends_on:
-      - mongo
-    command: -dbhost mongo
+```0
+NAME:
+   ngsi rm - remove entities
 
-  orion-ld:
-    image: fiware/orion-ld:0.6-PRE-TEST-25
-    depends_on:
-      - mongo
-    command: -dbhost mongo -db orionld
+USAGE:
+   ngsi rm [command options] [arguments...]
 
-  mongo:
-    image: mongo:3.6
-    command: --nojournal
-    volumes:
-      - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+CATEGORY:
+   CONVENIENCE
 
-  accumulator:
-    build: ./server/accumulator
-    image: letsfiware/accumulator:latest
-
-  atcontext:
-    build: ./server/atcontext
-    image: letsfiware/atcontext:latest
-
-  csource:
-    build: ./server/csource
-    image: letsfiware/csource:latest
-
-  oauth:
-    build: ./server/oauth
-    image: letsfiware/oauth:latest
-
-  ngsi-test:
-    build: ./ngsi-test
-    image: letsfiware/ngsi-test:latest
-    depends_on:
-      - mongo
-      - orion
-      - orion-ld
-      - accumulator
-      - atcontext
-      - csource
-      - oauth
-    volumes:
-      - ../bin/ngsi:/usr/local/bin/ngsi:ro
-      - .:/root/e2e
+OPTIONS:
+   --host value, -h value     host or alias
+   --token value              oauth token
+   --service value, -s value  FIWARE Service
+   --path value, -p value     FIWARE ServicePath
+   --type value, -t value     Entity Type
+   --run                      run command (default: false)
+   --link value, -L value     @context (LD)
+   --help                     show help (default: false)
+   
+```

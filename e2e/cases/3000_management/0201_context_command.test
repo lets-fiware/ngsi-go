@@ -24,54 +24,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-version: "3"
+#
+# ngsi context
+#
+ngsi context
 
-services:
-  orion:
-    image: fiware/orion:2.5.2
-    depends_on:
-      - mongo
-    command: -dbhost mongo
+```0
+NAME:
+   ngsi context - manage @context
 
-  orion-ld:
-    image: fiware/orion-ld:0.6-PRE-TEST-25
-    depends_on:
-      - mongo
-    command: -dbhost mongo -db orionld
+USAGE:
+   ngsi context command [command options] [arguments...]
 
-  mongo:
-    image: mongo:3.6
-    command: --nojournal
-    volumes:
-      - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+COMMANDS:
+   list     List @context
+   add      Add @context
+   update   Update @context
+   delete   Delete @context
+   server   serve @context
+   help, h  Shows a list of commands or help for one command
 
-  accumulator:
-    build: ./server/accumulator
-    image: letsfiware/accumulator:latest
-
-  atcontext:
-    build: ./server/atcontext
-    image: letsfiware/atcontext:latest
-
-  csource:
-    build: ./server/csource
-    image: letsfiware/csource:latest
-
-  oauth:
-    build: ./server/oauth
-    image: letsfiware/oauth:latest
-
-  ngsi-test:
-    build: ./ngsi-test
-    image: letsfiware/ngsi-test:latest
-    depends_on:
-      - mongo
-      - orion
-      - orion-ld
-      - accumulator
-      - atcontext
-      - csource
-      - oauth
-    volumes:
-      - ../bin/ngsi:/usr/local/bin/ngsi:ro
-      - .:/root/e2e
+OPTIONS:
+   --help         show help (default: false)
+   --version, -v  print the version (default: false)
+   
+```

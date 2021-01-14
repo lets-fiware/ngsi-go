@@ -24,54 +24,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-version: "3"
+#
+# 0001 ngsi man --help
+#
+ngsi man --help
 
-services:
-  orion:
-    image: fiware/orion:2.5.2
-    depends_on:
-      - mongo
-    command: -dbhost mongo
+```0
+NAME:
+   ngsi man - print urls of document
 
-  orion-ld:
-    image: fiware/orion-ld:0.6-PRE-TEST-25
-    depends_on:
-      - mongo
-    command: -dbhost mongo -db orionld
+USAGE:
+   ngsi man [command options] [arguments...]
 
-  mongo:
-    image: mongo:3.6
-    command: --nojournal
-    volumes:
-      - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+CATEGORY:
+   CONVENIENCE
 
-  accumulator:
-    build: ./server/accumulator
-    image: letsfiware/accumulator:latest
+OPTIONS:
+   --help  show help (default: false)
+   
+```
 
-  atcontext:
-    build: ./server/atcontext
-    image: letsfiware/atcontext:latest
+#
+# 0002 ngsi man
+#
+ngsi man
 
-  csource:
-    build: ./server/csource
-    image: letsfiware/csource:latest
-
-  oauth:
-    build: ./server/oauth
-    image: letsfiware/oauth:latest
-
-  ngsi-test:
-    build: ./ngsi-test
-    image: letsfiware/ngsi-test:latest
-    depends_on:
-      - mongo
-      - orion
-      - orion-ld
-      - accumulator
-      - atcontext
-      - csource
-      - oauth
-    volumes:
-      - ../bin/ngsi:/usr/local/bin/ngsi:ro
-      - .:/root/e2e
+```0
+English:
+  https://fiware-orion.readthedocs.io/
+  https://telefonicaid.github.io/fiware-orion/api/v2/stable/
+  https://ngsi-go.letsfiware.jp/
+Japanese:
+  https://fiware-orion.letsfiware.jp/
+  https://open-apis.letsfiware.jp/fiware-orion/api/v2/stable/
+```

@@ -1,0 +1,595 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi broker add --help
+#
+ngsi broker add --help
+
+```0
+NAME:
+   ngsi broker add - add broker
+
+USAGE:
+   ngsi broker add [command options] [arguments...]
+
+OPTIONS:
+   --host value, -h value          host or alias
+   --brokerHost value, -b value    specify context broker host
+   --ngsiType value                specify NGSI type: v2 or ld
+   --idmType value, -t value       specify token type
+   --idmHost value, -m value       specify identity manager host
+   --apiPath value, -a value       specify API path
+   --username value, -U value      specify username
+   --password value, -P value      specify password
+   --clientId value, -I value      specify client id
+   --clientSecret value, -S value  specify client secret
+   --token value                   oauth token
+   --service value, -s value       FIWARE Service
+   --path value, -p value          FIWARE ServicePath
+   --safeString value              use safe string (value: on/off)
+   --help                          show help (default: false)
+   
+```
+
+#
+# 0002 Add broker with ngsiType v2
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost http://orion-v2 \
+--ngsiType v2
+
+```0
+```
+
+#
+# 0003 Check broker info
+# 
+ngsi broker get --host orion-v2
+
+```0
+brokerHost http://orion-v2
+ngsiType v2
+```
+
+#
+# 0004 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0005 Add broker with ngsiType ld
+#
+ngsi broker add \
+--host orion-ld2 \
+--brokerHost http://orion-ld \
+--ngsiType ld
+
+```0
+```
+
+#
+# 0006 Check broker info
+# 
+ngsi broker get --host orion-ld2
+
+```0
+brokerHost http://orion-ld
+ngsiType ld
+```
+
+#
+# 0007 Delete broker
+#
+ngsi broker delete --host orion-ld2
+
+```0
+```
+
+#
+# 0008 Add broker with keyrock
+#
+ngsi broker add \
+--host keyrock \
+--brokerHost https://orion-ld \
+--ngsiType ld \
+--idmType keyrock \
+--idmHost https://keyrock \
+--username keyrock001@letsfiware.jp \
+--password 0123456789 \
+--clientId 00000000-1111-2222-3333-444444444444 \
+--clientSecret 55555555-6666-7777-8888-999999999999
+
+```0
+```
+
+#
+# 0009 Check broker info
+# 
+ngsi broker get --host keyrock
+
+```0
+brokerHost https://orion-ld
+ngsiType ld
+IdmType keyrock
+IdmHost https://keyrock
+Username keyrock001@letsfiware.jp
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0010 Delete broker
+#
+ngsi broker delete --host keyrock
+
+```0
+```
+
+#
+# 0011 Add broker with password credentials
+#
+ngsi broker add \
+--host password \
+--brokerHost https://orion-ld \
+--ngsiType ld \
+--idmType password \
+--idmHost https://wso2 \
+--username keyrock001@letsfiware.jp \
+--password 0123456789 \
+--clientId 00000000-1111-2222-3333-444444444444 \
+--clientSecret 55555555-6666-7777-8888-999999999999
+
+```0
+```
+
+#
+# 0012 Check broker info
+# 
+ngsi broker get --host password
+
+```0
+brokerHost https://orion-ld
+ngsiType ld
+IdmType password
+IdmHost https://wso2
+Username keyrock001@letsfiware.jp
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0013 Delete broker
+#
+ngsi broker delete --host password
+
+```0
+```
+
+#
+# 0014 Add broker with KeyrockTokenProvider
+#
+ngsi broker add \
+--host KeyrockTokenProvider \
+--brokerHost https://orion-ld \
+--ngsiType ld \
+--idmType KeyrockTokenProvider \
+--idmHost https://keyrock \
+--username keyrock001@letsfiware.jp \
+--password 0123456789
+
+```0
+```
+
+#
+# 0015 Check broker info
+# 
+ngsi broker get --host KeyrockTokenProvider
+
+```0
+brokerHost https://orion-ld
+ngsiType ld
+IdmType keyrocktokenprovider
+IdmHost https://keyrock
+Username keyrock001@letsfiware.jp
+Password 0123456789
+```
+
+#
+# 0016 Delete broker
+#
+ngsi broker delete --host KeyrockTokenProvider
+
+```0
+```
+
+#
+# 0017 Add broker with tokenproxy
+#
+ngsi broker add \
+--host tokenproxy \
+--brokerHost https://orion-ld \
+--ngsiType ld \
+--idmType tokenproxy \
+--idmHost https://keyrock \
+--username keyrock001@letsfiware.jp \
+--password 0123456789
+
+```0
+```
+
+#
+# 0018 Check broker info
+# 
+ngsi broker get --host tokenproxy
+
+```0
+brokerHost https://orion-ld
+ngsiType ld
+IdmType tokenproxy
+IdmHost https://keyrock
+Username keyrock001@letsfiware.jp
+Password 0123456789
+```
+
+#
+# 0019 Delete broker
+#
+ngsi broker delete --host tokenproxy
+
+```0
+```
+
+#
+# 0020 Add broker (base)
+#
+ngsi broker add \
+--host base \
+--brokerHost https://orion-v2 \
+--ngsiType v2
+
+```0
+```
+
+#
+# 0021 Add broker with base
+#
+ngsi broker add \
+--host tokenproxy \
+--brokerHost base \
+--idmType tokenproxy \
+--idmHost https://keyrock \
+--username keyrock001@letsfiware.jp \
+--password 0123456789
+
+```0
+```
+
+#
+# 0022 Check broker info
+# 
+ngsi broker get --host tokenproxy
+
+```0
+brokerHost base
+IdmType tokenproxy
+IdmHost https://keyrock
+Username keyrock001@letsfiware.jp
+Password 0123456789
+```
+
+#
+# 0023 Delete broker
+#
+ngsi broker delete --host tokenproxy
+
+```0
+```
+
+#
+# 0024 Delete broker
+#
+ngsi broker delete --host base
+
+```0
+```
+
+#
+# 0025 Add broker with FIWARE-Service
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost https://orion-v2 \
+--ngsiType v2 \
+--service iot
+
+```0
+```
+
+#
+# 0026 Check broker info
+#
+ngsi broker get --host orion-v2
+
+```0
+brokerHost https://orion-v2
+ngsiType v2
+FIWARE-Serivce iot
+```
+
+#
+# 0027 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0028 Add broker with FIWARE-ServicePath
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost https://orion-v2 \
+--ngsiType v2 \
+--path /iot
+
+```0
+```
+
+#
+# 0029 Check broker info
+#
+ngsi broker get --host orion-v2
+
+```0
+brokerHost https://orion-v2
+ngsiType v2
+FIWARE-SerivcePath /iot
+```
+
+#
+# 0030 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0031 Add broker with APIPath
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost https://orion-v2 \
+--ngsiType v2 \
+--apiPath "/,/orion" 
+
+```0
+```
+
+#
+# 0032 Check broker info
+#
+ngsi broker get --host orion-v2
+
+```0
+brokerHost https://orion-v2
+ngsiType v2
+APIPath /,/orion
+```
+
+#
+# 0033 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0034 Add broker with APIPath
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost https://orion-v2 \
+--ngsiType v2 \
+--apiPath "/v2,/orion/v2.0"
+
+```0
+```
+
+#
+# 0035 Check broker info
+#
+ngsi broker get --host orion-v2
+
+```0
+brokerHost https://orion-v2
+ngsiType v2
+APIPath /v2,/orion/v2.0
+```
+
+#
+# 0036 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0037 Add broker with safeString on
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost https://orion-v2 \
+--ngsiType v2 \
+--safeString on
+
+```0
+```
+
+#
+# 0038 Check broker info
+#
+ngsi broker get --host orion-v2
+
+```0
+brokerHost https://orion-v2
+ngsiType v2
+SafeString on
+```
+
+#
+# 0039 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0040 Add broker with safeString off
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost https://orion-v2 \
+--ngsiType v2 \
+--safeString off
+
+```0
+```
+
+#
+# 0041 Check broker info
+#
+ngsi broker get --host orion-v2
+
+```0
+brokerHost https://orion-v2
+ngsiType v2
+SafeString off
+```
+
+#
+# 0042 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0043 Add broker with token
+#
+ngsi broker add \
+--host orion-v2 \
+--brokerHost https://orion-v2 \
+--ngsiType v2 \
+--token b495476d545a7e90362eaa0496af8a5dcdf18d9f
+
+```0
+```
+
+#
+# 0044 Check broker info
+#
+ngsi broker get --host orion-v2
+
+```0
+brokerHost https://orion-v2
+ngsiType v2
+Token b495476d545a7e90362eaa0496af8a5dcdf18d9f
+```
+
+#
+# 0045 Delete broker
+#
+ngsi broker delete --host orion-v2
+
+```0
+```
+
+#
+# 0046 Add broker with uppercase tenant name
+#
+ngsi broker add --host tenant --brokerHost http://orion:1026 --ngsiType v2 --service Foo
+
+```0
+```
+
+#
+# 0047 Check tenant name
+#
+ngsi broker get --host tenant
+
+```0
+brokerHost http://orion:1026
+ngsiType v2
+FIWARE-Serivce foo
+```
+
+#
+# 0048 Delete broker
+#
+ngsi broker delete --host tenant
+
+```0
+```
+
+#
+# 0100 brokersAdd002 Required host not found
+#
+ngsi broker add
+
+```1
+brokersAdd002 Required host not found
+```
+
+#
+# 0101 brokersAdd005 brokerHost is missing
+#
+ngsi broker add --host fiware
+
+```1
+brokersAdd005 brokerHost is missing
+```
+
+#
+# 0102 brokersAdd008 brokerHost error: orion-v2
+#
+ngsi broker add --host fiware --brokerHost orion-v2
+
+```1
+brokersAdd008 brokerHost error: orion-v2
+```

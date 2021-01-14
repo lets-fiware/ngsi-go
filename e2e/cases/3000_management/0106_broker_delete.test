@@ -24,54 +24,93 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-version: "3"
+#
+# 0001 ngsi broker delete --help
+#
+ngsi broker delete --help
 
-services:
-  orion:
-    image: fiware/orion:2.5.2
-    depends_on:
-      - mongo
-    command: -dbhost mongo
+```0
+NAME:
+   ngsi broker delete - delete broker
 
-  orion-ld:
-    image: fiware/orion-ld:0.6-PRE-TEST-25
-    depends_on:
-      - mongo
-    command: -dbhost mongo -db orionld
+USAGE:
+   ngsi broker delete [command options] [arguments...]
 
-  mongo:
-    image: mongo:3.6
-    command: --nojournal
-    volumes:
-      - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+OPTIONS:
+   --host value, -h value  host or alias
+   --help                  show help (default: false)
+   
+```
 
-  accumulator:
-    build: ./server/accumulator
-    image: letsfiware/accumulator:latest
+#
+# 0002 Add broker (base)
+#
+ngsi broker add \
+--host base \
+--brokerHost https://orion-v2 \
+--ngsiType v2
 
-  atcontext:
-    build: ./server/atcontext
-    image: letsfiware/atcontext:latest
+```0
+```
 
-  csource:
-    build: ./server/csource
-    image: letsfiware/csource:latest
+#
+# 0003 Add broker with base
+#
+ngsi broker add \
+--host tokenproxy \
+--brokerHost base \
+--idmType tokenproxy \
+--idmHost https://keyrock \
+--username keyrock001@letsfiware.jp \
+--password 0123456789
 
-  oauth:
-    build: ./server/oauth
-    image: letsfiware/oauth:latest
+```0
+```
 
-  ngsi-test:
-    build: ./ngsi-test
-    image: letsfiware/ngsi-test:latest
-    depends_on:
-      - mongo
-      - orion
-      - orion-ld
-      - accumulator
-      - atcontext
-      - csource
-      - oauth
-    volumes:
-      - ../bin/ngsi:/usr/local/bin/ngsi:ro
-      - .:/root/e2e
+#
+# 0004 Check broker info
+# 
+ngsi broker get --host tokenproxy
+
+```0
+brokerHost base
+IdmType tokenproxy
+IdmHost https://keyrock
+Username keyrock001@letsfiware.jp
+Password 0123456789
+```
+
+#
+# 0005 Delete broker
+#
+ngsi broker delete --host base
+
+```1
+brokersDelete006 base is referenced
+```
+
+#
+# 0006 Delete broker
+#
+ngsi broker delete --host tokenproxy
+
+
+```0
+```
+
+#
+# 0007 Delete broker
+#
+ngsi broker delete --host base
+
+```0
+```
+
+#
+# 0100 Delete broker
+#
+ngsi broker delete --host base
+
+```1
+brokersDelete003 base not found
+```

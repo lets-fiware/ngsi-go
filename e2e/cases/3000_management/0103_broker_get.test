@@ -1,0 +1,116 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi get --help
+#
+ngsi get --help
+
+```0
+NAME:
+   ngsi get - get entity(ies), attribute(s), subscription, registration or type
+
+USAGE:
+   ngsi get command [command options] [arguments...]
+
+COMMANDS:
+   entities      get entities
+   entity        get entity
+   attr          get attr
+   attrs         get attrs
+   subscription  get subscription
+   registration  get registration
+   type          get type
+   help, h       Shows a list of commands or help for one command
+
+OPTIONS:
+   --host value, -h value     host or alias
+   --token value              oauth token
+   --service value, -s value  FIWARE Service
+   --path value, -p value     FIWARE ServicePath
+   --help                     show help (default: false)
+   --version, -v              print the version (default: false)
+   
+```
+
+#
+# 0002 Get orion broker
+#
+ngsi broker get --host orion
+
+```0
+brokerHost http://orion:1026
+ngsiType v2
+```
+
+#
+# 0003 Get orion-ld broker
+#
+ngsi broker get --host orion-ld
+
+```0
+brokerHost http://orion-ld:1026
+ngsiType ld
+```
+
+#
+# 0004 Get orion broker with --json
+#
+ngsi broker get --host orion --json
+
+```0
+{"brokerHost":"http://orion:1026","ngsiType":"v2"}
+```
+
+#
+# 0005 Get orion broker with --json and --pretty
+#
+ngsi broker get --host orion --json --pretty
+
+```0
+{
+  "brokerHost": "http://orion:1026",
+  "ngsiType": "v2"
+}
+```
+
+#
+# 0100 brokersGet002 Required host not found
+#
+ngsi broker get
+
+```1
+brokersGet002 Required host not found
+```
+
+#
+# 0100 brokersGet005 fiware not found
+#
+ngsi broker get --host fiware
+
+```1
+brokersGet005 fiware not found
+```

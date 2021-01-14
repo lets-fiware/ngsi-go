@@ -37,19 +37,20 @@ import (
 	"strings"
 )
 
-func diffLines(expected, actual []string) error {
+func diffLines(line int, expected, actual []string) error {
 	const funcName = "diffLines"
 
 	r := regexp.MustCompile(`(.*)REGEX\((.*)\)(.*)`)
 
+	diff := false
+
 	if len(expected) != len(actual) {
-		fmt.Printf("Number of lines error: expected %d, actual %d\n", len(expected), len(actual))
+		fmt.Printf("%d Number of lines error: expected %d, actual %d\n", line+1, len(expected), len(actual))
+		diff = true
 	}
 
-	diff := false
-	actualLen := len(actual)
 	for i, s := range expected {
-		if i >= actualLen {
+		if i >= len(actual) {
 			diff = true
 			break
 		}
@@ -58,12 +59,12 @@ func diffLines(expected, actual []string) error {
 			rs := strings.Join(result[0][1:], "")
 			r2 := regexp.MustCompile(rs)
 			if r2.Match([]byte(actual[i])) == false {
-				fmt.Printf("%d\n- %s\n+ %s\n", i+1, s, actual[i])
+				fmt.Printf("%d\n- \"%s\"\n+ \"%s\"\n", line+i+1, s, actual[i])
 				diff = true
 			}
 		} else {
 			if s != actual[i] {
-				fmt.Printf("%d\n- %s\n+ %s\n", i+1, s, actual[i])
+				fmt.Printf("%d\n- \"%s\"\n+ \"%s\"\n", line+i+1, s, actual[i])
 				diff = true
 			}
 		}

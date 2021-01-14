@@ -37,6 +37,6 @@ logs:
 rmi:
 	script/rmi.sh
 shell:
-	docker-compose exec ngsi-test bash
+	docker-compose exec ngsi-test ash
 run_e2e_test:
 	docker-compose exec -T ngsi-test /usr/local/bin/ngsi-test -verbose cases/

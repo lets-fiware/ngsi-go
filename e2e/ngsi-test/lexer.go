@@ -38,9 +38,9 @@ import (
 
 type lexer struct {
 	reader    *bufio.Reader
-	lineNo    int64
+	lineNo    int
 	line      string
-	startLine int64
+	startLine int
 	token     []string
 	s         string
 }

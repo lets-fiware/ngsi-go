@@ -141,7 +141,7 @@ func runTestCases(fileName string) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
-		fmt.Printf("Results:\n   directories: %d\n   files: %d\n   cases: %d\n", dirs, files, cases)
+		fmt.Printf("Results:\n   %d cases, %d files, %d directories\n", cases, files, dirs)
 	} else {
 		cases, err := runTestCaseFile(fileName)
 		if err != nil {
@@ -231,7 +231,7 @@ func runTestCaseFile(fileName string) (int, error) {
 	return cases, nil
 }
 
-func parser(line int64, token []string) (int, error) {
+func parser(line int, token []string) (int, error) {
 	const funcName = "execCmd"
 
 	cases := 0
@@ -287,7 +287,7 @@ func parser(line int64, token []string) (int, error) {
 	}
 
 	if f, ok := cmdTable[t]; ok {
-		err := f(token)
+		err := f(line, token)
 		if err != nil {
 			return cases, &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
