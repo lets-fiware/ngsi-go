@@ -233,7 +233,7 @@ func httpCmd(line int, args []string) error {
 	default:
 		return &ngsiCmdError{funcName, 3, "http verb error", nil}
 	case "get":
-		return httpRequest(http.MethodGet, nil, args)
+		return httpGet(args)
 	case "post":
 		if len(args) < 4 {
 			return &ngsiCmdError{funcName, 4, "http post url --data \"{\"data\":\"post data\"}", nil}
@@ -247,6 +247,36 @@ func httpCmd(line int, args []string) error {
 		return httpRequest(http.MethodDelete, nil, args)
 	}
 
+}
+
+func httpGet(args []string) error {
+	const funcName = "httpGet"
+
+	res, err := http.Get(args[2])
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	defer res.Body.Close()
+
+	b, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	status := "0"
+	if res.StatusCode != http.StatusOK {
+		status = "1"
+	}
+	val["?"] = []string{status}
+
+	if len(b) > 0 {
+		s := strings.TrimRight(string(b), "\n")
+		val["$"] = strings.Split(s, "\n")
+	} else {
+		val["$"] = []string{}
+	}
+
+	return nil
 }
 
 func httpRequest(method string, header map[string]string, args []string) error {
