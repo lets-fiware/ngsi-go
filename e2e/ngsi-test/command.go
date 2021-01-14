@@ -109,9 +109,9 @@ func haltCmd(line int, args []string) error {
 }
 
 func waitCmd(line int, args []string) error {
-	const funcName = "sleepCmd"
+	const funcName = "waitCmd"
 
-	retry := 60
+	retry := 600
 	if len(args) == 2 {
 		if !isHTTP(args[1]) {
 			return &ngsiCmdError{funcName, 1, "url error: " + args[1], nil}
