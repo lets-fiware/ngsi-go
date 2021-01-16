@@ -56,3 +56,11 @@ func (e *ngsiCmdError) Error() string {
 }
 
 func (e *ngsiCmdError) Unwrap() error { return e.Err }
+
+/*
+func setNewError(funcName string, num int, newErr error, err *error) {
+	if *err == nil && newErr != nil {
+		*err = &ngsiCmdError{funcName, num, newErr.Error(), nil}
+	}
+}
+*/

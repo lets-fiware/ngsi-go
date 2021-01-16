@@ -25,7 +25,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if [ ! -e $1 ]; then
+if [ ! -e "$1" ]; then
   echo "$1 not found."
 fi
-docker-compose exec ngsi-test /usr/local/bin/ngsi-test -verbose $1
+docker-compose exec ngsi-test /usr/local/bin/ngsi-test -verbose "$1"

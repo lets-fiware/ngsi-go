@@ -34,16 +34,18 @@ func (ngsi *NGSI) CreateBroker(name string, brokerParam map[string]string) error
 	const funcName = "CreateBroker"
 
 	broker := new(Broker)
-	setBrokerParam(broker, brokerParam)
+	if err := setBrokerParam(broker, brokerParam); err != nil {
+		return &NgsiLibError{funcName, 1, err.Error(), err}
+	}
 
 	if err := ngsi.checkAllParams(broker); err != nil {
-		return &NgsiLibError{funcName, 1, err.Error(), err}
+		return &NgsiLibError{funcName, 2, err.Error(), err}
 	}
 
 	ngsi.brokerList[name] = broker
 
 	if err := ngsi.saveConfigFile(); err != nil {
-		return &NgsiLibError{funcName, 2, err.Error(), err}
+		return &NgsiLibError{funcName, 3, err.Error(), err}
 	}
 
 	return nil

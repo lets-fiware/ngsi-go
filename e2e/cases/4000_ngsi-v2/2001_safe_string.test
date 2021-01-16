@@ -302,7 +302,7 @@ ngsi create entities \
 }]'
 
 ```1
-opUpdate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
+opUpdate011 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
 ```
 
 #

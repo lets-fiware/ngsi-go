@@ -67,12 +67,11 @@ func (w *LogWriter) Write(p []byte) (n int, err error) {
 var logLevel int = LogErr
 
 // Logging is ...
-func (ngsi *NGSI) Logging(level int, s string) (n int, err error) {
+func (ngsi *NGSI) Logging(level int, s string) {
 	save := logLevel
 	logLevel = level
-	n, err = (*ngsi).LogWriter.Write([]byte(s))
+	_, _ = (*ngsi).LogWriter.Write([]byte(s))
 	logLevel = save
-	return
 }
 
 // LogLevel is ...

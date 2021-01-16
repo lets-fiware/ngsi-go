@@ -75,7 +75,7 @@ func contextList(c *cli.Context) error {
 					}
 					s = string(b)
 				}
-				fmt.Fprint(ngsi.StdWriter, fmt.Sprintf("%s %s\n", key, s))
+				fmt.Fprintf(ngsi.StdWriter, "%s %s\n", key, s)
 			}
 		}
 	}
@@ -97,7 +97,7 @@ func contextAdd(c *cli.Context) error {
 
 	name := c.String("name")
 
-	if ngsilib.IsNameString(name) == false {
+	if !ngsilib.IsNameString(name) {
 		return &ngsiCmdError{funcName, 3, "name error " + name, nil}
 	}
 
@@ -187,7 +187,7 @@ func getAtContext(ngsi *ngsilib.NGSI, context string) (interface{}, error) {
 		context = value
 	}
 
-	if ngsilib.IsJSON([]byte(context)) == false {
+	if !ngsilib.IsJSON([]byte(context)) {
 		if ngsilib.IsHTTP(context) {
 			context = `"` + context + `"`
 		} else {
@@ -315,7 +315,6 @@ func contextServer(c *cli.Context) error {
 	addr := host + ":" + port
 
 	path := c.String("url")
-	url := addr + path
 
 	if c.Bool("https") {
 		if !c.IsSet("key") {
@@ -324,9 +323,6 @@ func contextServer(c *cli.Context) error {
 		if !c.IsSet("cert") {
 			return &ngsiCmdError{funcName, 10, "no cert file provided", nil}
 		}
-		url = "https://" + url
-	} else {
-		url = "http://" + url
 	}
 
 	atContext = strings.TrimRight(atContext, "\n") + "\n"
@@ -337,9 +333,9 @@ func contextServer(c *cli.Context) error {
 	mux.HandleFunc(path, http.HandlerFunc(serverHandler))
 
 	if c.Bool("https") {
-		http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
+		_ = http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
 	} else {
-		http.ListenAndServe(addr, mux)
+		_ = http.ListenAndServe(addr, mux)
 	}
 
 	return nil
@@ -352,6 +348,6 @@ func serverHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		w.Header().Set("Content-Type", "application/ld+json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(serverGlobal.context))
+		_, _ = w.Write([]byte(serverGlobal.context))
 	}
 }

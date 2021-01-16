@@ -123,13 +123,12 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 		}
 	}
 	for k, v := range ngsi.contextList {
-		switch v.(type) {
+		switch v := v.(type) {
 		default:
 			fmt.Fprintf(gNGSI.LogWriter, "%s is neither url nor json\n", k)
 			errflag = true
 		case string:
-			s := v.(string)
-			if !IsHTTP(s) {
+			if !IsHTTP(v) {
 				fmt.Fprintf(gNGSI.LogWriter, "%s is not url\n", k)
 				errflag = true
 			}
@@ -147,7 +146,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	return nil
 }
 
-func (ngsi *NGSI) saveConfigFile() error {
+func (ngsi *NGSI) saveConfigFile() (err error) {
 	const funcName = "saveConfigFile"
 
 	io := ngsi.ConfigFile
@@ -162,19 +161,19 @@ func (ngsi *NGSI) saveConfigFile() error {
 	config["brokers"] = ngsi.brokerList
 	config["contexts"] = ngsi.contextList
 
-	err := io.OpenFile(oWRONLY|oCREATE, 0600)
+	err = io.OpenFile(oWRONLY|oCREATE, 0600)
 	if err != nil {
 		return &NgsiLibError{funcName, 1, err.Error(), err}
 	}
-	defer io.Close()
+	defer func() { _ = io.Close() }()
 
 	if err := io.Truncate(0); err != nil {
-		return &NgsiLibError{funcName, 2, err.Error(), err}
+		return &NgsiLibError{funcName, 3, err.Error(), err}
 	}
 
 	err = io.Encode(&config)
 	if err != nil {
-		return &NgsiLibError{funcName, 3, err.Error(), err}
+		return &NgsiLibError{funcName, 4, err.Error(), err}
 	}
 
 	return nil

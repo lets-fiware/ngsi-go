@@ -116,7 +116,7 @@ func typesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 			if err != nil {
 				return &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprintln(ngsi.StdWriter, string(b))
 		}
@@ -156,7 +156,7 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 	} else if c.IsSet("json") {
 		fmt.Fprintln(ngsi.StdWriter, string(body))
 	} else {
@@ -205,7 +205,7 @@ func typeGet(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 	} else {
 		fmt.Fprintln(ngsi.StdWriter, string(body))
 	}

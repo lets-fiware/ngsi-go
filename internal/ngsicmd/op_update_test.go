@@ -55,7 +55,11 @@ func TestOpUpdateArrayData(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateArrayData})
 
 	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
 	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
 	err = opUpdate(c, ngsi, client, "append_strict")
 
 	assert.NoError(t, err)
@@ -85,10 +89,12 @@ func TestOpUpdateArrayDataOver100(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
 
 	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
 	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
-
 	assert.NoError(t, err)
 }
 
@@ -117,7 +123,7 @@ func TestOpUpdateLineData(t *testing.T) {
 }
 
 func TestOpUpdateErrorReadAll(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
@@ -139,6 +145,40 @@ func TestOpUpdateErrorReadAll(t *testing.T) {
 	}
 }
 
+/*
+func TestOpUpdateErrorClose(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.Path = "/v2/op/update"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,data,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateLineData})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false)
+	assert.NoError(t, err)
+
+	ngsi.FileReader = &MockFileLib{CloseError: errors.New("close error")}
+
+	err = opUpdate(c, ngsi, client, "append_strict")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "close error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+*/
+
 func TestOpUpdateErrorToken(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -153,6 +193,8 @@ func TestOpUpdateErrorToken(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion", "--data=}"})
 
 	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
 	client, err := newClient(ngsi, c, false)
 	assert.NoError(t, err)
 
@@ -160,7 +202,7 @@ func TestOpUpdateErrorToken(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character '}' looking for beginning of value", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -189,7 +231,7 @@ func TestOpUpdateErrorJSONDelim(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "data is not JSON", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -218,7 +260,7 @@ func TestOpUpdateErrorJSONDelim2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character '{' looking for beginning of object key string (2)", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -248,7 +290,7 @@ func TestOpUpdateErrorDecode(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "json: cannot unmarshal array into Go value of type map[string]interface {}", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -287,7 +329,7 @@ func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -326,7 +368,7 @@ func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, " ", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -356,7 +398,7 @@ func TestOpUpdateErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -386,7 +428,7 @@ func TestOpUpdateErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, 11, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -415,7 +457,7 @@ func TestOpUpdateArrayDataError(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 10, ngsiErr.ErrNo)
+		assert.Equal(t, 12, ngsiErr.ErrNo)
 		assert.Equal(t, "EOF", ngsiErr.Message)
 	} else {
 		t.FailNow()

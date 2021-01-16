@@ -57,9 +57,8 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	version := fmt.Sprintf("%s (git_hash:%s)", Version, Revision)
 
 	cli.ErrWriter = stderr
-	app := cli.NewApp()
 	cli.HelpFlag = helpFlag
-	app = &cli.App{
+	app := &cli.App{
 		EnableBashCompletion: true,
 		Copyright:            copyright,
 		Version:              version,

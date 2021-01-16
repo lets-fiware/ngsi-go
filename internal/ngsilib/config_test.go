@@ -262,6 +262,22 @@ func TestSaveConfigFileErrorOpenFile(t *testing.T) {
 	}
 }
 
+/*
+func TestSaveConfigFileErrorClose(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.ConfigFile = &MockIoLib{CloseErr: errors.New("close error")}
+	filename := "config"
+	ngsi.ConfigFile.SetFileName(&filename)
+
+	err := ngsi.saveConfigFile()
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "close error", ngsiErr.Message)
+	}
+}
+*/
+
 func TestSaveConfigFileErrorTrancate(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.ConfigFile = &MockIoLib{TruncateErr: errors.New("trancate error")}
@@ -271,7 +287,7 @@ func TestSaveConfigFileErrorTrancate(t *testing.T) {
 	err := ngsi.saveConfigFile()
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "trancate error", ngsiErr.Message)
 	}
 }
@@ -285,7 +301,7 @@ func TestSaveConfigFileErrorEncode(t *testing.T) {
 	err := ngsi.saveConfigFile()
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
 }

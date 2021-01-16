@@ -150,6 +150,8 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 func oauthHandler(w http.ResponseWriter, r *http.Request) {
 	const funcName = "oauthHandler"
 
+	var err error
+
 	printMsg(funcName, 1, r.URL.Path)
 
 	if r.Method != http.MethodPost {
@@ -160,40 +162,45 @@ func oauthHandler(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusNotFound
 
 	body := r.Body
-	defer body.Close()
+	defer func() { setNewError(funcName, 3, body.Close(), &err) }()
 	buf := new(bytes.Buffer)
-	io.Copy(buf, body)
+	_, err = io.Copy(buf, body)
+	if err != nil {
+		printMsg(funcName, 4, err.Error())
+	}
 
 	switch r.URL.Path {
 	case keyrock, passwordCredentials, tokenProvider:
 		params := parseParam(buf.String())
-		t, err := getToken(params["username"])
-		if err != nil {
-			printMsg(funcName, 3, err.Error())
-			w.WriteHeader(status)
-		} else {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			w.Write(t)
-		}
-	case tokenProxy:
-		var param struct {
-			Username string `json:"username"`
-			Password string `json:"password"`
-		}
-		err := json.Unmarshal(buf.Bytes(), &param)
-		if err != nil {
-			printMsg(funcName, 4, err.Error())
-			w.WriteHeader(status)
-		}
-		t, err := getToken(param.Username)
+		var t []byte
+		t, err = getToken(params["username"])
 		if err != nil {
 			printMsg(funcName, 5, err.Error())
 			w.WriteHeader(status)
 		} else {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			w.Write(t)
+			_, _ = w.Write(t)
+		}
+	case tokenProxy:
+		var param struct {
+			Username string `json:"username"`
+			Password string `json:"password"`
+		}
+		err = json.Unmarshal(buf.Bytes(), &param)
+		if err != nil {
+			printMsg(funcName, 6, err.Error())
+			w.WriteHeader(status)
+		}
+		var t []byte
+		t, err = getToken(param.Username)
+		if err != nil {
+			printMsg(funcName, 7, err.Error())
+			w.WriteHeader(status)
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write(t)
 		}
 	default:
 		fmt.Println("url not found")
@@ -262,10 +269,14 @@ func getTokenInfo(id string) ([]byte, error) {
 	var err error
 
 	if id == "" {
-		b, err = json.Marshal(&gTokens)
+		var tokens map[string]interface{}
+		b, err = json.Marshal(&tokens)
 		if err != nil {
 			printMsg(funcName, 1, err.Error())
 			return nil, err
+		}
+		for k, v := range tokens {
+			gTokens.Store(k, v)
 		}
 
 	} else {
@@ -305,19 +316,22 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		body := r.Body
-		defer body.Close()
+		defer func() { _ = body.Close() }()
 		buf := new(bytes.Buffer)
-		io.Copy(buf, body)
-
-		var t tokenInfo
-		err := json.Unmarshal(buf.Bytes(), &t)
+		_, err := io.Copy(buf, body)
 		if err != nil {
 			printMsg(funcName, 3, err.Error())
+		}
+
+		var t tokenInfo
+		err = json.Unmarshal(buf.Bytes(), &t)
+		if err != nil {
+			printMsg(funcName, 4, err.Error())
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		if t.Username == "" {
-			printMsg(funcName, 4, "username == \"\"")
+			printMsg(funcName, 5, "username == \"\"")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -326,12 +340,12 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		b, err := getTokenInfo(id)
 		if err != nil {
-			printMsg(funcName, 5, err.Error())
+			printMsg(funcName, 6, err.Error())
 			w.WriteHeader(http.StatusBadRequest)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write(b)
+		_, _ = w.Write(b)
 	case http.MethodDelete:
 		if id == "" {
 			gTokens = sync.Map{}
@@ -339,7 +353,7 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 			if _, ok := gTokens.Load(id); ok {
 				gTokens.Delete(id)
 			} else {
-				printMsg(funcName, 6, id+" not found")
+				printMsg(funcName, 7, id+" not found")
 				w.WriteHeader(http.StatusNotFound)
 				return
 			}
@@ -348,21 +362,16 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func jsonIndent(b []byte) ([]byte, error) {
-	const funName = "jsonIndent"
-
-	buf := new(bytes.Buffer)
-	if err := json.Indent(buf, b, "", "  "); err != nil {
-		printMsg(funName, 1, "json.Indent: "+err.Error())
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-
 func printMsg(funcName string, no int, msg string) {
-	fmt.Printf(sprintMsg(funcName, no, msg+"\n"))
+	fmt.Println(sprintMsg(funcName, no, msg))
 }
 
 func sprintMsg(funcName string, no int, msg string) string {
 	return fmt.Sprintf("%s%03d %s", funcName, no, msg)
+}
+
+func setNewError(funcName string, num int, newErr error, err *error) {
+	if *err == nil && newErr != nil {
+		*err = errors.New(sprintMsg(funcName, num, newErr.Error()))
+	}
 }

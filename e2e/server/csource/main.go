@@ -173,7 +173,7 @@ func storeEntities(b []byte) error {
 
 	for _, e := range entities {
 		t, ok := e["type"].(string)
-		if ok == false {
+		if !ok {
 			s := sprintMsg(funcName, 2, "entity type error")
 			printJSONIndent(s, b)
 			return errors.New(s)
@@ -184,7 +184,7 @@ func storeEntities(b []byte) error {
 			return errors.New(s)
 		}
 		i, ok := e["id"].(string)
-		if ok == false {
+		if !ok {
 			s := sprintMsg(funcName, 4, "entity id error")
 			printJSONIndent(s, b)
 			return errors.New(s)
@@ -208,6 +208,8 @@ func storeEntities(b []byte) error {
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	const funcName = "registerhandler"
 
+	var err error
+
 	printMsg(funcName, 1, r.URL.Path)
 
 	if r.Method != http.MethodPost {
@@ -217,11 +219,16 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	body := r.Body
-	defer body.Close()
+	defer func() { setNewError(funcName, 3, body.Close(), &err) }()
 	buf := new(bytes.Buffer)
-	io.Copy(buf, body)
+	_, err = io.Copy(buf, body)
+	if err != nil {
+		printMsg(funcName, 4, err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	err := storeEntities(buf.Bytes())
+	err = storeEntities(buf.Bytes())
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -261,7 +268,7 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	if strings.Contains(r.Header.Get("Content-Type"), "application/json") == false {
+	if !strings.Contains(r.Header.Get("Content-Type"), "application/json") {
 		printMsg(funcName, 3, "Content-Type error: "+r.Header.Get("Content-Type"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -274,7 +281,7 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	body := make([]byte, length)
-	length, err = r.Body.Read(body)
+	_, err = r.Body.Read(body)
 	if err != nil && err != io.EOF {
 		printMsg(funcName, 5, "Body read error:"+err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -313,7 +320,10 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 		printJSONIndent("Respose:", b)
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		w.Write(b)
+		_, err = w.Write(b)
+		if err != nil {
+			printMsg(funcName, 8, err.Error())
+		}
 	}
 }
 
@@ -327,7 +337,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	if strings.Contains(r.Header.Get("Content-Type"), "application/json") == false {
+	if !strings.Contains(r.Header.Get("Content-Type"), "application/json") {
 		printMsg(funcName, 3, "Content-Type error: "+r.Header.Get("Content-Type"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -340,7 +350,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	body := make([]byte, length)
-	length, err = r.Body.Read(body)
+	_, err = r.Body.Read(body)
 	if err != nil && err != io.EOF {
 		printMsg(funcName, 5, "Body read error:"+err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -364,9 +374,15 @@ func printJSONIndent(s string, b []byte) {
 }
 
 func printMsg(funcName string, no int, msg string) {
-	fmt.Printf(sprintMsg(funcName, no, msg+"\n"))
+	fmt.Println(sprintMsg(funcName, no, msg+"\n"))
 }
 
 func sprintMsg(funcName string, no int, msg string) string {
 	return fmt.Sprintf("%s%03d %s", funcName, no, msg)
+}
+
+func setNewError(funcName string, num int, newErr error, err *error) {
+	if *err == nil && newErr != nil {
+		*err = errors.New(sprintMsg(funcName, num, newErr.Error()))
+	}
 }

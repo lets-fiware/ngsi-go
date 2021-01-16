@@ -43,14 +43,6 @@ var (
 		Name:  "stderr",
 		Usage: "specify logging `LEVEL` (off, err, info, debug)",
 	}
-	logFileFlag = &cli.StringFlag{
-		Name:  "logfile",
-		Usage: "specify log `FILE`",
-	}
-	logLevelFlag = &cli.StringFlag{
-		Name:  "loglevel",
-		Usage: "specify logging level",
-	}
 	configFlag = &cli.StringFlag{
 		Name:  "config",
 		Usage: "specify configuration `FILE`",
@@ -157,25 +149,6 @@ var (
 		Name:  "path2",
 		Usage: "FIWARE ServicePath for destination",
 	}
-	link2Flag = &cli.StringFlag{
-		Name:  "link2",
-		Usage: "@context",
-		Value: "",
-	}
-	context2Flag = &cli.StringFlag{
-		Name:    "context2",
-		Aliases: []string{"C"},
-		Usage:   "@context (LD)",
-	}
-	xAuthToken2Flag = &cli.BoolFlag{
-		Name:   "x-auth-token2",
-		Usage:  "use X-Auth-Token",
-		Hidden: true,
-	}
-	safeString2Flag = &cli.StringFlag{
-		Name:  "safeString2",
-		Usage: "use safe string (value: on/off)",
-	}
 	runFlag = &cli.BoolFlag{
 		Name:  "run",
 		Usage: "run command",
@@ -277,11 +250,6 @@ var (
 	orderByFlag = &cli.StringFlag{
 		Name:  "orderBy",
 		Usage: "orderBy",
-	}
-	actionTypeFlag = &cli.StringFlag{
-		Name:     "actionType",
-		Usage:    "actionType",
-		Required: true,
 	}
 	attrNameRFlag = &cli.StringFlag{
 		Name:     "attrName",
@@ -505,11 +473,6 @@ var (
 		Name:   "url",
 		Usage:  "url to be invoked when a notification is generated (v2)",
 		Hidden: true,
-	}
-	context = &cli.StringFlag{
-		Name:    "context",
-		Aliases: []string{"C"},
-		Usage:   "context (ld)",
 	}
 )
 

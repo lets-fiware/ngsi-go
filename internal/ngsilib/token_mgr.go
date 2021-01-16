@@ -33,7 +33,6 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -106,7 +105,7 @@ func (ngsi *NGSI) InitTokenMgr(file *string) error {
 	return nil
 }
 
-func initTokenList(io IoLib) error {
+func initTokenList(io IoLib) (err error) {
 	const funcName = "initTokenList"
 
 	if *io.FileName() == "" {
@@ -114,14 +113,17 @@ func initTokenList(io IoLib) error {
 	}
 
 	if existsFile(io, *io.FileName()) {
-		err := io.Open()
+		err = io.Open()
 		if err != nil {
 			return &NgsiLibError{funcName, 1, err.Error(), err}
 		}
-		defer io.Close()
+		defer func() { _ = io.Close() }()
 
 		tokens := tokens{}
-		io.Decode(&tokens)
+		err = io.Decode(&tokens)
+		if err != nil {
+			return &NgsiLibError{funcName, 3, err.Error(), err}
+		}
 
 		gNGSI.tokenList = tokens.Tokens
 	} else {
@@ -156,6 +158,8 @@ func (ngsi *NGSI) TokenInfo(client *Client) (*TokenInfo, error) {
 
 // GetToken is ...
 func (ngsi *NGSI) GetToken(client *Client) (string, error) {
+	const funcName = "GetToken"
+
 	hash := getHash(client)
 	info, ok := ngsi.tokenList[hash]
 	if ok {
@@ -171,8 +175,11 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 			return accessToken, nil
 		}
 	}
-
-	return getToken(ngsi, client)
+	token, err := getToken(ngsi, client)
+	if err != nil {
+		err = &NgsiLibError{funcName, 1, err.Error(), err}
+	}
+	return token, err
 }
 
 func getToken(ngsi *NGSI, client *Client) (string, error) {
@@ -228,9 +235,15 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 
 	if idmType == cKeyrocktokenprovider {
 		r := fmt.Sprintf(`{"access_token":"%s", "expires_in":%d}`, string(body), client.getExpiresIn())
-		json.Unmarshal([]byte(r), &token)
+		err := JSONUnmarshal([]byte(r), &token)
+		if err != nil {
+			return "", &NgsiLibError{funcName, 6, err.Error(), err}
+		}
 	} else {
-		json.Unmarshal(body, &token)
+		err := JSONUnmarshal(body, &token)
+		if err != nil {
+			return "", &NgsiLibError{funcName, 7, err.Error(), err}
+		}
 	}
 
 	client.storeToken(token.AccessToken)
@@ -258,7 +271,7 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 
 	err = saveToken(*ngsi.CacheFile.FileName(), tokens)
 	if err != nil {
-		return "", &NgsiLibError{funcName, 6, err.Error(), err}
+		return "", &NgsiLibError{funcName, 8, err.Error(), err}
 	}
 	return token.AccessToken, nil
 }
@@ -278,7 +291,7 @@ func saveToken(file string, tokens map[string]interface{}) error {
 	if err != nil {
 		return &NgsiLibError{funcName, 1, err.Error() + " " + file, err}
 	}
-	defer cacheFile.Close()
+	defer func() { _ = cacheFile.Close() }()
 
 	if err := cacheFile.Truncate(0); err != nil {
 		return &NgsiLibError{funcName, 2, err.Error(), err}

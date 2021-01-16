@@ -154,6 +154,53 @@ func TestTokenList(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestInitTokenListErrorOpen(t *testing.T) {
+	testNgsiLibInit()
+	io := &MockIoLib{OpenErr: errors.New("open error")}
+	filename := "cache-file"
+	io.SetFileName(&filename)
+
+	err := initTokenList(io)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "open error", ngsiErr.Message)
+	}
+}
+
+/*
+func TestInitTokenListErrorClose(t *testing.T) {
+	testNgsiLibInit()
+	io := &MockIoLib{CloseErr: errors.New("close error")}
+	filename := "cache-file"
+	io.SetFileName(&filename)
+
+	err := initTokenList(io)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "close error", ngsiErr.Message)
+	}
+}
+*/
+
+func TestInitTokenListErrorDecode(t *testing.T) {
+	testNgsiLibInit()
+	io := &MockIoLib{DecodeErr: errors.New("decode error")}
+	filename := "cache-file"
+	io.SetFileName(&filename)
+
+	err := initTokenList(io)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "decode error", ngsiErr.Message)
+	}
+}
+
 func TestTokenInfo(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
@@ -193,6 +240,7 @@ func TestNgsiGetToken(t *testing.T) {
 	ngsi.LogWriter = &bytes.Buffer{}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -201,9 +249,12 @@ func TestNgsiGetToken(t *testing.T) {
 
 	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cTokenproxy, Username: "fiware", Password: "1234"}}
 
-	_, err := ngsi.GetToken(client)
+	actual, err := ngsi.GetToken(client)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestNgsiGetTokenExpires(t *testing.T) {
@@ -237,7 +288,11 @@ func TestNgsiGetTokenNotFound(t *testing.T) {
 
 	_, err := ngsi.GetToken(client)
 
-	assert.Error(t, err)
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "username is required", ngsiErr.Message)
+	}
 }
 
 func TestGetToken(t *testing.T) {
@@ -248,6 +303,7 @@ func TestGetToken(t *testing.T) {
 	ngsi.LogWriter = &bytes.Buffer{}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -256,9 +312,12 @@ func TestGetToken(t *testing.T) {
 
 	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	actual, err := getToken(ngsi, client)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestGetTokenExpires(t *testing.T) {
@@ -270,6 +329,7 @@ func TestGetTokenExpires(t *testing.T) {
 	ngsi.TimeLib = &MockTimeLib{unixTime: 0}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -278,9 +338,12 @@ func TestGetTokenExpires(t *testing.T) {
 
 	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	actual, err := getToken(ngsi, client)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestGetTokenPasswordCredentials(t *testing.T) {
@@ -291,6 +354,7 @@ func TestGetTokenPasswordCredentials(t *testing.T) {
 	ngsi.LogWriter = &bytes.Buffer{}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -299,9 +363,12 @@ func TestGetTokenPasswordCredentials(t *testing.T) {
 
 	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	actual, err := getToken(ngsi, client)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestGetTokenKeyrocktokenprovider(t *testing.T) {
@@ -333,6 +400,7 @@ func TestGetTokenTokenproxy(t *testing.T) {
 	ngsi.LogWriter = &bytes.Buffer{}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -341,9 +409,12 @@ func TestGetTokenTokenproxy(t *testing.T) {
 
 	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	actual, err := getToken(ngsi, client)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestGetTokenKeyrock(t *testing.T) {
@@ -354,6 +425,7 @@ func TestGetTokenKeyrock(t *testing.T) {
 	ngsi.LogWriter = &bytes.Buffer{}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -362,9 +434,12 @@ func TestGetTokenKeyrock(t *testing.T) {
 
 	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	actual, err := getToken(ngsi, client)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestGetTokenErrorUsername(t *testing.T) {
@@ -483,14 +558,39 @@ func TestGetTokenErrorHTTPStatus(t *testing.T) {
 	}
 }
 
-func TestGetTokenErrorSave(t *testing.T) {
+func TestGetTokenErrorJSONUnmarshal6(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
-	filename := "cache-file"
-	ngsi.CacheFile = &MockIoLib{filename: &filename, EncodeErr: errors.New("encode error")}
+	ngsi.JSONConverter = &MockJSONLib{DecodeErr: errors.New("decode error")}
 	ngsi.LogWriter = &bytes.Buffer{}
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+
+	_, err := getToken(ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "decode error", ngsiErr.Message)
+	}
+}
+
+func TestGetTokenErrorJSONUnmarshal7(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	ngsi.JSONConverter = &MockJSONLib{DecodeErr: errors.New("decode error")}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -503,7 +603,33 @@ func TestGetTokenErrorSave(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "decode error", ngsiErr.Message)
+	}
+}
+
+func TestGetTokenErrorSave(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := "cache-file"
+	ngsi.CacheFile = &MockIoLib{filename: &filename, EncodeErr: errors.New("encode error")}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+
+	_, err := getToken(ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
 }

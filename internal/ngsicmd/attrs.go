@@ -79,7 +79,7 @@ func attrsRead(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 

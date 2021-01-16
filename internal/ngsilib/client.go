@@ -99,10 +99,8 @@ func (client *Client) InitHeader() error {
 
 // SetHeaders is ...
 func (client *Client) SetHeaders(headers map[string]string) {
-	if headers != nil {
-		for key, value := range headers {
-			client.Headers[key] = value
-		}
+	for key, value := range headers {
+		client.Headers[key] = value
 	}
 }
 

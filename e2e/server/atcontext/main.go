@@ -33,6 +33,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -137,6 +138,8 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	const funcName = "rootHandler"
 
+	var err error
+
 	printMsg(funcName, 1, r.URL.Path)
 
 	switch r.Method {
@@ -147,19 +150,23 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 		if v, ok := gContext.Load(r.URL.Path[1:]); ok {
 			w.Header().Set("Content-Type", "application/ld+json")
 			w.WriteHeader(http.StatusOK)
-			_, err := w.Write(v.([]byte))
+			_, err = w.Write(v.([]byte))
 			if err != nil {
-				printMsg(funcName, 1, err.Error())
+				printMsg(funcName, 2, err.Error())
 			}
 		} else {
 			w.WriteHeader(http.StatusNotFound)
 		}
 	case http.MethodPost:
 		body := r.Body
-		defer body.Close()
+		defer func() { setNewError(funcName, 3, body.Close(), &err) }()
 		buf := new(bytes.Buffer)
-		io.Copy(buf, body)
-
+		_, err = io.Copy(buf, body)
+		if err != nil {
+			printMsg(funcName, 4, err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			break
+		}
 		status := storeContext(r.URL.Path[1:], buf.Bytes())
 		w.WriteHeader(status)
 	case http.MethodDelete:
@@ -171,7 +178,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 func storeContext(name string, b []byte) int {
 	const funcName = "storeContext"
 
-	if json.Valid(b) == false {
+	if !json.Valid(b) {
 		printMsg(funcName, 1, "json error: "+string(b))
 		return http.StatusBadRequest
 	}
@@ -217,7 +224,7 @@ func loadContext() error {
 				printMsg(funcName, 3, "ReadFile: "+err.Error())
 				return err
 			}
-			if json.Valid(b) == false {
+			if !json.Valid(b) {
 				printMsg(funcName, 4, "json error")
 				return err
 			}
@@ -227,21 +234,16 @@ func loadContext() error {
 	return nil
 }
 
-func jsonIndent(b []byte) ([]byte, error) {
-	const funName = "jsonIndent"
-
-	buf := new(bytes.Buffer)
-	if err := json.Indent(buf, b, "", "  "); err != nil {
-		printMsg(funName, 1, "json.Indent: "+err.Error())
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-
 func printMsg(funcName string, no int, msg string) {
-	fmt.Printf(sprintMsg(funcName, no, msg+"\n"))
+	fmt.Println(sprintMsg(funcName, no, msg+"\n"))
 }
 
 func sprintMsg(funcName string, no int, msg string) string {
 	return fmt.Sprintf("%s%03d %s", funcName, no, msg)
+}
+
+func setNewError(funcName string, num int, newErr error, err *error) {
+	if *err == nil && newErr != nil {
+		*err = errors.New(sprintMsg(funcName, num, newErr.Error()))
+	}
 }

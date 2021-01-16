@@ -150,7 +150,7 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 				if err != nil {
 					return &ngsiCmdError{funcName, 6, err.Error(), err}
 				}
-				fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			} else {
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
@@ -204,7 +204,7 @@ func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 	fmt.Fprint(ngsi.StdWriter, string(b))
@@ -240,9 +240,7 @@ func registrationsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	location := res.Header.Get("Location")
 	p := "/v2/registrations/"
-	if strings.HasPrefix(location, p) {
-		location = location[len(p):]
-	}
+	location = strings.TrimPrefix(location, p)
 
 	fmt.Fprintln(ngsi.StdWriter, location)
 
@@ -287,7 +285,7 @@ func registrationsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 

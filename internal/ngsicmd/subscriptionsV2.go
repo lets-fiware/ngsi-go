@@ -227,7 +227,7 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 				if err != nil {
 					return &ngsiCmdError{funcName, 7, err.Error(), err}
 				}
-				fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			} else {
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
@@ -289,7 +289,7 @@ func subscriptionGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 
@@ -329,9 +329,7 @@ func subscriptionsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	location := res.Header.Get("Location")
 	p := "/v2/subscriptions/"
-	if strings.HasPrefix(location, p) {
-		location = location[len(p):]
-	}
+	location = strings.TrimPrefix(location, p)
 
 	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is created, FIWARE-Service: %s, FIWARE-ServicePath: %s",
 		res.Header.Get("Location"), c.String("service"), c.String("path")))
@@ -420,7 +418,7 @@ func subscriptionsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 
@@ -669,8 +667,6 @@ func toLocaltime(sub *subscriptionResposeV2) {
 }
 
 func getLocalTime(s string) string {
-	const funcName = "getLocalTime"
-
 	if s == "" {
 		return s
 	}

@@ -199,7 +199,7 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 	switch strings.ToLower(idmType) {
 	case cKeyrock, cPasswordCredentials:
 		if clientID == "" || clientSecret == "" {
-			return &NgsiLibError{funcName, 5, fmt.Sprintf("clientID and clientSecret are needed"), nil}
+			return &NgsiLibError{funcName, 5, "clientID and clientSecret are needed", nil}
 		}
 		fallthrough
 	case cKeyrocktokenprovider, cTokenproxy:
@@ -212,7 +212,6 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 
 // ExistsBrokerHost is ...
 func (ngsi *NGSI) ExistsBrokerHost(host string) bool {
-	const funcName = "ExistsBrokerHost"
 	_, ok := ngsi.brokerList[host]
 	return ok
 }

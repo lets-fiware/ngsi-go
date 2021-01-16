@@ -105,13 +105,12 @@ func (ngsi *NGSI) GetContext(key string) (string, error) {
 	}
 	if _, ok := ngsi.contextList[key]; ok {
 		value := ngsi.contextList[key]
-		switch value.(type) {
+		switch value := value.(type) {
 		default:
 			return "", &NgsiLibError{funcName, 1, fmt.Sprintf("%s neither url nor json", key), nil}
 		case string:
-			s := value.(string)
-			if IsHTTP(s) {
-				return s, nil
+			if IsHTTP(value) {
+				return value, nil
 			}
 			return "", &NgsiLibError{funcName, 2, fmt.Sprintf("%s is not url", key), nil}
 		case []interface{}, map[string]interface{}:

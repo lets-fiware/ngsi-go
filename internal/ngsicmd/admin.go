@@ -94,7 +94,7 @@ func adminLog(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 9, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprint(ngsi.StdWriter, string(body))
 		}
@@ -237,7 +237,7 @@ func adminMetrics(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 9, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprint(ngsi.StdWriter, string(body))
 		}
@@ -282,7 +282,7 @@ func adminSemaphore(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 	} else {
 		fmt.Fprint(ngsi.StdWriter, string(body))
 	}
@@ -339,7 +339,7 @@ func adminStatistics(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 8, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprint(ngsi.StdWriter, string(body))
 		}
@@ -397,7 +397,7 @@ func adminCacheStatistics(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 8, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprint(ngsi.StdWriter, string(body))
 		}

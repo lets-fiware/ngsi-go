@@ -87,15 +87,17 @@ func receiver(c *cli.Context) error {
 	ngsi.Logging(ngsilib.LogErr, url)
 
 	if c.Bool("https") {
-		http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
+		_ = http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
 	} else {
-		http.ListenAndServe(addr, mux)
+		_ = http.ListenAndServe(addr, mux)
 	}
 
 	return nil
 }
 
 func receiverHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "receiverHandler"
+
 	status := http.StatusNoContent
 
 	switch r.Method {
@@ -104,9 +106,9 @@ func receiverHandler(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusMethodNotAllowed
 	case http.MethodPost:
 		body := r.Body
-		defer body.Close()
+		defer func() { _ = body.Close() }()
 		buf := new(bytes.Buffer)
-		io.Copy(buf, body)
+		_, _ = io.Copy(buf, body)
 
 		b := buf.Bytes()
 		receiverGlobal.ngsi.Logging(ngsilib.LogInfo, string(b))
@@ -118,7 +120,7 @@ func receiverHandler(w http.ResponseWriter, r *http.Request) {
 				b = newBuf.Bytes()
 			}
 		}
-		fmt.Fprint(receiverGlobal.ngsi.StdWriter, string(b)+"\n")
+		fmt.Fprintf(receiverGlobal.ngsi.StdWriter, "%s %s\n", funcName, string(b))
 	}
 	w.WriteHeader(status)
 }

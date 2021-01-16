@@ -150,9 +150,8 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 
 	err := gNGSI.JSONConverter.Decode(bytes.NewReader(data), &v)
 	if err != nil {
-		switch err.(type) {
+		switch err := err.(type) {
 		case *json.SyntaxError:
-			err := err.(*json.SyntaxError)
 			s := err.Offset - 15
 			if s < 0 {
 				s = 0
@@ -163,7 +162,6 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 			}
 			return &NgsiLibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(data[s:e])), err}
 		case *json.UnmarshalTypeError:
-			err := err.(*json.UnmarshalTypeError)
 			s := err.Offset - 15
 			if s < 0 {
 				s = 0

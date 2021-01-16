@@ -338,7 +338,8 @@ func TestGetContextErrorJSON(t *testing.T) {
 	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	var v []interface{}
-	json.Unmarshal([]byte(`[]`), &v)
+	err := json.Unmarshal([]byte(`[]`), &v)
+	assert.NoError(t, err)
 	ngsi.contextList["fiware"] = v
 
 	actual, err := ngsi.GetContext("fiware")

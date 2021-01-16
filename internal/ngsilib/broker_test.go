@@ -415,7 +415,7 @@ func TestCopyBrokerInfo(t *testing.T) {
 	param[cFiwareServicePath] = "/iot"
 	param[cSafeString] = "off"
 	param[cXAuthToken] = "on"
-	setBrokerParam(&broker, param)
+	_ = setBrokerParam(&broker, param)
 
 	broker2 := Broker{}
 
@@ -442,7 +442,7 @@ func TestCopyBrokerInfo2(t *testing.T) {
 	param[cFiwareServicePath] = "/iot"
 	param[cSafeString] = "off"
 	param[cXAuthToken] = "on"
-	setBrokerParam(&broker, param)
+	_ = setBrokerParam(&broker, param)
 
 	broker2 := Broker{}
 

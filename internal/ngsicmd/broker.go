@@ -68,7 +68,7 @@ func brokersList(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprint(ngsi.StdWriter, *lists)
 		}
@@ -106,7 +106,7 @@ func brokersGet(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprint(ngsi.StdWriter, *lists)
 		}
@@ -134,7 +134,7 @@ func brokersAdd(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, "Required host not found", nil}
 	}
 
-	if ngsilib.IsNameString(host) == false {
+	if !ngsilib.IsNameString(host) {
 		return &ngsiCmdError{funcName, 3, "name error " + host, err}
 	}
 	if ngsi.ExistsBrokerHost(host) {

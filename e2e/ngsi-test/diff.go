@@ -30,8 +30,6 @@ SOFTWARE.
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
@@ -58,7 +56,7 @@ func diffLines(line int, expected, actual []string) error {
 		if result != nil {
 			rs := strings.Join(result[0][1:], "")
 			r2 := regexp.MustCompile(rs)
-			if r2.Match([]byte(actual[i])) == false {
+			if !r2.Match([]byte(actual[i])) {
 				fmt.Printf("%d\n- \"%s\"\n+ \"%s\"\n", line+i+1, s, actual[i])
 				diff = true
 			}
@@ -88,15 +86,4 @@ func printDiff(expected []string, actual []string) {
 		fmt.Println(s)
 	}
 	fmt.Println("----------------------------------------------------------------------------------------")
-}
-
-func printJSONIndent(s string, b []byte) {
-	if s != "" {
-		fmt.Println(s)
-	}
-	buf := new(bytes.Buffer)
-	if err := json.Indent(buf, b, "", "  "); err != nil {
-		fmt.Println("error: ", err.Error())
-	}
-	fmt.Println(buf.String())
 }

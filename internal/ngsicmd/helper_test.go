@@ -134,11 +134,6 @@ type MockHTTPReqRes struct {
 	Path       string
 }
 
-// MockHTTPRequest is ...
-type MockHTTPRequest interface {
-	Request(method string, url *url.URL, headers map[string]string, body interface{}) (*http.Response, []byte, error)
-}
-
 func AddReqRes(ngsi *ngsilib.NGSI, r MockHTTPReqRes) {
 	h, _ := ngsi.HTTP.(*MockHTTP)
 	h.ReqRes = append(h.ReqRes, r)
@@ -160,11 +155,11 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 	var data []byte
 	switch method {
 	case http.MethodPost, http.MethodPut, http.MethodPatch:
-		switch body.(type) {
+		switch body := body.(type) {
 		case []byte:
-			data = body.([]byte)
+			data = body
 		case string:
-			data = []byte(body.(string))
+			data = []byte(body)
 		default:
 			return nil, nil, &ngsiCmdError{funcName, 0, "Unsupported type", nil}
 		}
@@ -268,6 +263,7 @@ func (io *MockIoLib) FilePathJoin(elem ...string) string {
 type MockFileLib struct {
 	Name              string
 	OpenError         error
+	CloseError        error
 	ReadallError      error
 	ReadallData       []byte
 	FilePathAbsString string
@@ -286,7 +282,7 @@ func (f *MockFileLib) Open(path string) (err error) {
 }
 
 func (f *MockFileLib) Close() error {
-	return nil
+	return f.CloseError
 }
 
 func (f *MockFileLib) FilePathAbs(path string) (string, error) {
