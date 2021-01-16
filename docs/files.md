@@ -10,6 +10,7 @@ The NGSI Go command creates the following file.
 ```console
 /home/<username\>/.config/fiware
 ```
+
 ## Mac
 
 ```console

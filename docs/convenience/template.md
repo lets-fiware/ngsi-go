@@ -266,7 +266,7 @@ ngsi template registration \
   --provider http://raspi
 ```
 
-```
+```json
 {
   "description": "sensor source",
   "dataProvided": {
@@ -290,6 +290,6 @@ ngsi template registration \
 }
 ```
 
-```
+```console
 5fb9dcc4a723657d763c6317
 ```

@@ -94,7 +94,7 @@ ngsi [global options] command [common options] sub-command [options]
 
 ### Global Options
 
-| Options	     | Description                                      |
+| Options        | Description                                      |
 | -------------- | ------------------------------------------------ |
 | --syslog LEVEL | specify logging LEVEL (off, err, info, debug)    |
 | --stderr LEVEL | specify logging LEVEL (off, err, info, debug)    |
@@ -132,17 +132,18 @@ ngsi create entity --keyValues \
       "price": 99
 }'
 ```
+
 ### pipe
 
 ```console
 echo "{ \"id\":\"urn:ngsi-ld:Product:003\", \"type\":\"Product\", \"name\": \"Lemonade\", \"size\": \"S\", \"price\": 99 }" | ngsi create entity --keyValues --data @-
 ```
 
-```
+```console
 echo "{ \"id\":\"urn:ngsi-ld:Product:003\", \"type\":\"Product\", \"name\": \"Lemonade\", \"size\": \"S\", \"price\": 99 }" | ngsi create entity --keyValues --data stdin
 ```
 
-```
+```console
 echo '{ "id":"urn:ngsi-ld:Product:002", "type":"Product", "name": "Lemonade", "size": "S", "price": 99 }' | ngsi create entity --keyValues --data @-
 ```
 
@@ -154,7 +155,7 @@ ngsi create entity --keyValues --data @data.json
 
 data.json:
 
-```
+```json
 {
   "id":"urn:ngsi-ld:Product:001",
   "type":"Product",

@@ -14,7 +14,7 @@ ngsi settings list [options]
 
 | Options | Description                      |
 | ------- | -------------------------------- |
-| --all   | print ail itmes (default: false) |                         
+| --all   | print ail itmes (default: false) |
 | --help  | show help (default: false)       |
 
 #### Example 1

@@ -6,7 +6,7 @@ This command copies multiple entities from a source to a destination.
 ngsi cp [options]
 ```
 
-### Options
+## Options
 
 | Options                       | Description                                      |
 | ----------------------------- | ------------------------------------------------ |
@@ -22,7 +22,7 @@ ngsi cp [options]
 | --run                         | actually run to copy entities (default: false)   |
 | --help                        | show help (default: false)                       |
 
-### Example 
+### Example
 
 #### Request:
 

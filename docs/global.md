@@ -1,6 +1,6 @@
 # Global Options
 
-| Options	 | Description                                      |
+| Options        | Description                                      |
 | -------------- | ------------------------------------------------ |
 | --syslog LEVEL | specify logging LEVEL (off, err, info, debug)    |
 | --stderr LEVEL | specify logging LEVEL (off, err, info, debug)    |

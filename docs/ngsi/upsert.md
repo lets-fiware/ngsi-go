@@ -5,7 +5,7 @@ This command upserts entities.
 -   [Upsert an entity](#upsert-an-entity)
 -   [Upsert multiple entities](#upsert-multiple-entities)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |

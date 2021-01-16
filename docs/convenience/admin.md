@@ -9,7 +9,7 @@ This command gives you various system information for FIWARE Orion. You can use 
 -   [Statistics](#statistics)
 -   [Cache statistics](#cache-statistics)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |
@@ -31,12 +31,12 @@ ngsi admin [command options] log [options]
 
 | Options                 | Description                                                         |
 | ----------------------- | ------------------------------------------------------------------- |
-| --level value, -l value | specify log level (none, fatal, error, warn, info, debug)           | 
+| --level value, -l value | specify log level (none, fatal, error, warn, info, debug)           |
 | --logging, -L           | logging output when logging level higher than Info (default: false) |
 | --pretty, -P            | pretty format (default: false)                                      |
 | --help                  | show help (default: false)                                          |
 
-### Example 
+### Example
 
 #### Request:
 
@@ -74,7 +74,7 @@ ngsi admin [common options] trace [options]
 | --logging, -L           | logging output when logging level higher than Info (default: false) |
 | --help                  | show help (default: false)                                          |
 
-### Example 
+### Example
 
 #### Request:
 
