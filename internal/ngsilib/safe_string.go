@@ -177,7 +177,7 @@ func jsonParser(jsonStream []byte, f func(string) string) ([]byte, error) {
 				err = nil
 				break
 			}
-			s := string(dst.Bytes())
+			s := dst.String()
 			l := len(s)
 			if l > 15 {
 				l = 15
@@ -187,9 +187,9 @@ func jsonParser(jsonStream []byte, f func(string) string) ([]byte, error) {
 		if err != nil {
 			break
 		}
-		switch t.(type) {
+		switch tt := t.(type) {
 		case json.Delim:
-			c := byte(t.(json.Delim))
+			c := byte(tt)
 			switch t {
 			case json.Delim('{'), json.Delim('['):
 				p++

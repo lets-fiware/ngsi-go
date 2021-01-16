@@ -62,11 +62,7 @@ func TestLogging(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.LogWriter = &bytes.Buffer{}
 
-	n, err := ngsi.Logging(LogDebug, "test")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, 4, n)
-	}
+	ngsi.Logging(LogDebug, "test")
 }
 
 func TestLogLevelOff(t *testing.T) {

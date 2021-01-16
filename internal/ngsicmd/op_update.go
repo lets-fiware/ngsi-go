@@ -38,9 +38,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var actionTypes = []string{"append", "append_strict", "update", "delete", "replace"}
-
-func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, actionType string) error {
+func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, actionType string) (err error) {
 	const funcName = "opUpdate"
 
 	keyValues := c.Bool("keyValues")
@@ -53,21 +51,21 @@ func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, action
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
-	defer fileReader.Close()
+	defer func() { _ = fileReader.Close() }()
 	reader := fileReader.File()
 	dec := json.NewDecoder(reader)
 
 	t, err := dec.Token()
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 	switch t.(type) {
 	default:
-		return &ngsiCmdError{funcName, 3, "data is not JSON", nil}
+		return &ngsiCmdError{funcName, 4, "data is not JSON", nil}
 	case json.Delim:
 		if t == json.Delim('{') {
-			fileReader.Close()
-			fileReader, err = getReader(c, ngsi)
+			_ = fileReader.Close()
+			fileReader, _ = getReader(c, ngsi)
 			reader = fileReader.File()
 			dec = json.NewDecoder(reader)
 			lines = true
@@ -80,19 +78,19 @@ func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, action
 		err := dec.Decode(&entity)
 		if err != nil {
 			if err, ok := err.(*json.SyntaxError); ok {
-				return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s (%d)", err.Error(), err.Offset), err}
+				return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s (%d)", err.Error(), err.Offset), err}
 			}
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return &ngsiCmdError{funcName, 7, err.Error(), err}
 		}
 		entities = append(entities, entity)
 
 		if len(entities) >= 100 {
 			res, body, err := client.OpUpdate(entities, actionType, keyValues, safeStirng)
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
 			}
 			if res.StatusCode != http.StatusNoContent {
-				return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+				return &ngsiCmdError{funcName, 9, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 			}
 			entities = nil
 		}
@@ -101,17 +99,17 @@ func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, action
 	if len(entities) > 0 {
 		res, body, err := client.OpUpdate(entities, actionType, keyValues, safeStirng)
 		if err != nil {
-			return &ngsiCmdError{funcName, 8, err.Error(), err}
+			return &ngsiCmdError{funcName, 10, err.Error(), err}
 		}
 		if res.StatusCode != http.StatusNoContent {
-			return &ngsiCmdError{funcName, 9, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return &ngsiCmdError{funcName, 11, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 		}
 	}
 
 	if !lines {
 		_, err = dec.Token()
 		if err != nil {
-			return &ngsiCmdError{funcName, 10, err.Error(), err}
+			return &ngsiCmdError{funcName, 12, err.Error(), err}
 		}
 	}
 

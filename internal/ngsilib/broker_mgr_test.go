@@ -70,7 +70,26 @@ func TestCreateBrokerErrorParam(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "brokerHost not found", ngsiErr.Message)
+		assert.Equal(t, "host not found", ngsiErr.Message)
+	}
+}
+
+func TestCreateBrokerErrorAllParam(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	InitBrokerList()
+
+	param := make(map[string]string)
+	param["brokerHost"] = "orion-v2"
+
+	err := ngsi.CreateBroker("orion", param)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*NgsiLibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "brokerHost error: orion-v2", ngsiErr.Message)
 	}
 }
 
@@ -88,7 +107,7 @@ func TestCreateBrokerErrorSave(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }

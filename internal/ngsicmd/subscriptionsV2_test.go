@@ -1941,7 +1941,7 @@ func TestGtAttributesV2NoError(t *testing.T) {
 }
 
 func TestGtAttributesV2ErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,type,link")
 	set.Bool("get", false, "")
@@ -2115,8 +2115,7 @@ func TestSprintItems2(t *testing.T) {
 	sub := subscriptionResposeV2{}
 	http := subscriptionHTTPCustomV2{}
 	code := 404
-	var timesSent int64
-	timesSent = 10
+	timesSent := int64(10)
 
 	sub.ID = "6f6c2576c4a6068bb2767743"
 	sub.Description = "test subscription"

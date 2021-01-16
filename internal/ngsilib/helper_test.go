@@ -105,6 +105,7 @@ func testNgsiLibInit() *NGSI {
 
 type MockIoLib struct {
 	OpenErr      error
+	CloseErr     error
 	TruncateErr  error
 	EncodeErr    error
 	filename     *string
@@ -132,7 +133,7 @@ func (io *MockIoLib) Truncate(size int64) error {
 }
 
 func (io *MockIoLib) Close() error {
-	return nil
+	return io.CloseErr
 }
 
 func (io *MockIoLib) Decode(v interface{}) error {
@@ -200,11 +201,6 @@ type MockHTTPReqRes struct {
 	Path       string
 }
 
-// MockHTTPRequest is ...
-type MockHTTPRequest interface {
-	Request(method string, url *url.URL, headers map[string]string, body interface{}) (*http.Response, []byte, error)
-}
-
 // Request is ...
 func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]string, body interface{}) (*http.Response, []byte, error) {
 	const funcName = "Request"
@@ -218,11 +214,11 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 	var data []byte
 	switch method {
 	case http.MethodPost, http.MethodPut, http.MethodPatch:
-		switch body.(type) {
+		switch body := body.(type) {
 		case []byte:
-			data = body.([]byte)
+			data = body
 		case string:
-			data = []byte(body.(string))
+			data = []byte(body)
 		default:
 			return nil, nil, &NgsiLibError{funcName, 0, "Unsupported type", nil}
 		}

@@ -319,7 +319,8 @@ func TestJSONMarshalEncode(t *testing.T) {
 	testNgsiLibInit()
 
 	var template subscriptionQuery
-	JSONUnmarshalEncode([]byte(subscriptionTemplate), &template, true)
+	err := JSONUnmarshalEncode([]byte(subscriptionTemplate), &template, true)
+	assert.NoError(t, err)
 
 	actual, err := JSONMarshalEncode(template, false)
 	expected := "{\"description\":\"%3C%3ESubscription template\",\"subject\":{\"entities\":[{\"idPattern\":\".*\",\"type\":\"\"}],\"condition\":{\"attrs\":[]}},\"notification\":{\"http\":{\"url\":\"http://localhost:1028/accumulate\"},\"attrs\":[]},\"expires\":\"2099-12-31T14:00:00.00Z\",\"throttling\":0}"
@@ -336,7 +337,8 @@ func TestJSONUnmarshal(t *testing.T) {
 	testNgsiLibInit()
 
 	var template subscriptionQuery
-	JSONUnmarshal([]byte(subscriptionTemplate), &template)
+	err := JSONUnmarshal([]byte(subscriptionTemplate), &template)
+	assert.NoError(t, err)
 
 	actual, err := JSONMarshal(template)
 	expected := "{\"description\":\"<>Subscription template\",\"subject\":{\"entities\":[{\"idPattern\":\".*\",\"type\":\"\"}],\"condition\":{\"attrs\":[]}},\"notification\":{\"http\":{\"url\":\"http://localhost:1028/accumulate\"},\"attrs\":[]},\"expires\":\"2099-12-31T14:00:00.00Z\",\"throttling\":0}"
@@ -353,7 +355,8 @@ func TestJSONMarshalDecode(t *testing.T) {
 	testNgsiLibInit()
 
 	var template subscriptionQuery
-	JSONUnmarshalEncode([]byte(subscriptionTemplate), &template, true)
+	err := JSONUnmarshalEncode([]byte(subscriptionTemplate), &template, true)
+	assert.NoError(t, err)
 
 	actual, err := JSONMarshalDecode(template, false)
 	expected := "{\"description\":\"%3C%3ESubscription template\",\"subject\":{\"entities\":[{\"idPattern\":\".*\",\"type\":\"\"}],\"condition\":{\"attrs\":[]}},\"notification\":{\"http\":{\"url\":\"http://localhost:1028/accumulate\"},\"attrs\":[]},\"expires\":\"2099-12-31T14:00:00.00Z\",\"throttling\":0}"

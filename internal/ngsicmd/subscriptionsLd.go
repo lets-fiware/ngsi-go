@@ -208,7 +208,7 @@ func subscriptionsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 				if err != nil {
 					return &ngsiCmdError{funcName, 7, err.Error(), err}
 				}
-				fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			} else {
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
@@ -270,7 +270,7 @@ func subscriptionGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 
@@ -309,9 +309,7 @@ func subscriptionsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	location := res.Header.Get("Location")
 	p := "/ngsi-ld/v1/subscriptions/"
-	if strings.HasPrefix(location, p) {
-		location = location[len(p):]
-	}
+	location = strings.TrimPrefix(location, p)
 
 	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is created, FIWARE-Service: %s", res.Header.Get("Location"), c.String("service")))
 
@@ -392,7 +390,7 @@ func subscriptionsTemplateLd(c *cli.Context, ngsi *ngsilib.NGSI) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 	fmt.Fprint(ngsi.StdWriter, string(b))
@@ -447,9 +445,7 @@ func setSubscriptionValuesLd(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 
 	if c.IsSet("wAttrs") {
 		attrs := []string{}
-		for _, v := range strings.Split(c.String("wAttrs"), ",") {
-			attrs = append(attrs, v)
-		}
+		attrs = append(attrs, strings.Split(c.String("wAttrs"), ",")...)
 		t.WatchedAttributes = attrs
 	}
 
@@ -509,9 +505,7 @@ func setSubscriptionValuesLd(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		}
 		if c.IsSet("nAttrs") {
 			attrs := []string{}
-			for _, v := range strings.Split(c.String("nAttrs"), ",") {
-				attrs = append(attrs, v)
-			}
+			attrs = append(attrs, strings.Split(c.String("nAttrs"), ",")...)
 			t.Notification.Attributes = attrs
 		}
 		if c.IsSet("keyValues") {

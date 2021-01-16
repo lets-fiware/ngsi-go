@@ -91,7 +91,7 @@ func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error 
 		}
 
 		if !c.IsSet("run") {
-			fmt.Fprintf(ngsi.StdWriter, fmt.Sprintf("%d entities will be removed. run remove with --run option\n", count))
+			fmt.Fprintf(ngsi.StdWriter, "%d entities will be removed. run remove with --run option\n", count)
 			return nil
 		}
 
@@ -153,7 +153,7 @@ func removeLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error 
 		}
 
 		if !c.IsSet("run") {
-			fmt.Fprintf(ngsi.StdWriter, fmt.Sprintf("%d entities will be removed. run remove with --run option\n", count))
+			fmt.Fprintf(ngsi.StdWriter, "%d entities will be removed. run remove with --run option\n", count)
 			return nil
 		}
 

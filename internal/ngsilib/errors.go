@@ -50,3 +50,11 @@ func (e *NgsiLibError) Error() string {
 }
 
 func (e *NgsiLibError) Unwrap() error { return e.Err }
+
+/*
+func setNewError(funcName string, num int, newErr error, err *error) {
+	if *err == nil && newErr != nil {
+		*err = &NgsiLibError{funcName, num, newErr.Error(), nil}
+	}
+}
+*/

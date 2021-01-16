@@ -73,7 +73,7 @@ func tokenCommand(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 5, err.Error(), err}
 			}
-			fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
 			fmt.Fprintln(ngsi.StdWriter, string(b))
 		}

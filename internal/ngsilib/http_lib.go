@@ -75,13 +75,12 @@ func NewHTTPRequet() HTTPRequest {
 	return &httpRequest{}
 }
 
-func (r *httpRequest) Request(method string, url *url.URL, headers map[string]string, body interface{}) (*http.Response, []byte, error) {
+func (r *httpRequest) Request(method string, url *url.URL, headers map[string]string, body interface{}) (res *http.Response, b []byte, err error) {
 	const funcName = "Request"
 
 	client := &http.Client{Timeout: time.Duration(60 * time.Second)}
 
 	var reader io.Reader
-	var err error
 
 	switch method {
 	case http.MethodPost, http.MethodPut, http.MethodPatch:
@@ -91,7 +90,8 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 		}
 	}
 
-	req, err := http.NewRequest(method, url.String(), reader)
+	var req *http.Request
+	req, err = http.NewRequest(method, url.String(), reader)
 	if err != nil {
 		return nil, nil, &NgsiLibError{funcName, 2, err.Error(), err}
 	}
@@ -100,15 +100,16 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 		req.Header.Add(k, v)
 	}
 
-	resp, err := client.Do(req)
+	var resp *http.Response
+	resp, err = client.Do(req)
 	if err != nil {
 		return nil, nil, &NgsiLibError{funcName, 3, err.Error(), err}
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, nil, &NgsiLibError{funcName, 4, err.Error(), err}
+		return nil, nil, &NgsiLibError{funcName, 5, err.Error(), err}
 	}
 	return resp, b, nil
 }
@@ -116,11 +117,11 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 func newReader(v interface{}) (io.Reader, error) {
 	const funcName = "newReader"
 
-	switch v.(type) {
+	switch v := v.(type) {
 	case []byte:
-		return bytes.NewReader(v.([]byte)), nil
+		return bytes.NewReader(v), nil
 	case string:
-		return strings.NewReader(v.(string)), nil
+		return strings.NewReader(v), nil
 	}
 	return nil, &NgsiLibError{funcName, 1, "unsupported type", nil}
 }

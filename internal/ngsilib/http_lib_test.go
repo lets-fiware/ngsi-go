@@ -193,10 +193,12 @@ func TestRequestErrorReadAll(t *testing.T) {
 
 	r := NewHTTPRequet()
 	u, _ := url.Parse(ts.URL + "/error")
+
 	_, _, err := r.Request("POST", u, nil, "")
+
 	if assert.Error(t, err) {
 		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	}
 }

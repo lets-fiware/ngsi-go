@@ -37,7 +37,7 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host")
 	_ = set.Parse([]string{"--host=orion"})

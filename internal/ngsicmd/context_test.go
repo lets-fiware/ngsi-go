@@ -42,9 +42,10 @@ import (
 
 func TestContextList(t *testing.T) {
 	_, set, app, buf := setupTest()
-	setupFlagString(set, "name")
 
+	setupFlagString(set, "name")
 	c := cli.NewContext(app, set, nil)
+
 	err := contextList(c)
 
 	if assert.NoError(t, err) {
@@ -59,12 +60,14 @@ func TestContextListJSON(t *testing.T) {
 
 	setupFlagString(set, "name,json")
 	c := cli.NewContext(app, set, nil)
-	set.Parse([]string{"--name=fiware", "--json={}"})
+	_ = set.Parse([]string{"--name=fiware", "--json={}"})
+
 	err := contextAdd(c)
 	assert.NoError(t, err)
 
 	set = flag.NewFlagSet("test", 0)
 	c = cli.NewContext(app, set, nil)
+
 	err = contextList(c)
 
 	if assert.NoError(t, err) {
@@ -76,10 +79,11 @@ func TestContextListJSON(t *testing.T) {
 
 func TestContextListName(t *testing.T) {
 	_, set, app, buf := setupTest()
-	setupFlagString(set, "name")
 
+	setupFlagString(set, "name")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=etsi"})
+
 	err := contextList(c)
 
 	if assert.NoError(t, err) {
@@ -91,10 +95,11 @@ func TestContextListName(t *testing.T) {
 
 func TestContextListErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,syslog")
 
+	setupFlagString(set, "name,syslog")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--syslog="})
+
 	err := contextList(c)
 
 	if assert.Error(t, err) {
@@ -106,10 +111,11 @@ func TestContextListErrorInitCmd(t *testing.T) {
 
 func TestContextListErrorName(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name")
 
+	setupFlagString(set, "name")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware"})
+
 	err := contextList(c)
 
 	if assert.Error(t, err) {
@@ -124,7 +130,8 @@ func TestContextListErrorJSON(t *testing.T) {
 
 	setupFlagString(set, "name,json")
 	c := cli.NewContext(app, set, nil)
-	set.Parse([]string{"--name=fiware", "--json={}"})
+	_ = set.Parse([]string{"--name=fiware", "--json={}"})
+
 	err := contextAdd(c)
 	assert.NoError(t, err)
 
@@ -144,10 +151,11 @@ func TestContextListErrorJSON(t *testing.T) {
 
 func TestContextAdd(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware", "--url=http://fiware"})
+
 	err := contextAdd(c)
 
 	if assert.NoError(t, err) {
@@ -161,10 +169,11 @@ func TestContextAdd(t *testing.T) {
 
 func TestContextAddErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,syslog")
 
+	setupFlagString(set, "name,syslog")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--syslog="})
+
 	err := contextAdd(c)
 
 	if assert.Error(t, err) {
@@ -176,9 +185,10 @@ func TestContextAddErrorInitCmd(t *testing.T) {
 
 func TestContextAddErrorName(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
+
 	err := contextAdd(c)
 
 	if assert.Error(t, err) {
@@ -190,10 +200,11 @@ func TestContextAddErrorName(t *testing.T) {
 
 func TestContextAddErrorNameString(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=@fiware"})
+
 	err := contextAdd(c)
 
 	if assert.Error(t, err) {
@@ -205,10 +216,11 @@ func TestContextAddErrorNameString(t *testing.T) {
 
 func TestContextAddErrorUrl(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware"})
+
 	err := contextAdd(c)
 
 	if assert.Error(t, err) {
@@ -220,10 +232,11 @@ func TestContextAddErrorUrl(t *testing.T) {
 
 func TestContextAddErrorUrlJSON(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url,json")
 
+	setupFlagString(set, "name,url,json")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware", "--url=http://context", "--json={}"})
+
 	err := contextAdd(c)
 
 	if assert.Error(t, err) {
@@ -235,10 +248,11 @@ func TestContextAddErrorUrlJSON(t *testing.T) {
 
 func TestContextAddErrorUrlError(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware", "--url=abc"})
+
 	err := contextAdd(c)
 
 	if assert.Error(t, err) {
@@ -249,14 +263,13 @@ func TestContextAddErrorUrlError(t *testing.T) {
 }
 
 func TestContextAddErrorJSONError(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-	setupFlagString(set, "name,json")
+	_, set, app, _ := setupTest()
 
+	setupFlagString(set, "name,json")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware", "--json=http://context"})
+
 	err := contextAdd(c)
-	b := false
-	ngsi.JSONConverter = &MockJSONLib{ValidErr: &b}
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -267,10 +280,11 @@ func TestContextAddErrorJSONError(t *testing.T) {
 
 func TestContextAddError(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=etsi", "--url=http://context"})
+
 	err := contextAdd(c)
 
 	if assert.Error(t, err) {
@@ -282,10 +296,11 @@ func TestContextAddError(t *testing.T) {
 
 func TestContextUpdate(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=etsi", "--url=http://fiware"})
+
 	err := contextUpdate(c)
 
 	assert.NoError(t, err)
@@ -293,10 +308,11 @@ func TestContextUpdate(t *testing.T) {
 
 func TestContextUpdateErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,syslog")
 
+	setupFlagString(set, "name,syslog")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--syslog="})
+
 	err := contextUpdate(c)
 
 	if assert.Error(t, err) {
@@ -308,9 +324,10 @@ func TestContextUpdateErrorInitCmd(t *testing.T) {
 
 func TestContextUpdateErrorName(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
+
 	err := contextUpdate(c)
 
 	if assert.Error(t, err) {
@@ -322,10 +339,11 @@ func TestContextUpdateErrorName(t *testing.T) {
 
 func TestContextUpdateErrorUrl(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware"})
+
 	err := contextUpdate(c)
 
 	if assert.Error(t, err) {
@@ -337,10 +355,11 @@ func TestContextUpdateErrorUrl(t *testing.T) {
 
 func TestContextUpdateErrorUrlError(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=etsi", "--url=abc"})
+
 	err := contextUpdate(c)
 
 	if assert.Error(t, err) {
@@ -352,10 +371,11 @@ func TestContextUpdateErrorUrlError(t *testing.T) {
 
 func TestContextDelete(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=etsi", "--url=http://fiware"})
+
 	err := contextDelete(c)
 
 	assert.NoError(t, err)
@@ -363,10 +383,11 @@ func TestContextDelete(t *testing.T) {
 
 func TestContextDeleteErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,syslog")
 
+	setupFlagString(set, "name,syslog")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--syslog="})
+
 	err := contextDelete(c)
 
 	if assert.Error(t, err) {
@@ -378,9 +399,10 @@ func TestContextDeleteErrorInitCmd(t *testing.T) {
 
 func TestContextDeleteErrorName(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
+
 	err := contextDelete(c)
 
 	if assert.Error(t, err) {
@@ -392,10 +414,11 @@ func TestContextDeleteErrorName(t *testing.T) {
 
 func TestContextDeleteErrorUrl(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,url")
 
+	setupFlagString(set, "name,url")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--name=fiware"})
+
 	err := contextDelete(c)
 
 	if assert.Error(t, err) {
@@ -449,6 +472,7 @@ func TestGetAtContextErrorNotJSON(t *testing.T) {
 
 func TestGetAtContextErrorJSON(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
+
 	setJSONDecodeErr(ngsi, 0)
 
 	_, err := getAtContext(ngsi, "{}")
@@ -500,6 +524,7 @@ func TestInsertAtContextErrorPayload(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
 	payload := []byte(`context`)
+
 	_, err := insertAtContext(ngsi, payload, "{}")
 
 	if assert.Error(t, err) {
@@ -511,9 +536,10 @@ func TestInsertAtContextErrorPayload(t *testing.T) {
 
 func TestInsertAtContextErrorArrayUnmarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	setJSONDecodeErr(ngsi, 1)
 
+	setJSONDecodeErr(ngsi, 1)
 	payload := []byte(`[]`)
+
 	_, err := insertAtContext(ngsi, payload, "{}")
 
 	if assert.Error(t, err) {
@@ -525,9 +551,10 @@ func TestInsertAtContextErrorArrayUnmarshal(t *testing.T) {
 
 func TestInsertAtContextErrorArrayMarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	setJSONEncodeErr(ngsi, 0)
 
+	setJSONEncodeErr(ngsi, 0)
 	payload := []byte(`[]`)
+
 	_, err := insertAtContext(ngsi, payload, "{}")
 
 	if assert.Error(t, err) {
@@ -539,9 +566,10 @@ func TestInsertAtContextErrorArrayMarshal(t *testing.T) {
 
 func TestInsertAtContextErrorObjectUnmarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	setJSONDecodeErr(ngsi, 1)
 
+	setJSONDecodeErr(ngsi, 1)
 	payload := []byte(`{}`)
+
 	_, err := insertAtContext(ngsi, payload, "{}")
 
 	if assert.Error(t, err) {
@@ -553,9 +581,10 @@ func TestInsertAtContextErrorObjectUnmarshal(t *testing.T) {
 
 func TestInsertAtContextErrorObjectMarshal(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
-	setJSONEncodeErr(ngsi, 0)
 
+	setJSONEncodeErr(ngsi, 0)
 	payload := []byte(`{}`)
+
 	_, err := insertAtContext(ngsi, payload, "{}")
 
 	if assert.Error(t, err) {
@@ -567,13 +596,13 @@ func TestInsertAtContextErrorObjectMarshal(t *testing.T) {
 
 func TestContextServer(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,name")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=etsi"})
+
 	err := contextServer(c)
 
 	assert.NoError(t, err)
@@ -581,14 +610,15 @@ func TestContextServer(t *testing.T) {
 
 func TestContextServerHTTPS(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,key,cert,name")
 	setupFlagBool(set, "https")
-
 	c := cli.NewContext(app, set, nil)
+
 	_ = set.Parse([]string{"--https", "--key=test.key", "--cert=test.cert", "--port=aaaa", "--url=/context", "--name=etsi"})
+
 	err := contextServer(c)
 
 	assert.NoError(t, err)
@@ -596,14 +626,13 @@ func TestContextServerHTTPS(t *testing.T) {
 
 func TestContextServerJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
 
-	set = flag.NewFlagSet("test", 0)
+	ngsi.Stderr = new(bytes.Buffer)
+
 	setupFlagString(set, "port,url,name")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=array"})
+
 	err := contextServer(c)
 
 	assert.NoError(t, err)
@@ -611,13 +640,13 @@ func TestContextServerJSON(t *testing.T) {
 
 func TestContextServerDataJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,data")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data={}"})
+
 	err := contextServer(c)
 
 	assert.NoError(t, err)
@@ -625,13 +654,13 @@ func TestContextServerDataJSON(t *testing.T) {
 
 func TestContextServerDataHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,data")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=http://context"})
+
 	err := contextServer(c)
 
 	assert.NoError(t, err)
@@ -639,14 +668,14 @@ func TestContextServerDataHTTP(t *testing.T) {
 
 func TestContextServerDataFile(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte("{}")}
 
 	setupFlagString(set, "port,url,data")
-
-	ngsi.FileReader = &MockFileLib{ReadFileData: []byte("{}")}
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+
 	err := contextServer(c)
 
 	assert.NoError(t, err)
@@ -654,10 +683,11 @@ func TestContextServerDataFile(t *testing.T) {
 
 func TestContextServerErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
-	setupFlagString(set, "name,syslog")
 
+	setupFlagString(set, "name,syslog")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--syslog="})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -669,13 +699,13 @@ func TestContextServerErrorInitCmd(t *testing.T) {
 
 func TestContextServerErrorNoArgs(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,name,data")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -687,13 +717,13 @@ func TestContextServerErrorNoArgs(t *testing.T) {
 
 func TestContextServerErrorTooMuchArgs(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,name,data")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=etsi", "--data=@file"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -705,13 +735,13 @@ func TestContextServerErrorTooMuchArgs(t *testing.T) {
 
 func TestContextServerErrorNotFoundName(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,name,data")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--name=fiware"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -724,14 +754,13 @@ func TestContextServerErrorNotFoundName(t *testing.T) {
 func TestContextServerErrorFilePathAbs(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,data")
-
 	setFilePatAbsError(ngsi, 0)
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -743,14 +772,14 @@ func TestContextServerErrorFilePathAbs(t *testing.T) {
 
 func TestContextServerErrorReadFileError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,data")
-
 	setReadFileError(ngsi, 1)
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@file"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -762,13 +791,13 @@ func TestContextServerErrorReadFileError(t *testing.T) {
 
 func TestContextServerErrorFileNameError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,data")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=@"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -780,12 +809,11 @@ func TestContextServerErrorFileNameError(t *testing.T) {
 
 func TestContextServerErrorNotJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
 
-	setupFlagString(set, "port,url,data")
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setReadFileError(ngsi, 1)
+	setupFlagString(set, "port,url,data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--port=aaaa", "--url=/context", "--data=file"})
 
@@ -800,14 +828,14 @@ func TestContextServerErrorNotJSON(t *testing.T) {
 
 func TestContextServerErrorKey(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,key,cert,name")
 	setupFlagBool(set, "https")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--https", "--port=aaaa", "--url=/", "--name=etsi"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {
@@ -819,14 +847,14 @@ func TestContextServerErrorKey(t *testing.T) {
 
 func TestContextServerErrorCert(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-	buf := new(bytes.Buffer)
-	ngsi.Stderr = buf
+
+	ngsi.Stderr = new(bytes.Buffer)
 
 	setupFlagString(set, "port,url,key,cert,name")
 	setupFlagBool(set, "https")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--https", "--key=a", "--port=aaaa", "--url=/", "--name=etsi"})
+
 	err := contextServer(c)
 
 	if assert.Error(t, err) {

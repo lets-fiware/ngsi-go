@@ -34,12 +34,6 @@ import (
 	"io"
 )
 
-type buffer interface {
-	bufferOpen(w io.Writer)
-	bufferWrite(interface{})
-	bufferClose()
-}
-
 type jsonBuffer struct {
 	writer    io.Writer
 	buf       []byte

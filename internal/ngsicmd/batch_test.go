@@ -329,7 +329,7 @@ func TestBatchCreateContext(t *testing.T) {
 }
 
 func TestBatchCreateErrorReadAll(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
@@ -487,7 +487,7 @@ func TestBatchUpdateContext(t *testing.T) {
 }
 
 func TestBatchUpdateErrorReadAll(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
@@ -645,7 +645,7 @@ func TestBatchUpsertContext(t *testing.T) {
 }
 
 func TestBatchUpsertErrorReadAll(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)
@@ -779,7 +779,7 @@ func TestBatchDelete(t *testing.T) {
 }
 
 func TestBatchDeleteErrorReadAll(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
 	c := cli.NewContext(app, set, nil)

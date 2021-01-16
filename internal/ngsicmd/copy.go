@@ -106,7 +106,7 @@ func copy(c *cli.Context) error {
 			return &ngsiCmdError{funcName, 10, err.Error(), err}
 		}
 
-		res, _, err = destination.OpUpdate(&entities, "append", false, false)
+		_, _, err = destination.OpUpdate(&entities, "append", false, false)
 		if err != nil {
 			return &ngsiCmdError{funcName, 11, err.Error(), err}
 		}

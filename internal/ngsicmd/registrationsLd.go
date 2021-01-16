@@ -139,7 +139,7 @@ func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 				if err != nil {
 					return &ngsiCmdError{funcName, 6, err.Error(), err}
 				}
-				fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			} else {
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
@@ -193,7 +193,7 @@ func registrationsGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 	fmt.Fprint(ngsi.StdWriter, string(b))
@@ -229,9 +229,7 @@ func registrationsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	location := res.Header.Get("Location")
 	p := "/ngsi-ld/v1/csourceRegistrations/"
-	if strings.HasPrefix(location, p) {
-		location = location[len(p):]
-	}
+	location = strings.TrimPrefix(location, p)
 
 	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is created, FIWARE-ServicePath: %s", res.Header.Get("Location"), c.String("service")))
 
@@ -282,7 +280,7 @@ func registrationsTemplateLd(c *cli.Context, ngsi *ngsilib.NGSI) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, string(newBuf.Bytes()))
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 
