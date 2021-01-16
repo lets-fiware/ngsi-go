@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-```
+```console
 git clone https://github.com/FIWARE/tutorials.CRUD-Operations.git
 cd tutorials.CRUD-Operations
 git checkout NGSI-LD
@@ -16,19 +16,19 @@ curl http://localhost:1026/version
 
 ### Add Host
 
-```
+```console
 ngsi broker add --host orion-ld --brokerHost http://localhost:1026
 ```
 
 ### Add Context
 
-```
+```console
 ngsi context add --name tutorial --url http://context-provider:3000/data-models/ngsi-context.jsonld
 ```
 
 ### Version
 
-```
+```console
 ngsi version -h orion-ld
 ```
 
@@ -40,7 +40,7 @@ This example adds a new **TemperatureSensor** entity to the context.
 
 #### :one: Request:
 
-```
+```console
 ngsi create entity --link tutorial \
 --data '{
       "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -59,7 +59,7 @@ ngsi create entity --link tutorial \
 
 #### :two: Request:
 
-```
+```console
 ngsi get entity --link tutorial --id urn:ngsi-ld:TemperatureSensor:001
 ```
 
@@ -70,7 +70,7 @@ This example adds a new `batteryLevel` Property and a `controlledAsset` Relation
 
 #### :three: Request:
 
-```
+```console
 ngsi append attrs --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 \
 --data '{
        "batteryLevel": {
@@ -84,15 +84,16 @@ ngsi append attrs --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 \
       }
 }'
 ```
+
 #### :four: Request:
 
-```
+```console
 ngsi get entity --link tutorial --id urn:ngsi-ld:TemperatureSensor:001
 ```
 
 #### :five: Request:
 
-```
+```console
 ngsi create entities --link tutorial \
 --data '[
     {
@@ -147,7 +148,7 @@ context.
 
 #### :six: Request:
 
-```
+```console
 ngsi upsert entities --link tutorial \
 --data '[
     {
@@ -197,7 +198,7 @@ This example reads the full context from an existing **TemperatureSensor** entit
 
 #### :seven: Request:
 
-```
+```console
 ngsi get entity --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --sysAttrs
 ```
 
@@ -208,7 +209,7 @@ known `id`.
 
 #### :eight: Request:
 
-```
+```console
 ngsi get entity --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attrs temperature
 ```
 
@@ -218,7 +219,7 @@ This example reads the key-value pairs from the context of an existing **Tempera
 
 #### :nine: Request:
 
-```
+```console
 ngsi get entity --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --keyValues
 ```
 
@@ -229,7 +230,7 @@ This example reads the value of two attributes (`category` and `temperature`) fr
 
 #### :one::zero: Request:
 
-```
+```console
 ngsi get entity --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --keyValues --attrs category,temperature
 ```
 
@@ -239,7 +240,7 @@ This example lists the full context of all **TemperatureSensor** entities.
 
 #### :one::one: Request:
 
-```
+```console
 ngsi list entities --link tutorial --type TemperatureSensor
 ```
 
@@ -249,7 +250,7 @@ This example lists the `temperature` attribute of all **TemperatureSensor** enti
 
 #### :one::two: Request:
 
-```
+```console
 ngsi list entities -link tutorial --type TemperatureSensor --attrs temperature --keyValues
 ```
 
@@ -260,7 +261,7 @@ unique, so `type` is not required for this request. To filter by `id` add the en
 
 #### :one::three: Request:
 
-```
+```console
 ngsi list entities --link tutorial --id urn:ngsi-ld:TemperatureSensor:001,urn:ngsi-ld:TemperatureSensor:002 --attrs temperature --keyValues
 ```
 
@@ -277,7 +278,7 @@ This example updates the value of the `category` attribute of the Entity with `i
 
 #### :one::four: Request:
 
-```
+```console
 ngsi update attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attrName category \
 --data '{
     "value": ["sensor", "actuator"],
@@ -292,7 +293,7 @@ with `id=urn:ngsi-ld:TemperatureSensor:001`.
 
 #### :one::five: Request:
 
-```
+```console
 ngsi update attrs --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 \
 --data '{
       "category": {
@@ -315,7 +316,7 @@ This example uses the convenience batch processing endpoint to update existing s
 
 #### :one::six: Request:
 
-```
+```console
 ngsi upsert entities --link tutorial --update \
 --data '[
   {
@@ -349,7 +350,7 @@ This example uses the convenience batch processing endpoint to replace entity da
 
 #### :one::seven: Request:
 
-```
+```console
 ngsi update entities --link tutorial --replace \
 --data '[
   {
@@ -400,7 +401,7 @@ This example deletes the entity with `id=urn:ngsi-ld:TemperatureSensor:004` from
 
 #### :one::eight: Request:
 
-```
+```console
 ngsi delete entity --link tutorial --id urn:ngsi-ld:TemperatureSensor:004
 ```
 
@@ -410,7 +411,7 @@ This example removes the `batteryLevel` attribute from the entity with `id=urn:n
 
 #### :one::nine: Request:
 
-```
+```console
 ngsi delete attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attrName batteryLevel
 ```
 
@@ -420,7 +421,8 @@ This example uses the convenience batch processing endpoint to delete some **Tem
 
 #### :two::zero: Request:
 
-```
+```console
+ngsi delete attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attrName batteryLevel
 ngsi delete entities --link tutorial \
 --data '[
   "urn:ngsi-ld:TemperatureSensor:002",
@@ -435,7 +437,7 @@ This example uses the PATCH `/ngsi-ld/v1/entities/<entity-id>/attrs` endpoint to
 
 #### :two::one: Request:
 
-```
+```console
 ngsi update attrs --link tutorial --id urn:ngsi-ld:TemperatureSensor:001
 --data '{
       "category": {
@@ -456,6 +458,6 @@ This example returns a header indicating whether any linked data relationships r
 
 #### :two::two: Request:
 
-```
+```console
 ngsi list entities --link tutorial --type TemperatureSensor --query controlledAsset==\"urn:ngsi-ld:Building:barn002\" --count
 ```

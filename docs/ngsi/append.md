@@ -4,7 +4,7 @@ This command appends multiple attributes.
 
 -   [Append multiple attributes](#append-multiple-attributes)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |

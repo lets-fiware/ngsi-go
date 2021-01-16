@@ -6,7 +6,7 @@ This command gets an oauth token and prints a token information.
 ngsi token [options]
 ```
 
-### Options
+## Options
 
 | Options                | Description                                 |
 | ---------------------- | ------------------------------------------- |
@@ -16,7 +16,7 @@ ngsi token [options]
 | --expires, -e          | print expires (default: false)              |
 | --help                 | show help (default: false)                  |
 
-#### Example 1
+### Example 1
 
 ```console
 ngsi token -h orion
@@ -26,7 +26,7 @@ ngsi token -h orion
 8385a04bd4e3d1da323843f32a18c9e0d5ad42e1
 ```
 
-#### Example 2
+### Example 2
 
 ```console
 export TOKEN=`ngsi token -h orion`
@@ -34,9 +34,9 @@ echo $TOKEN
 63dcaf3e87d9775578b46a7bb046be74365e9b96
 ```
 
-#### Example 3
+### Example 3
 
-Get detailed information about a token 
+Get detailed information about a token
 
 ```console
 ngsi token -h orion --verbose
@@ -46,7 +46,7 @@ ngsi token -h orion --verbose
 {"AccessToken":"7385a04bd4e3d1da723843f32a18c9e0d5ad42c9","ExpiresIn":3599,"RefreshToken":"59580f9a024ad8a28464e8be024b5c753dea2b9c","Scope":["bearer"],"TokenType":"Bearer"}
 ```
 
-#### Example 4
+### Example 4
 
 Get the number of seconds until a token expires
 

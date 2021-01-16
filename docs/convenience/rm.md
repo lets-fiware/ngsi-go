@@ -2,12 +2,11 @@
 
 This command removes all entities of an entity type specified by the `--type` option.
 
-
 ```console
 ngsi rm [options]
 ```
 
-### Options
+## Options
 
 | Options                   | Description                                    |
 | ------------------------- | ---------------------------------------------- |
@@ -20,7 +19,7 @@ ngsi rm [options]
 | --run                     | actually run to copy entities (default: false) |
 | --help                    | show help (default: false)                     |
 
-#### Example
+### Example
 
 ```console
 ngsi rm --host orion --type EvacuationSpace --run

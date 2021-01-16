@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-```
+```console
 git clone https://github.com/FIWARE/tutorials.CRUD-Operations.git
 cd tutorials.CRUD-Operations
 git checkout NGSI-v2
@@ -18,13 +18,13 @@ curl http://localhost:1026/version
 
 ### Add host
 
-```
+```console
 ngsi broker add --host orion --brokerHost http://localhost:1026 --ngsiType v2
 ```
 
 ### Version
 
-```
+```console
 ngsi version -h orion
 ```
 
@@ -34,7 +34,7 @@ This example adds a new **Product** entity ("Lemonade" at 99 cents) to the conte
 
 #### :one: Request:
 
-```
+```console
 ngsi create entity \
   --data ' {
       "id":"urn:ngsi-ld:Product:010", "type":"Product",
@@ -46,7 +46,7 @@ ngsi create entity \
 
 #### :two: Request:
 
-```
+```console
 ngsi get entity --id urn:ngsi-ld:Product:010 --type Product
 ```
 
@@ -56,7 +56,7 @@ This example adds a new `specialOffer` attribute to the existing **Product** ent
 
 #### :three: Request:
 
-```
+```console
 ngsi append attrs --id urn:ngsi-ld:Product:010 \
   --data '{
       "specialOffer":{"value": true}
@@ -65,7 +65,7 @@ ngsi append attrs --id urn:ngsi-ld:Product:010 \
 
 #### :four: Request:
 
-```
+```console
 ngsi get entity --id urn:ngsi-ld:Product:001 --type Product
 ```
 
@@ -76,7 +76,7 @@ This example uses the convenience batch processing endpoint to add two new **Pro
 
 #### :five: Request:
 
-```
+```console
 ngsi create entities \
 --data '[
   {
@@ -108,7 +108,7 @@ This example uses the convenience batch processing endpoint to add or amend two 
 
 #### :six: Request:
 
-```
+```console
 ngsi upsert entities \
 --data '[
   {
@@ -132,7 +132,8 @@ This example reads the full context from an existing **Product** entity with a k
 
 #### :seven: Request:
 
-```
+```console
+ngsi upsert entities \
 ngsi get entity --id urn:ngsi-ld:Product:010 --type Product
 ```
 
@@ -142,7 +143,7 @@ This example reads the value of a single attribute (`name`) from an existing **P
 
 #### :eight: Request:
 
-```
+```console
 ngsi get attr --id urn:ngsi-ld:Product:001 --attrName name
 ```
 
@@ -153,19 +154,19 @@ entities with a known `id`.
 
 #### :nine: Request:
 
-```
+```console
 ngsi get entity --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs name,price
 ```
 
-```
+```console
 {"id":"urn:ngsi-ld:Product:001","type":"Product","name":"Lemonade","price":99}
 ```
 
-```
+```console
 ngsi get attrs --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs name,price
 ```
 
-```
+```console
 {"name":"Lemonade","price":99}
 ```
 
@@ -176,7 +177,7 @@ with a known ID.
 
 #### :one::zero: Request:
 
-```
+```console
 ngsi get attrs --id urn:ngsi-ld:Product:001 --attrs name,price --values
 ```
 
@@ -186,7 +187,7 @@ This example lists the full context of all **Product** entities.
 
 #### :one::one: Request:
 
-```
+```console
 ngsi list entities --type Product
 ```
 
@@ -196,7 +197,7 @@ This example lists the `name` and `price` attributes of all **Product** entities
 
 #### :one::two: Request:
 
-```
+```console
 ngsi list entities --type Product -attrs name,price --keyValues
 ```
 
@@ -206,7 +207,8 @@ This example lists the `id` and `type` of all **Product** entities.
 
 #### :one::three: Request:
 
-```
+```console
+ngsi list entities --type Product -attrs name,price --keyValues
 ngsi list entities --type Product -attrs id
 ```
 
@@ -218,7 +220,7 @@ This example updates the value of the price attribute of the Entity with `id=urn
 
 #### :one::four: Request:
 
-```
+```console
 ngsi update attr --id urn:ngsi-ld:Product:001 --attrName price --data 89
 ```
 
@@ -229,7 +231,7 @@ This example simultaneously updates the values of both the price and name attrib
 
 #### :one::five: Request:
 
-```
+```console
 ngsi update attrs --id urn:ngsi-ld:Product:001 \
 --data ' {
     "price":{"type":"Integer", "value": 89},
@@ -243,7 +245,7 @@ This example uses the convenience batch processing endpoint to update existing p
 
 #### :one::six: Request:
 
-```
+```console
 ngsi update entities \
 --data '[
   {
@@ -264,7 +266,7 @@ This example uses the convenience batch processing endpoint to update existing p
 
 #### :one::seven: Request:
 
-```
+```console
 ngsi upsert entities \
 --data '[
 {
@@ -285,7 +287,7 @@ This example uses the convenience batch processing endpoint to replace entity da
 
 #### :one::eight: Request:
 
-```
+```console
 ngsi replace entities \
 --data '[
 {
@@ -303,7 +305,7 @@ This example deletes the entity with `id=urn:ngsi-ld:Product:001` from the conte
 
 #### :one::nine: Request:
 
-```
+```console
 ngsi delete entity --id urn:ngsi-ld:Product:010
 ```
 
@@ -313,7 +315,7 @@ This example removes the `specialOffer` attribute from the entity with `id=urn:n
 
 #### :two::zero: Request:
 
-```
+```console
 ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
 ```
 
@@ -323,7 +325,7 @@ This example uses the convenience batch processing endpoint to delete some **Pro
 
 #### :two::one: Request:
 
-```
+```console
 ngsi delete entities \
 --data '[
   {
@@ -341,7 +343,7 @@ This example uses the convenience batch processing endpoint to delete some attri
 
 #### :two::two: Request:
 
-```
+```console
 ngsi delete entities \
 --data '[
   {
@@ -351,12 +353,13 @@ ngsi delete entities \
   }
 ]'
 ```
+
 ### Find existing data relationships
 
 This example returns the key of all entities directly associated with the `urn:ngsi-ld:Product:001`.
 
 #### :two::three: Request:
 
-```
+```console
 ngsi list entities -q "refProduct%==urn:ngsi-ld:Product:001" --attrs type
 ```

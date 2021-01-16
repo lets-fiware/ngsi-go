@@ -7,7 +7,7 @@ This command will update entities, attribute(s), or subscription.
 -   [Update multiple attributes](#update-multiple-attributes)
 -   [Update a subscription](#update-a-subscription)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |

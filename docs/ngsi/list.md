@@ -7,7 +7,7 @@ This command lists types, entities, subscriptions or registrations.
 -   [List multiple subscriptions](#list-multiple-subscriptions)
 -   [List multiple registrations](#list-multiple-registrations)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |
@@ -108,7 +108,7 @@ ngsi list [common options] entities [options]
 #### Request:
 
 ```console
-$ ngsi list entities --type Product
+ngsi list entities --type Product
 ```
 
 ```text
@@ -131,7 +131,7 @@ urn:ngsi-ld:Product:101
 #### Request:
 
 ```console
-$ ngsi list entities --type Product --count
+ngsi list entities --type Product --count
 ```
 
 ```text
@@ -441,7 +441,6 @@ ngsi list [common options] registrations [options]
 | --pretty, -P       | pretty format (default: false)  |
 | --safeString value | use safe string (value: on/off) |
 | --help             | show help (default: false)      |
-
 
 ### Examples for NGSI-LD
 

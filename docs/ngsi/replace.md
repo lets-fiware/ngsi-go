@@ -5,7 +5,7 @@ This command replaces multiple entities or attributes
 -   [Replace multiple entities](#replace-multiple-entities)
 -   [Replace multiple attributes](#replace-multiple-attributes)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |

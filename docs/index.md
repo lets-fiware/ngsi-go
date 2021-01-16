@@ -56,10 +56,10 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 
 ### Management
 
--    [broker](management/broker.md): manage config for broker
--    [context](management/context.md): manage @context
--    [settings](management/settings.md):  manage settings
--    [token](management/token.md): manage token
+-   [broker](management/broker.md): manage config for broker
+-   [context](management/context.md): manage @context
+-   [settings](management/settings.md):  manage settings
+-   [token](management/token.md): manage token
 
 ### Global Options
 
@@ -71,7 +71,7 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 
 ## GitHub repository
 
--    [lets-fiware/ngsi-go](https://github.com/lets-fiware/ngsi-go/)
+-   [lets-fiware/ngsi-go](https://github.com/lets-fiware/ngsi-go/)
 
 ## Copyright and License
 

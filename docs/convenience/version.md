@@ -6,7 +6,7 @@ This command prints the version of Context Broker host specified by the `--host`
 ngsi version [options]
 ```
 
-### Options
+## Options
 
 | Options                         | Description                      |
 | ------------------------------- | -------------------------------- |
@@ -14,7 +14,7 @@ ngsi version [options]
 | --token value                   | specify oauth token              |
 | --help                          | show help (default: false)       |
 
-#### Example
+### Example
 
 ```console
 ngsi version -h orion

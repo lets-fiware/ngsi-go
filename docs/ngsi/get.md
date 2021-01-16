@@ -9,7 +9,7 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 -   [Get a subscription](#get-a-subscription)
 -   [Get a registration](#get-a-registration)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |

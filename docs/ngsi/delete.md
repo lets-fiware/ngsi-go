@@ -6,7 +6,7 @@
 -   [Delete a subscription](#delete-a-subscription)
 -   [Delete a registration](#delete-a-registration)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |
@@ -122,7 +122,7 @@ ngsi delete [common options] attr [options]
 
 ```console
 ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
-``` 
+```
 
 <a name="delete-a-subscription"/>
 
@@ -165,7 +165,6 @@ ngsi delete [common options] registration [options]
 | -------------------- | -------------------------- |
 | --id value, -i value | specify registration id    |
 | --help               | show help (default: false) |
-
 
 ### Example
 

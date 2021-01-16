@@ -38,6 +38,7 @@ You can register an alias to access the broker.
 ```console
 ngsi broker add --host letsfiware --brokerHost http://localhost:1026 --ngsiType v2
 ```
+
 ## Get broker version by using an alias
 
 You can get the version by using the alias `letsfiware`.

@@ -13,14 +13,13 @@
 ![CI](https://github.com/lets-fiware/ngsi-go/workflows/CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/lets-fiware/ngsi-go/badge.svg?branch=main)](https://coveralls.io/github/lets-fiware/ngsi-go?branch=main)
 
-
 The NGSI Go is a Unix command-line tool for FIWARE NGSI v2 and NGSI-LD.
 
 | :books: [Documentation](https://ngsi-go.letsfiware.jp/) | :dart: [Roadmap](./roadmap.md) |
 |---------------------------------------------------------|--------------------------------|
 
 ## Contents
- 
+
 <details>
 <summary><strong>Details</strong></summary>
 
@@ -40,7 +39,6 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 > serve to vanquish the Dragonload."
 >
 > — DRAGON WARRIOR (DRAGON QUEST)
-
 
 ## Getting Started with NGSI Go
 

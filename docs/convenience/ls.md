@@ -6,7 +6,7 @@ This command lists multiple entities
 ngsi ls [options]
 ```
 
-### Options
+## Options
 
 | Options                       | Description                                 |
 | ----------------------------- | ------------------------------------------- |

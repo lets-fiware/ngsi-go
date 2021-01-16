@@ -5,7 +5,7 @@
 -   [Create a subscription](#create-a-subscription)
 -   [Create a registration](#create-a-registration)
 
-### Common Options
+## Common Options
 
 | Options                   | Description                |
 | ------------------------- | -------------------------- |
@@ -36,7 +36,7 @@ ngsi create [command options] entity [options]
 | --context value, -C value | specify @context (LD)              |
 | --help                    | show help (default: false)         |
 
-### Example 
+### Example
 
 #### Request:
 
@@ -104,7 +104,7 @@ ngsi create [common options] entities [options]
 | --context value, -C value | specify @context (LD)              |
 | --help                    | show help (default: false)         |
 
-### Example 
+### Example
 
 #### Request:
 

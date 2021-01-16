@@ -6,7 +6,7 @@ This command can receive notifications related with subscriptions that a context
 ngsi receiver [options]
 ```
 
-### Options
+## Options
 
 | Options                | Description                                         |
 | ---------------------- | --------------------------------------------------- |
