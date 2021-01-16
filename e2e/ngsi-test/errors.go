@@ -70,3 +70,9 @@ func printError(err error) {
 		}
 	}
 }
+
+func setNewError(funcName string, num int, newErr error, err *error) {
+	if *err == nil && newErr != nil {
+		*err = &ngsiCmdError{funcName, num, newErr.Error(), nil}
+	}
+}

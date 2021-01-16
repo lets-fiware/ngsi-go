@@ -68,48 +68,52 @@ func (l *lexer) scan() ([]string, error) {
 			return l.token, nil
 		case ' ', '\t':
 			l.s = ""
-			break
 		case '\\':
 			c, err := l.readChar()
 			if err != nil {
 				return nil, &ngsiCmdError{funcName, 2, err.Error(), err}
 			}
 			if c == '\n' {
-				c, err = l.readChar()
+				_, err = l.readChar()
 				if err != nil {
 					return nil, &ngsiCmdError{funcName, 3, err.Error(), err}
 				}
-				l.unreadChar()
+				err = l.unreadChar()
+				if err != nil {
+					return nil, &ngsiCmdError{funcName, 4, err.Error(), err}
+				}
 				l.s = ""
 				l.lineNo++
 				break
 			}
-			return nil, &ngsiCmdError{funcName, 4, err.Error(), err}
+			return nil, &ngsiCmdError{funcName, 5, err.Error(), err}
 		case '\'':
 			err = l.readSingleQuotedWord()
 			if err != nil {
-				return nil, &ngsiCmdError{funcName, 5, err.Error(), err}
+				return nil, &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
 		case '"':
 			err = l.readDoubleQuotedWord()
 			if err != nil {
-				return nil, &ngsiCmdError{funcName, 6, err.Error(), err}
+				return nil, &ngsiCmdError{funcName, 7, err.Error(), err}
 			}
 		case '#':
 			if len(l.token) == 0 {
 				_, err = l.readLine()
 				if err != nil {
-					return nil, &ngsiCmdError{funcName, 7, err.Error(), err}
+					return nil, &ngsiCmdError{funcName, 8, err.Error(), err}
 				}
 				return l.token, nil
 			}
 			err = l.readWord()
 			if err != nil {
-				return nil, &ngsiCmdError{funcName, 8, err.Error(), err}
+				return nil, &ngsiCmdError{funcName, 9, err.Error(), err}
 			}
-			break
 		case '$':
-			l.readValiable()
+			err = l.readValiable()
+			if err != nil {
+				return nil, &ngsiCmdError{funcName, 10, err.Error(), err}
+			}
 		default:
 			err = l.readWord()
 			if err != nil {
@@ -119,7 +123,7 @@ func (l *lexer) scan() ([]string, error) {
 				if strings.HasPrefix(l.token[0], "```") {
 					err = l.readBackquotedWord()
 					if err != nil {
-						return nil, &ngsiCmdError{funcName, 9, err.Error(), err}
+						return nil, &ngsiCmdError{funcName, 11, err.Error(), err}
 					}
 					return l.token, nil
 				}
@@ -161,7 +165,10 @@ func (l *lexer) readWord() error {
 			return &ngsiCmdError{funcName, 1, err.Error(), err}
 		}
 		if c == ' ' || c == '\t' || c == '\n' {
-			l.unreadChar()
+			err = l.unreadChar()
+			if err != nil {
+				return &ngsiCmdError{funcName, 2, err.Error(), err}
+			}
 			break
 		}
 	}
@@ -199,7 +206,7 @@ func (l *lexer) readLine() (string, error) {
 }
 
 func (l *lexer) readValiable() error {
-	const funcName = "readSingleQuotedWord"
+	const funcName = "readValiable"
 
 	save := l.s[:len(l.s)-1]
 
@@ -208,7 +215,11 @@ func (l *lexer) readValiable() error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 	if c != '{' {
-		return &ngsiCmdError{funcName, 2, "{ not found", nil}
+		err = l.unreadChar()
+		if err != nil {
+			return &ngsiCmdError{funcName, 2, err.Error(), err}
+		}
+		return nil
 	}
 	n := ""
 	for {

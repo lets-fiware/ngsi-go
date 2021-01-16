@@ -197,18 +197,19 @@ func runTestCaseDir(dirName string, dirs, files, cases *int) error {
 	return nil
 }
 
-func runTestCaseFile(fileName string) (int, error) {
+func runTestCaseFile(fileName string) (cases int, err error) {
 	const funcName = "runTestCaseFile"
 
-	cases := 0
+	cases = 0
 
 	fmt.Println("file: " + fileName)
 
-	f, err := os.Open(fileName)
+	var f *os.File
+	f, err = os.Open(fileName)
 	if err != nil {
 		return cases, &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
-	defer f.Close()
+	defer func() { setNewError(funcName, 2, f.Close(), &err) }()
 
 	l := lexer{reader: bufio.NewReader(f)}
 
@@ -218,12 +219,12 @@ func runTestCaseFile(fileName string) (int, error) {
 			break
 		}
 		if err != nil {
-			return cases, &ngsiCmdError{funcName, 2, err.Error(), err}
+			return cases, &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
 
 		c, err := parser(l.lineNo, token)
 		if err != nil {
-			return cases, &ngsiCmdError{funcName, 3, err.Error(), err}
+			return cases, &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 		cases += c
 	}
