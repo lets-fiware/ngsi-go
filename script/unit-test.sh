@@ -1,0 +1,3 @@
+#!/bin/sh
+cd internal || exit 1
+go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...

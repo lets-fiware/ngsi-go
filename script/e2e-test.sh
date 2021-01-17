@@ -27,7 +27,7 @@
 
 make build || exit 1
 cd e2e || exit 1
-if [ ! `docker-compose ps -a | wc -l` = "2" ]; then
+if [ ! "$(docker-compose ps -a | wc -l)" = "2" ]; then
   make down || exit 1
 fi
 make build || exit 1
