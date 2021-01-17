@@ -176,6 +176,11 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 	}
 
 	if ngsi.Updated {
+		if IsHTTP(ngsi.PreviousArgs.Host) {
+			ngsi.PreviousArgs.Host = ""
+			ngsi.PreviousArgs.Tenant = ""
+			ngsi.PreviousArgs.Scope = ""
+		}
 		if err = ngsi.saveConfigFile(); err != nil {
 			return nil, &NgsiLibError{funcName, 12, err.Error(), err}
 		}

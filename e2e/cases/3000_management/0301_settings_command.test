@@ -47,3 +47,117 @@ OPTIONS:
    --version, -v  print the version (default: false)
    
 ```
+
+#
+# 0010 ngsi settings clear
+#
+ngsi settings clear
+
+```0
+```
+
+#
+# 0011 ngsi settings list
+#
+ngsi settings list
+
+```0
+```
+
+#
+# 0012 ngsi version --host orion
+#
+ngsi version --host orion
+
+```0
+{
+"orion" : {
+  "version" : "REGEX(.*)",
+  "uptime" : "REGEX(.*)",
+  "git_hash" : "REGEX(([0-9a-f]{40}|nogitversion))",
+  "compile_time" : "REGEX(.*)",
+  "compiled_by" : "REGEX(.*)",
+  "compiled_in" : "REGEX(.*)",
+  "release_date" : "REGEX(.*)",
+  "doc" : "REGEX(.*)",
+  "libversions": {
+     "boost": "REGEX(.*)",
+     "libcurl": "REGEX(.*)",
+     "libmicrohttpd": "REGEX(.*)",
+     "openssl": "REGEX(.*)",
+     "rapidjson": "REGEX(.*)",
+     "mongodriver": "REGEX(.*)"
+  }
+}
+}
+```
+
+#
+# 0013 ngsi settings list
+#
+ngsi settings list
+
+```0
+Host: orion
+```
+
+#
+# 0014 ngsi settings clear
+#
+ngsi settings clear
+
+```0
+```
+
+#
+# 0015 ngsi settings list
+#
+ngsi settings list
+
+```0
+```
+
+#
+# 0016 ngsi version --host $orion
+#
+ngsi version --host $orion
+
+```0
+{
+"orion" : {
+  "version" : "REGEX(.*)",
+  "uptime" : "REGEX(.*)",
+  "git_hash" : "REGEX(([0-9a-f]{40}|nogitversion))",
+  "compile_time" : "REGEX(.*)",
+  "compiled_by" : "REGEX(.*)",
+  "compiled_in" : "REGEX(.*)",
+  "release_date" : "REGEX(.*)",
+  "doc" : "REGEX(.*)",
+  "libversions": {
+     "boost": "REGEX(.*)",
+     "libcurl": "REGEX(.*)",
+     "libmicrohttpd": "REGEX(.*)",
+     "openssl": "REGEX(.*)",
+     "rapidjson": "REGEX(.*)",
+     "mongodriver": "REGEX(.*)"
+  }
+}
+}
+```
+
+#
+# 0017 ngsi settings list
+#
+ngsi settings list
+
+```0
+```
+
+#
+# 9999 Clean up
+#
+ngsi settings clear
+
+```0
+```
+
