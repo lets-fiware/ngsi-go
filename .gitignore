@@ -5,3 +5,4 @@ coverage.html
 bin/
 build/
 .vscode/
+super-linter.log

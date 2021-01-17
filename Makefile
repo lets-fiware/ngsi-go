@@ -48,17 +48,21 @@ devel-deps:
 bin/%: cmd/%/main.go $(SOURCES)
 	CGO_ENABLED=0 go build -ldflags "$(LDFLAGS)" -o $@ $<
 
-.PHONY: test
-test:
-	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...
+.PHONY: unit-test
+unit-test:
+	script/unit-test.sh
 
 .PHONY: coverage
 coverage:
-	cd internal;go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...;cd ..;go tool cover -html=coverage/coverage.out -o coverage/coverage.html
+	script/coverage.sh
 
-.PHONY: e2e_test
-e2e_test:
-	script/e2e_test.sh
+.PHONY: golangci-lint
+golangci-lint:
+	script/golangci-lint.sh
+
+.PHONY: e2e-test
+e2e-test:
+	script/e2e-test.sh
 
 .PHONY: lint-dockerfile
 lint-dockerfile:
@@ -81,8 +85,8 @@ release:
 	@script/release_buildx.sh
 	$(call sum)
 
-.PHONY: release_github
-release_github:
+.PHONY: release-github
+release-github:
 	ghr -c $(REVISION) v$(VERSION) build/
 
 .PHONY: build-all

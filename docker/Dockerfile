@@ -24,29 +24,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ubuntu:20.04
-
-# hadolint ignore=DL3008
-RUN \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        tar \
-        git \
-        curl \
-        ca-certificates \
-        make && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM golang:1.15.6-alpine3.12 AS builder
 
 RUN \
-    mkdir -p /root/go/src/github.com/lets-fiware && \
-    curl -L "https://golang.org/dl/go1.15.linux-amd64.tar.gz" -O && \
-    tar xvf /go1.15.linux-amd64.tar.gz -C /usr/local
+    apk update && \
+    apk add --no-cache \
+        make=4.3-r0 \
+        git=2.26.2-r0
+
+WORKDIR /root/go/src/github.com/lets-fiware
 
 COPY build.sh /root/go/src/github.com/lets-fiware
 
-ENV PATH $PATH:/usr/local/go/bin:/root/go/bin
-
-WORKDIR /root/go/src/github.com/lets-fiware
 
 CMD ["./build.sh"]

@@ -26,12 +26,12 @@
 # SOFTWARE.
 
 git clone "https://github.com/lets-fiware/ngsi-go.git"
-cd ngsi-go
+cd ngsi-go || exit 1
 rm -fr build
-ln -s /build
+ln -s /build .
 rm -fr build/*
 touch build/.gitkeep
-make devel-deps
+make devel-deps || exit 1
 echo "TARGET: $NGSIGO_TARGET"
-make $NGSIGO_TARGET
-chown -R $USER_ID:$GROUP_ID /build
+make "$NGSIGO_TARGET" || exit 1
+chown -R "$USER_ID":"$GROUP_ID" /build

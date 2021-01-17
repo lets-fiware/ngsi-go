@@ -1,7 +1,7 @@
 #!/bin/sh
 NGSIGO_TARGET=$1
 if [ -z "$NGSIGO_TARGET" ]; then
-  NGSIGO_TARGET=all
+  NGSIGO_TARGET=build-all
 fi
 export NGSIGO_TARGET
 cd docker || exit 1
