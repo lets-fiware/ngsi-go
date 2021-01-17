@@ -25,7 +25,7 @@
 # SOFTWARE.
 
 #
-# ngsi token --help
+# 0001 ngsi token --help
 #
 ngsi token --help
 

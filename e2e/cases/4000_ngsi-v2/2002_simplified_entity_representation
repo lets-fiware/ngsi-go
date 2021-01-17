@@ -1,0 +1,301 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-v2
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+# Simplified Entity Representation
+
+#
+# 0001 Clean up
+#
+ngsi rm --host orion --type Thing --run
+
+```0
+REGEX(.*)
+```
+
+#
+# 0002 Create entity E1
+#
+ngsi create entity --keyValues \
+--data '{
+  "id": "E1",
+  "A1": null,
+  "A2": true,
+  "A3": false,
+  "A4": 10,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}'
+
+```0
+```
+
+#
+# 0003 Get entity as normalized
+#
+ngsi get entity --id E1 -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": {
+    "type": "None",
+    "value": null,
+    "metadata": {}
+  },
+  "A2": {
+    "type": "Boolean",
+    "value": true,
+    "metadata": {}
+  },
+  "A3": {
+    "type": "Boolean",
+    "value": false,
+    "metadata": {}
+  },
+  "A4": {
+    "type": "Number",
+    "value": 10,
+    "metadata": {}
+  },
+  "A5": {
+    "type": "Number",
+    "value": 123.4,
+    "metadata": {}
+  },
+  "A6": {
+    "type": "Text",
+    "value": "abc",
+    "metadata": {}
+  },
+  "A7": {
+    "type": "Text",
+    "value": "2021-01-01T01:23:45.000Z",
+    "metadata": {}
+  },
+  "A8": {
+    "type": "StructuredValue",
+    "value": [
+      1,
+      2,
+      3
+    ],
+    "metadata": {}
+  },
+  "A9": {
+    "type": "StructuredValue",
+    "value": {
+      "A91": 123.4
+    },
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0004 Get entity as keyValues
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": true,
+  "A3": false,
+  "A4": 10,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0005 Get entity as values
+#
+ngsi get entity --id E1 --values -pretty
+
+```0
+[
+  null,
+  true,
+  false,
+  10,
+  123.4,
+  "abc",
+  "2021-01-01T01:23:45.000Z",
+  [
+    1,
+    2,
+    3
+  ],
+  {
+    "A91": 123.4
+  }
+]
+```
+
+#
+# 0006 Get entity as unique
+#
+ngsi get entity --id E1 --unique -pretty
+
+```0
+[
+  null,
+  true,
+  false,
+  10,
+  123.4,
+  "abc",
+  "2021-01-01T01:23:45.000Z",
+  [
+    1,
+    2,
+    3
+  ],
+  {
+    "A91": 123.4
+  }
+]
+```
+
+#
+# 0007 Create entity E2
+#
+ngsi create entity --keyValues \
+--data '{
+  "id": "E2",
+  "A1": "abc",
+  "A2": "abc",
+  "A3": "XYZ",
+  "A4": 123,
+  "A5": 123,
+  "A6": 567
+}'
+
+```0
+```
+
+#
+# 0006 Get entity as normalized
+#
+ngsi get entity --id E2 -pretty
+
+```0
+{
+  "id": "E2",
+  "type": "Thing",
+  "A1": {
+    "type": "Text",
+    "value": "abc",
+    "metadata": {}
+  },
+  "A2": {
+    "type": "Text",
+    "value": "abc",
+    "metadata": {}
+  },
+  "A3": {
+    "type": "Text",
+    "value": "XYZ",
+    "metadata": {}
+  },
+  "A4": {
+    "type": "Number",
+    "value": 123,
+    "metadata": {}
+  },
+  "A5": {
+    "type": "Number",
+    "value": 123,
+    "metadata": {}
+  },
+  "A6": {
+    "type": "Number",
+    "value": 567,
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0007 Get entity as keyValues
+#
+ngsi get entity --id E2 -keyValues
+
+```0
+{"id":"E2","type":"Thing","A1":"abc","A2":"abc","A3":"XYZ","A4":123,"A5":123,"A6":567}
+```
+
+#
+# 0008 Get entity as values
+#
+ngsi get entity --id E2 -values
+
+```0
+["abc","abc","XYZ",123,123,567]
+```
+
+#
+# 0009 Get entity as unique
+#
+ngsi get entity --id E2 -unique
+
+```0
+["abc","XYZ",123,567]
+```
+
+#
+# 9999 Clean up
+#
+ngsi rm --host orion --type Thing --run
+
+```0
+REGEX(.*)
+```
+
