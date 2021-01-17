@@ -54,6 +54,25 @@ func TestNewClient(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestNewClientHTTP(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	InitBrokerList()
+
+	broker := &Broker{BrokerHost: "http://orion/"}
+	ngsi.brokerList["orion"] = broker
+
+	flags := &CmdFlags{}
+
+	ngsi.Updated = true
+	ngsi.PreviousArgs.Host = "http://localhost:1026"
+	_, err := ngsi.NewClient("http://localhost:1026", flags, false)
+
+	assert.NoError(t, err)
+}
+
 func TestNewClientURL(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
