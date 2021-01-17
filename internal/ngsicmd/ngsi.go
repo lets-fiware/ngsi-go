@@ -1099,6 +1099,7 @@ var updateCmd = cli.Command{
 				attrNameRFlag,
 				linkFlag,
 				contextFlag,
+				safeStringFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return attrUpdate(c)
