@@ -176,7 +176,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 	}
 
 	if ngsi.Updated {
-		if IsHTTP(ngsi.PreviousArgs.Host) {
+		if _, ok := ngsi.brokerList[ngsi.PreviousArgs.Host]; !ok {
 			ngsi.PreviousArgs.Host = ""
 			ngsi.PreviousArgs.Tenant = ""
 			ngsi.PreviousArgs.Scope = ""

@@ -116,9 +116,13 @@ ngsi settings list
 
 ```0
 ```
+#
+# 0016 print $orion
+#
+print $orion
 
 #
-# 0016 ngsi version --host $orion
+# 0017 ngsi version --host $orion
 #
 ngsi version --host $orion
 
@@ -146,7 +150,7 @@ ngsi version --host $orion
 ```
 
 #
-# 0017 ngsi settings list
+# 0018 ngsi settings list
 #
 ngsi settings list
 
@@ -160,4 +164,3 @@ ngsi settings clear
 
 ```0
 ```
-
