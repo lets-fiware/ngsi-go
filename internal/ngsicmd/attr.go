@@ -33,6 +33,8 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 
@@ -125,9 +127,29 @@ func attrUpdate(c *cli.Context) error {
 				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
 		}
-		b, _ = ngsilib.JSONSafeStringEncode(b)
+		if client.IsSafeString() {
+			b, err = ngsilib.JSONSafeStringEncode(b)
+			if err != nil {
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
+			}
+		}
 		client.SetContentType()
 	} else {
+		s := string(b)
+		if _, err := strconv.ParseFloat(s, 64); err != nil {
+			if !ngsilib.Contains([]string{"null", "true", "false"}, s) {
+				if strings.HasPrefix(s, "\"") && strings.HasSuffix(s, "\"") {
+					if len(s) < 2 {
+						return &ngsiCmdError{funcName, 6, "data length error", nil}
+					}
+					b = []byte(s[1 : len(s)-1])
+				}
+				if client.IsSafeString() {
+					b, _ = ngsilib.JSONSafeStringEncode(b)
+				}
+				b = []byte(`"` + string(b) + `"`)
+			}
+		}
 		client.SetHeader("Content-Type", "text/plain")
 	}
 
@@ -140,10 +162,10 @@ func attrUpdate(c *cli.Context) error {
 		res, body, err = client.HTTPPut(b)
 	}
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return &ngsiCmdError{funcName, 7, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 8, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	return nil

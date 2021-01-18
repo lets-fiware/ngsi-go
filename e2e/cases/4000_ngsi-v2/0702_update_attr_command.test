@@ -1,0 +1,776 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-v2
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+#
+# 0001 ngsi update attr --help
+#
+ngsi update attr --help
+
+```0
+NAME:
+   ngsi update attr - update attr
+
+USAGE:
+   ngsi update attr [command options] [arguments...]
+
+OPTIONS:
+   --id value, -i value       id
+   --data value, -d value     data
+   --attrName value           attrName
+   --link value, -L value     @context (LD)
+   --context value, -C value  @context (LD)
+   --safeString value         use safe string (value: on/off)
+   --help                     show help (default: false)
+   
+```
+
+
+#
+# 0002 Clean up
+#
+ngsi rm --host orion --type Thing --run
+
+```0
+REGEX(.*)
+```
+
+#
+# 0003 Create entity E1
+#
+ngsi create entity --keyValues \
+--data '{
+  "id": "E1",
+  "A1": null,
+  "A2": true,
+  "A3": false,
+  "A4": 10,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}'
+
+```0
+```
+
+#
+# 0004 Get entity as normalized
+#
+ngsi get entity --id E1 -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": {
+    "type": "None",
+    "value": null,
+    "metadata": {}
+  },
+  "A2": {
+    "type": "Boolean",
+    "value": true,
+    "metadata": {}
+  },
+  "A3": {
+    "type": "Boolean",
+    "value": false,
+    "metadata": {}
+  },
+  "A4": {
+    "type": "Number",
+    "value": 10,
+    "metadata": {}
+  },
+  "A5": {
+    "type": "Number",
+    "value": 123.4,
+    "metadata": {}
+  },
+  "A6": {
+    "type": "Text",
+    "value": "abc",
+    "metadata": {}
+  },
+  "A7": {
+    "type": "Text",
+    "value": "2021-01-01T01:23:45.000Z",
+    "metadata": {}
+  },
+  "A8": {
+    "type": "StructuredValue",
+    "value": [
+      1,
+      2,
+      3
+    ],
+    "metadata": {}
+  },
+  "A9": {
+    "type": "StructuredValue",
+    "value": {
+      "A91": 123.4
+    },
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0005 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": true,
+  "A3": false,
+  "A4": 10,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0006 Update attr null
+#
+ngsi update attr --id E1 --attrName A1 --data null
+
+```0
+```
+
+#
+# 0007 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": true,
+  "A3": false,
+  "A4": 10,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0008 Update attr true
+#
+ngsi update attr --id E1 --attrName A3 --data true
+
+```0
+```
+
+#
+# 0009 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": true,
+  "A3": true,
+  "A4": 10,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0010 Update attr false
+#
+ngsi update attr --id E1 --attrName A2 --data false
+
+```0
+```
+
+#
+# 0011 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 10,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0012 Update attr integer
+#
+ngsi update attr --id E1 --attrName A4 --data 999
+
+```0
+```
+
+#
+# 0013 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 123.4,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0014 Update attr float
+#
+ngsi update attr --id E1 --attrName A5 --data 567.89
+
+```0
+```
+
+#
+# 0015 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "abc",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0016 Update attr string
+#
+ngsi update attr --id E1 --attrName A6 --data FIWARE
+
+```0
+```
+
+#
+# 0017 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "FIWARE",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0018 Update attr string with space
+#
+ngsi update attr --id E1 --attrName A6 --data "Open APIs"
+
+```0
+```
+
+#
+# 0019 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "Open APIs",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0020 Update attr empty string 
+#
+ngsi update attr --id E1 --attrName A6 --data '""'
+
+```0
+```
+
+#
+# 0021 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0022 Update attr empty string --safeString on
+#
+ngsi update attr --id E1 --attrName A6 --safeString on --data '""'
+
+```0
+```
+
+#
+# 0023 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0024 Update attr string with --safeString on
+#
+ngsi update attr --id E1 --attrName A6 --safeString on --data "<>"
+
+```0
+```
+
+#
+# 0025 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "%3C%3E",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0026 Update attr string with --safeString on
+#
+ngsi update attr --id E1 --attrName A6 --safeString on --data "<Open APIs>"
+
+```0
+```
+
+#
+# 0027 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "%3COpen APIs%3E",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    1,
+    2,
+    3
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0028 Update attr array
+#
+ngsi update attr --id E1 --attrName A8 --data '[ 5, 6, 7 ]'
+
+```0
+```
+
+#
+# 0029 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "%3COpen APIs%3E",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    5,
+    6,
+    7
+  ],
+  "A9": {
+    "A91": 123.4
+  }
+}
+```
+
+#
+# 0030 Update attr object
+#
+ngsi update attr --id E1 --attrName A9 --data '{"A91": 567.89}'
+
+```0
+```
+
+#
+# 0031 Check attributes
+#
+ngsi get entity --id E1 --keyValues -pretty
+
+```0
+{
+  "id": "E1",
+  "type": "Thing",
+  "A1": null,
+  "A2": false,
+  "A3": true,
+  "A4": 999,
+  "A5": 567.89,
+  "A6": "%3COpen APIs%3E",
+  "A7": "2021-01-01T01:23:45.000Z",
+  "A8": [
+    5,
+    6,
+    7
+  ],
+  "A9": {
+    "A91": 567.89
+  }
+}
+```
+
+#
+# 0032 Create entity E2
+#
+ngsi create entity \
+--data '{
+  "id": "E2",
+  "timestamp": {
+    "value": "2021-01-01T01:23:45.000Z",
+    "type": "DateTime"
+  }
+}'
+
+```0
+```
+
+#
+# 0033 Get enttity E3
+#
+ngsi get entity --id E2 --pretty
+
+```0
+{
+  "id": "E2",
+  "type": "Thing",
+  "timestamp": {
+    "type": "DateTime",
+    "value": "2021-01-01T01:23:45.000Z",
+    "metadata": {}
+  }
+}
+```
+
+#
+# 0033 Update attr E2 DateTime
+#
+ngsi update attr --id E2 --attrName timestamp --data 2022-12-31T11:45:01.111Z
+
+```0
+```
+#
+# 0034 Check attributes
+#
+ngsi get entity --id E2 --pretty
+
+```0
+{
+  "id": "E2",
+  "type": "Thing",
+  "timestamp": {
+    "type": "DateTime",
+    "value": "2022-12-31T11:45:01.111Z",
+    "metadata": {}
+  }
+}
+```
+#
+# 1000 Clear settings
+#
+ngsi settings clear
+
+```0
+```
+
+#
+# 1001 Required flags "id, attrName" not set
+#
+ngsi update attr
+
+```1
+Required flags "id, attrName" not set
+```
+ 
+#
+# 1002 attrUpdate001 Required host not found
+#
+ngsi update attr --id E1 --attrName A1
+
+```1
+attrUpdate001 Required host not found
+```
+
+#
+# 1003 attrUpdate003 data is empty
+# 
+ngsi update --host orion attr --id E1 --attrName A1
+
+```1
+attrUpdate003 data is empty
+```
+
+#
+# 1004 attrUpdate008 400 Bad Request {"error":"ParseError","description":"Errors found in incoming JSON buffer"}
+# 
+ngsi update --host orion attr --id E1 --attrName A1 --data "{"id":"
+
+```1
+attrUpdate008 400 Bad Request {"error":"ParseError","description":"Errors found in incoming JSON buffer"}
+```
+
+#
+# 1005 attrUpdate002 unknown parameter: yes
+# 
+ngsi update --host orion attr --id E1 --attrName A1 --safeString yes --data "{"id":"
+
+```1
+attrUpdate002 unknown parameter: yes
+```
+
+#
+# 1005 attrUpdate005 json error: {
+# 
+ngsi update --host orion attr --id E1 --attrName A1 --safeString on --data "{"id":"
+
+```1
+attrUpdate005 json error: {
+```
+
+#
+# 1006 attrUpdate003 file name error
+# 
+ngsi update --host orion attr --id E1 --attrName A1 --data @
+
+```1
+attrUpdate003 file name error
+```
+
+#
+# 1007 attrUpdate006 data length error
+# 
+ngsi update --host orion attr --id E1 --attrName A1 --data '"'
+
+```1
+attrUpdate006 data length error
+```
+
+#
+# 9999 Clean up
+#
+ngsi rm --host orion --type Thing --run
+
+```0
+REGEX(.*)
+```
