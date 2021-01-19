@@ -47,7 +47,7 @@ func TestCopyErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -142,13 +142,14 @@ func TestCopyErrorRunFlag(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}
@@ -173,13 +174,14 @@ func TestCopyErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}
@@ -211,13 +213,14 @@ func TestCopyErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}
@@ -248,13 +251,14 @@ func TestCopyErrorResultCount(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}
@@ -286,13 +290,14 @@ func TestCopyResultCountZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}
@@ -325,13 +330,14 @@ func TestCopyErrorJSONUnmarshal(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}
@@ -365,13 +371,14 @@ func TestCopyErrorOpUpdate(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}
@@ -409,13 +416,14 @@ func TestCopyPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion-src": {
-				"brokerHost": "https://orion-src",
+				"serverHost": "https://orion-src",
 				"ngsiType": "v2"
 			},
 			"orion-dest": {
-				"brokerHost": "https://orion-dest",
+				"serverHost": "https://orion-dest",
 				"ngsiType": "v2"
 			}
 		}

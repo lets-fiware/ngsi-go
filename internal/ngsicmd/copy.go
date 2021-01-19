@@ -46,7 +46,7 @@ func copy(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	source, err := newClient(ngsi, c, false)
+	source, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

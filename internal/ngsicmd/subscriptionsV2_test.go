@@ -56,7 +56,7 @@ func TestSubscriptionssubscriptionsListV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -89,7 +89,7 @@ func TestSubscriptionssubscriptionsListV2Count(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -121,7 +121,7 @@ func TestSubscriptionssubscriptionsListV2CountZero(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -159,7 +159,7 @@ func TestSubscriptionssubscriptionsListV2Page(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -191,7 +191,7 @@ func TestSubscriptionssubscriptionsListV2Status(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -223,7 +223,7 @@ func TestSubscriptionssubscriptionsListV2Query(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -256,7 +256,7 @@ func TestSubscriptionssubscriptionsListV2Json(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -289,7 +289,7 @@ func TestSubscriptionssubscriptionsListV2JsonPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -322,7 +322,7 @@ func TestSubscriptionssubscriptionsListV2JsonCount0(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -355,7 +355,7 @@ func TestSubscriptionssubscriptionsListV2Verbose(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -388,7 +388,7 @@ func TestSubscriptionssubscriptionsListV2Localtime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -421,7 +421,7 @@ func TestSubscriptionssubscriptionsListV2Items(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -454,7 +454,7 @@ func TestSubscriptionssubscriptionsListV2ErrorStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 	err = subscriptionsListV2(c, ngsi, client)
 
@@ -486,7 +486,7 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -519,7 +519,7 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -549,7 +549,7 @@ func TestSubscriptionssubscriptionsListV2ErrorRessultsCount(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -583,7 +583,7 @@ func TestSubscriptionssubscriptionsListV2ErrorUnmarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -618,7 +618,7 @@ func TestSubscriptionssubscriptionsListV2ErrorMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -651,7 +651,7 @@ func TestSubscriptionssubscriptionsListV2ErrorJSONPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -686,7 +686,7 @@ func TestSubscriptionssubscriptionsListV2ErrorHTTPItems(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListV2(c, ngsi, client)
@@ -716,7 +716,7 @@ func TestSubscriptionsGetV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 	err = subscriptionGetV2(c, ngsi, client)
 
@@ -747,7 +747,7 @@ func TestSubscriptionsGetV2Pretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetV2(c, ngsi, client)
@@ -779,7 +779,7 @@ func TestSubscriptionsGetV2LocalTime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetV2(c, ngsi, client)
@@ -808,7 +808,7 @@ func TestSubscriptionsGetV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetV2(c, ngsi, client)
@@ -841,7 +841,7 @@ func TestSubscriptionsGetV2ErrorUnmarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetV2(c, ngsi, client)
@@ -874,7 +874,7 @@ func TestSubscriptionsGetV2ErrorMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetV2(c, ngsi, client)
@@ -906,7 +906,7 @@ func TestSubscriptionsGetV2ErrorPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -942,7 +942,7 @@ func TestSubscriptionsCreateV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateV2(c, ngsi, client)
@@ -972,7 +972,7 @@ func TestSubscriptionsCreateV2ErrorsetSubscriptionValuesV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateV2(c, ngsi, client)
@@ -1007,7 +1007,7 @@ func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateV2(c, ngsi, client)
@@ -1040,7 +1040,7 @@ func TestSubscriptionsCreateV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateV2(c, ngsi, client)
@@ -1073,7 +1073,7 @@ func TestSubscriptionsCreateV2ErrorStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateV2(c, ngsi, client)
@@ -1105,7 +1105,7 @@ func TestSubscriptionsUpdateV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateV2(c, ngsi, client)
@@ -1132,7 +1132,7 @@ func TestSubscriptionsUpdateV2wAttr(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateV2(c, ngsi, client)
@@ -1159,7 +1159,7 @@ func TestSubscriptionsUpdateV2ErrotsetSubscriptionValuesV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateV2(c, ngsi, client)
@@ -1192,7 +1192,7 @@ func TestSubscriptionsUpdateV2Marshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateV2(c, ngsi, client)
@@ -1224,7 +1224,7 @@ func TestSubscriptionsUpdateV2ErrotHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateV2(c, ngsi, client)
@@ -1257,7 +1257,7 @@ func TestSubscriptionsUpdateV2ErrorStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateV2(c, ngsi, client)
@@ -1287,7 +1287,7 @@ func TestSubscriptionsDeleteV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsDeleteV2(c, ngsi, client)
@@ -1312,7 +1312,7 @@ func TestSubscriptionsDeleteV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsDeleteV2(c, ngsi, client)
@@ -1343,7 +1343,7 @@ func TestSubscriptionsDeleteV2ErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsDeleteV2(c, ngsi, client)

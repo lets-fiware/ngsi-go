@@ -1,0 +1,328 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 hget attr --lastN
+#
+ngsi hget --host quantumleap attr --id device001 --attrName A1 --lastN 10
+
+```0
+{
+  "attrName": "A1",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T01:30:00.000+00:00",
+    "2016-09-13T01:31:00.000+00:00",
+    "2016-09-13T01:32:00.000+00:00",
+    "2016-09-13T01:33:00.000+00:00",
+    "2016-09-13T01:34:00.000+00:00",
+    "2016-09-13T01:35:00.000+00:00",
+    "2016-09-13T01:36:00.000+00:00",
+    "2016-09-13T01:37:00.000+00:00",
+    "2016-09-13T01:38:00.000+00:00",
+    "2016-09-13T01:39:00.000+00:00"
+  ],
+  "values": [
+    91.0,
+    92.0,
+    93.0,
+    94.0,
+    95.0,
+    96.0,
+    97.0,
+    98.0,
+    99.0,
+    100.0
+  ]
+}
+```
+
+#
+# 0002 hget attr --lastN --value
+#
+ngsi hget attr --id device001 --attrName A1 --lastN 10 --value
+
+```0
+{
+  "index": [
+    "2016-09-13T01:30:00.000+00:00",
+    "2016-09-13T01:31:00.000+00:00",
+    "2016-09-13T01:32:00.000+00:00",
+    "2016-09-13T01:33:00.000+00:00",
+    "2016-09-13T01:34:00.000+00:00",
+    "2016-09-13T01:35:00.000+00:00",
+    "2016-09-13T01:36:00.000+00:00",
+    "2016-09-13T01:37:00.000+00:00",
+    "2016-09-13T01:38:00.000+00:00",
+    "2016-09-13T01:39:00.000+00:00"
+  ],
+  "values": [
+    91.0,
+    92.0,
+    93.0,
+    94.0,
+    95.0,
+    96.0,
+    97.0,
+    98.0,
+    99.0,
+    100.0
+  ]
+}
+```
+
+#
+# 0003 hget attr --hLimit
+#
+ngsi hget attr --id device001 --attrName A1 --hLimit 10
+
+```0
+{
+  "attrName": "A1",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T00:00:00.000+00:00",
+    "2016-09-13T00:01:00.000+00:00",
+    "2016-09-13T00:02:00.000+00:00",
+    "2016-09-13T00:03:00.000+00:00",
+    "2016-09-13T00:04:00.000+00:00",
+    "2016-09-13T00:05:00.000+00:00",
+    "2016-09-13T00:06:00.000+00:00",
+    "2016-09-13T00:07:00.000+00:00",
+    "2016-09-13T00:08:00.000+00:00",
+    "2016-09-13T00:09:00.000+00:00"
+  ],
+  "values": [
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0
+  ]
+}
+```
+
+#
+# 0004 hget attr --hLimit --hOffset
+#
+ngsi hget attr --id device001 --attrName A1 --hLimit 10 --hOffset 11
+
+```0
+{
+  "attrName": "A1",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T00:11:00.000+00:00",
+    "2016-09-13T00:12:00.000+00:00",
+    "2016-09-13T00:13:00.000+00:00",
+    "2016-09-13T00:14:00.000+00:00",
+    "2016-09-13T00:15:00.000+00:00",
+    "2016-09-13T00:16:00.000+00:00",
+    "2016-09-13T00:17:00.000+00:00",
+    "2016-09-13T00:18:00.000+00:00",
+    "2016-09-13T00:19:00.000+00:00",
+    "2016-09-13T00:20:00.000+00:00"
+  ],
+  "values": [
+    12.0,
+    13.0,
+    14.0,
+    15.0,
+    16.0,
+    17.0,
+    18.0,
+    19.0,
+    20.0,
+    21.0
+  ]
+}
+```
+
+#
+# 0005 hget attr --hLimit
+#
+ngsi hget attr --id device001 --attrName A2 --hLimit 10
+
+```0
+{
+  "attrName": "A2",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T00:00:00.000+00:00",
+    "2016-09-13T00:01:00.000+00:00",
+    "2016-09-13T00:02:00.000+00:00",
+    "2016-09-13T00:03:00.000+00:00",
+    "2016-09-13T00:04:00.000+00:00",
+    "2016-09-13T00:05:00.000+00:00",
+    "2016-09-13T00:06:00.000+00:00",
+    "2016-09-13T00:07:00.000+00:00",
+    "2016-09-13T00:08:00.000+00:00",
+    "2016-09-13T00:09:00.000+00:00"
+  ],
+  "values": [
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0,
+    11.0
+  ]
+}
+```
+
+#
+# 0006 hget attr --hLimit --hOffset
+#
+ngsi hget attr --id device001 --attrName A2 --hLimit 10 --hOffset 11
+
+```0
+{
+  "attrName": "A2",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T00:11:00.000+00:00",
+    "2016-09-13T00:12:00.000+00:00",
+    "2016-09-13T00:13:00.000+00:00",
+    "2016-09-13T00:14:00.000+00:00",
+    "2016-09-13T00:15:00.000+00:00",
+    "2016-09-13T00:16:00.000+00:00",
+    "2016-09-13T00:17:00.000+00:00",
+    "2016-09-13T00:18:00.000+00:00",
+    "2016-09-13T00:19:00.000+00:00",
+    "2016-09-13T00:20:00.000+00:00"
+  ],
+  "values": [
+    13.0,
+    14.0,
+    15.0,
+    16.0,
+    17.0,
+    18.0,
+    19.0,
+    20.0,
+    21.0,
+    22.0
+  ]
+}
+```
+
+#
+# 0007 hget attr --aggrMethod count --aggrPeriod hour --lastN
+#
+ngsi hget attr --id device001 --attrName A1 --aggrMethod count --aggrPeriod hour --lastN 5
+
+```0
+{
+  "attrName": "A1",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T00:00:00.000+00:00",
+    "2016-09-13T01:00:00.000+00:00"
+  ],
+  "values": [
+    60,
+    40
+  ]
+}
+```
+
+#
+# 0011 hget attr --fromDate
+#
+ngsi hget attr --id device001 --attrName A1 --lastN 3 \
+--fromDate 2016-09-13T01:34:00.000+00:00
+
+```0
+{
+  "attrName": "A1",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T01:37:00.000+00:00",
+    "2016-09-13T01:38:00.000+00:00",
+    "2016-09-13T01:39:00.000+00:00"
+  ],
+  "values": [
+    98.0,
+    99.0,
+    100.0
+  ]
+}
+```
+
+#
+# 0012 hget attr --toDate
+#
+ngsi hget attr --id device001 --attrName A1 --lastN 3 \
+--toDate 2016-09-13T01:34:00.000+00:00
+
+```0
+{
+  "attrName": "A1",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T01:32:00.000+00:00",
+    "2016-09-13T01:33:00.000+00:00",
+    "2016-09-13T01:34:00.000+00:00"
+  ],
+  "values": [
+    93.0,
+    94.0,
+    95.0
+  ]
+}
+```
+
+#
+# 0013 hget attr --fromDate --toDate
+#
+ngsi hget attr --id device001 --attrName A1 --lastN 3 \
+--fromDate 2016-09-13T01:35:00.000+00:00 --toDate 2016-09-13T01:38:00.000+00:00
+
+```0
+{
+  "attrName": "A1",
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T01:36:00.000+00:00",
+    "2016-09-13T01:37:00.000+00:00",
+    "2016-09-13T01:38:00.000+00:00"
+  ],
+  "values": [
+    97.0,
+    98.0,
+    99.0
+  ]
+}
+```

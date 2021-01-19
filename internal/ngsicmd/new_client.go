@@ -35,11 +35,24 @@ import (
 )
 
 // newClient is a wrapper function for ngsi.NewClient function
-func newClient(ngsi *ngsilib.NGSI, c *cli.Context, isHTTPVerb bool) (*ngsilib.Client, error) {
+func newClient(ngsi *ngsilib.NGSI, c *cli.Context, isHTTPVerb bool, serverList []string) (*ngsilib.Client, error) {
 	const funcName = "newClient"
+
 	flags, err := parseFlags(ngsi, c)
 	if err != nil {
 		return nil, &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
-	return ngsi.NewClient(ngsi.Host, flags, isHTTPVerb)
+
+	client, err := ngsi.NewClient(ngsi.Host, flags, isHTTPVerb)
+	if err != nil {
+		return nil, &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	if serverList != nil {
+		if !ngsilib.Contains(serverList, client.Server.ServerType) {
+			return nil, &ngsiCmdError{funcName, 3, "not supported by " + client.Server.ServerType, nil}
+		}
+	}
+
+	return client, nil
 }

@@ -48,14 +48,25 @@ import (
 )
 
 var configData = `{
-	"brokers": {
+	"version": "1",
+	"servers": {
 	  "orion": {
-		"brokerHost": "https://orion",
-		"ngsiType": "v2"
+		"serverHost": "https://orion",
+		"ngsiType": "v2",
+		"serverType": "broker"
 	  },
 	  "orion-ld": {
-		"brokerHost": "https://orion-ld",
-		"ngsiType": "ld"
+		"serverHost": "https://orion-ld",
+		"ngsiType": "ld",
+		"serverType": "broker"
+	  },
+	  "comet": {
+		"serverHost": "https://comet",
+		"serverType": "comet"
+	  },
+	  "ql": {
+		"serverHost": "https://quantumleap",
+		"serverType": "quantumleap"
 	  }
 	},
 	"contexts": {

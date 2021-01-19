@@ -302,14 +302,14 @@ func TestGetJSONArray(t *testing.T) {
 
 	err = GetJSONArray([]byte(" [-1, 100"), v)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	}
 
 	err = GetJSONArray([]byte(" {}"), v)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "not JSON Array: {}", ngsiErr.Message)
 	}
@@ -432,7 +432,7 @@ func TestJsonUnmarshalErrorJSON(t *testing.T) {
 	err := jsonUnmarshal([]byte(`{"id": aa`), template, true, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 'a' looking for beginning of value (5) {\"id\": aa", ngsiErr.Message)
 	}
@@ -445,7 +445,7 @@ func TestJsonUnmarshalErrorJSONEof(t *testing.T) {
 	err := jsonUnmarshal([]byte("{"), template, true, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: {", ngsiErr.Message)
 	}
@@ -458,7 +458,7 @@ func TestJsonUnmarshalErrorJSONNoSafeString(t *testing.T) {
 	err := jsonUnmarshal([]byte(`{"name":aa`), &template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 'a' looking for beginning of value (9) {\"name\":aa", ngsiErr.Message)
 	}
@@ -471,7 +471,7 @@ func TestJsonUnmarshalErrorUnmarshalTypeError(t *testing.T) {
 	err := jsonUnmarshal([]byte(`{}`), &template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json: cannot unmarshal object into Go value of type []interface {} Field: (1) {}", ngsiErr.Message)
 	}
@@ -485,7 +485,7 @@ func TestJsonUnmarshalErrorUnmarshal(t *testing.T) {
 	err := jsonUnmarshal([]byte(`{}`), &template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}

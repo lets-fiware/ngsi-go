@@ -55,7 +55,7 @@ func TestRegistrationsListV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -87,7 +87,7 @@ func TestRegistrationsListV2CountZero(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -120,7 +120,7 @@ func TestRegistrationsListV2CountZeroPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -158,7 +158,7 @@ func TestRegistrationsListV2Page(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -191,7 +191,7 @@ func TestRegistrationsListV2Verbose(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -224,7 +224,7 @@ func TestRegistrationsListV2Localtime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -257,7 +257,7 @@ func TestRegistrationsListV2JSON(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -290,7 +290,7 @@ func TestRegistrationsListV2JSONPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -320,7 +320,7 @@ func TestRegistrationsListV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -351,7 +351,7 @@ func TestRegistrationsListV2ErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -380,7 +380,7 @@ func TestRegistrationsListV2ErrorResultsCount(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -411,7 +411,7 @@ func TestRegistrationsListV2ErrorUnmarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListV2(c, ngsi, client)
@@ -444,7 +444,7 @@ func TestRegistrationsListV2ErrorJSON(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONEncodeErr(ngsi, 0)
@@ -479,7 +479,7 @@ func TestRegistrationsListV2ErrorJSONPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -512,7 +512,7 @@ func TestRegistrationsGetV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -544,7 +544,7 @@ func TestRegistrationsGetV2Pretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -576,7 +576,7 @@ func TestRegistrationsGetV2LocalTime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -607,7 +607,7 @@ func TestRegistrationsGetV2SafeString(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -637,7 +637,7 @@ func TestRegistrationsGetV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -668,7 +668,7 @@ func TestRegistrationsGetErrorV2StatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -700,7 +700,7 @@ func TestRegistrationsGetV2ErrorSafeString(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -733,7 +733,7 @@ func TestRegistrationsGetV2ErrorJSONMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetV2(c, ngsi, client)
@@ -765,7 +765,7 @@ func TestRegistrationsGetV2ErrorPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -798,7 +798,7 @@ func TestRegistrationsCreateV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateV2(c, ngsi, client)
@@ -828,7 +828,7 @@ func TestRegistrationsCreateV2ErrorSetValule(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateV2(c, ngsi, client)
@@ -860,7 +860,7 @@ func TestRegistrationsCreateV2ErrorJSONMarshalEncode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateV2(c, ngsi, client)
@@ -890,7 +890,7 @@ func TestRegistrationsCreateV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateV2(c, ngsi, client)
@@ -921,7 +921,7 @@ func TestRegistrationsCreateV2ErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateV2(c, ngsi, client)
@@ -950,7 +950,7 @@ func TestRegistrationsDeleteV2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsDeleteV2(c, ngsi, client)
@@ -974,7 +974,7 @@ func TestRegistrationsDeleteV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsDeleteV2(c, ngsi, client)
@@ -1005,7 +1005,7 @@ func TestRegistrationsDeleteV2ErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsDeleteV2(c, ngsi, client)

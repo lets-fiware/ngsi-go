@@ -86,14 +86,14 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 	case http.MethodPost, http.MethodPut, http.MethodPatch:
 		reader, err = newReader(body)
 		if err != nil {
-			return nil, nil, &NgsiLibError{funcName, 1, err.Error(), err}
+			return nil, nil, &LibError{funcName, 1, err.Error(), err}
 		}
 	}
 
 	var req *http.Request
 	req, err = http.NewRequest(method, url.String(), reader)
 	if err != nil {
-		return nil, nil, &NgsiLibError{funcName, 2, err.Error(), err}
+		return nil, nil, &LibError{funcName, 2, err.Error(), err}
 	}
 
 	for k, v := range headers {
@@ -103,13 +103,13 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 	var resp *http.Response
 	resp, err = client.Do(req)
 	if err != nil {
-		return nil, nil, &NgsiLibError{funcName, 3, err.Error(), err}
+		return nil, nil, &LibError{funcName, 3, err.Error(), err}
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	b, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, nil, &NgsiLibError{funcName, 5, err.Error(), err}
+		return nil, nil, &LibError{funcName, 5, err.Error(), err}
 	}
 	return resp, b, nil
 }
@@ -123,5 +123,5 @@ func newReader(v interface{}) (io.Reader, error) {
 	case string:
 		return strings.NewReader(v), nil
 	}
-	return nil, &NgsiLibError{funcName, 1, "unsupported type", nil}
+	return nil, &LibError{funcName, 1, "unsupported type", nil}
 }

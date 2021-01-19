@@ -220,16 +220,16 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 		case string:
 			data = []byte(body)
 		default:
-			return nil, nil, &NgsiLibError{funcName, 0, "Unsupported type", nil}
+			return nil, nil, &LibError{funcName, 0, "Unsupported type", nil}
 		}
 	}
 	if data != nil && r.ReqData != nil {
 		if !reflect.DeepEqual(r.ReqData, data) {
-			return nil, nil, &NgsiLibError{funcName, 1, "body data error", nil}
+			return nil, nil, &LibError{funcName, 1, "body data error", nil}
 		}
 	}
 	if r.Path != "" && r.Path != url.Path {
-		return nil, nil, &NgsiLibError{funcName, 3, "url error", nil}
+		return nil, nil, &LibError{funcName, 3, "url error", nil}
 	}
 	if r.ResHeader != nil {
 		r.Res.Header = r.ResHeader

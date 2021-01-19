@@ -33,13 +33,21 @@ COPY *.go /opt/ngsi-test/
 
 RUN CGO_ENABLED=0 go build -ldflags "-w -s"
 
-FROM golang:1.15.6-alpine3.12 AS runner
+FROM alpine:3.12.3 AS runner
 LABEL stage=ngsi-runner
 
 COPY --from=builder /opt/ngsi-test/ngsi-test /usr/local/bin/
 COPY ngsi-test-config.json /root/.ngsi-test-config.json
 COPY ngsi-go-config.json /root/.config/fiware/
 COPY 9999_HALT /root/
+
+RUN \
+    apk add --no-cache \
+        bash=5.0.17-r0 \
+        bash-completion=2.10-r0 \
+        curl=7.69.1-r3 && \
+    echo "source /usr/share/bash-completion/bash_completion" >> /root/.bashrc && \
+    echo "source /usr/share/bash-compeletion/completions/ngsi_bash_autocomplete" >> /root/.bashrc
 
 WORKDIR /root/e2e
 

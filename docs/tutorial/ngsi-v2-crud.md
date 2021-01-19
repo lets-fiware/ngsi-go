@@ -1,25 +1,16 @@
-# NGSI Go walkthrough for NGSIv2
-
-## Prerequisites
-
-```console
-git clone https://github.com/FIWARE/tutorials.CRUD-Operations.git
-cd tutorials.CRUD-Operations
-git checkout NGSI-v2
-
-./services start
-sed -i -e 's/orion:1026/localhost:1026/' ./import-data
-./import-data
-
-curl http://localhost:1026/version
-```
+# NGSI Go tutorial for NGSIv2
 
 ## NGSI v2 CRUD operation
 
-### Add host
+### Print host information
 
 ```console
-ngsi broker add --host orion --brokerHost http://localhost:1026 --ngsiType v2
+ngsi broker get --host orion
+```
+
+```console
+brokerHost http://orion:1026
+ngsiType v2
 ```
 
 ### Version

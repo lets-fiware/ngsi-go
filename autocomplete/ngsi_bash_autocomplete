@@ -1,7 +1,7 @@
 #! /bin/bash
 
 PROG=ngsi
-brokers=`ngsi -B --syslog off --stderr err broker list`
+brokers=`ngsi -B --syslog off --stderr err server list --all`
 
 _cli_bash_autocomplete() {
   if [[ "${COMP_WORDS[0]}" != "source" ]]; then

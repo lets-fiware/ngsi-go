@@ -31,7 +31,7 @@ ngsi version --help
 
 ```0
 NAME:
-   ngsi version - print the version of Context Broker
+   ngsi version - print the version
 
 USAGE:
    ngsi version [command options] [arguments...]
@@ -42,6 +42,7 @@ CATEGORY:
 OPTIONS:
    --host value, -h value  host or alias
    --token value           oauth token
+   --pretty, -P            pretty format (default: false)
    --help                  show help (default: false)
    
 ```

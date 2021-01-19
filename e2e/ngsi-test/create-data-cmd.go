@@ -31,6 +31,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -103,7 +104,7 @@ func createdataCmd(line int, args []string) error {
 }
 
 func createV1NotifyData(args []string) error {
-	const funcName = "createNotifyData"
+	const funcName = "createV1NotifyData"
 
 	if len(args) == 0 {
 		return &ngsiCmdError{funcName, 1, "no args error", nil}
@@ -124,6 +125,7 @@ func createV1NotifyData(args []string) error {
 	}
 
 	header := map[string]string{}
+	header["Content-type"] = "application/json"
 	for _, k := range []string{"service", "path"} {
 		if v, ok := opts[k]; ok {
 			if k == "service" {
@@ -174,12 +176,17 @@ func createV1NotifyData(args []string) error {
 	for i, k := range keys {
 		v, err := strconv.Atoi(values[i])
 		if err != nil {
-			return &ngsiCmdError{funcName, 9, err.Error(), nil}
+			return &ngsiCmdError{funcName, 9, err.Error(), err}
 		}
 		attrs[k] = v
 	}
 
+	progress := -1
 	for i := 0; i < count; i++ {
+		if progress != (i*100)/count {
+			progress = (i * 100) / count
+			fmt.Printf("[%3d / 100]\033[0G", progress)
+		}
 		cr := contextResponse{}
 		cr.ContextElement.Type = entityType
 		cr.ContextElement.IsPattern = "false"
@@ -216,24 +223,37 @@ func createV1NotifyData(args []string) error {
 			return &ngsiCmdError{funcName, 11, err.Error(), nil}
 		}
 	}
+	fmt.Println("[100 / 100]")
 
 	return nil
 }
 
+type testEntity struct {
+	ID   string         `json:"id"`
+	Attr map[string]int `json:"attr"`
+}
+type testEntities []testEntity
+type testData map[string]testEntities
+
 func createV2NotifyData(args []string) error {
-	const funcName = "createNotifyData"
+	const funcName = "createV2NotifyData"
 
 	if len(args) == 0 {
 		return &ngsiCmdError{funcName, 1, "no args error", nil}
 	}
 
-	opts, err := getOpts(args, []string{"url", "service", "path", "id", "type", "datetime", "count", "subsId", "attrs", "values", "period"})
+	opts, err := getOpts(args, []string{"url", "service", "path", "datetime", "count", "subsId", "period", "data", "wait"})
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), nil}
+		return &ngsiCmdError{funcName, 2, err.Error(), nil}
 	}
 
-	if err = checkRequiredOpt(opts, []string{"url", "id", "datetime", "attrs", "values", "count"}); err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), nil}
+	if err = checkRequiredOpt(opts, []string{"url", "datetime", "count", "data"}); err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), nil}
+	}
+
+	data := testData{}
+	if err = json.Unmarshal([]byte(opts["data"]), &data); err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), nil}
 	}
 
 	url := opts["url"]
@@ -242,6 +262,7 @@ func createV2NotifyData(args []string) error {
 	}
 
 	header := map[string]string{}
+	header["Content-type"] = "application/json"
 	for _, k := range []string{"service", "path"} {
 		if v, ok := opts[k]; ok {
 			if k == "service" {
@@ -253,13 +274,17 @@ func createV2NotifyData(args []string) error {
 		}
 	}
 
+	wait := 0
+	if w, ok := opts["wait"]; ok {
+		wait, err = strconv.Atoi(w)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), nil}
+		}
+	}
+
 	subsID, ok := opts["subsId"]
 	if !ok {
 		subsID = "000000000000000000000001"
-	}
-	entityType, ok := opts["type"]
-	if !ok {
-		entityType = "Thing"
 	}
 	period, ok := opts["period"]
 	if !ok {
@@ -281,41 +306,34 @@ func createV2NotifyData(args []string) error {
 		return &ngsiCmdError{funcName, 6, err.Error(), nil}
 	}
 
-	keys := strings.Split(opts["attrs"], ",")
-	values := strings.Split(opts["values"], ",")
-
-	if len(keys) != len(values) {
-		return &ngsiCmdError{funcName, 7, "attrs, values error", nil}
-	}
-
-	attrs := map[string]int{}
-	for i, k := range keys {
-		v, err := strconv.Atoi(values[i])
-		if err != nil {
-			return &ngsiCmdError{funcName, 8, err.Error(), nil}
-		}
-		attrs[k] = v
-	}
-
+	progress := -1
 	for i := 0; i < count; i++ {
+		if progress != (i*100)/count {
+			progress = (i * 100) / count
+			fmt.Printf("[%3d / 100]\033[0G", progress)
+		}
 		notify := &v2Notify{SubscriptionID: subsID}
 		notify.Data = []v2Entity{}
 
-		entity := v2Entity{}
-		entity["id"] = opts["id"]
-		entity["type"] = entityType
-
-		for k, v := range attrs {
-			attr := v2Attribute{}
-			attr.Type = "Number"
-			attr.Value = v
-			attr.Metadata = map[string]v2Metadata{}
-			attr.Metadata["dateCreated"] = v2Metadata{Type: "DateTime", Value: dateTime}
-			attr.Metadata["dateModified"] = v2Metadata{Type: "DateTime", Value: dt.Format(layout)}
-			entity[k] = attr
-			attrs[k] = v + 1
-			dt = incrementTime(period, dt)
+		for entityType, entities := range data {
+			for _, e := range entities {
+				entity := v2Entity{}
+				entity["type"] = entityType
+				entity["id"] = e.ID
+				for k, v := range e.Attr {
+					attr := v2Attribute{}
+					attr.Type = "Number"
+					attr.Value = v
+					attr.Metadata = map[string]v2Metadata{}
+					attr.Metadata["dateCreated"] = v2Metadata{Type: "DateTime", Value: dateTime}
+					attr.Metadata["dateModified"] = v2Metadata{Type: "DateTime", Value: dt.Format(layout)}
+					entity[k] = attr
+					e.Attr[k] = v + 1
+				}
+				notify.Data = append(notify.Data, entity)
+			}
 		}
+		dt = incrementTime(period, dt)
 
 		b, err := json.Marshal(notify)
 		if err != nil {
@@ -327,7 +345,12 @@ func createV2NotifyData(args []string) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 10, err.Error(), nil}
 		}
+
+		if wait > 0 {
+			time.Sleep(time.Millisecond * time.Duration(wait))
+		}
 	}
+	fmt.Println("[100 / 100]")
 
 	return nil
 }

@@ -84,9 +84,15 @@ func Contains(a []string, e string) bool {
 // GetExpirationDate is ...
 func GetExpirationDate(s string) (string, error) {
 	const funcName = "GetExpirationDate"
+	negative := false
+
+	if strings.HasPrefix(s, "-") {
+		s = strings.TrimLeft(s, "-")
+		negative = true
+	}
 
 	if !isExpirationDate(s) {
-		return s, &NgsiLibError{funcName, 1, "error " + s, nil}
+		return s, &LibError{funcName, 1, "error " + s, nil}
 	}
 	if strings.HasSuffix(s, "s") {
 		s = strings.TrimSuffix(s, "s")
@@ -100,6 +106,9 @@ func GetExpirationDate(s string) (string, error) {
 	for _, v := range []string{"year", "month", "day", "hour", "minute"} {
 		if strings.HasSuffix(s, v) {
 			i, _ := strconv.Atoi(strings.TrimSuffix(s, v))
+			if negative {
+				i *= -1
+			}
 			switch v {
 			case "year":
 				t = t.AddDate(i, 0, 0)

@@ -43,14 +43,19 @@ import (
 
 func attrRead(c *cli.Context) error {
 	const funcName = "attrRead"
+
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	if !c.IsSet("id") {
+		return &ngsiCmdError{funcName, 3, "missing entity id", nil}
 	}
 
 	id := c.String("id")
@@ -67,23 +72,23 @@ func attrRead(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	if client.IsSafeString() {
 		body, err = ngsilib.JSONSafeStringDecode(body)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return &ngsiCmdError{funcName, 7, err.Error(), err}
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -102,7 +107,7 @@ func attrUpdate(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -179,7 +184,7 @@ func attrDelete(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

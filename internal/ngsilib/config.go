@@ -50,9 +50,11 @@ type Settings struct {
 
 // NgsiConfig is ...
 type NgsiConfig struct {
-	DefaultValues Settings     `json:"settings"`
-	Brokers       BrokerList   `json:"brokers"`
-	Contexts      ContextsInfo `json:"contexts"`
+	Version           string       `json:"version"`
+	DefaultValues     Settings     `json:"settings"`
+	DeprecatedBrokers ServerList   `json:"brokers,omitempty"`
+	Servers           ServerList   `json:"servers"`
+	Contexts          ContextsInfo `json:"contexts"`
 }
 
 // var configFile string
@@ -69,10 +71,12 @@ func (ngsi *NGSI) InitConfig(file *string) error {
 func initConfig(ngsi *NGSI, io IoLib) error {
 	const funcName = "initConfig"
 
+	saveFlag := false
+
 	if io.FileName() == nil {
 		home, err := getConfigDir(io)
 		if err != nil {
-			return &NgsiLibError{funcName, 1, err.Error(), err}
+			return &LibError{funcName, 1, err.Error(), err}
 		}
 		s := filepath.Join(home, configFileName)
 		io.SetFileName(&s)
@@ -80,7 +84,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 		if *io.FileName() != "" {
 			s, err := io.FilePathAbs(*io.FileName())
 			if err != nil {
-				return &NgsiLibError{funcName, 2, err.Error() + " " + *io.FileName(), err}
+				return &LibError{funcName, 2, err.Error() + " " + *io.FileName(), err}
 			}
 			io.SetFileName(&s)
 		}
@@ -89,25 +93,36 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	if existsFile(io, *io.FileName()) {
 		b, err := ngsi.FileReader.ReadFile(*io.FileName())
 		if err != nil {
-			return &NgsiLibError{funcName, 3, err.Error(), err}
+			return &LibError{funcName, 3, err.Error(), err}
 		}
 
 		ngsiConfig := NgsiConfig{}
 		err = JSONUnmarshal(b, &ngsiConfig)
 		if err != nil {
-			return &NgsiLibError{funcName, 4, err.Error(), err}
+			return &LibError{funcName, 4, err.Error(), err}
+		}
+
+		ngsi.configVresion = ngsiConfig.Version
+		if ngsi.configVresion == "" {
+			migration(&ngsiConfig)
+			ngsi.configVresion = "1"
+			saveFlag = true
 		}
 
 		ngsi.PreviousArgs = &ngsiConfig.DefaultValues
 		if ngsi.BatchFlag != nil && *ngsi.BatchFlag {
 			ngsi.PreviousArgs = &Settings{UsePreviousArgs: false}
 		}
-		ngsi.brokerList = ngsiConfig.Brokers
+		ngsi.serverList = ngsiConfig.Servers
 		ngsi.contextList = ngsiConfig.Contexts
 	}
 
-	if ngsi.brokerList == nil {
-		ngsi.brokerList = make(BrokerList)
+	if ngsi.configVresion != "1" {
+		return &LibError{funcName, 5, "error: config file version", nil}
+	}
+
+	if ngsi.serverList == nil {
+		ngsi.serverList = make(ServerList)
 	}
 	if ngsi.contextList == nil {
 		ngsi.contextList = make(ContextsInfo)
@@ -116,7 +131,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	}
 
 	errflag := false
-	for k, v := range ngsi.brokerList {
+	for k, v := range ngsi.serverList {
 		if err := gNGSI.checkAllParams(v); err != nil {
 			fmt.Fprintf(gNGSI.LogWriter, "%s in %s\n", err, k)
 			errflag = true
@@ -141,7 +156,13 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 		}
 	}
 	if errflag {
-		return &NgsiLibError{funcName, 5, "error in config file", nil}
+		return &LibError{funcName, 6, "error in config file", nil}
+	}
+
+	if saveFlag {
+		if err := ngsi.saveConfigFile(); err != nil {
+			return &LibError{funcName, 7, err.Error(), err}
+		}
 	}
 	return nil
 }
@@ -157,23 +178,24 @@ func (ngsi *NGSI) saveConfigFile() (err error) {
 
 	config := make(map[string]interface{})
 
+	config["version"] = ngsi.configVresion
 	config["settings"] = *ngsi.PreviousArgs
-	config["brokers"] = ngsi.brokerList
+	config["servers"] = ngsi.serverList
 	config["contexts"] = ngsi.contextList
 
 	err = io.OpenFile(oWRONLY|oCREATE, 0600)
 	if err != nil {
-		return &NgsiLibError{funcName, 1, err.Error(), err}
+		return &LibError{funcName, 1, err.Error(), err}
 	}
 	defer func() { _ = io.Close() }()
 
 	if err := io.Truncate(0); err != nil {
-		return &NgsiLibError{funcName, 3, err.Error(), err}
+		return &LibError{funcName, 3, err.Error(), err}
 	}
 
 	err = io.Encode(&config)
 	if err != nil {
-		return &NgsiLibError{funcName, 4, err.Error(), err}
+		return &LibError{funcName, 4, err.Error(), err}
 	}
 
 	return nil
@@ -190,4 +212,14 @@ func (ngsi *NGSI) SavePreviousArgs() error {
 		return ngsi.saveConfigFile()
 	}
 	return nil
+}
+
+func migration(config *NgsiConfig) {
+	config.Servers = ServerList{}
+	for k, v := range config.DeprecatedBrokers {
+		v.ServerHost = v.DeprecatedBrokerHost
+		v.DeprecatedBrokerHost = ""
+		config.Servers[k] = v
+	}
+	config.DeprecatedBrokers = ServerList{}
 }

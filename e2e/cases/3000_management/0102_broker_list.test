@@ -68,7 +68,7 @@ orion orion-ld
 ngsi broker list --json
 
 ```0
-{"orion":{"brokerHost":"http://orion:1026","ngsiType":"v2"},"orion-ld":{"brokerHost":"http://orion-ld:1026","ngsiType":"ld"}}
+{"orion":{"serverType":"broker","serverHost":"http://orion:1026","ngsiType":"v2"},"orion-ld":{"serverType":"broker","serverHost":"http://orion-ld:1026","ngsiType":"ld"}}
 ```
 
 #
@@ -79,11 +79,13 @@ ngsi broker list --json --pretty
 ```0
 {
   "orion": {
-    "brokerHost": "http://orion:1026",
+    "serverType": "broker",
+    "serverHost": "http://orion:1026",
     "ngsiType": "v2"
   },
   "orion-ld": {
-    "brokerHost": "http://orion-ld:1026",
+    "serverType": "broker",
+    "serverHost": "http://orion-ld:1026",
     "ngsiType": "ld"
   }
 }

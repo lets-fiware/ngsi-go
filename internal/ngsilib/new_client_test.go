@@ -42,10 +42,10 @@ func TestNewClient(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -59,10 +59,10 @@ func TestNewClientHTTP(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -80,10 +80,10 @@ func TestNewClientHTTP2(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -113,7 +113,7 @@ func TestNewClientIPAdress(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	flags := &CmdFlags{}
 
@@ -127,10 +127,10 @@ func TestNewClientTenatScope(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/"}
+	ngsi.serverList["orion"] = broker
 
 	ngsi.PreviousArgs = &Settings{Tenant: "test", Scope: "/test"}
 	tenant := "fiware"
@@ -147,10 +147,10 @@ func TestNewClientAPIPath(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", APIPath: "/,/orion"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", APIPath: "/,/orion"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -164,10 +164,10 @@ func TestNewClientNgsiTypeV2(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", NgsiType: "ld"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", NgsiType: "ld"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -181,10 +181,10 @@ func TestNewClientToken(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/"}
+	ngsi.serverList["orion"] = broker
 
 	ngsi.PreviousArgs = &Settings{Token: "b8ab85c5e7f8708b91dde91979729287b1dbd6d2"}
 	token := "e08ff73ae501d19225152e426ea74d0c4fe458c2"
@@ -207,10 +207,10 @@ func TestNewClientIdmType(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", IdmType: cTokenproxy, Username: "fiware", Password: "1234"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", IdmType: cTokenproxy, Username: "fiware", Password: "1234"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -230,10 +230,10 @@ func TestNewClientSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", SafeString: "on"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", SafeString: "on"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -253,10 +253,10 @@ func TestNewClientSafeStringCmdFlag(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", SafeString: "on"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", SafeString: "on"}
+	ngsi.serverList["orion"] = broker
 
 	safeString := "on"
 	flags := &CmdFlags{SafeString: &safeString}
@@ -276,7 +276,7 @@ func TestNewClientErrorURL(t *testing.T) {
 	_, err := ngsi.NewClient("http://orion\n", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "illegal url: http://orion\n", ngsiErr.Message)
 	}
@@ -287,17 +287,17 @@ func TestNewClientErrorHost(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: ""}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: ""}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
@@ -308,17 +308,17 @@ func TestNewClientErrorHost2NotFound(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "orion-ld"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "orion-ld"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}
@@ -329,19 +329,19 @@ func TestNewClientErrorHost2Empty(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "orion-ld"}
-	ngsi.brokerList["orion"] = broker
-	broker2 := &Broker{BrokerHost: ""}
-	ngsi.brokerList["orion-ld"] = broker2
+	broker := &Server{ServerHost: "orion-ld"}
+	ngsi.serverList["orion"] = broker
+	broker2 := &Server{ServerHost: ""}
+	ngsi.serverList["orion-ld"] = broker2
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "url error: orion-ld", ngsiErr.Message)
 	}
@@ -352,14 +352,14 @@ func TestNewClientErrorHostNotFound(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("192.168.1", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "error host: 192.168.1", ngsiErr.Message)
 	}
@@ -370,17 +370,17 @@ func TestNewClientErrorURLParse(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion\n"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion\n"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "illegal url: orion, http://orion\n", ngsiErr.Message)
 	}
@@ -391,17 +391,17 @@ func TestNewClientErrorAPIPath(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", APIPath: "/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", APIPath: "/"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: /", ngsiErr.Message)
 	}
@@ -412,17 +412,17 @@ func TestNewClientErrorIdmType(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", IdmType: cKeyrock}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "username is required", ngsiErr.Message)
 	}
@@ -439,17 +439,17 @@ func TestNewClientErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", SafeString: "enable"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", SafeString: "enable"}
+	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: enable", ngsiErr.Message)
 	}
@@ -466,10 +466,10 @@ func TestNewClientErrorSafeStringCmdFlag(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/"}
+	ngsi.serverList["orion"] = broker
 
 	safeString := "enable"
 	flags := &CmdFlags{SafeString: &safeString}
@@ -477,7 +477,7 @@ func TestNewClientErrorSafeStringCmdFlag(t *testing.T) {
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: enable", ngsiErr.Message)
 	}
@@ -494,10 +494,10 @@ func TestNewClientInitHeader(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/", SafeString: "on"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/", SafeString: "on"}
+	ngsi.serverList["orion"] = broker
 
 	tenant := "FIWARE"
 	flags := &CmdFlags{Tenant: &tenant}
@@ -505,7 +505,7 @@ func TestNewClientInitHeader(t *testing.T) {
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 11, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
@@ -516,10 +516,10 @@ func TestNewClientErrorSaveConfig(t *testing.T) {
 	fileName := "config"
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName, OpenErr: errors.New("open error")}
 
-	InitBrokerList()
+	InitServerList()
 
-	broker := &Broker{BrokerHost: "http://orion/"}
-	ngsi.brokerList["orion"] = broker
+	broker := &Server{ServerHost: "http://orion/"}
+	ngsi.serverList["orion"] = broker
 
 	tenant := "fiware"
 	scope := "/iot"
@@ -528,14 +528,14 @@ func TestNewClientErrorSaveConfig(t *testing.T) {
 	_, err := ngsi.NewClient("orion", flags, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 12, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }
 
 func TestSetTenantAndScope(t *testing.T) {
-	client := &Client{Broker: &Broker{Tenant: "iot", Scope: "/device"}}
+	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
 
 	setTenantAndScope(client, nil, nil)
 
@@ -544,7 +544,7 @@ func TestSetTenantAndScope(t *testing.T) {
 }
 
 func TestSetTenantAndScopeTenant(t *testing.T) {
-	client := &Client{Broker: &Broker{Tenant: "iot", Scope: "/device"}}
+	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
 
 	tenant := "FIWARE"
 	setTenantAndScope(client, &tenant, nil)
@@ -554,7 +554,7 @@ func TestSetTenantAndScopeTenant(t *testing.T) {
 }
 
 func TestSetTenantAndScopeScope(t *testing.T) {
-	client := &Client{Broker: &Broker{Tenant: "iot", Scope: "/device"}}
+	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
 
 	scope := "/iotagent"
 	setTenantAndScope(client, nil, &scope)
@@ -564,7 +564,7 @@ func TestSetTenantAndScopeScope(t *testing.T) {
 }
 
 func TestSetTenantAndScopeTeantAndScope(t *testing.T) {
-	client := &Client{Broker: &Broker{Tenant: "iot", Scope: "/device"}}
+	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
 
 	tenant := ""
 	scope := ""

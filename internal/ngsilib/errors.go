@@ -33,28 +33,28 @@ import (
 	"fmt"
 )
 
-// NgsiLibError is ...
-type NgsiLibError struct {
+// LibError is ...
+type LibError struct {
 	Function string
 	ErrNo    int
 	Message  string
 	Err      error
 }
 
-func (e *NgsiLibError) String() string {
+func (e *LibError) String() string {
 	return fmt.Sprintf("%s%03d %s", e.Function, e.ErrNo, e.Message)
 }
 
-func (e *NgsiLibError) Error() string {
+func (e *LibError) Error() string {
 	return e.Message
 }
 
-func (e *NgsiLibError) Unwrap() error { return e.Err }
+func (e *LibError) Unwrap() error { return e.Err }
 
 /*
 func setNewError(funcName string, num int, newErr error, err *error) {
 	if *err == nil && newErr != nil {
-		*err = &NgsiLibError{funcName, num, newErr.Error(), nil}
+		*err = &LibError{funcName, num, newErr.Error(), nil}
 	}
 }
 */

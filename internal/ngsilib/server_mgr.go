@@ -29,59 +29,59 @@ SOFTWARE.
 
 package ngsilib
 
-// CreateBroker is ...
-func (ngsi *NGSI) CreateBroker(name string, brokerParam map[string]string) error {
-	const funcName = "CreateBroker"
+// CreateServer is ...
+func (ngsi *NGSI) CreateServer(name string, brokerParam map[string]string) error {
+	const funcName = "CreateServer"
 
-	broker := new(Broker)
-	if err := setBrokerParam(broker, brokerParam); err != nil {
-		return &NgsiLibError{funcName, 1, err.Error(), err}
+	broker := new(Server)
+	if err := setServerParam(broker, brokerParam); err != nil {
+		return &LibError{funcName, 1, err.Error(), err}
 	}
 
 	if err := ngsi.checkAllParams(broker); err != nil {
-		return &NgsiLibError{funcName, 2, err.Error(), err}
+		return &LibError{funcName, 2, err.Error(), err}
 	}
 
-	ngsi.brokerList[name] = broker
+	ngsi.serverList[name] = broker
 
 	if err := ngsi.saveConfigFile(); err != nil {
-		return &NgsiLibError{funcName, 3, err.Error(), err}
+		return &LibError{funcName, 3, err.Error(), err}
 	}
 
 	return nil
 }
 
-// UpdateBroker is ...
-func (ngsi *NGSI) UpdateBroker(host string, brokerParam map[string]string) error {
-	const funcName = "UpdateBroker"
+// UpdateServer is ...
+func (ngsi *NGSI) UpdateServer(host string, brokerParam map[string]string) error {
+	const funcName = "UpdateServer"
 
-	if broker, ok := ngsi.brokerList[host]; ok {
-		if err := setBrokerParam(broker, brokerParam); err != nil {
-			return &NgsiLibError{funcName, 1, err.Error(), err}
+	if broker, ok := ngsi.serverList[host]; ok {
+		if err := setServerParam(broker, brokerParam); err != nil {
+			return &LibError{funcName, 1, err.Error(), err}
 		}
 		if err := ngsi.checkAllParams(broker); err != nil {
-			return &NgsiLibError{funcName, 2, err.Error(), err}
+			return &LibError{funcName, 2, err.Error(), err}
 		}
 		if err := ngsi.saveConfigFile(); err != nil {
-			return &NgsiLibError{funcName, 3, err.Error(), err}
+			return &LibError{funcName, 3, err.Error(), err}
 		}
 	} else {
-		return &NgsiLibError{funcName, 4, host + " not found", nil}
+		return &LibError{funcName, 4, host + " not found", nil}
 	}
 	return nil
 }
 
-// DeleteBroker is ...
-func (ngsi *NGSI) DeleteBroker(host string) error {
-	const funcName = "DeleteBroker"
+// DeleteServer is ...
+func (ngsi *NGSI) DeleteServer(host string) error {
+	const funcName = "DeleteServer"
 
-	if _, ok := ngsi.brokerList[host]; ok {
-		delete(ngsi.brokerList, host)
+	if _, ok := ngsi.serverList[host]; ok {
+		delete(ngsi.serverList, host)
 		if err := ngsi.saveConfigFile(); err != nil {
-			return &NgsiLibError{funcName, 1, err.Error(), err}
+			return &LibError{funcName, 1, err.Error(), err}
 		}
 	} else {
-		return &NgsiLibError{funcName, 2, host + " not found", nil}
+		return &LibError{funcName, 2, host + " not found", nil}
 	}
 	return nil
 }

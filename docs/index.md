@@ -21,13 +21,17 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 
 -   [Usage](usage.md)
 -   [Quick Start Guide](quick_start_guide.md)
+-   [Walkthrough](tutorial/index.md)
 -   [Install](install.md)
 -   [Build from source](build_source.md)
+-   [FIWARE Open APIs mapping lists](apis_mapping_list.md)
 
 ## Walkthrough
 
--   [NGSI-LD CRUD](walkthrough/ngsi-ld-crud.md)
--   [NGSIv2 CRUD](walkthrough/ngsi-v2-crud.md)
+-   [NGSI-LD CRUD](tutorial/ngsi-ld-crud.md)
+-   [NGSIv2 CRUD](tutorial/ngsi-v2-crud.md)
+-   [STH-Comet](tutorial/comet.md)
+-   [QuantumLeap](tutorial/quantumleap.md)
 
 ## Command reference
 
@@ -42,12 +46,19 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 -   [update](ngsi/update.md): update entities, attribute(s) or subscription
 -   [upsert](ngsi/upsert.md): upsert entities
 
+### Time series
+
+-   [hdelete](time_series/hdelete.md): delete historical data
+-   [hget](time_series/hget.md): get historical data
+
 ### Convenience
 
 -   [admin](convenience/admin.md): administrative command for FIWARE Orion
+-   [apis](convenience/apis.md): print endpoints of FWARE Open APIs
 -   [cp](convenience/cp.md): copy entities
 -   [wc](convenience/wc.md): print number of entities, subscriptions or registrations
 -   [man](convenience/man.md): print  URLs of the documents related to the NGSI Go
+-   [health](convenience/health.md): print health status of FIWARE GEs
 -   [ls](convenience/ls.md): list entities
 -   [rm](convenience/rm.md): remove entities
 -   [receiver](convenience/receiver.md): notification receiver
@@ -59,6 +70,7 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 -   [broker](management/broker.md): manage config for broker
 -   [context](management/context.md): manage @context
 -   [settings](management/settings.md):  manage settings
+-   [server](management/server.md): manage config for server
 -   [token](management/token.md): manage token
 
 ### Global Options

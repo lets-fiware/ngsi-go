@@ -16,12 +16,12 @@ ngsi broker list [options]
 
 ### Options
 
-| Options                         | Description                                  |
-| ------------------------------- | -------------------------------------------- |
-| --host value, -h value          | specify host or alias                        |
-| --json, -j                      | print JSON format (default: false)           |
-| --pretty, -P                    | pretty format (default: false)               |
-| --help                          | show help (default: false)                   |
+| Options                | Description                        |
+| ---------------------- | ---------------------------------- |
+| --host value, -h value | specify host or alias              |
+| --json, -j             | print JSON format (default: false) |
+| --pretty, -P           | pretty format (default: false)     |
+| --help                 | show help (default: false)         |
 
 #### Example 1
 
@@ -48,7 +48,7 @@ safeString on
 #### Example 3
 
 ```console
-ngsi broker list --host orion --json
+ngsi broker list --json
 ```
 
 ```json
@@ -60,17 +60,17 @@ ngsi broker list --host orion --json
 ## Get broker
 
 ```console
-ngsi broker list [options]
+ngsi broker get [options]
 ```
 
 ### Options
 
-| Options                         | Description                                  |
-| ------------------------------- | -------------------------------------------- |
-| --host value, -h value          | specify host or alias                        |
-| --json, -j                      | print JSON format (default: false)           |
-| --pretty, -P                    | pretty format (default: false)               |
-| --help                          | show help (default: false)                   |
+| Options                 | Description                        |
+| ----------------------- | ---------------------------------- |
+| --host value, -h value  | specify host or alias              |
+| --json, -j              | print JSON format (default: false) |
+| --pretty, -P            | pretty format (default: false)     |
+| --help                  | show help (default: false)         |
 
 #### Example 1
 
@@ -98,28 +98,28 @@ ngsi broker get --host orion --json
 ## Add broker
 
 ```console
-ngsi broker list [options]
+ngsi broker add [options]
 ```
 
 ### Options
 
-| Options                         | Description                                  |
-| ------------------------------- | -------------------------------------------- |
-| --host value, -h value          | specify host or alias                        |
-| --brokerHost value, -b value    | specify context broker host                  |
-| --ngsiType value                | specify NGSI type: v2 or ld (default: ld)    |
-| --idmType value, -t value       | specify token type                           |
-| --idmHost value, -m value       | specify identity manager host                |
-| --apiPath value, -a value       | specify API path                             |
-| --username value, -U value      | specify username                             |
-| --password value, -P value      | specify password                             |
-| --clientId value, -I value      | specify client id                            |
-| --clientSecret value, -S value  | specify client secret                        |
-| --token value                   | specify oauth token                          |
-| --service value, -s value       | specify FIWARE Service                       |
-| --path value, -p value          | specify FIWARE ServicePath                   |
-| --safeString value              | Use safe string: `off` or `on` (default: on) |
-| --help                          | show help (default: false)                   |
+| Options                        | Description                    |
+| ------------------------------ | ------------------------------ |
+| --host value, -h value         | specify host or alias          |
+| --brokerHost value, -b value   | specify context broker host    |
+| --ngsiType value               | specify NGSI type: v2 or ld    |
+| --idmType value, -t value      | specify token type             |
+| --idmHost value, -m value      | specify identity manager host  |
+| --apiPath value, -a value      | specify API path               |
+| --username value, -U value     | specify username               |
+| --password value, -P value     | specify password               |
+| --clientId value, -I value     | specify client id              |
+| --clientSecret value, -S value | specify client secret          |
+| --token value                  | specify oauth token            |
+| --service value, -s value      | specify FIWARE Service         |
+| --path value, -p value         | specify FIWARE ServicePath     |
+| --safeString value             | Use safe string: `off` or `on` |
+| --help                         | show help (default: false)     |
 
 > **Note:** Orion interprets the FIWARE Service name (tenant name) in lowercase. To use a coherent FIWARE Service name,
 > NGSI Go allows only lowercase letters in FIWARE Service name. Please have a look at
@@ -248,23 +248,23 @@ ngsi broker upadte [options]
 
 ### Options
 
-| Options                         | Description                                  |
-| ------------------------------- | -------------------------------------------- |
-| --host value, -h value          | specify host or alias (Required)             |
-| --brokerHost value, -b value    | specify context broker host                  |
-| --ngsiType value                | specify NGSI type: v2 or ld (default: ld)    |
-| --idmType value, -t value       | specify token type                           |
-| --idmHost value, -m value       | specify identity manager host                |
-| --apiPath value, -a value       | specify API path                             |
-| --username value, -U value      | specify username                             |
-| --password value, -P value      | specify password                             |
-| --clientId value, -I value      | specify client id                            |
-| --clientSecret value, -S value  | specify client secret                        |
-| --token value                   | specify oauth token                          |
-| --service value, -s value       | specify FIWARE Service                       |
-| --path value, -p value          | specify FIWARE ServicePath                   |
-| --safeString value              | Use safe string: `off` or `on` (default: on) |
-| --help                          | show help (default: false)                   |
+| Options                        | Description                      |
+| ------------------------------ | -------------------------------- |
+| --host value, -h value         | specify host or alias (Required) |
+| --brokerHost value, -b value   | specify context broker host      |
+| --ngsiType value               | specify NGSI type: v2 or ld      |
+| --idmType value, -t value      | specify token type               |
+| --idmHost value, -m value      | specify identity manager host    |
+| --apiPath value, -a value      | specify API path                 |
+| --username value, -U value     | specify username                 |
+| --password value, -P value     | specify password                 |
+| --clientId value, -I value     | specify client id                |
+| --clientSecret value, -S value | specify client secret            |
+| --token value                  | specify oauth token              |
+| --service value, -s value      | specify FIWARE Service           |
+| --path value, -p value         | specify FIWARE ServicePath       |
+| --safeString value             | Use safe string: `off` or `on`   |
+| --help                         | show help (default: false)       |
 
 #### Example 1
 
@@ -282,10 +282,10 @@ ngsi broker upadte [options]
 
 ### Options
 
-| Options                         | Description                                  |
-| ------------------------------- | -------------------------------------------- |
-| --host value, -h value          | specify host or alias (Required)             |
-| --help                          | show help (default: false)                   |
+| Options                | Description                      |
+| ---------------------- | -------------------------------- |
+| --host value, -h value | specify host or alias (Required) |
+| --help                 | show help (default: false)       |
 
 #### Example 1
 

@@ -33,3 +33,10 @@ wait ${csource}/health
 wait ${oauth}/health
 wait ${orion}/version
 wait ${orion-ld}/version
+wait ${quantumleap}/version
+wait ${comet}/version
+
+#
+# 0002 check health status
+#
+wait ${quantumleap}/health --retry 600 --status pass

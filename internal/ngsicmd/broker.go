@@ -49,7 +49,7 @@ func brokersList(c *cli.Context) error {
 	host := c.String("host")
 
 	if host != "" {
-		info, err := ngsi.BrokerList().BrokerInfo(host)
+		info, err := ngsi.AllServersList().BrokerInfo(host)
 		if err != nil {
 			return &ngsiCmdError{funcName, 2, host + " not found", err}
 		}
@@ -58,7 +58,7 @@ func brokersList(c *cli.Context) error {
 	}
 
 	if c.IsSet("json") || c.Bool("pretty") {
-		lists, err := ngsi.BrokerList().BrokerInfoJSON("")
+		lists, err := ngsi.AllServersList().BrokerInfoJSON("")
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
@@ -73,7 +73,7 @@ func brokersList(c *cli.Context) error {
 			fmt.Fprint(ngsi.StdWriter, *lists)
 		}
 	} else {
-		info := ngsi.BrokerList()
+		info := ngsi.AllServersList().BrokerList()
 		list := info.List()
 		fmt.Fprintln(ngsi.StdWriter, list)
 	}
@@ -92,11 +92,11 @@ func brokersGet(c *cli.Context) error {
 	host := c.String("host")
 
 	if host == "" {
-		return &ngsiCmdError{funcName, 2, "Required host not found", nil}
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
 	}
 
 	if c.IsSet("json") || c.Bool("pretty") {
-		lists, err := ngsi.BrokerList().BrokerInfoJSON(host)
+		lists, err := ngsi.AllServersList().BrokerInfoJSON(host)
 		if err != nil {
 			return &ngsiCmdError{funcName, 3, host + " not found", err}
 		}
@@ -111,7 +111,7 @@ func brokersGet(c *cli.Context) error {
 			fmt.Fprint(ngsi.StdWriter, *lists)
 		}
 	} else {
-		info, err := ngsi.BrokerList().BrokerInfo(host)
+		info, err := ngsi.AllServersList().BrokerInfo(host)
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, host + " not found", err}
 		}
@@ -131,7 +131,7 @@ func brokersAdd(c *cli.Context) error {
 
 	host := c.String("host")
 	if host == "" {
-		return &ngsiCmdError{funcName, 2, "Required host not found", nil}
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
 	}
 
 	if !ngsilib.IsNameString(host) {
@@ -153,7 +153,7 @@ func brokersAdd(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 7, "can't specify ngsiType", err}
 	}
 
-	param := make(map[string]string)
+	param := map[string]string{"serverType": "broker"}
 	args := ngsi.ServerInfoArgs()
 	for i := 0; i < len(args); i++ {
 		key := args[i]
@@ -168,7 +168,7 @@ func brokersAdd(c *cli.Context) error {
 		}
 	}
 
-	err = ngsi.CreateBroker(host, param)
+	err = ngsi.CreateServer(host, param)
 	if err != nil {
 		return &ngsiCmdError{funcName, 8, err.Error(), err}
 	}
@@ -185,7 +185,7 @@ func brokersUpdate(c *cli.Context) error {
 
 	host := c.String("host")
 	if host == "" {
-		return &ngsiCmdError{funcName, 2, "Required host not found", nil}
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
 	}
 
 	if !ngsi.ExistsBrokerHost(host) {
@@ -207,7 +207,7 @@ func brokersUpdate(c *cli.Context) error {
 		}
 	}
 
-	err = ngsi.UpdateBroker(host, param)
+	err = ngsi.UpdateServer(host, param)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
@@ -224,7 +224,7 @@ func brokersDelete(c *cli.Context) error {
 
 	host := c.String("host")
 	if host == "" {
-		return &ngsiCmdError{funcName, 2, "Required host not found", nil}
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
 	}
 
 	if !ngsi.ExistsBrokerHost(host) {
@@ -238,7 +238,7 @@ func brokersDelete(c *cli.Context) error {
 				return &ngsiCmdError{funcName, 4, "delete error - " + item, err}
 			}
 		}
-		err = ngsi.UpdateBroker(host, nil)
+		err = ngsi.UpdateServer(host, nil)
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
@@ -251,14 +251,14 @@ func brokersDelete(c *cli.Context) error {
 			ngsi.PreviousArgs.Tenant = ""
 			ngsi.PreviousArgs.Scope = ""
 		}
-		_ = ngsi.DeleteBroker(host)
+		_ = ngsi.DeleteServer(host)
 	}
 	return nil
 }
 
-func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Broker) {
+func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 
-	fmt.Fprintln(ngsi.StdWriter, "brokerHost "+info.BrokerHost)
+	fmt.Fprintln(ngsi.StdWriter, "brokerHost "+info.ServerHost)
 	if info.NgsiType != "" {
 		fmt.Fprintln(ngsi.StdWriter, "ngsiType "+info.NgsiType)
 	}

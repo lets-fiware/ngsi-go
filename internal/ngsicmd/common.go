@@ -32,6 +32,8 @@ package ngsicmd
 import (
 	"net"
 	"net/http"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 )
 
 // NetLib is ...
@@ -53,4 +55,17 @@ func (n *netLib) ListenAndServe(addr string, handler http.Handler) error {
 }
 func (n *netLib) ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) error {
 	return http.ListenAndServeTLS(addr, certFile, keyFile, handler)
+}
+
+func getDateTime(dateTime string) (string, error) {
+	const funcName = "getDateTime"
+
+	var err error
+	if !ngsilib.IsOrionDateTime(dateTime) {
+		dateTime, err = ngsilib.GetExpirationDate(dateTime)
+		if err != nil {
+			return "", &ngsiCmdError{funcName, 1, err.Error(), nil}
+		}
+	}
+	return dateTime, nil
 }

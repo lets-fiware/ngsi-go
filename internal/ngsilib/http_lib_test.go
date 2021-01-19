@@ -151,7 +151,7 @@ func TestRequestErrorNewReader(t *testing.T) {
 	u, _ := url.Parse(ts.URL)
 	_, _, err := r.Request("POST", u, nil, 1)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unsupported type", ngsiErr.Message)
 	}
@@ -166,7 +166,7 @@ func TestRequestErrorNewRequest(t *testing.T) {
 	u.Host = ":\n"
 	_, _, err := r.Request("GET", u, nil, nil)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "parse \"http://:%0A\": invalid port \":%0A\" after host", ngsiErr.Message)
 	}
@@ -181,7 +181,7 @@ func TestRequestErrorDo(t *testing.T) {
 	u.Host = ""
 	_, _, err := r.Request("GET", u, nil, nil)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "Get \"http:\": http: no Host in request URL", ngsiErr.Message)
 	}
@@ -197,7 +197,7 @@ func TestRequestErrorReadAll(t *testing.T) {
 	_, _, err := r.Request("POST", u, nil, "")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	}
@@ -225,7 +225,7 @@ func TestNewReaderError(t *testing.T) {
 	_, err := newReader(i)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unsupported type", ngsiErr.Message)
 	}

@@ -75,7 +75,7 @@ func TestInitTokenMgrErrorgetConfigDir(t *testing.T) {
 
 	err := ngsi.InitTokenMgr(nil)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error homedir", ngsiErr.Message)
 	}
@@ -90,7 +90,7 @@ func TestInitTokenMgrErrorPathAbs(t *testing.T) {
 	err := ngsi.InitTokenMgr(&filename)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "path abs error cache-file", ngsiErr.Message)
 	}
@@ -105,7 +105,7 @@ func TestInitTokenMgrErrorInitTokenList(t *testing.T) {
 	err := ngsi.InitTokenMgr(&filename)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error cache-file", ngsiErr.Message)
 	}
@@ -163,7 +163,7 @@ func TestInitTokenListErrorOpen(t *testing.T) {
 	err := initTokenList(io)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -179,7 +179,7 @@ func TestInitTokenListErrorClose(t *testing.T) {
 	err := initTokenList(io)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "close error", ngsiErr.Message)
 	}
@@ -195,7 +195,7 @@ func TestInitTokenListErrorDecode(t *testing.T) {
 	err := initTokenList(io)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "decode error", ngsiErr.Message)
 	}
@@ -208,7 +208,7 @@ func TestTokenInfo(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", Username: "fiware"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
 
 	_, err := ngsi.TokenInfo(client)
 
@@ -221,12 +221,12 @@ func TestTokenInfoNotFound(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", Username: "fiware"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
 
 	_, err := ngsi.TokenInfo(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "not found", ngsiErr.Message)
 	}
@@ -247,7 +247,7 @@ func TestNgsiGetToken(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cTokenproxy, Username: "fiware", Password: "1234"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cTokenproxy, Username: "fiware", Password: "1234"}}
 
 	actual, err := ngsi.GetToken(client)
 
@@ -268,7 +268,7 @@ func TestNgsiGetTokenExpires(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Expires: 3600}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", Username: "fiware"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
 
 	_, err := ngsi.GetToken(client)
 
@@ -284,12 +284,12 @@ func TestNgsiGetTokenNotFound(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/"}}
 
 	_, err := ngsi.GetToken(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "username is required", ngsiErr.Message)
 	}
@@ -310,7 +310,7 @@ func TestGetToken(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	actual, err := getToken(ngsi, client)
 
@@ -336,7 +336,7 @@ func TestGetTokenExpires(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{Expires: 1000}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	actual, err := getToken(ngsi, client)
 
@@ -361,7 +361,7 @@ func TestGetTokenPasswordCredentials(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	actual, err := getToken(ngsi, client)
 
@@ -385,7 +385,7 @@ func TestGetTokenKeyrocktokenprovider(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
@@ -407,7 +407,7 @@ func TestGetTokenTokenproxy(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	actual, err := getToken(ngsi, client)
 
@@ -432,7 +432,7 @@ func TestGetTokenKeyrock(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	actual, err := getToken(ngsi, client)
 
@@ -451,12 +451,12 @@ func TestGetTokenErrorUsername(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "username is required", ngsiErr.Message)
 	}
@@ -471,12 +471,12 @@ func TestGetTokenErrorPassword(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", Username: "fiware"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -496,12 +496,12 @@ func TestGetTokenErrorIdmType(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: "fiware", IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: "fiware", IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: fiware", ngsiErr.Message)
 	}
@@ -522,12 +522,12 @@ func TestGetTokenErrorHTTP(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -547,12 +547,12 @@ func TestGetTokenErrorHTTPStatus(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "error  ", ngsiErr.Message)
 	}
@@ -572,12 +572,12 @@ func TestGetTokenErrorJSONUnmarshal6(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "decode error", ngsiErr.Message)
 	}
@@ -597,12 +597,12 @@ func TestGetTokenErrorJSONUnmarshal7(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "decode error", ngsiErr.Message)
 	}
@@ -623,12 +623,12 @@ func TestGetTokenErrorSave(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
@@ -662,7 +662,7 @@ func TestSaveTokenErrorOpenFile(t *testing.T) {
 
 	err := saveToken("cache-file", tokens)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "open error cache-file", ngsiErr.Message)
 	}
@@ -676,7 +676,7 @@ func TestSaveTokenErrorTruncate(t *testing.T) {
 
 	err := saveToken("cache-file", tokens)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "truncate error", ngsiErr.Message)
 	}
@@ -690,14 +690,14 @@ func TestSaveTokenErrorEncode(t *testing.T) {
 
 	err := saveToken("cache-file", tokens)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
 }
 
 func TestGetHash(t *testing.T) {
-	client := &Client{Broker: &Broker{BrokerHost: "http://orion/", Username: "fiware"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
 
 	actual := getHash(client)
 	expected := "583a5c111b603ff8925585f48503e343403115f9"
@@ -707,7 +707,7 @@ func TestGetHash(t *testing.T) {
 }
 
 func TestGetUserName(t *testing.T) {
-	client := &Client{Broker: &Broker{Username: "fiware"}}
+	client := &Client{Server: &Server{Username: "fiware"}}
 
 	actual, err := getUserName(client)
 
@@ -718,7 +718,7 @@ func TestGetUserName(t *testing.T) {
 }
 
 func TestGetPassword(t *testing.T) {
-	client := &Client{Broker: &Broker{Password: "12345"}}
+	client := &Client{Server: &Server{Password: "12345"}}
 
 	actual, err := getPassword(client)
 

@@ -675,7 +675,7 @@ ngsi broker delete --host tenant
 ngsi broker update
 
 ```1
-brokersUpdate002 Required host not found
+brokersUpdate002 required host not found
 ```
 
 #
@@ -693,5 +693,5 @@ brokersUpdate003 fiware not found
 ngsi broker update --host orion --brokerHost fiware
 
 ```1
-brokersUpdate004 brokerHost error: fiware
+brokersUpdate004 host error: fiware
 ```

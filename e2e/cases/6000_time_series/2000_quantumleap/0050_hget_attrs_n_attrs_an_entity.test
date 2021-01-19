@@ -1,0 +1,352 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 hget attrs --attrs --hLimit
+#
+ngsi hget --host quantumleap attrs --id device001 --attrs A1,A2 --hLimit 10
+
+```0
+{
+  "attributes": [
+    {
+      "attrName": "A1",
+      "values": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0,
+        9.0,
+        10.0
+      ]
+    },
+    {
+      "attrName": "A2",
+      "values": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0,
+        9.0,
+        10.0,
+        11.0
+      ]
+    }
+  ],
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T00:00:00.000+00:00",
+    "2016-09-13T00:01:00.000+00:00",
+    "2016-09-13T00:02:00.000+00:00",
+    "2016-09-13T00:03:00.000+00:00",
+    "2016-09-13T00:04:00.000+00:00",
+    "2016-09-13T00:05:00.000+00:00",
+    "2016-09-13T00:06:00.000+00:00",
+    "2016-09-13T00:07:00.000+00:00",
+    "2016-09-13T00:08:00.000+00:00",
+    "2016-09-13T00:09:00.000+00:00"
+  ]
+}
+```
+
+#
+# 0002 hget attrs --attrs --hLimit --value
+#
+ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --value
+
+```0
+{
+  "attributes": [
+    {
+      "attrName": "A1",
+      "values": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0,
+        9.0,
+        10.0
+      ]
+    },
+    {
+      "attrName": "A2",
+      "values": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0,
+        9.0,
+        10.0,
+        11.0
+      ]
+    }
+  ],
+  "index": [
+    "2016-09-13T00:00:00.000+00:00",
+    "2016-09-13T00:01:00.000+00:00",
+    "2016-09-13T00:02:00.000+00:00",
+    "2016-09-13T00:03:00.000+00:00",
+    "2016-09-13T00:04:00.000+00:00",
+    "2016-09-13T00:05:00.000+00:00",
+    "2016-09-13T00:06:00.000+00:00",
+    "2016-09-13T00:07:00.000+00:00",
+    "2016-09-13T00:08:00.000+00:00",
+    "2016-09-13T00:09:00.000+00:00"
+  ]
+}
+```
+
+#
+# 0003 hget attrs --attrs --hLimit --hOffset
+#
+ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --hOffset 10
+
+```0
+{
+  "attributes": [
+    {
+      "attrName": "A1",
+      "values": [
+        11.0,
+        12.0,
+        13.0,
+        14.0,
+        15.0,
+        16.0,
+        17.0,
+        18.0,
+        19.0,
+        20.0
+      ]
+    },
+    {
+      "attrName": "A2",
+      "values": [
+        12.0,
+        13.0,
+        14.0,
+        15.0,
+        16.0,
+        17.0,
+        18.0,
+        19.0,
+        20.0,
+        21.0
+      ]
+    }
+  ],
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T00:10:00.000+00:00",
+    "2016-09-13T00:11:00.000+00:00",
+    "2016-09-13T00:12:00.000+00:00",
+    "2016-09-13T00:13:00.000+00:00",
+    "2016-09-13T00:14:00.000+00:00",
+    "2016-09-13T00:15:00.000+00:00",
+    "2016-09-13T00:16:00.000+00:00",
+    "2016-09-13T00:17:00.000+00:00",
+    "2016-09-13T00:18:00.000+00:00",
+    "2016-09-13T00:19:00.000+00:00"
+  ]
+}
+```
+
+#
+# 0004 hget attrs --attrs --hLimit --hOffset --value
+#
+ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --hOffset 10 --value
+
+```0
+{
+  "attributes": [
+    {
+      "attrName": "A1",
+      "values": [
+        11.0,
+        12.0,
+        13.0,
+        14.0,
+        15.0,
+        16.0,
+        17.0,
+        18.0,
+        19.0,
+        20.0
+      ]
+    },
+    {
+      "attrName": "A2",
+      "values": [
+        12.0,
+        13.0,
+        14.0,
+        15.0,
+        16.0,
+        17.0,
+        18.0,
+        19.0,
+        20.0,
+        21.0
+      ]
+    }
+  ],
+  "index": [
+    "2016-09-13T00:10:00.000+00:00",
+    "2016-09-13T00:11:00.000+00:00",
+    "2016-09-13T00:12:00.000+00:00",
+    "2016-09-13T00:13:00.000+00:00",
+    "2016-09-13T00:14:00.000+00:00",
+    "2016-09-13T00:15:00.000+00:00",
+    "2016-09-13T00:16:00.000+00:00",
+    "2016-09-13T00:17:00.000+00:00",
+    "2016-09-13T00:18:00.000+00:00",
+    "2016-09-13T00:19:00.000+00:00"
+  ]
+}
+```
+
+#
+# 0010 hget attrs --attrs --lastN
+#
+ngsi hget attrs --id device001 --attrs A1,A2 --lastN 10
+
+```0
+{
+  "attributes": [
+    {
+      "attrName": "A1",
+      "values": [
+        91.0,
+        92.0,
+        93.0,
+        94.0,
+        95.0,
+        96.0,
+        97.0,
+        98.0,
+        99.0,
+        100.0
+      ]
+    },
+    {
+      "attrName": "A2",
+      "values": [
+        92.0,
+        93.0,
+        94.0,
+        95.0,
+        96.0,
+        97.0,
+        98.0,
+        99.0,
+        100.0,
+        101.0
+      ]
+    }
+  ],
+  "entityId": "device001",
+  "index": [
+    "2016-09-13T01:30:00.000+00:00",
+    "2016-09-13T01:31:00.000+00:00",
+    "2016-09-13T01:32:00.000+00:00",
+    "2016-09-13T01:33:00.000+00:00",
+    "2016-09-13T01:34:00.000+00:00",
+    "2016-09-13T01:35:00.000+00:00",
+    "2016-09-13T01:36:00.000+00:00",
+    "2016-09-13T01:37:00.000+00:00",
+    "2016-09-13T01:38:00.000+00:00",
+    "2016-09-13T01:39:00.000+00:00"
+  ]
+}
+```
+
+#
+# 0011 hget attrs --lastN --value
+#
+ngsi hget attrs --id device001 --attrs A1,A2 --lastN 10 --value
+
+```0
+{
+  "attributes": [
+    {
+      "attrName": "A1",
+      "values": [
+        91.0,
+        92.0,
+        93.0,
+        94.0,
+        95.0,
+        96.0,
+        97.0,
+        98.0,
+        99.0,
+        100.0
+      ]
+    },
+    {
+      "attrName": "A2",
+      "values": [
+        92.0,
+        93.0,
+        94.0,
+        95.0,
+        96.0,
+        97.0,
+        98.0,
+        99.0,
+        100.0,
+        101.0
+      ]
+    }
+  ],
+  "index": [
+    "2016-09-13T01:30:00.000+00:00",
+    "2016-09-13T01:31:00.000+00:00",
+    "2016-09-13T01:32:00.000+00:00",
+    "2016-09-13T01:33:00.000+00:00",
+    "2016-09-13T01:34:00.000+00:00",
+    "2016-09-13T01:35:00.000+00:00",
+    "2016-09-13T01:36:00.000+00:00",
+    "2016-09-13T01:37:00.000+00:00",
+    "2016-09-13T01:38:00.000+00:00",
+    "2016-09-13T01:39:00.000+00:00"
+  ]
+}
+```

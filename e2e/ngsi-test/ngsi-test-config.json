@@ -2,6 +2,8 @@
   "valiables": {
     "orion": "http://orion:1026",
     "orion-ld": "http://orion-ld:1026",
+    "comet": "http://comet:8666",
+    "quantumleap": "http://quantumleap:8668",
     "accumulator": "http://accumulator:8000",
     "atcontext": "http://atcontext:8000",
     "csource": "http://csource:8000",

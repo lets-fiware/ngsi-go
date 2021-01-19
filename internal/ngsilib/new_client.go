@@ -40,33 +40,33 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 	const funcName = "NewClient"
 
 	client = &Client{}
-	client.Broker = &Broker{}
+	client.Server = &Server{}
 	client.HTTP = ngsi.HTTP
 
 	if IsHTTP(name) {
 		client.URL, err = url.Parse(name)
 		if err != nil {
-			return nil, &NgsiLibError{funcName, 1, fmt.Sprintf("illegal url: %s", name), nil}
+			return nil, &LibError{funcName, 1, fmt.Sprintf("illegal url: %s", name), nil}
 		}
 	} else {
 		host, path, query := parseURL(name)
 
-		broker, ok := ngsi.brokerList[host]
+		server, ok := ngsi.serverList[host]
 		if ok {
-			client.Broker = broker
-			host = client.Broker.BrokerHost
+			client.Server = server
+			host = client.Server.ServerHost
 			if host == "" {
-				return nil, &NgsiLibError{funcName, 2, "host not found", nil}
+				return nil, &LibError{funcName, 2, "host not found", nil}
 			}
 			if !IsHTTP(host) {
-				broker1, ok := ngsi.brokerList[host]
+				broker1, ok := ngsi.serverList[host]
 				if !ok {
-					return nil, &NgsiLibError{funcName, 3, host + " not found", nil}
+					return nil, &LibError{funcName, 3, host + " not found", nil}
 				}
-				copyBrokerInfo(broker1, client.Broker)
-				host = client.Broker.BrokerHost
+				copyServerInfo(broker1, client.Server)
+				host = client.Server.ServerHost
 				if !IsHTTP(host) {
-					return nil, &NgsiLibError{funcName, 4, "url error: " + host, nil}
+					return nil, &LibError{funcName, 4, "url error: " + host, nil}
 				}
 			}
 			if strings.HasSuffix(host, "/") {
@@ -74,7 +74,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 			}
 		} else {
 			if !isIPAddress(host) && !isLocalHost(host) {
-				return nil, &NgsiLibError{funcName, 5, "error host: " + host, nil}
+				return nil, &LibError{funcName, 5, "error host: " + host, nil}
 			}
 			host = "http://" + host
 		}
@@ -87,7 +87,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 		}
 		client.URL, err = url.Parse(host)
 		if err != nil {
-			return nil, &NgsiLibError{funcName, 6, "illegal url: " + name + ", " + host, nil}
+			return nil, &LibError{funcName, 6, "illegal url: " + name + ", " + host, nil}
 		}
 	}
 
@@ -121,15 +121,15 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 		ngsi.Updated = true
 	}
 
-	if client.Broker != nil {
-		if apiPath := client.Broker.APIPath; apiPath != "" {
+	if client.Server != nil {
+		if apiPath := client.Server.APIPath; apiPath != "" {
 			client.APIPathBefore, client.APIPathAfter, err = getAPIPath(apiPath)
 			if err != nil {
-				return nil, &NgsiLibError{funcName, 7, err.Error(), err}
+				return nil, &LibError{funcName, 7, err.Error(), err}
 			}
 		}
 		client.NgsiType = ngsiV2
-		if ngsiType := client.Broker.NgsiType; ngsiType != "" {
+		if ngsiType := client.Server.NgsiType; ngsiType != "" {
 			if Contains(ngsiLdTypes, strings.ToLower(ngsiType)) {
 				client.NgsiType = ngsiLd
 			}
@@ -147,23 +147,23 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 	}
 	if token != "" {
 		client.Token = token
-	} else if client.Broker.IdmType != "" {
+	} else if client.Server.IdmType != "" {
 		token, err := ngsi.GetToken(client)
 		if err != nil {
-			return nil, &NgsiLibError{funcName, 8, err.Error(), err}
+			return nil, &LibError{funcName, 8, err.Error(), err}
 		}
 		client.Token = token
 	}
 
-	b, err := client.Broker.safeString()
+	b, err := client.Server.safeString()
 	if err != nil {
-		return nil, &NgsiLibError{funcName, 9, err.Error(), err}
+		return nil, &LibError{funcName, 9, err.Error(), err}
 	}
 	client.SafeString = b
 	if cmdFlags.SafeString != nil {
 		b, err := ngsi.BoolFlag(*cmdFlags.SafeString)
 		if err != nil {
-			return nil, &NgsiLibError{funcName, 10, err.Error(), err}
+			return nil, &LibError{funcName, 10, err.Error(), err}
 		}
 		client.SafeString = b
 	}
@@ -172,17 +172,17 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 	client.Link = cmdFlags.Link
 
 	if err = client.InitHeader(); err != nil {
-		return nil, &NgsiLibError{funcName, 11, err.Error(), err}
+		return nil, &LibError{funcName, 11, err.Error(), err}
 	}
 
 	if ngsi.Updated {
-		if _, ok := ngsi.brokerList[ngsi.PreviousArgs.Host]; !ok {
+		if _, ok := ngsi.serverList[ngsi.PreviousArgs.Host]; !ok {
 			ngsi.PreviousArgs.Host = ""
 			ngsi.PreviousArgs.Tenant = ""
 			ngsi.PreviousArgs.Scope = ""
 		}
 		if err = ngsi.saveConfigFile(); err != nil {
-			return nil, &NgsiLibError{funcName, 12, err.Error(), err}
+			return nil, &LibError{funcName, 12, err.Error(), err}
 		}
 	}
 	return client, nil
@@ -190,8 +190,8 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 
 func setTenantAndScope(client *Client, tenant *string, scope *string) {
 
-	client.Tenant = client.Broker.Tenant
-	client.Scope = client.Broker.Scope
+	client.Tenant = client.Server.Tenant
+	client.Scope = client.Server.Scope
 
 	if tenant != nil {
 		client.Tenant = *tenant
