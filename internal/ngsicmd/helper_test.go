@@ -35,6 +35,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -428,4 +429,24 @@ func (t *MockTimeLib) Now() time.Time {
 
 func (t *MockTimeLib) NowUnix() int64 {
 	return t.unixTime + time.Now().Unix()
+}
+
+type MockNetLib struct {
+	AddrErr              error
+	ListenAndServeErr    error
+	ListenAndServeTLSErr error
+}
+
+func (n *MockNetLib) InterfaceAddrs() ([]net.Addr, error) {
+	if n.AddrErr != nil {
+		return nil, n.AddrErr
+	}
+	return net.InterfaceAddrs()
+}
+
+func (n *MockNetLib) ListenAndServe(addr string, handler http.Handler) error {
+	return n.ListenAndServeErr
+}
+func (n *MockNetLib) ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) error {
+	return n.ListenAndServeTLSErr
 }

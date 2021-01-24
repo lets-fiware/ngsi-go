@@ -34,7 +34,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"sort"
+	"strings"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
@@ -43,6 +46,7 @@ import (
 type receiverParam struct {
 	ngsi   *ngsilib.NGSI
 	pretty bool
+	header bool
 }
 
 var receiverGlobal *receiverParam
@@ -62,7 +66,8 @@ func receiver(c *cli.Context) error {
 	path := c.String("url")
 	url := addr + path
 
-	pretty := c.IsSet("pretty")
+	pretty := c.Bool("pretty")
+	header := c.Bool("header")
 
 	if c.Bool("https") {
 		if !c.IsSet("key") {
@@ -76,28 +81,44 @@ func receiver(c *cli.Context) error {
 		url = "http://" + url
 	}
 
-	receiverGlobal = &receiverParam{ngsi: ngsi, pretty: pretty}
+	receiverGlobal = &receiverParam{ngsi: ngsi, pretty: pretty, header: header}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc(path, http.HandlerFunc(receiverHandler))
 
+	addrs, _ := gNetLib.InterfaceAddrs()
+	ip := []string{}
+	for _, a := range addrs {
+		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				ip = append(ip, ipnet.IP.String())
+			}
+		}
+	}
+
 	if c.Bool("verbose") {
+		fmt.Fprintln(ngsi.Stderr, ip)
 		fmt.Fprintf(ngsi.Stderr, "%s\n", url)
 	}
-	ngsi.Logging(ngsilib.LogErr, url)
+
+	ngsi.Logging(ngsilib.LogInfo, url+"\n")
 
 	if c.Bool("https") {
-		_ = http.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
+		err = gNetLib.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
+		if err != nil {
+			return &ngsiCmdError{funcName, 4, err.Error(), nil}
+		}
 	} else {
-		_ = http.ListenAndServe(addr, mux)
+		err = gNetLib.ListenAndServe(addr, mux)
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), nil}
+		}
 	}
 
 	return nil
 }
 
 func receiverHandler(w http.ResponseWriter, r *http.Request) {
-	const funcName = "receiverHandler"
-
 	status := http.StatusNoContent
 
 	switch r.Method {
@@ -110,6 +131,26 @@ func receiverHandler(w http.ResponseWriter, r *http.Request) {
 		buf := new(bytes.Buffer)
 		_, _ = io.Copy(buf, body)
 
+		header := ""
+		key := []string{}
+		for k := range r.Header {
+			key = append(key, k)
+		}
+		sort.Strings(key)
+
+		for _, k := range key {
+			header += fmt.Sprintf("%s:[%s] ", k, r.Header.Get(k))
+		}
+		header = "[" + strings.TrimSpace(header) + "]"
+		receiverGlobal.ngsi.Logging(ngsilib.LogInfo, header)
+
+		if receiverGlobal.header {
+			for _, k := range key {
+				fmt.Fprintf(receiverGlobal.ngsi.StdWriter, "%s: %s\n", k, r.Header.Get(k))
+			}
+			fmt.Fprintln(receiverGlobal.ngsi.StdWriter, "")
+		}
+
 		b := buf.Bytes()
 		receiverGlobal.ngsi.Logging(ngsilib.LogInfo, string(b))
 
@@ -120,7 +161,7 @@ func receiverHandler(w http.ResponseWriter, r *http.Request) {
 				b = newBuf.Bytes()
 			}
 		}
-		fmt.Fprintf(receiverGlobal.ngsi.StdWriter, "%s %s\n", funcName, string(b))
+		fmt.Fprintf(receiverGlobal.ngsi.StdWriter, "%s\n", string(b))
 	}
 	w.WriteHeader(status)
 }

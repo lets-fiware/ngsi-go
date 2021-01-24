@@ -18,6 +18,7 @@ ngsi receiver [options]
 | --key value, -k value  | specify key file (only needed if https is enabled)  |
 | --cert value, -c value | specify cert file (only needed if https is enabled) |
 | --verbose, -v          | specify verbose (default: false)                    |
+| --header               | print receive header (default: false)               |
 | --help                 | specify show help (default: false)                  |
 
 ### Example

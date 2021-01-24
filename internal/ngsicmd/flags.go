@@ -607,6 +607,10 @@ var (
 		Aliases: []string{"c"},
 		Usage:   "cert file (only needed if https is enabled)",
 	}
+	headerFlag = &cli.BoolFlag{
+		Name:  "header",
+		Usage: "print receive header",
+	}
 )
 
 // flag for context

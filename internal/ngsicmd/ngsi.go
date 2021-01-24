@@ -48,6 +48,8 @@ var Revision = ""
 const copyright = "(c) 2020-2021 Kazuhito Suda"
 const usage = "unix-like command-line tool for FIWARE NGSI and NGSI-LD"
 
+var gNetLib NetLib
+
 // Run is a main rouitne of NGSI Go
 func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	ngsi := ngsilib.NewNGSI()
@@ -56,6 +58,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	ngsi.InitLog(stdin, stdout, stderr)
 	version := fmt.Sprintf("%s (git_hash:%s)", Version, Revision)
 
+	gNetLib = &netLib{}
 	cli.ErrWriter = stderr
 	cli.HelpFlag = helpFlag
 	app := &cli.App{
@@ -382,6 +385,7 @@ var receiverCmd = cli.Command{
 		receiverKeyFlag,
 		receiverCertFlag,
 		verboseFlag,
+		headerFlag,
 	},
 	Action: func(c *cli.Context) error {
 		return receiver(c)
