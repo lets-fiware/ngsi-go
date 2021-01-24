@@ -48,6 +48,7 @@ OPTIONS:
    --key value, -k value   key file (only needed if https is enabled)
    --cert value, -c value  cert file (only needed if https is enabled)
    --verbose, -v           verbose (default: false)
+   --header                print receive header (default: false)
    --help                  show help (default: false)
    
 ```

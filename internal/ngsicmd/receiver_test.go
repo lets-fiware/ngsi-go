@@ -31,6 +31,7 @@ package ngsicmd
 
 import (
 	"bytes"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -45,11 +46,13 @@ func TestReceiver(t *testing.T) {
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
+	gNetLib = &MockNetLib{}
+
 	setupFlagString(set, "port,url")
 	setupFlagBool(set, "verbose,pretty")
-
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--verbose", "--port=aaaa", "--url=/"})
+	_ = set.Parse([]string{"--verbose", "--port=8000", "--url=/"})
+
 	err := receiver(c)
 
 	assert.NoError(t, err)
@@ -60,11 +63,13 @@ func TestReceiverHTTPS(t *testing.T) {
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
+	gNetLib = &MockNetLib{}
+
 	setupFlagString(set, "port,url,key,cert")
 	setupFlagBool(set, "verbose,pretty,https")
-
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--https", "--key=test.key", "--cert=test.cert", "--verbose", "--port=aaaa", "--url=/test"})
+	_ = set.Parse([]string{"--https", "--key=test.key", "--cert=test.cert", "--verbose", "--port=8000", "--url=/test"})
+
 	err := receiver(c)
 
 	assert.NoError(t, err)
@@ -97,7 +102,7 @@ func TestReceiverErrorKey(t *testing.T) {
 	setupFlagBool(set, "verbose,pretty,https")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--https", "--port=aaaa", "--url=/"})
+	_ = set.Parse([]string{"--https", "--port=8000", "--url=/"})
 	err := receiver(c)
 
 	if assert.Error(t, err) {
@@ -116,13 +121,55 @@ func TestReceiverErrorCert(t *testing.T) {
 	setupFlagBool(set, "verbose,pretty,https")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--https", "--key=a", "--port=aaaa", "--url=/"})
+	_ = set.Parse([]string{"--https", "--key=test.key", "--port=8000", "--url=/"})
 	err := receiver(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "no cert file provided", ngsiErr.Message)
+	}
+}
+
+func TestReceiverErrorHTTPS(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	gNetLib = &MockNetLib{ListenAndServeTLSErr: errors.New("ListenAndServeTLS error")}
+
+	setupFlagString(set, "port,url,key,cert")
+	setupFlagBool(set, "verbose,pretty,https")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--https", "--key=test.key", "--cert=test.cert", "--verbose", "--port=8000", "--url=/test"})
+
+	err := receiver(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "ListenAndServeTLS error", ngsiErr.Message)
+	}
+}
+
+func TestReceiverErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	gNetLib = &MockNetLib{ListenAndServeErr: errors.New("ListenAndServe error")}
+
+	setupFlagString(set, "port,url")
+	setupFlagBool(set, "verbose,pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--verbose", "--port=8000", "--url=/"})
+
+	err := receiver(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "ListenAndServe error", ngsiErr.Message)
 	}
 }
 
@@ -198,6 +245,25 @@ func TestReceiverHanderErrorMethodNotAllowed(t *testing.T) {
 	receiverHandler(got, req)
 
 	expected := http.StatusMethodNotAllowed
+
+	assert.Equal(t, expected, got.Code)
+}
+
+func TestReceiverHanderHeader(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+	receiverGlobal = &receiverParam{ngsi: ngsi, header: true}
+
+	reqBody := bytes.NewBufferString(`{"subscriptionId":"5fd412e8ecb082767349b975","data":[{"id":"device001","type":"device","temperature":{"type":"Number","value":25,"metadata":{}}}]}`)
+	req := httptest.NewRequest(http.MethodPost, "http://receiver/", reqBody)
+	req.Header.Set("Fiware-Service", "openiot")
+
+	got := httptest.NewRecorder()
+
+	receiverHandler(got, req)
+
+	expected := http.StatusNoContent
 
 	assert.Equal(t, expected, got.Code)
 }
