@@ -46,4 +46,6 @@ WORKDIR /opt/csource/
 
 USER nobody 
 
+EXPOSE 8000
+
 ENTRYPOINT ["/opt/csource/csource"]

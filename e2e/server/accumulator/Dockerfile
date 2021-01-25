@@ -44,4 +44,6 @@ COPY --from=builder /opt/passwd /etc/passwd
 
 USER nobody
 
+EXPOSE 8000
+
 ENTRYPOINT ["/opt/accumulator/accumulator"]

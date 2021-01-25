@@ -46,4 +46,6 @@ WORKDIR /opt/oauth/
 
 USER nobody 
 
+EXPOSE 8000
+
 ENTRYPOINT ["/opt/oauth/oauth"]
