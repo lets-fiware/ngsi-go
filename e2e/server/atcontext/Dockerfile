@@ -46,4 +46,6 @@ WORKDIR /opt/atcontext/
 
 USER nobody 
 
+EXPOSE 8000
+
 ENTRYPOINT ["/opt/atcontext/atcontext"]
