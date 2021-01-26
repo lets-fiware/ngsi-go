@@ -18,11 +18,11 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for January 2021:
+and incorporated in the next release of the product planned for March 2021:
 
--   Improvements NGSI commands
-
--   Admin command
+-   Improve NGSI commands
+-   Support E2E tests
+-   Time series commands supporting STH-Comet and Quantumleap APIs
 
 ## Medium term
 
@@ -30,15 +30,18 @@ The following list of features are planned to be addressed in the medium term,
 typically within the subsequent release(s) generated in the next 9 months after
 next planned release:
 
--   Improvements convenience commands
-
--   Notification receiver
-
--   E2E tests
-
--   JSON parser
-
+-   Linter
+-   Improve convenience commands
+    -   copy from NGSI v2 entities to NGSI-LD entities
+    -   copy from NGSI-LD entities to NGSI-LD entities
+-   NGSI-LD API support
+    -   Temporal API
+    -   /attribute
 -   NGSI-LD API full support (ETSI GS CIM 009 v1.2.1)
+-   NGSI-LD API full support (ETSI GS CIM 009 v1.3.1)
+-   IoT Agent northbound APIs
+-   Keyrock APIs 
+-   Improve unit tests and E2E tests
 
 ## Long term
 
