@@ -1,0 +1,578 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 Check if comet is registered
+#
+ngsi server get --host comet
+
+```0
+serverType comet
+serverHost http://comet:8666
+FIWARE-Serivce openiot
+FIWARE-SerivcePath /
+```
+
+#
+# 0010 hget attr Filtering by offset and limit - Raw data consumption
+#
+ngsi hget --host comet --service openiot --path / \
+attr --type Thing --id device001 --attrName A1 --hLimit 10 --hOffset 0 --pretty
+
+```0
+{
+  "type": "StructuredValue",
+  "value": [
+    {
+      "recvTime": "2016-09-13T00:00:00.000Z",
+      "attrType": "Number",
+      "attrValue": 1
+    },
+    {
+      "recvTime": "2016-09-13T00:01:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2
+    },
+    {
+      "recvTime": "2016-09-13T00:02:00.000Z",
+      "attrType": "Number",
+      "attrValue": 3
+    },
+    {
+      "recvTime": "2016-09-13T00:03:00.000Z",
+      "attrType": "Number",
+      "attrValue": 4
+    },
+    {
+      "recvTime": "2016-09-13T00:04:00.000Z",
+      "attrType": "Number",
+      "attrValue": 5
+    },
+    {
+      "recvTime": "2016-09-13T00:05:00.000Z",
+      "attrType": "Number",
+      "attrValue": 6
+    },
+    {
+      "recvTime": "2016-09-13T00:06:00.000Z",
+      "attrType": "Number",
+      "attrValue": 7
+    },
+    {
+      "recvTime": "2016-09-13T00:07:00.000Z",
+      "attrType": "Number",
+      "attrValue": 8
+    },
+    {
+      "recvTime": "2016-09-13T00:08:00.000Z",
+      "attrType": "Number",
+      "attrValue": 9
+    },
+    {
+      "recvTime": "2016-09-13T00:09:00.000Z",
+      "attrType": "Number",
+      "attrValue": 10
+    }
+  ]
+}
+```
+
+#
+# 0020 hget attr Filtering by number of last entries - Raw data consumption
+#
+ngsi hget --host comet --service openiot --path / \
+attr --type Thing --id device001 --attrName A1 --lastN 10 --pretty
+
+```0
+{
+  "type": "StructuredValue",
+  "value": [
+    {
+      "recvTime": "2016-09-15T01:50:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2991
+    },
+    {
+      "recvTime": "2016-09-15T01:51:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2992
+    },
+    {
+      "recvTime": "2016-09-15T01:52:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2993
+    },
+    {
+      "recvTime": "2016-09-15T01:53:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2994
+    },
+    {
+      "recvTime": "2016-09-15T01:54:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2995
+    },
+    {
+      "recvTime": "2016-09-15T01:55:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2996
+    },
+    {
+      "recvTime": "2016-09-15T01:56:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2997
+    },
+    {
+      "recvTime": "2016-09-15T01:57:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2998
+    },
+    {
+      "recvTime": "2016-09-15T01:58:00.000Z",
+      "attrType": "Number",
+      "attrValue": 2999
+    },
+    {
+      "recvTime": "2016-09-15T01:59:00.000Z",
+      "attrType": "Number",
+      "attrValue": 3000
+    }
+  ]
+}
+```
+
+#
+# 0030 hget attr Filtering by aggregation method and resolution
+#
+ngsi hget --host comet --service openiot --path / \
+attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod hour --pretty
+
+```0
+{
+  "type": "StructuredValue",
+  "value": [
+    {
+      "_id": {
+        "attrName": "A1",
+        "origin": "2016-09-13T00:00:00.000Z",
+        "resolution": "hour"
+      },
+      "points": [
+        {
+          "offset": 0,
+          "samples": 60,
+          "sum": 1830
+        },
+        {
+          "offset": 1,
+          "samples": 60,
+          "sum": 5430
+        },
+        {
+          "offset": 2,
+          "samples": 60,
+          "sum": 9030
+        },
+        {
+          "offset": 3,
+          "samples": 60,
+          "sum": 12630
+        },
+        {
+          "offset": 4,
+          "samples": 60,
+          "sum": 16230
+        },
+        {
+          "offset": 5,
+          "samples": 60,
+          "sum": 19830
+        },
+        {
+          "offset": 6,
+          "samples": 60,
+          "sum": 23430
+        },
+        {
+          "offset": 7,
+          "samples": 60,
+          "sum": 27030
+        },
+        {
+          "offset": 8,
+          "samples": 60,
+          "sum": 30630
+        },
+        {
+          "offset": 9,
+          "samples": 60,
+          "sum": 34230
+        },
+        {
+          "offset": 10,
+          "samples": 60,
+          "sum": 37830
+        },
+        {
+          "offset": 11,
+          "samples": 60,
+          "sum": 41430
+        },
+        {
+          "offset": 12,
+          "samples": 60,
+          "sum": 45030
+        },
+        {
+          "offset": 13,
+          "samples": 60,
+          "sum": 48630
+        },
+        {
+          "offset": 14,
+          "samples": 60,
+          "sum": 52230
+        },
+        {
+          "offset": 15,
+          "samples": 60,
+          "sum": 55830
+        },
+        {
+          "offset": 16,
+          "samples": 60,
+          "sum": 59430
+        },
+        {
+          "offset": 17,
+          "samples": 60,
+          "sum": 63030
+        },
+        {
+          "offset": 18,
+          "samples": 60,
+          "sum": 66630
+        },
+        {
+          "offset": 19,
+          "samples": 60,
+          "sum": 70230
+        },
+        {
+          "offset": 20,
+          "samples": 60,
+          "sum": 73830
+        },
+        {
+          "offset": 21,
+          "samples": 60,
+          "sum": 77430
+        },
+        {
+          "offset": 22,
+          "samples": 60,
+          "sum": 81030
+        },
+        {
+          "offset": 23,
+          "samples": 60,
+          "sum": 84630
+        }
+      ]
+    },
+    {
+      "_id": {
+        "attrName": "A1",
+        "origin": "2016-09-14T00:00:00.000Z",
+        "resolution": "hour"
+      },
+      "points": [
+        {
+          "offset": 0,
+          "samples": 60,
+          "sum": 88230
+        },
+        {
+          "offset": 1,
+          "samples": 60,
+          "sum": 91830
+        },
+        {
+          "offset": 2,
+          "samples": 60,
+          "sum": 95430
+        },
+        {
+          "offset": 3,
+          "samples": 60,
+          "sum": 99030
+        },
+        {
+          "offset": 4,
+          "samples": 60,
+          "sum": 102630
+        },
+        {
+          "offset": 5,
+          "samples": 60,
+          "sum": 106230
+        },
+        {
+          "offset": 6,
+          "samples": 60,
+          "sum": 109830
+        },
+        {
+          "offset": 7,
+          "samples": 60,
+          "sum": 113430
+        },
+        {
+          "offset": 8,
+          "samples": 60,
+          "sum": 117030
+        },
+        {
+          "offset": 9,
+          "samples": 60,
+          "sum": 120630
+        },
+        {
+          "offset": 10,
+          "samples": 60,
+          "sum": 124230
+        },
+        {
+          "offset": 11,
+          "samples": 60,
+          "sum": 127830
+        },
+        {
+          "offset": 12,
+          "samples": 60,
+          "sum": 131430
+        },
+        {
+          "offset": 13,
+          "samples": 60,
+          "sum": 135030
+        },
+        {
+          "offset": 14,
+          "samples": 60,
+          "sum": 138630
+        },
+        {
+          "offset": 15,
+          "samples": 60,
+          "sum": 142230
+        },
+        {
+          "offset": 16,
+          "samples": 60,
+          "sum": 145830
+        },
+        {
+          "offset": 17,
+          "samples": 60,
+          "sum": 149430
+        },
+        {
+          "offset": 18,
+          "samples": 60,
+          "sum": 153030
+        },
+        {
+          "offset": 19,
+          "samples": 60,
+          "sum": 156630
+        },
+        {
+          "offset": 20,
+          "samples": 60,
+          "sum": 160230
+        },
+        {
+          "offset": 21,
+          "samples": 60,
+          "sum": 163830
+        },
+        {
+          "offset": 22,
+          "samples": 60,
+          "sum": 167430
+        },
+        {
+          "offset": 23,
+          "samples": 60,
+          "sum": 171030
+        }
+      ]
+    },
+    {
+      "_id": {
+        "attrName": "A1",
+        "origin": "2016-09-15T00:00:00.000Z",
+        "resolution": "hour"
+      },
+      "points": [
+        {
+          "offset": 0,
+          "samples": 60,
+          "sum": 174630
+        },
+        {
+          "offset": 1,
+          "samples": 60,
+          "sum": 178230
+        }
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0040 hget attr Filtering by aggregation method and resolution
+#
+ngsi hget --host comet --service openiot --path / \
+attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod day --pretty
+
+```0
+{
+  "type": "StructuredValue",
+  "value": [
+    {
+      "_id": {
+        "attrName": "A1",
+        "origin": "2016-09-01T00:00:00.000Z",
+        "resolution": "day"
+      },
+      "points": [
+        {
+          "offset": 13,
+          "samples": 1440,
+          "sum": 1037520
+        },
+        {
+          "offset": 14,
+          "samples": 1440,
+          "sum": 3111120
+        },
+        {
+          "offset": 15,
+          "samples": 120,
+          "sum": 352860
+        }
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0050 hget attr Filtering by aggregation method and resolution
+#
+ngsi hget --host comet --service openiot --path / \
+attr --type Thing --id device001 --attrName A1 --aggrMethod max --aggrPeriod day --pretty
+
+```0
+{
+  "type": "StructuredValue",
+  "value": [
+    {
+      "_id": {
+        "attrName": "A1",
+        "origin": "2016-09-01T00:00:00.000Z",
+        "resolution": "day"
+      },
+      "points": [
+        {
+          "offset": 13,
+          "samples": 1440,
+          "max": 1440
+        },
+        {
+          "offset": 14,
+          "samples": 1440,
+          "max": 2880
+        },
+        {
+          "offset": 15,
+          "samples": 120,
+          "max": 3000
+        }
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0060 hget attr Filtering by aggregation method and resolution
+#
+ngsi hget --host comet \
+attr --type Thing --id device001 --attrName A1 --aggrMethod min --aggrPeriod day --pretty
+
+```0
+{
+  "type": "StructuredValue",
+  "value": [
+    {
+      "_id": {
+        "attrName": "A1",
+        "origin": "2016-09-01T00:00:00.000Z",
+        "resolution": "day"
+      },
+      "points": [
+        {
+          "offset": 13,
+          "samples": 1440,
+          "min": 1
+        },
+        {
+          "offset": 14,
+          "samples": 1440,
+          "min": 1441
+        },
+        {
+          "offset": 15,
+          "samples": 120,
+          "min": 2881
+        }
+      ]
+    }
+  ]
+}
+```
+
+#
+# 9999 Clean up
+#
+ngsi hdelete --host comet attr --type Thing --id device001 --attrName A1 --run
+
+```0
+```

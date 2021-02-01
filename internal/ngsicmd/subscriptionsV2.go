@@ -609,7 +609,7 @@ func getAttributesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscriptionV2) erro
 	entityType := c.String("type")
 
 	if entityType != "" && ngsi.Host != "" && c.IsSet("get") {
-		client, err := newClient(ngsi, c, false)
+		client, err := newClient(ngsi, c, false, []string{"broker"})
 		if err != nil {
 			return &ngsiCmdError{funcName, 1, err.Error(), err}
 		}

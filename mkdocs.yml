@@ -9,9 +9,11 @@ nav:
     - 'Install': install.md
     - 'Build from source': build_source.md
     - 'files': files.md
-  - 'NGSI Go walkthrough':
-    - 'NGSI-LD CRUD': walkthrough/ngsi-ld-crud.md
-    - 'NGSIv2 CRUD': walkthrough/ngsi-v2-crud.md
+  - 'NGSI Go tutorial':
+    - 'NGSI-LD CRUD': tutorial/ngsi-ld-crud.md
+    - 'NGSIv2 CRUD': tutorial/ngsi-v2-crud.md
+    - 'STH-Comet': tutorial/comet.md
+    - 'QuantumLeap': tutorial/quantumleap.md
   - 'NGSI command':
     -   'append': ngsi/append.md
     -   'create': ngsi/create.md
@@ -21,11 +23,16 @@ nav:
     -   'replace': ngsi/replace.md
     -   'update': ngsi/update.md
     -   'upsert': ngsi/upsert.md
+  - 'Time series commnad':
+    -   'hdelete': time_series/hdelete.md
+    -   'hget': time_series/hget.md
   - 'Convenience command':
     -   'admin': convenience/admin.md
+    -   'apis': convenience/apis.md
     -   'cp': convenience/cp.md
     -   'wc': convenience/wc.md
     -   'man': convenience/man.md
+    -   'health': convenience/health.md
     -   'ls': convenience/ls.md
     -   'rm': convenience/rm.md
     -   'template': convenience/template.md
@@ -34,5 +41,6 @@ nav:
     -    'broker': management/broker.md
     -    'context': management/context.md
     -    'settings': management/settings.md
+    -    'server': management/server.md
     -    'token': management/token.md
   - 'Global Options': global.md

@@ -34,7 +34,7 @@ services:
     command: -dbhost mongo
 
   orion-ld:
-    image: fiware/orion-ld:latest
+    image: fiware/orion-ld:0.6-PRE-41
     depends_on:
       - mongo
     command: -dbhost mongo -db orionld
@@ -44,6 +44,28 @@ services:
     command: --nojournal
     volumes:
       - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  comet:
+    image: fiware/sth-comet:2.8.0
+    restart: always
+    depends_on:
+      - mongo
+    environment:
+      - STH_HOST=0.0.0.0
+      - DB_URI=mongo:27017
+
+  quantumleap:
+    image: smartsdk/quantumleap:0.8
+    depends_on:
+      - crate
+    environment:
+      - CRATE_HOST=crate
+
+  crate:
+    image: crate:4.1.4
+    command: crate -Cauth.host_based.enabled=false -Ccluster.name=democluster -Chttp.cors.enabled=true -Chttp.cors.allow-origin="*"
+    environment:
+      - CRATE_HEAP_SIZE=2g
 
   accumulator:
     build: ./server/accumulator
@@ -74,4 +96,5 @@ services:
       - oauth
     volumes:
       - ../bin/ngsi:/usr/local/bin/ngsi:ro
+      - ../autocomplete/ngsi_bash_autocomplete:/usr/share/bash-compeletion/completions/ngsi_bash_autocomplete:ro
       - .:/root/e2e

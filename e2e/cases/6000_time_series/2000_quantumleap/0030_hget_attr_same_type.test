@@ -1,0 +1,259 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 hget attr --sameType --hLimit
+#
+ngsi hget --host quantumleap attr --type Thing --attrName A2 --sameType --hLimit 6
+
+```0
+{
+  "attrName": "A2",
+  "entities": [
+    {
+      "entityId": "device001",
+      "index": [
+        "2016-09-13T00:00:00.000+00:00",
+        "2016-09-13T00:01:00.000+00:00",
+        "2016-09-13T00:02:00.000+00:00"
+      ],
+      "values": [
+        2.0,
+        3.0,
+        4.0
+      ]
+    },
+    {
+      "entityId": "device002",
+      "index": [
+        "2016-09-13T00:00:00.000+00:00",
+        "2016-09-13T00:01:00.000+00:00",
+        "2016-09-13T00:02:00.000+00:00"
+      ],
+      "values": [
+        4.0,
+        5.0,
+        6.0
+      ]
+    }
+  ],
+  "entityType": "Thing"
+}
+```
+
+#
+# 0002 hget attr --sameType --hLimit --hOffset
+#
+ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6
+
+```0
+{
+  "attrName": "A2",
+  "entities": [
+    {
+      "entityId": "device001",
+      "index": [
+        "2016-09-13T00:03:00.000+00:00",
+        "2016-09-13T00:04:00.000+00:00",
+        "2016-09-13T00:05:00.000+00:00"
+      ],
+      "values": [
+        5.0,
+        6.0,
+        7.0
+      ]
+    },
+    {
+      "entityId": "device002",
+      "index": [
+        "2016-09-13T00:03:00.000+00:00",
+        "2016-09-13T00:04:00.000+00:00",
+        "2016-09-13T00:05:00.000+00:00"
+      ],
+      "values": [
+        7.0,
+        8.0,
+        9.0
+      ]
+    }
+  ],
+  "entityType": "Thing"
+}
+```
+
+#
+# 0003 hget attr --sameType --lastN
+#
+ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6
+
+```0
+{
+  "attrName": "A2",
+  "entities": [
+    {
+      "entityId": "device001",
+      "index": [
+        "2016-09-13T01:37:00.000+00:00",
+        "2016-09-13T01:38:00.000+00:00",
+        "2016-09-13T01:39:00.000+00:00"
+      ],
+      "values": [
+        99.0,
+        100.0,
+        101.0
+      ]
+    },
+    {
+      "entityId": "device002",
+      "index": [
+        "2016-09-13T01:37:00.000+00:00",
+        "2016-09-13T01:38:00.000+00:00",
+        "2016-09-13T01:39:00.000+00:00"
+      ],
+      "values": [
+        101.0,
+        102.0,
+        103.0
+      ]
+    }
+  ],
+  "entityType": "Thing"
+}
+```
+
+#
+# 0004 attr --sameType --hLimit --value
+#
+ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --value
+
+```0
+{
+  "values": [
+    {
+      "entityId": "device001",
+      "index": [
+        "2016-09-13T00:00:00.000+00:00",
+        "2016-09-13T00:01:00.000+00:00",
+        "2016-09-13T00:02:00.000+00:00"
+      ],
+      "values": [
+        2.0,
+        3.0,
+        4.0
+      ]
+    },
+    {
+      "entityId": "device002",
+      "index": [
+        "2016-09-13T00:00:00.000+00:00",
+        "2016-09-13T00:01:00.000+00:00",
+        "2016-09-13T00:02:00.000+00:00"
+      ],
+      "values": [
+        4.0,
+        5.0,
+        6.0
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0005 attr --sameType  --hLimit --hOffset --value
+#
+ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6 --value
+
+```0
+{
+  "values": [
+    {
+      "entityId": "device001",
+      "index": [
+        "2016-09-13T00:03:00.000+00:00",
+        "2016-09-13T00:04:00.000+00:00",
+        "2016-09-13T00:05:00.000+00:00"
+      ],
+      "values": [
+        5.0,
+        6.0,
+        7.0
+      ]
+    },
+    {
+      "entityId": "device002",
+      "index": [
+        "2016-09-13T00:03:00.000+00:00",
+        "2016-09-13T00:04:00.000+00:00",
+        "2016-09-13T00:05:00.000+00:00"
+      ],
+      "values": [
+        7.0,
+        8.0,
+        9.0
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0006 attr --sameType --lastN --value
+#
+ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6 --value
+
+```0
+{
+  "values": [
+    {
+      "entityId": "device001",
+      "index": [
+        "2016-09-13T01:37:00.000+00:00",
+        "2016-09-13T01:38:00.000+00:00",
+        "2016-09-13T01:39:00.000+00:00"
+      ],
+      "values": [
+        99.0,
+        100.0,
+        101.0
+      ]
+    },
+    {
+      "entityId": "device002",
+      "index": [
+        "2016-09-13T01:37:00.000+00:00",
+        "2016-09-13T01:38:00.000+00:00",
+        "2016-09-13T01:39:00.000+00:00"
+      ],
+      "values": [
+        101.0,
+        102.0,
+        103.0
+      ]
+    }
+  ]
+}
+```

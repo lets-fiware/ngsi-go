@@ -1,29 +1,26 @@
-# NGSI Go walkthrough for NGSI-LD
-
-## Prerequisites
-
-```console
-git clone https://github.com/FIWARE/tutorials.CRUD-Operations.git
-cd tutorials.CRUD-Operations
-git checkout NGSI-LD
-
-./services orion
-
-curl http://localhost:1026/version
-```
+# NGSI Go tutorial for NGSI-LD
 
 ## NGSI-LD CRUD operation
 
-### Add Host
+### Print host information
 
 ```console
-ngsi broker add --host orion-ld --brokerHost http://localhost:1026
+ngsi broker get --host orion-ld
 ```
 
-### Add Context
+```console
+brokerHost http://orion-ld:1026
+ngsiType ld
+```
+
+### List Context
 
 ```console
-ngsi context add --name tutorial --url http://context-provider:3000/data-models/ngsi-context.jsonld
+ngsi context list --name tutorial
+```
+
+```console
+http://atcontext:8000/ngsi-ld.json
 ```
 
 ### Version

@@ -78,6 +78,10 @@ var (
 		Aliases: []string{"B"},
 		Usage:   "don't use previous args (batch)",
 	}
+	cmdNameFlag = &cli.StringFlag{
+		Name:   "cmdName",
+		Hidden: true,
+	}
 )
 
 // Common flags
@@ -251,6 +255,10 @@ var (
 		Name:  "orderBy",
 		Usage: "orderBy",
 	}
+	attrNameFlag = &cli.StringFlag{
+		Name:  "attrName",
+		Usage: "attrName",
+	}
 	attrNameRFlag = &cli.StringFlag{
 		Name:     "attrName",
 		Usage:    "attrName",
@@ -305,6 +313,58 @@ var (
 	timePropertyFlag = &cli.StringFlag{
 		Name:  "timeProperty",
 		Usage: "timeProperty (LD)",
+	}
+)
+
+// TIME SERIES
+var (
+	hLimitFlag = &cli.Int64Flag{
+		Name:  "hLimit",
+		Usage: "maximum number of data entries to retrieve",
+	}
+	hOffsetFlag = &cli.Int64Flag{
+		Name:  "hOffset",
+		Usage: "offset to be applied to data entries to be retrieved",
+	}
+	lastNFlag = &cli.Int64Flag{
+		Name:  "lastN",
+		Usage: "number of data entries to retrieve since the final date backwards",
+	}
+	aggrMethodFlag = &cli.StringFlag{
+		Name:  "aggrMethod",
+		Usage: "aggregation method (max, min, sum, sum, occur)",
+	}
+	aggrPeriodFlag = &cli.StringFlag{
+		Name:  "aggrPeriod",
+		Usage: "aggregation period or resolution of the aggregated data to be retrieved",
+	}
+	fromDateFlag = &cli.StringFlag{
+		Name:  "fromDate",
+		Usage: "starting date from which data should be retrieved",
+	}
+	toDateFlag = &cli.StringFlag{
+		Name:  "toDate",
+		Usage: "final date until which data should be retrieved",
+	}
+)
+
+// TIME SERIES (quantumleap)
+var (
+	dropTableFlag = &cli.BoolFlag{
+		Name:  "dropTable",
+		Usage: "drop the table storing an entity type",
+	}
+	sameTypeFlag = &cli.BoolFlag{
+		Name:  "sameType",
+		Usage: "same type",
+	}
+	nTypesFlag = &cli.BoolFlag{
+		Name:  "nTypes",
+		Usage: "nTypes",
+	}
+	valueFlag = &cli.BoolFlag{
+		Name:  "value",
+		Usage: "values only",
 	}
 )
 
@@ -472,6 +532,23 @@ var (
 	notifyURLFlag = &cli.StringFlag{
 		Name:   "url",
 		Usage:  "url to be invoked when a notification is generated (v2)",
+		Hidden: true,
+	}
+)
+
+// flag for server config
+var (
+	serverHost2Flag = &cli.StringFlag{
+		Name:  "serverHost",
+		Usage: "specify server host",
+	}
+	serverTypeFlag = &cli.StringFlag{
+		Name:  "serverType",
+		Usage: "serverType (comet, ql)",
+	}
+	allServersFlag = &cli.BoolFlag{
+		Name:   "all",
+		Usage:  "print all servers",
 		Hidden: true,
 	}
 )

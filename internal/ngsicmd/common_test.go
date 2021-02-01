@@ -53,3 +53,33 @@ func TestListenAndServeTLS(t *testing.T) {
 	err := n.ListenAndServeTLS("", "", "", nil)
 	assert.Error(t, err)
 }
+
+func TestGetDateTimeISO8601(t *testing.T) {
+
+	actual, err := getDateTime("2022-09-24T12:07:54.035Z")
+	expected := "2022-09-24T12:07:54.035Z"
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestGetDateTime1Day(t *testing.T) {
+	setupTest()
+
+	_, err := getDateTime("1day")
+
+	assert.NoError(t, err)
+}
+
+func TestGetDateTimeError(t *testing.T) {
+	setupTest()
+
+	_, err := getDateTime("1")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "error 1", ngsiErr.Message)
+	}
+}

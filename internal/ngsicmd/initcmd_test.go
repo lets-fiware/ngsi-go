@@ -97,12 +97,24 @@ func TestInitCmdConfig(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestInitCmdConfigConfigFile(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	c := cli.NewContext(app, set, nil)
+	setupFlagString(set, "host,config,cacheFile")
+	_ = set.Parse([]string{"--host=orion", "--config=config.json"})
+
+	_, err := initCmd(c, "Testing", true)
+
+	assert.NoError(t, err)
+}
+
 func TestInitCmdConfigCacheFile(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "host,config,cacheFile")
-	_ = set.Parse([]string{"--host=orion", "--config=config.json", "--cacheFile=cache.json"})
+	_ = set.Parse([]string{"--host=orion", "--cacheFile=cache.json"})
 
 	_, err := initCmd(c, "Testing", true)
 
@@ -280,7 +292,7 @@ func TestInitCmdErrorHostNotFound(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	}
 }
 

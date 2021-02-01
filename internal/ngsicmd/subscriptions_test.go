@@ -47,7 +47,7 @@ func TestSubscriptionsListErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -133,7 +133,7 @@ func TestSubscriptionGetErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -219,7 +219,7 @@ func TestSubscriptionsCreateErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -306,7 +306,7 @@ func TestSubscriptionsUpdateErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -392,7 +392,7 @@ func TestSubscriptionsDeleteErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -554,7 +554,7 @@ func TestSubscriptionsCountErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

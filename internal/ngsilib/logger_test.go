@@ -116,7 +116,7 @@ func TestLogLevelError(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, -1, actual)
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown LogLevel: fiware", ngsiErr.Message)
 	}

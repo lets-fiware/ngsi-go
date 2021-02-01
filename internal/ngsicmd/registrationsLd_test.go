@@ -56,7 +56,7 @@ func TestRegistrationsListLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -89,7 +89,7 @@ func TestRegistrationsListLdLocalTime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 	err = registrationsListLd(c, ngsi, client)
 
@@ -120,7 +120,7 @@ func TestRegistrationsListLdCountZero(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 	err = registrationsListLd(c, ngsi, client)
 
@@ -152,7 +152,7 @@ func TestRegistrationsListLdCountZeroPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 	err = registrationsListLd(c, ngsi, client)
 
@@ -189,7 +189,7 @@ func TestRegistrationsListLdCountPage(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -222,7 +222,7 @@ func TestRegistrationsListLdVerbose(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -254,7 +254,7 @@ func TestRegistrationsListLdJSON(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -287,7 +287,7 @@ func TestRegistrationsListLdJSONPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -317,7 +317,7 @@ func TestRegistrationsListLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -348,7 +348,7 @@ func TestRegistrationsListLdErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -377,7 +377,7 @@ func TestRegistrationsListLdErrorResultsCount(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -408,7 +408,7 @@ func TestRegistrationsListLdErrorUnmarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsListLd(c, ngsi, client)
@@ -441,7 +441,7 @@ func TestRegistrationsListLdErrorJSON(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 	setJSONEncodeErr(ngsi, 0)
 
@@ -475,7 +475,7 @@ func TestRegistrationsListLdErrorJSONPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -508,7 +508,7 @@ func TestRegistrationsLdGet(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -540,7 +540,7 @@ func TestRegistrationsLdGetPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -572,7 +572,7 @@ func TestRegistrationsLdGetLocalTime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -603,7 +603,7 @@ func TestRegistrationsLdGetSafeString(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -633,7 +633,7 @@ func TestRegistrationsGetLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -664,7 +664,7 @@ func TestRegistrationsGetLdErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -696,7 +696,7 @@ func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -728,7 +728,7 @@ func TestRegistrationsLdGetErrorJSONMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsGetLd(c, ngsi, client)
@@ -760,7 +760,7 @@ func TestRegistrationsLdGetErrorPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -793,7 +793,7 @@ func TestRegistrationsCreateLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateLd(c, ngsi, client)
@@ -824,7 +824,7 @@ func TestRegistrationsCreateLdErrorSetRegistrationsValuleLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateLd(c, ngsi, client)
@@ -855,7 +855,7 @@ func TestRegistrationsCreateLdErrorJSONMarshalEncode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateLd(c, ngsi, client)
@@ -885,7 +885,7 @@ func TestRegistrationsCreateLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateLd(c, ngsi, client)
@@ -916,7 +916,7 @@ func TestRegistrationsCreateLdErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsCreateLd(c, ngsi, client)
@@ -945,7 +945,7 @@ func TestRegistrationsDeleteLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsDeleteLd(c, ngsi, client)
@@ -969,7 +969,7 @@ func TestRegistrationsDeleteLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsDeleteLd(c, ngsi, client)
@@ -1000,7 +1000,7 @@ func TestRegistrationsDeleteLdErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = registrationsDeleteLd(c, ngsi, client)

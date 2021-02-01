@@ -46,26 +46,41 @@ func TestNgsiIntiConfig(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestIntiConfig(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.ConfigFile = &MockIoLib{}
-	filename := ""
-	ngsi.ConfigFile.SetFileName(&filename)
-
-	err := initConfig(ngsi, ngsi.ConfigFile)
-	assert.NoError(t, err)
-}
+var configData = `{
+	"brokers": {
+		"orion": {
+		  "brokerHost": "https://orion",
+		  "ngsiType": "v2"
+		}
+	}
+}`
 
 func TestIntiConfigBrokerList(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.ConfigFile = &MockIoLib{}
 	filename := ""
 	ngsi.ConfigFile.SetFileName(&filename)
-	ngsi.brokerList = make(BrokerList)
-	broker := &Broker{BrokerHost: "http://orion"}
-	ngsi.brokerList["orion"] = broker
+	ngsi.serverList = make(ServerList)
+	broker := &Server{ServerHost: "http://orion"}
+	ngsi.serverList["orion"] = broker
+	ngsi.configVresion = "1"
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
+
+	assert.NoError(t, err)
+}
+
+func TestIntiConfigBrokerListNoVersion(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	filename := "config.json"
+	ngsi.ConfigFile = &MockIoLib{}
+	ngsi.ConfigFile.SetFileName(&filename)
+	ngsi.CacheFile = &MockIoLib{}
+	ngsi.CacheFile.SetFileName(&filename)
+	ngsi.FileReader = &MockFileLib{readFile: []byte(configData)}
+
+	err := initConfig(ngsi, ngsi.ConfigFile)
+
 	assert.NoError(t, err)
 }
 
@@ -121,25 +136,6 @@ func TestIntiConfigBatchFlag(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestIntiConfigContext(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.ConfigFile = &MockIoLib{}
-	filename := "config"
-	ngsi.ConfigFile.SetFileName(&filename)
-	s := `{"contexts":{"data-model":"context","etsi":1,"json":["context"]}}`
-	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
-	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
-
-	err := initConfig(ngsi, ngsi.ConfigFile)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "error in config file", ngsiErr.Message)
-	}
-}
-
 func TestIntiConfigErrorNoFileName(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.ConfigFile = &MockIoLib{HomeDirErr: errors.New("error homedir")}
@@ -147,7 +143,7 @@ func TestIntiConfigErrorNoFileName(t *testing.T) {
 	err := initConfig(ngsi, ngsi.ConfigFile)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error homedir", ngsiErr.Message)
 	}
@@ -162,7 +158,7 @@ func TestIntiConfigErrorFileName(t *testing.T) {
 	err := initConfig(ngsi, ngsi.ConfigFile)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error path abs config", ngsiErr.Message)
 	}
@@ -177,7 +173,7 @@ func TestIntiConfigErrorOpen(t *testing.T) {
 	err := initConfig(ngsi, ngsi.ConfigFile)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open config: no such file or directory", ngsiErr.Message)
 	}
@@ -195,9 +191,29 @@ func TestIntiConfigErrorDecode(t *testing.T) {
 	err := initConfig(ngsi, ngsi.ConfigFile)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestIntiConfigErrorVersion(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.ConfigFile = &MockIoLib{}
+	filename := ""
+	ngsi.ConfigFile.SetFileName(&filename)
+	ngsi.LogWriter = &bytes.Buffer{}
+	ngsi.serverList = make(ServerList)
+	broker := &Server{ServerHost: "http://orion", NgsiType: "v2"}
+	ngsi.serverList["orion"] = broker
+	ngsi.configVresion = "err"
+
+	err := initConfig(ngsi, ngsi.ConfigFile)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "error: config file version", ngsiErr.Message)
 	}
 }
 
@@ -207,15 +223,16 @@ func TestIntiConfigErrorParam(t *testing.T) {
 	filename := ""
 	ngsi.ConfigFile.SetFileName(&filename)
 	ngsi.LogWriter = &bytes.Buffer{}
-	ngsi.brokerList = make(BrokerList)
-	broker := &Broker{BrokerHost: "http://orion", NgsiType: "v1"}
-	ngsi.brokerList["orion"] = broker
+	ngsi.serverList = make(ServerList)
+	broker := &Server{ServerHost: "http://orion", NgsiType: "v1"}
+	ngsi.serverList["orion"] = broker
+	ngsi.configVresion = "1"
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "error in config file", ngsiErr.Message)
 	}
 }
@@ -228,13 +245,50 @@ func TestIntiConfigErrorContext(t *testing.T) {
 	ngsi.LogWriter = &bytes.Buffer{}
 	ngsi.contextList = make(ContextsInfo)
 	ngsi.contextList["ld"] = "context"
+	ngsi.configVresion = "1"
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "error in config file", ngsiErr.Message)
+	}
+}
+
+func TestIntiConfigContext(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.ConfigFile = &MockIoLib{}
+	filename := "config"
+	ngsi.ConfigFile.SetFileName(&filename)
+	s := `{"version":"1","contexts":{"data-model":"context","etsi":1,"json":["context"]}}`
+	ngsi.FileReader = &MockFileLib{readFile: []byte(s)}
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+
+	err := initConfig(ngsi, ngsi.ConfigFile)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "error in config file", ngsiErr.Message)
+	}
+}
+func TestIntiConfigErrorSaveError(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	filename := "config.json"
+	ngsi.ConfigFile = &MockIoLib{TruncateErr: errors.New("error")}
+	ngsi.ConfigFile.SetFileName(&filename)
+	ngsi.CacheFile = &MockIoLib{}
+	ngsi.CacheFile.SetFileName(&filename)
+	ngsi.FileReader = &MockFileLib{readFile: []byte(configData)}
+
+	err := initConfig(ngsi, ngsi.ConfigFile)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "error", ngsiErr.Message)
 	}
 }
 
@@ -256,7 +310,7 @@ func TestSaveConfigFileErrorOpenFile(t *testing.T) {
 
 	err := ngsi.saveConfigFile()
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -271,7 +325,7 @@ func TestSaveConfigFileErrorClose(t *testing.T) {
 
 	err := ngsi.saveConfigFile()
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "close error", ngsiErr.Message)
 	}
@@ -286,7 +340,7 @@ func TestSaveConfigFileErrorTrancate(t *testing.T) {
 
 	err := ngsi.saveConfigFile()
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "trancate error", ngsiErr.Message)
 	}
@@ -300,7 +354,7 @@ func TestSaveConfigFileErrorEncode(t *testing.T) {
 
 	err := ngsi.saveConfigFile()
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
@@ -339,4 +393,18 @@ func TestSavePreviousArgsNoSave(t *testing.T) {
 
 	err := ngsi.SavePreviousArgs()
 	assert.NoError(t, err)
+}
+
+func TestMigration(t *testing.T) {
+	config := NgsiConfig{}
+
+	config.DeprecatedBrokers = ServerList{}
+	config.DeprecatedBrokers["orion"] = &Server{DeprecatedBrokerHost: "http://orion"}
+
+	migration(&config)
+
+	expected := "http://orion"
+
+	assert.Equal(t, expected, config.Servers["orion"].ServerHost)
+	assert.Equal(t, "", config.Servers["orion"].DeprecatedBrokerHost)
 }

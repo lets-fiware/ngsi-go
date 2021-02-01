@@ -41,9 +41,10 @@ func TestVersionTokenCommand(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",
@@ -77,9 +78,10 @@ func TestVersionTokenCommandJSON(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",
@@ -114,9 +116,10 @@ func TestVersionTokenCommandJSONPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",
@@ -151,9 +154,10 @@ func TestVersionTokenCommandJSONExpiresZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",
@@ -190,9 +194,10 @@ func TestVersionTokenCommandExpires(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",
@@ -228,9 +233,10 @@ func TestVersionTokenCommandExpiresZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",
@@ -272,7 +278,7 @@ func TestTokenCommandErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 		assert.Error(t, err)
 	}
 }
@@ -327,9 +333,10 @@ func TestVersionTokenCommandErrorJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",
@@ -367,9 +374,10 @@ func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
-		"brokers": {
+		"version": "1",
+		"servers": {
 			"orion": {
-				"brokerHost": "http://orion",
+				"serverHost": "http://orion",
 				"ngsiType": "v2",
 				"idmType": "tokenproxy",
 				"idmHost": "/token",

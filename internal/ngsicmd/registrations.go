@@ -47,7 +47,7 @@ func registrationsList(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -66,7 +66,7 @@ func registrationsGet(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -85,7 +85,7 @@ func registrationsCreate(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -104,7 +104,7 @@ func registrationsDelete(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -148,7 +148,7 @@ func registrationsCount(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

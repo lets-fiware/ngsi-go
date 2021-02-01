@@ -28,4 +28,12 @@
 if [ ! -e "$1" ]; then
   echo "$1 not found."
 fi
-docker-compose exec ngsi-test /usr/local/bin/ngsi-test -verbose "$1"
+
+type docker-compose > /dev/null
+if [ $? -eq 0 ]; then
+  docker-compose exec ngsi-test /usr/local/bin/ngsi-test -verbose "$1"
+else
+  if [ -e /usr/local/bin/ngsi-test ]; then
+    /usr/local/bin/ngsi-test -verbose "$1"
+  fi 
+fi

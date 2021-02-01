@@ -153,7 +153,7 @@ func TestJSONSafeStringErrorEncode1(t *testing.T) {
 	_, err := JSONSafeStringEncode([]byte(input))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character '%' after object key (19) \":\"abc\",\"type:\"%<>\\\"'=;()\",\"sp", ngsiErr.Message)
 	} else {
@@ -168,7 +168,7 @@ func TestJSONSafeStringErrorEncode2(t *testing.T) {
 	_, err := JSONSafeStringEncode([]byte(input))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 't' after object key (41) =;()\",\"speed:{\"type\":\"Text\",\"v", ngsiErr.Message)
 	} else {
@@ -207,7 +207,7 @@ func TestJSONSafeStringDecodeErrorMarshal(t *testing.T) {
 	_, err := JSONSafeStringDecode([]byte(`{"name":%25"}`))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character '%' looking for beginning of value (7) {\"name\":%25\"}", ngsiErr.Message)
 	} else {
@@ -224,7 +224,7 @@ func TestJSONSafeStringDecodeErrorUnmarshal(t *testing.T) {
 	_, err := JSONSafeStringDecode([]byte(`{"name":"%25}`))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	} else {
@@ -268,7 +268,7 @@ func TestJsonParserError(t *testing.T) {
 	data := `{"name":`
 	_, err := jsonParser([]byte(data), testStringFunc)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: {\"name\"", ngsiErr.Message)
 	}
@@ -278,7 +278,7 @@ func TestJsonParserError2(t *testing.T) {
 	data := `{"name":"abcdefghijklmn"`
 	_, err := jsonParser([]byte(data), testStringFunc)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: abcdefghijklmn\"", ngsiErr.Message)
 	}

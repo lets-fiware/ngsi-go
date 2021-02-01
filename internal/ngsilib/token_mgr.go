@@ -81,7 +81,7 @@ func (ngsi *NGSI) InitTokenMgr(file *string) error {
 	if file == nil {
 		home, err := getConfigDir(cacheFile)
 		if err != nil {
-			return &NgsiLibError{funcName, 1, err.Error(), err}
+			return &LibError{funcName, 1, err.Error(), err}
 		}
 
 		s := filepath.Join(home, cacheFileName)
@@ -92,14 +92,14 @@ func (ngsi *NGSI) InitTokenMgr(file *string) error {
 		} else {
 			s, err := cacheFile.FilePathAbs(*file)
 			if err != nil {
-				return &NgsiLibError{funcName, 2, err.Error() + " " + s, err}
+				return &LibError{funcName, 2, err.Error() + " " + s, err}
 			}
 			cacheFile.SetFileName(&s)
 		}
 	}
 
 	if err := initTokenList(cacheFile); err != nil {
-		return &NgsiLibError{funcName, 3, err.Error() + " " + *cacheFile.FileName(), err}
+		return &LibError{funcName, 3, err.Error() + " " + *cacheFile.FileName(), err}
 	}
 
 	return nil
@@ -115,14 +115,14 @@ func initTokenList(io IoLib) (err error) {
 	if existsFile(io, *io.FileName()) {
 		err = io.Open()
 		if err != nil {
-			return &NgsiLibError{funcName, 1, err.Error(), err}
+			return &LibError{funcName, 1, err.Error(), err}
 		}
 		defer func() { _ = io.Close() }()
 
 		tokens := tokens{}
 		err = io.Decode(&tokens)
 		if err != nil {
-			return &NgsiLibError{funcName, 3, err.Error(), err}
+			return &LibError{funcName, 3, err.Error(), err}
 		}
 
 		gNGSI.tokenList = tokens.Tokens
@@ -153,7 +153,7 @@ func (ngsi *NGSI) TokenInfo(client *Client) (*TokenInfo, error) {
 	if v, ok := ngsi.tokenList[hash]; ok {
 		return &v, nil
 	}
-	return nil, &NgsiLibError{funcName, 1, "not found", nil}
+	return nil, &LibError{funcName, 1, "not found", nil}
 }
 
 // GetToken is ...
@@ -177,7 +177,7 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 	}
 	token, err := getToken(ngsi, client)
 	if err != nil {
-		err = &NgsiLibError{funcName, 1, err.Error(), err}
+		err = &LibError{funcName, 1, err.Error(), err}
 	}
 	return token, err
 }
@@ -194,14 +194,14 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 
 	username, err := getUserName(client)
 	if err != nil {
-		return "", &NgsiLibError{funcName, 1, err.Error(), err}
+		return "", &LibError{funcName, 1, err.Error(), err}
 	}
 	password, err := getPassword(client)
 	if err != nil {
-		return "", &NgsiLibError{funcName, 2, err.Error(), err}
+		return "", &LibError{funcName, 2, err.Error(), err}
 	}
 
-	broker := client.Broker
+	broker := client.Server
 	idmType := strings.ToLower(broker.IdmType)
 
 	switch idmType {
@@ -220,15 +220,15 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 		idm.SetHeader(cContentType, cAppJSON)
 		data = fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password)
 	default:
-		return "", &NgsiLibError{funcName, 3, "unknown idm type: " + idmType, nil}
+		return "", &LibError{funcName, 3, "unknown idm type: " + idmType, nil}
 	}
 
 	res, body, err := idm.HTTPPost(data)
 	if err != nil {
-		return "", &NgsiLibError{funcName, 4, err.Error(), err}
+		return "", &LibError{funcName, 4, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusOK {
-		return "", &NgsiLibError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return "", &LibError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
 	var token Token
@@ -237,12 +237,12 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 		r := fmt.Sprintf(`{"access_token":"%s", "expires_in":%d}`, string(body), client.getExpiresIn())
 		err := JSONUnmarshal([]byte(r), &token)
 		if err != nil {
-			return "", &NgsiLibError{funcName, 6, err.Error(), err}
+			return "", &LibError{funcName, 6, err.Error(), err}
 		}
 	} else {
 		err := JSONUnmarshal(body, &token)
 		if err != nil {
-			return "", &NgsiLibError{funcName, 7, err.Error(), err}
+			return "", &LibError{funcName, 7, err.Error(), err}
 		}
 	}
 
@@ -271,7 +271,7 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 
 	err = saveToken(*ngsi.CacheFile.FileName(), tokens)
 	if err != nil {
-		return "", &NgsiLibError{funcName, 8, err.Error(), err}
+		return "", &LibError{funcName, 8, err.Error(), err}
 	}
 	return token.AccessToken, nil
 }
@@ -289,24 +289,24 @@ func saveToken(file string, tokens map[string]interface{}) error {
 
 	err := cacheFile.OpenFile(oWRONLY|oCREATE, 0600)
 	if err != nil {
-		return &NgsiLibError{funcName, 1, err.Error() + " " + file, err}
+		return &LibError{funcName, 1, err.Error() + " " + file, err}
 	}
 	defer func() { _ = cacheFile.Close() }()
 
 	if err := cacheFile.Truncate(0); err != nil {
-		return &NgsiLibError{funcName, 2, err.Error(), err}
+		return &LibError{funcName, 2, err.Error(), err}
 	}
 
 	err = cacheFile.Encode(tokens)
 	if err != nil {
-		return &NgsiLibError{funcName, 3, err.Error(), err}
+		return &LibError{funcName, 3, err.Error(), err}
 	}
 
 	return nil
 }
 
 func getHash(client *Client) string {
-	s := client.Broker.BrokerHost + client.Broker.Username
+	s := client.Server.ServerHost + client.Server.Username
 	r := sha1.Sum([]byte(s))
 	return hex.EncodeToString(r[:])
 }
@@ -314,9 +314,9 @@ func getHash(client *Client) string {
 func getUserName(client *Client) (string, error) {
 	const funcName = "getUserName"
 
-	s := client.Broker.Username
+	s := client.Server.Username
 	if s == "" {
-		return "", &NgsiLibError{funcName, 1, "username is required", nil}
+		return "", &LibError{funcName, 1, "username is required", nil}
 	}
 	return s, nil
 }
@@ -324,9 +324,9 @@ func getUserName(client *Client) (string, error) {
 func getPassword(client *Client) (string, error) {
 	const funcName = "getPassword"
 
-	s := client.Broker.Password
+	s := client.Server.Password
 	if s == "" {
-		return "", &NgsiLibError{funcName, 1, "password is required", nil}
+		return "", &LibError{funcName, 1, "password is required", nil}
 	}
 	return s, nil
 }

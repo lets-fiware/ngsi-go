@@ -40,14 +40,14 @@ func TestCheckAllParams(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
+	host := ngsi.serverList["orion"]
 	err = ngsi.checkAllParams(host)
 
 	assert.NoError(t, err)
@@ -58,21 +58,21 @@ func TestCheckAllParamsErrorBrokerHost(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
-	host.BrokerHost = ""
+	host := ngsi.serverList["orion"]
+	host.ServerHost = ""
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "brokerHost not found", ngsiErr.Message)
+		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
 }
 
@@ -81,21 +81,21 @@ func TestCheckAllParamsErrorBrokerHostNotFound(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
-	host.BrokerHost = "orion-ld"
+	host := ngsi.serverList["orion"]
+	host.ServerHost = "orion-ld"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "brokerHost error: orion-ld", ngsiErr.Message)
+		assert.Equal(t, "host error: orion-ld", ngsiErr.Message)
 	}
 }
 
@@ -104,19 +104,19 @@ func TestCheckAllParamsErrorNgsiType(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
+	host := ngsi.serverList["orion"]
 	host.NgsiType = "v1"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "v1 not found", ngsiErr.Message)
 	}
@@ -127,19 +127,19 @@ func TestCheckAllParamsErrorAPIPath(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
+	host := ngsi.serverList["orion"]
 	host.APIPath = "/"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: /", ngsiErr.Message)
 	}
@@ -150,19 +150,19 @@ func TestCheckAllParamsErrorIdmParams(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
+	host := ngsi.serverList["orion"]
 	host.IdmType = "unknown"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "idmType error: unknown", ngsiErr.Message)
 	}
@@ -173,19 +173,19 @@ func TestCheckAllParamsErrorTenant(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
+	host := ngsi.serverList["orion"]
 	host.Tenant = "FIWARE"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
@@ -196,19 +196,19 @@ func TestCheckAllParamsErrorScope(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
+	host := ngsi.serverList["orion"]
 	host.Scope = "Scope"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE ServicePath: Scope", ngsiErr.Message)
 	}
@@ -219,19 +219,19 @@ func TestCheckAllParamsErrorSafeString(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.brokerList["orion"]
+	host := ngsi.serverList["orion"]
 	host.SafeString = "none"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: none", ngsiErr.Message)
 	}
@@ -250,7 +250,7 @@ func TestGetAPIPathErrorIndex(t *testing.T) {
 	_, _, err := getAPIPath("/")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: /", ngsiErr.Message)
 	}
@@ -260,7 +260,7 @@ func TestGetAPIPathErrorBeforePath(t *testing.T) {
 	_, _, err := getAPIPath("path,path")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: path", ngsiErr.Message)
 	}
@@ -270,7 +270,7 @@ func TestGetAPIPathErrorAfterPath(t *testing.T) {
 	_, _, err := getAPIPath("/,path")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "must start with '/': path", ngsiErr.Message)
 	}
@@ -280,7 +280,7 @@ func TestGetAPIPathErrorAfterPathTail(t *testing.T) {
 	_, _, err := getAPIPath("/,/path/")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "trailing '/' is not required: /path/", ngsiErr.Message)
 	}
@@ -302,7 +302,7 @@ func TestCheckIdmParamsErrorNoIdmType(t *testing.T) {
 	err := checkIdmParams("", "https://keyrock/oauth2/token", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "required idmType not found", ngsiErr.Message)
 	}
@@ -312,7 +312,7 @@ func TestCheckIdmParamsErrorIdmType(t *testing.T) {
 	err := checkIdmParams("fiware", "https://keyrock/oauth2/token", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "idmType error: fiware", ngsiErr.Message)
 	}
@@ -322,7 +322,7 @@ func TestCheckIdmParamsErrorNoIdmHost(t *testing.T) {
 	err := checkIdmParams(cKeyrock, "", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "required idmHost not found", ngsiErr.Message)
 	}
@@ -332,7 +332,7 @@ func TestCheckIdmParamsErrorIdmHost(t *testing.T) {
 	err := checkIdmParams(cKeyrock, "fiware", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "idmHost error: fiware", ngsiErr.Message)
 	}
@@ -342,7 +342,7 @@ func TestCheckIdmParamsErrorClientId(t *testing.T) {
 	err := checkIdmParams(cKeyrock, "http://keyrock", "keyrock001@fiware", "0123456789", "", "55555554-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "clientID and clientSecret are needed", ngsiErr.Message)
 	}
@@ -352,7 +352,7 @@ func TestCheckIdmParamsErrorUserPassword(t *testing.T) {
 	err := checkIdmParams(cKeyrock, "http://keyrock", "", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "username is needed", ngsiErr.Message)
 	}
@@ -363,11 +363,11 @@ func TestExistsBrokerHostTrue(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	b := ngsi.ExistsBrokerHost("orion")
@@ -379,11 +379,11 @@ func TestExistsBrokerHostFalse(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	b := ngsi.ExistsBrokerHost("orion-ld")
@@ -397,9 +397,18 @@ func TestServerInfoArgs(t *testing.T) {
 	assert.Equal(t, brokerArgs, args)
 }
 
+func TestServerTypeArgs(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	actual := ngsi.ServerTypeArgs()
+	expected := serverTypeArgs
+
+	assert.Equal(t, expected, actual)
+}
+
 func TestCopyBrokerInfo(t *testing.T) {
-	broker := Broker{}
+	broker := Server{}
 	param := make(map[string]string)
+	param[cServerType] = "broker"
 	param[cBrokerHost] = "orion"
 	param[cNgsiType] = "v2"
 	param[cAPIPath] = "/,/orion"
@@ -415,17 +424,17 @@ func TestCopyBrokerInfo(t *testing.T) {
 	param[cFiwareServicePath] = "/iot"
 	param[cSafeString] = "off"
 	param[cXAuthToken] = "on"
-	_ = setBrokerParam(&broker, param)
+	_ = setServerParam(&broker, param)
 
-	broker2 := Broker{}
+	broker2 := Server{}
 
-	copyBrokerInfo(&broker, &broker2)
+	copyServerInfo(&broker, &broker2)
 
 	assert.Equal(t, broker, broker2)
 }
 
 func TestCopyBrokerInfo2(t *testing.T) {
-	broker := Broker{}
+	broker := Server{}
 	param := make(map[string]string)
 	param[cBrokerHost] = "orion"
 	param[cNgsiType] = "v2"
@@ -442,20 +451,22 @@ func TestCopyBrokerInfo2(t *testing.T) {
 	param[cFiwareServicePath] = "/iot"
 	param[cSafeString] = "off"
 	param[cXAuthToken] = "on"
-	_ = setBrokerParam(&broker, param)
+	_ = setServerParam(&broker, param)
 
-	broker2 := Broker{}
+	broker2 := Server{}
 
-	copyBrokerInfo(&broker2, &broker)
+	copyServerInfo(&broker2, &broker)
 
-	expected := Broker{}
+	expected := Server{}
 
 	assert.Equal(t, expected, broker2)
 }
 
 func TestSetBrokerParam(t *testing.T) {
-	broker := Broker{}
+	broker := Server{}
 	param := make(map[string]string)
+	param[cServerType] = "broker"
+	param[cServerHost] = "http://comet"
 	param[cBrokerHost] = "orion"
 	param[cNgsiType] = "v2"
 	param[cAPIPath] = "/,/orion"
@@ -471,19 +482,19 @@ func TestSetBrokerParam(t *testing.T) {
 	param[cFiwareServicePath] = "/iot"
 	param[cSafeString] = "off"
 	param[cXAuthToken] = "on"
-	err := setBrokerParam(&broker, param)
+	err := setServerParam(&broker, param)
 
 	assert.NoError(t, err)
 }
 
 func TestSetBrokerParamError(t *testing.T) {
-	broker := Broker{}
+	broker := Server{}
 	param := make(map[string]string)
 	param["fiware"] = "orion"
-	err := setBrokerParam(&broker, param)
+	err := setServerParam(&broker, param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware not found", ngsiErr.Message)
 	}
@@ -494,15 +505,15 @@ func TestDeleteItem(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 	param["safeString"] = "on"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 
 	if assert.NoError(t, err) {
-		actual := ngsi.brokerList["orion"].SafeString
+		actual := ngsi.serverList["orion"].SafeString
 		expected := "on"
 		assert.Equal(t, expected, actual)
 	}
@@ -510,7 +521,7 @@ func TestDeleteItem(t *testing.T) {
 	err = ngsi.DeleteItem("orion", "safeString")
 
 	if assert.NoError(t, err) {
-		actual := ngsi.brokerList["orion"].SafeString
+		actual := ngsi.serverList["orion"].SafeString
 		expected := ""
 		assert.Equal(t, expected, actual)
 	}
@@ -521,18 +532,18 @@ func TestDeleteItemErrorHostNotFound(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 	param["safeString"] = "on"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	err = ngsi.DeleteItem("orion-ld", "safeString")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}
@@ -543,18 +554,18 @@ func TestDeleteItemErrorItem(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 	param["safeString"] = "on"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	err = ngsi.DeleteItem("orion", "SafeString")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "SafeString not found", ngsiErr.Message)
 	}
@@ -565,11 +576,11 @@ func TestIsHostReferenced(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	err = ngsi.IsHostReferenced("orion")
@@ -582,22 +593,22 @@ func TestIsHostReferencedError(t *testing.T) {
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["brokerHost"] = "orion"
-	err = ngsi.CreateBroker("fiware", param)
+	err = ngsi.CreateServer("fiware", param)
 	assert.NoError(t, err)
 
 	err = ngsi.IsHostReferenced("orion")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "orion is referenced in fiware", ngsiErr.Message)
 	}
@@ -608,7 +619,7 @@ func TestIsContextReferenced(t *testing.T) {
 	ngsi.contextList = ContextsInfo{}
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
-	InitBrokerList()
+	InitServerList()
 
 	err := ngsi.AddContext("fiware", "https://fiware.org/")
 	assert.NoError(t, err)
@@ -616,8 +627,8 @@ func TestIsContextReferenced(t *testing.T) {
 	fileName = ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	orion := Broker{BrokerHost: "http://orion/", Context: "fiware"}
-	ngsi.brokerList["orion"] = &orion
+	orion := Server{ServerHost: "http://orion/", Context: "fiware"}
+	ngsi.serverList["orion"] = &orion
 
 	err = ngsi.IsContextReferenced("orion")
 
@@ -629,7 +640,7 @@ func TestIsContextReferencedError(t *testing.T) {
 	ngsi.contextList = ContextsInfo{}
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
-	InitBrokerList()
+	InitServerList()
 
 	err := ngsi.AddContext("fiware", "https://fiware.org/")
 	assert.NoError(t, err)
@@ -637,13 +648,13 @@ func TestIsContextReferencedError(t *testing.T) {
 	fileName = ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	orion := Broker{BrokerHost: "http://orion/", Context: "fiware"}
-	ngsi.brokerList["orion"] = &orion
+	orion := Server{ServerHost: "http://orion/", Context: "fiware"}
+	ngsi.serverList["orion"] = &orion
 
 	err = ngsi.IsContextReferenced("fiware")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware is referenced in orion", ngsiErr.Message)
 	}
@@ -660,7 +671,7 @@ func TestIsIdmTypeFalse(t *testing.T) {
 }
 
 func TestSafeStringTrue(t *testing.T) {
-	info := Broker{SafeString: "on"}
+	info := Server{SafeString: "on"}
 
 	b, err := info.safeString()
 
@@ -670,7 +681,7 @@ func TestSafeStringTrue(t *testing.T) {
 }
 
 func TestSafeStringFalse(t *testing.T) {
-	info := Broker{SafeString: "off"}
+	info := Server{SafeString: "off"}
 
 	b, err := info.safeString()
 
@@ -680,12 +691,12 @@ func TestSafeStringFalse(t *testing.T) {
 }
 
 func TestSafeStringError(t *testing.T) {
-	info := Broker{SafeString: "error"}
+	info := Server{SafeString: "error"}
 
 	b, err := info.safeString()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)
@@ -693,7 +704,7 @@ func TestSafeStringError(t *testing.T) {
 }
 
 func TestXAuthTokenTrue(t *testing.T) {
-	info := Broker{XAuthToken: "on"}
+	info := Server{XAuthToken: "on"}
 
 	b, err := info.xAuthToken()
 
@@ -703,7 +714,7 @@ func TestXAuthTokenTrue(t *testing.T) {
 }
 
 func TestXAuthTokenFalse(t *testing.T) {
-	info := Broker{XAuthToken: "off"}
+	info := Server{XAuthToken: "off"}
 
 	b, err := info.xAuthToken()
 
@@ -713,12 +724,12 @@ func TestXAuthTokenFalse(t *testing.T) {
 }
 
 func TestXAuthTokenError(t *testing.T) {
-	info := Broker{XAuthToken: "error"}
+	info := Server{XAuthToken: "error"}
 
 	b, err := info.xAuthToken()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)

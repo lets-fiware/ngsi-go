@@ -46,7 +46,10 @@ var Version = ""
 var Revision = ""
 
 const copyright = "(c) 2020-2021 Kazuhito Suda"
-const usage = "unix-like command-line tool for FIWARE NGSI and NGSI-LD"
+
+var usage = "command-line tool for FIWARE NGSI and NGSI-LD"
+
+var gCmdMode = ""
 
 var gNetLib NetLib
 
@@ -56,53 +59,13 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	defer ngsi.Close()
 
 	ngsi.InitLog(stdin, stdout, stderr)
-	version := fmt.Sprintf("%s (git_hash:%s)", Version, Revision)
+	Version = fmt.Sprintf("%s (git_hash:%s)", Version, Revision)
 
 	gNetLib = &netLib{}
 	cli.ErrWriter = stderr
 	cli.HelpFlag = helpFlag
-	app := &cli.App{
-		EnableBashCompletion: true,
-		Copyright:            copyright,
-		Version:              version,
-		Usage:                usage,
-		HideVersion:          false,
-		Flags: []cli.Flag{
-			syslogFlag,
-			stderrFlag,
-			configFlag,
-			cacheFlag,
-			marginFlag,
-			timeOutFlag,
-			maxCountFlag,
-			batchFlag,
-		},
-		Commands: []*cli.Command{
-			&adminCmd,
-			&appendCmd,
-			&brokersCmd,
-			&contextCmd,
-			&copyCmd,
-			&countCmd,
-			&createCmd,
-			&debugCmd,
-			&deleteCmd,
-			&documentsCmd,
-			&getCmd,
-			&listCmd,
-			&lsCmd,
-			&removeCmd,
-			&receiverCmd,
-			&replaceCmd,
-			&settingsCmd,
-			&templateCmd,
-			&tokenCmd,
-			&updateCmd,
-			&upsertCmd,
-			&versionCmd,
-		},
-	}
 
+	app := getNgsiApp()
 	err := app.Run(args)
 	if err != nil {
 		ngsi.Logging(ngsilib.LogErr, message(err)+"\n")
@@ -121,9 +84,59 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	return 0
 }
 
+func getNgsiApp() *cli.App {
+	return &cli.App{
+		EnableBashCompletion: true,
+		Copyright:            copyright,
+		Version:              Version,
+		Usage:                usage,
+		HideVersion:          false,
+		Flags: []cli.Flag{
+			syslogFlag,
+			stderrFlag,
+			configFlag,
+			cacheFlag,
+			marginFlag,
+			timeOutFlag,
+			maxCountFlag,
+			batchFlag,
+			cmdNameFlag,
+		},
+		Commands: []*cli.Command{
+			&adminCmd,
+			&apisCmd,
+			&appendCmd,
+			&brokersCmd,
+			&contextCmd,
+			&copyCmd,
+			&countCmd,
+			&createCmd,
+			&debugCmd,
+			&deleteCmd,
+			&documentsCmd,
+			&getCmd,
+			&hDeleteCmd,
+			&hGetCmd,
+			&healthCmd,
+			&listCmd,
+			&lsCmd,
+			&removeCmd,
+			&receiverCmd,
+			&replaceCmd,
+			&settingsCmd,
+			&serverCmd,
+			&templateCmd,
+			&tokenCmd,
+			&updateCmd,
+			&upsertCmd,
+			&versionCmd,
+		},
+	}
+}
+
 func message(err error) (s string) {
 	switch e := err.(type) {
-	case *ngsilib.NgsiLibError:
+	case *ngsilib.LibError:
 		s = e.String()
 	case *ngsiCmdError:
 		s = e.String()
@@ -395,10 +408,11 @@ var receiverCmd = cli.Command{
 var versionCmd = cli.Command{
 	Name:     "version",
 	Category: "CONVENIENCE",
-	Usage:    "print the version of Context Broker",
+	Usage:    "print the version",
 	Flags: []cli.Flag{
 		hostFlag,
 		tokenFlag,
+		prettyFlag,
 	},
 	Action: func(c *cli.Context) error {
 		return cbVersion(c)
@@ -459,16 +473,6 @@ var brokersCmd = cli.Command{
 			},
 		},
 		{
-			Name:  "delete",
-			Usage: "delete broker",
-			Flags: []cli.Flag{
-				hostFlag,
-			},
-			Action: func(c *cli.Context) error {
-				return brokersDelete(c)
-			},
-		},
-		{
 			Name:  "update",
 			Usage: "update broker",
 			Flags: []cli.Flag{
@@ -490,6 +494,106 @@ var brokersCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return brokersUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete broker",
+			Flags: []cli.Flag{
+				hostFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return brokersDelete(c)
+			},
+		},
+	},
+}
+
+var serverCmd = cli.Command{
+	Name:     "server",
+	Usage:    "manage config for server",
+	Category: "MANAGEMENT",
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list servers",
+			Flags: []cli.Flag{
+				hostFlag,
+				jsonFlag,
+				prettyFlag,
+				allServersFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return serverList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get server",
+			Flags: []cli.Flag{
+				hostFlag,
+				jsonFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return serverGet(c)
+			},
+		},
+		{
+			Name:  "add",
+			Usage: "add server",
+			Flags: []cli.Flag{
+				hostFlag,
+				serverHost2Flag,
+				serverTypeFlag,
+				idmTypeFlag,
+				idmHostFlag,
+				apiPathFlag,
+				usernameFlag,
+				passwordFlag,
+				clientIDFlag,
+				clientSecretFlag,
+				tokenFlag,
+				tenantFlag,
+				scopeFlag,
+				safeStringFlag,
+				xAuthTokenFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return serverAdd(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update server",
+			Flags: []cli.Flag{
+				hostFlag,
+				serverHost2Flag,
+				idmTypeFlag,
+				idmHostFlag,
+				apiPathFlag,
+				usernameFlag,
+				passwordFlag,
+				clientIDFlag,
+				clientSecretFlag,
+				tokenFlag,
+				tenantFlag,
+				scopeFlag,
+				safeStringFlag,
+				xAuthTokenFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return serverUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete server",
+			Flags: []cli.Flag{
+				hostFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return serverDelete(c)
 			},
 		},
 	},
@@ -887,7 +991,7 @@ var getCmd = cli.Command{
 			Name:  "attr",
 			Usage: "get attr",
 			Flags: []cli.Flag{
-				idRFlag,
+				idFlag,
 				typeFlag,
 				attrNameRFlag,
 				prettyFlag,
@@ -1315,6 +1419,170 @@ var adminCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return adminCacheStatistics(c)
+			},
+		},
+	},
+}
+
+var apisCmd = cli.Command{
+	Name:     "apis",
+	Usage:    "print endpoints of API",
+	Category: "CONVENIENCE",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+		prettyFlag,
+	},
+	Action: func(c *cli.Context) error {
+		return apis(c)
+	},
+}
+
+var healthCmd = cli.Command{
+	Name:     "health",
+	Usage:    "print health status",
+	Category: "CONVENIENCE",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Action: func(c *cli.Context) error {
+		return healthCheck(c)
+	},
+}
+
+var hGetCmd = cli.Command{
+	Name:     "hget",
+	Usage:    "get historical raw and aggregated time series context information",
+	Category: "TIME SERIES",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+		tenantFlag,
+		scopeFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "attr",
+			Usage: "hstory of an attribute",
+			Flags: []cli.Flag{
+				typeFlag,
+				idFlag,
+				attrNameFlag,
+				sameTypeFlag,
+				nTypesFlag,
+				aggrMethodFlag,
+				aggrPeriodFlag,
+				fromDateFlag,
+				toDateFlag,
+				lastNFlag,
+				hLimitFlag,
+				hOffsetFlag,
+				georelFlag,
+				geometryFlag,
+				coordsFlag,
+				valueFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return tsAttrRead(c)
+			},
+		},
+		{
+			Name:  "attrs",
+			Usage: "history of attributes",
+			Flags: []cli.Flag{
+				typeFlag,
+				idFlag,
+				attrsFlag,
+				sameTypeFlag,
+				nTypesFlag,
+				aggrMethodFlag,
+				aggrPeriodFlag,
+				fromDateFlag,
+				toDateFlag,
+				lastNFlag,
+				hLimitFlag,
+				hOffsetFlag,
+				georelFlag,
+				geometryFlag,
+				coordsFlag,
+				valueFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return tsAttrsRead(c)
+			},
+		},
+		{
+			Name:  "entities",
+			Usage: "list of all the entity id",
+			Flags: []cli.Flag{
+				typeFlag,
+				fromDateFlag,
+				toDateFlag,
+				hLimitFlag,
+				hOffsetFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return tsEntitiesRead(c)
+			},
+		},
+	},
+}
+
+var hDeleteCmd = cli.Command{
+	Name:     "hdelete",
+	Usage:    "delete historical raw and aggregated time series context information",
+	Category: "TIME SERIES",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+		tenantFlag,
+		scopeFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "entities",
+			Usage: "delete historical data of all entities of a certain type",
+			Flags: []cli.Flag{
+				idFlag,
+				typeFlag,
+				dropTableFlag,
+				fromDateFlag,
+				toDateFlag,
+				runFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return tsEntitiesDelete(c)
+			},
+		},
+		{
+			Name:  "entity",
+			Usage: "delete historical data of a certain entity",
+			Flags: []cli.Flag{
+				idFlag,
+				typeFlag,
+				fromDateFlag,
+				toDateFlag,
+				runFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return tsEntityDelete(c)
+			},
+		},
+		{
+			Name:  "attr",
+			Usage: "delete all the data associated to certain attribute of certain entity",
+			Flags: []cli.Flag{
+				idFlag,
+				typeFlag,
+				attrNameFlag,
+				runFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return cometAttrDelete(c)
 			},
 		},
 	},

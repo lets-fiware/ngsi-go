@@ -57,7 +57,7 @@ func (client *Client) OpUpdate(entities interface{}, actionType string, keyValue
 
 	b, err := JSONMarshalEncode(&body, safeString)
 	if err != nil {
-		return nil, nil, &NgsiLibError{funcName, 1, "json.Marshal error", err}
+		return nil, nil, &LibError{funcName, 1, "json.Marshal error", err}
 	}
 
 	return client.HTTPPost(b)

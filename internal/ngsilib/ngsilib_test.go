@@ -120,7 +120,7 @@ func TestBoolError(t *testing.T) {
 	b, err := ngsi.BoolFlag("fiware")
 	if assert.Error(t, err) {
 		assert.Equal(t, false, b)
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: fiware", ngsiErr.Message)
 	}
@@ -192,7 +192,7 @@ func TestGetConfigDirErrorUserHomeDir(t *testing.T) {
 	_, err := getConfigDir(io)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error homedir", ngsiErr.Message)
 	}
@@ -205,7 +205,7 @@ func TestGetConfigDirErrorMkdir(t *testing.T) {
 	_, err := getConfigDir(io)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error mkdir", ngsiErr.Message)
 	}

@@ -1,4 +1,5 @@
 #!/bin/sh
+#
 # MIT License
 #
 # Copyright (c) 2020-2021 Kazuhito Suda
@@ -25,12 +26,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-make build || exit 1
-cd e2e || exit 1
+set -e
+
+make build
+cd e2e
 if [ ! "$(docker-compose ps -a | wc -l)" = "2" ]; then
-  make down || exit 1
+  make down
 fi
-make build || exit 1
-make rmi || exit 1
-make up || exit 1
-make run_e2e_test || exit 1
+make build
+make rmi
+make up
+make run_e2e_test

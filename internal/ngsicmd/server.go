@@ -1,0 +1,311 @@
+/*
+MIT License
+
+Copyright (c) 2020-2021 Kazuhito Suda
+
+This file is part of NGSI Go
+
+https://github.com/lets-fiware/ngsi-go
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
+package ngsicmd
+
+import (
+	"bytes"
+	"fmt"
+	"strings"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
+	"github.com/urfave/cli/v2"
+)
+
+func serverList(c *cli.Context) error {
+	const funcName = "serverList"
+
+	ngsi, err := initCmd(c, funcName, false)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	host := c.String("host")
+
+	if host != "" {
+		info, err := ngsi.AllServersList().ServerInfo(host, gCmdMode)
+		if err != nil {
+			return &ngsiCmdError{funcName, 2, host + " not found", err}
+		}
+		printServerInfo(ngsi, info)
+	} else {
+		if c.IsSet("json") || c.Bool("pretty") {
+			lists, err := ngsi.AllServersList().ServerInfoJSON("", gCmdMode)
+			if err != nil {
+				return &ngsiCmdError{funcName, 3, err.Error(), err}
+			}
+			if c.Bool("pretty") {
+				newBuf := new(bytes.Buffer)
+				err := ngsi.JSONConverter.Indent(newBuf, []byte(*lists), "", "  ")
+				if err != nil {
+					return &ngsiCmdError{funcName, 4, err.Error(), err}
+				}
+				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+			} else {
+				fmt.Fprint(ngsi.StdWriter, *lists)
+			}
+		} else {
+			info := ngsi.AllServersList().ServerList(gCmdMode, c.Bool("all"))
+			list := info.List()
+			fmt.Fprintln(ngsi.StdWriter, list)
+		}
+	}
+
+	return nil
+}
+
+func serverGet(c *cli.Context) error {
+	const funcName = "serverGet"
+
+	ngsi, err := initCmd(c, funcName, false)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	host := c.String("host")
+
+	if host == "" {
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
+	}
+
+	if c.IsSet("json") || c.Bool("pretty") {
+		lists, err := ngsi.AllServersList().ServerInfoJSON(host, gCmdMode)
+		if err != nil {
+			return &ngsiCmdError{funcName, 3, host + " not found", err}
+		}
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, []byte(*lists), "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 4, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		} else {
+			fmt.Fprint(ngsi.StdWriter, *lists)
+		}
+	} else {
+		info, err := ngsi.AllServersList().ServerInfo(host, gCmdMode)
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, host + " not found", err}
+		}
+		printServerInfo(ngsi, info)
+	}
+
+	return nil
+}
+
+func serverAdd(c *cli.Context) error {
+	const funcName = "serverAdd"
+
+	ngsi, err := initCmd(c, funcName, false)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	host := c.String("host")
+	if host == "" {
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
+	}
+
+	if !ngsilib.IsNameString(host) {
+		return &ngsiCmdError{funcName, 3, "name error " + host, err}
+	}
+	if ngsi.ExistsBrokerHost(host) {
+		return &ngsiCmdError{funcName, 4, host + " already exists", err}
+	}
+
+	if !c.IsSet("serverHost") && gCmdMode == "" {
+		return &ngsiCmdError{funcName, 5, "serverHost is missing", err}
+	}
+
+	if !c.IsSet("serverType") {
+		return &ngsiCmdError{funcName, 6, "serverType is missing", err}
+	}
+
+	serverType := gCmdMode
+	if c.IsSet("serverType") {
+		serverType = strings.ToLower(c.String("serverType"))
+	}
+	if !ngsilib.Contains(ngsi.ServerTypeArgs(), serverType) {
+		return &ngsiCmdError{funcName, 7, "serverType error: " + serverType + " (Coment, QuantumLeap)", err}
+	}
+
+	param := make(map[string]string)
+	args := ngsi.ServerInfoArgs()
+	for i := 0; i < len(args); i++ {
+		key := args[i]
+		if c.IsSet(key) {
+			value := c.String(key)
+			if key == "service" || key == "serverType" {
+				value = strings.ToLower(value)
+			}
+			if value != "" {
+				param[key] = value
+			}
+		}
+	}
+
+	err = ngsi.CreateServer(host, param)
+	if err != nil {
+		return &ngsiCmdError{funcName, 8, err.Error(), err}
+	}
+	return nil
+}
+
+func serverUpdate(c *cli.Context) error {
+	const funcName = "serverUpdate"
+
+	ngsi, err := initCmd(c, funcName, false)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	host := c.String("host")
+	if host == "" {
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
+	}
+
+	if !ngsi.ExistsBrokerHost(host) {
+		return &ngsiCmdError{funcName, 3, host + " not found", err}
+	}
+
+	param := make(map[string]string)
+	args := ngsi.ServerInfoArgs()
+	for i := 0; i < len(args); i++ {
+		key := args[i]
+		if c.IsSet(key) {
+			value := c.String(key)
+			if key == "service" {
+				value = strings.ToLower(value)
+			}
+			if value != "" {
+				param[key] = value
+			}
+		}
+	}
+
+	err = ngsi.UpdateServer(host, param)
+	if err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
+	}
+	return nil
+}
+
+func serverDelete(c *cli.Context) error {
+	const funcName = "serverDelete"
+
+	ngsi, err := initCmd(c, funcName, false)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	host := c.String("host")
+	if host == "" {
+		return &ngsiCmdError{funcName, 2, "required host not found", nil}
+	}
+
+	if !ngsi.ExistsBrokerHost(host) {
+		return &ngsiCmdError{funcName, 3, host + " not found", err}
+	}
+
+	if c.IsSet("items") {
+		items := c.String("items")
+		for _, item := range strings.Split(items, ",") {
+			if err := ngsi.DeleteItem(host, item); err != nil {
+				return &ngsiCmdError{funcName, 4, "delete error - " + item, err}
+			}
+		}
+		err = ngsi.UpdateServer(host, nil)
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+	} else {
+		if err = ngsi.IsHostReferenced(host); err != nil {
+			return &ngsiCmdError{funcName, 6, host + " is referenced", err}
+		}
+		if ngsi.PreviousArgs.Host == host {
+			ngsi.PreviousArgs.Host = ""
+			ngsi.PreviousArgs.Tenant = ""
+			ngsi.PreviousArgs.Scope = ""
+		}
+		_ = ngsi.DeleteServer(host)
+	}
+	return nil
+}
+
+func printServerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
+	if info.ServerType == "broker" {
+		fmt.Fprintln(ngsi.StdWriter, "server type error")
+		return
+	}
+	fmt.Fprintln(ngsi.StdWriter, "serverType "+info.ServerType)
+	fmt.Fprintln(ngsi.StdWriter, "serverHost "+info.ServerHost)
+	if info.Tenant != "" {
+		fmt.Fprintln(ngsi.StdWriter, "FIWARE-Serivce "+info.Tenant)
+	}
+	if info.Scope != "" {
+		fmt.Fprintln(ngsi.StdWriter, "FIWARE-SerivcePath "+info.Scope)
+	}
+	if info.Context != "" {
+		fmt.Fprintln(ngsi.StdWriter, "Context "+info.Context)
+	}
+	if info.SafeString != "" {
+		fmt.Fprintln(ngsi.StdWriter, "SafeString "+info.SafeString)
+	}
+
+	if info.IdmType != "" {
+		fmt.Fprintln(ngsi.StdWriter, "IdmType "+info.IdmType)
+	}
+	if info.IdmHost != "" {
+		fmt.Fprintln(ngsi.StdWriter, "IdmHost "+info.IdmHost)
+	}
+	if info.Username != "" {
+		fmt.Fprintln(ngsi.StdWriter, "Username "+info.Username)
+	}
+	if info.Password != "" {
+		fmt.Fprintln(ngsi.StdWriter, "Password "+info.Password)
+	}
+	if info.ClientID != "" {
+		fmt.Fprintln(ngsi.StdWriter, "ClientID "+info.ClientID)
+	}
+	if info.ClientSecret != "" {
+		fmt.Fprintln(ngsi.StdWriter, "ClientSecret "+info.ClientSecret)
+	}
+
+	if info.XAuthToken != "" {
+		fmt.Fprintln(ngsi.StdWriter, "XAuthToken "+info.XAuthToken)
+	}
+	if info.Token != "" {
+		fmt.Fprintln(ngsi.StdWriter, "Token "+info.Token)
+	}
+
+	if info.APIPath != "" {
+		fmt.Fprintln(ngsi.StdWriter, "APIPath "+info.APIPath)
+	}
+}

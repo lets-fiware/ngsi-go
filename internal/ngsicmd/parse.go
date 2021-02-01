@@ -125,14 +125,11 @@ func parseFlags2(ngsi *ngsilib.NGSI, c *cli.Context) (*ngsilib.CmdFlags, error) 
 func parseOptions(c *cli.Context, args []string, opts []string) *url.Values {
 	v := url.Values{}
 	for _, key := range args {
-		if key == "limit" || key == "offset" {
-			value := c.Int64(key)
-			if value > 0 {
+		if c.IsSet(key) {
+			if key == "limit" || key == "offset" || key == "hLimit" || key == "hOffset" || key == "lastN" {
+				value := c.Int64(key)
 				v.Set(key, strconv.FormatInt(value, 10))
-			}
-		} else {
-			value := c.String(key)
-			if value != "" {
+			} else {
 				if key == "query" {
 					v.Set("q", c.String(key))
 				} else {

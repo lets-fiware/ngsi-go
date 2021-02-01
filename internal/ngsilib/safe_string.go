@@ -120,7 +120,7 @@ func JSONSafeStringEncode(data []byte) ([]byte, error) {
 
 	bytes, err := jsonParser(data, SafeStringEncode)
 	if err != nil {
-		return nil, &NgsiLibError{funcName, 1, err.Error(), err}
+		return nil, &LibError{funcName, 1, err.Error(), err}
 	}
 	return bytes, nil
 }
@@ -131,7 +131,7 @@ func JSONSafeStringDecode(data []byte) ([]byte, error) {
 
 	bytes, err := jsonParser(data, SafeStringDecode)
 	if err != nil {
-		return nil, &NgsiLibError{funcName, 1, err.Error(), err}
+		return nil, &LibError{funcName, 1, err.Error(), err}
 	}
 	return bytes, nil
 }
@@ -182,7 +182,7 @@ func jsonParser(jsonStream []byte, f func(string) string) ([]byte, error) {
 			if l > 15 {
 				l = 15
 			}
-			return nil, &NgsiLibError{funcName, 1, "json error: " + s[len(s)-l:], err}
+			return nil, &LibError{funcName, 1, "json error: " + s[len(s)-l:], err}
 		}
 		if err != nil {
 			break
@@ -255,9 +255,9 @@ func jsonParser(jsonStream []byte, f func(string) string) ([]byte, error) {
 				e = int64(len(jsonStream))
 			}
 
-			return nil, &NgsiLibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(jsonStream[s:e])), err}
+			return nil, &LibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(jsonStream[s:e])), err}
 		}
-		return nil, &NgsiLibError{funcName, 3, err.Error(), err}
+		return nil, &LibError{funcName, 3, err.Error(), err}
 	}
 	return dst.Bytes(), nil
 }

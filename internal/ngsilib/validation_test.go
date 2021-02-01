@@ -341,6 +341,21 @@ func TestGetExpirationDate1Minute(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestGetExpirationDate1MinusMinute(t *testing.T) {
+	ngsi := NewNGSI()
+
+	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
+
+	date, err := GetExpirationDate("-1minute")
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "2006-01-02T15:03:05.000Z", date)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestGetExpirationDate5Minutes(t *testing.T) {
 	ngsi := NewNGSI()
 
@@ -361,7 +376,7 @@ func TestGetExpirationDateError(t *testing.T) {
 	_, err := GetExpirationDate("test")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error test", ngsiErr.Message)
 	} else {

@@ -34,26 +34,30 @@ import (
 	"strings"
 )
 
-// Broker is
-type Broker struct {
-	BrokerHost   string `json:"brokerHost,omitempty"`
-	NgsiType     string `json:"ngsiType,omitempty"`
-	APIPath      string `json:"apiPath,omitempty"`
-	IdmType      string `json:"idmType,omitempty"`
-	IdmHost      string `json:"idmHost,omitempty"`
-	Token        string `json:"token,omitempty"`
-	Username     string `json:"username,omitempty"`
-	Password     string `json:"password,omitempty"`
-	ClientID     string `json:"clientId,omitempty"`
-	ClientSecret string `json:"clientSecret,omitempty"`
-	Context      string `json:"context,omitempty"`
-	Tenant       string `json:"tenant,omitempty"`
-	Scope        string `json:"scope,omitempty"`
-	SafeString   string `json:"safeString,omitempty"`
-	XAuthToken   string `json:"xAuthToken,omitempty"`
+// Server is
+type Server struct {
+	ServerType           string `json:"serverType,omitempty"`
+	DeprecatedBrokerHost string `json:"brokerHost,omitempty"`
+	ServerHost           string `json:"serverHost,omitempty"`
+	NgsiType             string `json:"ngsiType,omitempty"`
+	APIPath              string `json:"apiPath,omitempty"`
+	IdmType              string `json:"idmType,omitempty"`
+	IdmHost              string `json:"idmHost,omitempty"`
+	Token                string `json:"token,omitempty"`
+	Username             string `json:"username,omitempty"`
+	Password             string `json:"password,omitempty"`
+	ClientID             string `json:"clientId,omitempty"`
+	ClientSecret         string `json:"clientSecret,omitempty"`
+	Context              string `json:"context,omitempty"`
+	Tenant               string `json:"tenant,omitempty"`
+	Scope                string `json:"scope,omitempty"`
+	SafeString           string `json:"safeString,omitempty"`
+	XAuthToken           string `json:"xAuthToken,omitempty"`
 }
 
 const (
+	cServerType        = "serverType"
+	cServerHost        = "serverHost"
 	cBrokerHost        = "brokerHost"
 	cNgsiType          = "ngsiType"
 	cAPIPath           = "apiPath"
@@ -89,65 +93,75 @@ const (
 	cPathNgsiLd = "/ngsi-ld"
 )
 
-var (
-	brokerArgs = []string{cBrokerHost, cNgsiType, cAPIPath,
-		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret,
-		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
-	idmTypes    = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy}
-	ngsiV2Types = []string{cNgsiV2, cNgsiv2, cV2}
-	ngsiLdTypes = []string{cNgsiLd, cLd}
-	apiPaths    = []string{cPathRoot, cPathV2, cPathNgsiLd}
+const (
+	cComet       = "comet"
+	cQuantumLeap = "quantumleap"
 )
 
-func (ngsi *NGSI) checkAllParams(host *Broker) error {
+var (
+	brokerArgs = []string{cServerType, cServerHost, cBrokerHost, cNgsiType, cAPIPath,
+		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret,
+		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
+	serverTypeArgs = []string{cComet, cQuantumLeap}
+	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy}
+	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
+	ngsiLdTypes    = []string{cNgsiLd, cLd}
+	apiPaths       = []string{cPathRoot, cPathV2, cPathNgsiLd}
+)
+
+func (ngsi *NGSI) checkAllParams(host *Server) error {
 	const funcName = "checkAllParams"
 
-	brokerHost := host.BrokerHost
-	if brokerHost == "" {
-		return &NgsiLibError{funcName, 1, "brokerHost not found", nil}
+	serverHost := host.ServerHost
+	if serverHost == "" {
+		return &LibError{funcName, 1, "host not found", nil}
 	}
-	if !IsHTTP(brokerHost) {
-		if _, ok := ngsi.brokerList[brokerHost]; !ok {
-			return &NgsiLibError{funcName, 2, fmt.Sprintf("brokerHost error: %s", brokerHost), nil}
+	if !IsHTTP(serverHost) {
+		if _, ok := ngsi.serverList[serverHost]; !ok {
+			return &LibError{funcName, 2, fmt.Sprintf("host error: %s", serverHost), nil}
 		}
+	}
+
+	if host.ServerType == "" {
+		host.ServerType = "broker"
 	}
 
 	if ngsiType := host.NgsiType; ngsiType != "" {
 		ngsiType = strings.ToLower(ngsiType)
 		if !(Contains(ngsiV2Types, ngsiType) || Contains(ngsiLdTypes, ngsiType)) {
-			return &NgsiLibError{funcName, 3, fmt.Sprintf("%s not found", ngsiType), nil}
+			return &LibError{funcName, 3, fmt.Sprintf("%s not found", ngsiType), nil}
 		}
 	}
 
 	if apiPath := host.APIPath; apiPath != "" {
 		if _, _, err := getAPIPath(apiPath); err != nil {
-			return &NgsiLibError{funcName, 4, err.Error(), err}
+			return &LibError{funcName, 4, err.Error(), err}
 		}
 	}
 
 	err := checkIdmParams(host.IdmType, host.IdmHost, host.Username, host.Password,
 		host.ClientID, host.ClientSecret)
 	if err != nil {
-		return &NgsiLibError{funcName, 5, err.Error(), err}
+		return &LibError{funcName, 5, err.Error(), err}
 	}
 
 	var client *Client
 	if tenant := host.Tenant; tenant != "" {
 		err = client.CheckTenant(tenant)
 		if err != nil {
-			return &NgsiLibError{funcName, 6, err.Error(), err}
+			return &LibError{funcName, 6, err.Error(), err}
 		}
 	}
 
 	if scope := host.Scope; scope != "" {
 		err = client.CheckScope(scope)
 		if err != nil {
-			return &NgsiLibError{funcName, 7, err.Error(), err}
+			return &LibError{funcName, 7, err.Error(), err}
 		}
 	}
 
 	if _, err := host.safeString(); err != nil {
-		return &NgsiLibError{funcName, 8, err.Error(), err}
+		return &LibError{funcName, 8, err.Error(), err}
 	}
 
 	return nil
@@ -158,18 +172,18 @@ func getAPIPath(apiPath string) (string, string, error) {
 
 	pos := strings.Index(apiPath, ",")
 	if pos == -1 {
-		return "", "", &NgsiLibError{funcName, 1, fmt.Sprintf("apiPath error: %s", apiPath), nil}
+		return "", "", &LibError{funcName, 1, fmt.Sprintf("apiPath error: %s", apiPath), nil}
 	}
 	pathBefore := apiPath[:pos]
 	if !Contains(apiPaths, pathBefore) {
-		return "", "", &NgsiLibError{funcName, 2, fmt.Sprintf("apiPath error: %s", pathBefore), nil}
+		return "", "", &LibError{funcName, 2, fmt.Sprintf("apiPath error: %s", pathBefore), nil}
 	}
 	pathAfter := apiPath[pos+1:]
 	if !strings.HasPrefix(pathAfter, "/") {
-		return "", "", &NgsiLibError{funcName, 3, fmt.Sprintf("must start with '/': %s", pathAfter), nil}
+		return "", "", &LibError{funcName, 3, fmt.Sprintf("must start with '/': %s", pathAfter), nil}
 	}
 	if strings.HasSuffix(pathAfter, "/") {
-		return "", "", &NgsiLibError{funcName, 4, fmt.Sprintf("trailing '/' is not required: %s", pathAfter), nil}
+		return "", "", &LibError{funcName, 4, fmt.Sprintf("trailing '/' is not required: %s", pathAfter), nil}
 	}
 	return pathBefore, pathAfter, nil
 }
@@ -180,31 +194,31 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 
 	if idmType == "" {
 		if !(idmHost == "" && username == "" && password == "" && clientID == "" && clientSecret == "") {
-			return &NgsiLibError{funcName, 1, "required idmType not found", nil}
+			return &LibError{funcName, 1, "required idmType not found", nil}
 		}
 		return nil
 	}
 	if !isIdmType(idmType) {
-		return &NgsiLibError{funcName, 2, fmt.Sprintf("idmType error: %s", idmType), nil}
+		return &LibError{funcName, 2, fmt.Sprintf("idmType error: %s", idmType), nil}
 	}
 
 	if idmHost == "" {
-		return &NgsiLibError{funcName, 3, "required idmHost not found", nil}
+		return &LibError{funcName, 3, "required idmHost not found", nil}
 	}
 
 	if !(IsHTTP(idmHost) || strings.HasPrefix(idmHost, "/")) {
-		return &NgsiLibError{funcName, 4, fmt.Sprintf("idmHost error: %s", idmHost), nil}
+		return &LibError{funcName, 4, fmt.Sprintf("idmHost error: %s", idmHost), nil}
 	}
 
 	switch strings.ToLower(idmType) {
 	case cKeyrock, cPasswordCredentials:
 		if clientID == "" || clientSecret == "" {
-			return &NgsiLibError{funcName, 5, "clientID and clientSecret are needed", nil}
+			return &LibError{funcName, 5, "clientID and clientSecret are needed", nil}
 		}
 		fallthrough
 	case cKeyrocktokenprovider, cTokenproxy:
 		if username == "" && password != "" {
-			return &NgsiLibError{funcName, 6, "username is needed", nil}
+			return &LibError{funcName, 6, "username is needed", nil}
 		}
 	}
 	return nil
@@ -212,7 +226,7 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 
 // ExistsBrokerHost is ...
 func (ngsi *NGSI) ExistsBrokerHost(host string) bool {
-	_, ok := ngsi.brokerList[host]
+	_, ok := ngsi.serverList[host]
 	return ok
 }
 
@@ -221,9 +235,17 @@ func (ngsi *NGSI) ServerInfoArgs() []string {
 	return brokerArgs
 }
 
-func copyBrokerInfo(from *Broker, to *Broker) {
-	if from.BrokerHost != "" {
-		to.BrokerHost = from.BrokerHost
+// ServerTypeArgs is ...
+func (ngsi *NGSI) ServerTypeArgs() []string {
+	return serverTypeArgs
+}
+
+func copyServerInfo(from *Server, to *Server) {
+	if from.ServerType != "" {
+		to.ServerType = from.ServerType
+	}
+	if from.ServerHost != "" {
+		to.ServerHost = from.ServerHost
 	}
 	if from.NgsiType != "" && to.NgsiType == "" {
 		to.NgsiType = from.NgsiType
@@ -268,15 +290,19 @@ func copyBrokerInfo(from *Broker, to *Broker) {
 		to.XAuthToken = from.XAuthToken
 	}
 }
-func setBrokerParam(broker *Broker, param map[string]string) error {
-	const funcName = "setBrokerParam"
+func setServerParam(broker *Server, param map[string]string) error {
+	const funcName = "setServerParam"
 
 	for key, value := range param {
 		switch key {
 		default:
-			return &NgsiLibError{funcName, 1, fmt.Sprintf("%s not found", key), nil}
+			return &LibError{funcName, 1, fmt.Sprintf("%s not found", key), nil}
+		case cServerType:
+			broker.ServerType = value
+		case cServerHost:
+			broker.ServerHost = value
 		case cBrokerHost:
-			broker.BrokerHost = value
+			broker.ServerHost = value
 		case cNgsiType:
 			broker.NgsiType = value
 		case cAPIPath:
@@ -314,16 +340,16 @@ func setBrokerParam(broker *Broker, param map[string]string) error {
 func (ngsi *NGSI) DeleteItem(host string, item string) error {
 	const funcName = "DeleteItem"
 
-	broker, ok := ngsi.brokerList[host]
+	broker, ok := ngsi.serverList[host]
 	if !ok {
-		return &NgsiLibError{funcName, 1, fmt.Sprintf("%s not found", host), nil}
+		return &LibError{funcName, 1, fmt.Sprintf("%s not found", host), nil}
 	}
 	param := map[string]string{item: ""}
 
-	err := setBrokerParam(broker, param)
+	err := setServerParam(broker, param)
 
 	if err != nil {
-		return &NgsiLibError{funcName, 2, err.Error(), nil}
+		return &LibError{funcName, 2, err.Error(), nil}
 	}
 	return nil
 }
@@ -332,10 +358,10 @@ func (ngsi *NGSI) DeleteItem(host string, item string) error {
 func (ngsi *NGSI) IsHostReferenced(host string) error {
 	const funcName = "IsHostReferenced"
 
-	for k, v := range ngsi.brokerList {
-		value := v.BrokerHost
+	for k, v := range ngsi.serverList {
+		value := v.ServerHost
 		if host == value {
-			return &NgsiLibError{funcName, 1, fmt.Sprintf("%s is referenced in %s", host, k), nil}
+			return &LibError{funcName, 1, fmt.Sprintf("%s is referenced in %s", host, k), nil}
 		}
 	}
 	return nil
@@ -345,10 +371,10 @@ func (ngsi *NGSI) IsHostReferenced(host string) error {
 func (ngsi *NGSI) IsContextReferenced(context string) error {
 	const funcName = "IsContextReferenced"
 
-	for k, v := range ngsi.brokerList {
+	for k, v := range ngsi.serverList {
 		value := v.Context
 		if context == value {
-			return &NgsiLibError{funcName, 1, fmt.Sprintf("%s is referenced in %s", context, k), nil}
+			return &LibError{funcName, 1, fmt.Sprintf("%s is referenced in %s", context, k), nil}
 		}
 	}
 	return nil
@@ -358,24 +384,24 @@ func isIdmType(name string) bool {
 	return Contains(idmTypes, strings.ToLower(name))
 }
 
-func (info *Broker) safeString() (bool, error) {
+func (info *Server) safeString() (bool, error) {
 	const funcName = "safeString"
 
 	value := info.SafeString
 	b, err := gNGSI.BoolFlag(value)
 	if err != nil {
-		return false, &NgsiLibError{funcName, 1, err.Error(), err}
+		return false, &LibError{funcName, 1, err.Error(), err}
 	}
 	return b, nil
 }
 
-func (info *Broker) xAuthToken() (bool, error) {
+func (info *Server) xAuthToken() (bool, error) {
 	const funcName = "xAuthToken"
 
 	value := info.XAuthToken
 	b, err := gNGSI.BoolFlag(value)
 	if err != nil {
-		return false, &NgsiLibError{funcName, 1, err.Error(), err}
+		return false, &LibError{funcName, 1, err.Error(), err}
 	}
 	return b, nil
 }

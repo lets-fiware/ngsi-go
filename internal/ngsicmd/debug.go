@@ -62,7 +62,7 @@ func debugCommand(c *cli.Context) error {
 	fmt.Fprintf(ngsi.StdWriter, "config file: %s\n", *ngsi.ConfigFile.FileName())
 	fmt.Fprintf(ngsi.StdWriter, "cache file: %s\n", *ngsi.CacheFile.FileName())
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

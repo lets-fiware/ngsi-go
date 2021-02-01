@@ -57,7 +57,7 @@ func TestOpUpdateArrayData(t *testing.T) {
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -91,7 +91,7 @@ func TestOpUpdateArrayDataOver100(t *testing.T) {
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -114,7 +114,7 @@ func TestOpUpdateLineData(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -131,7 +131,7 @@ func TestOpUpdateErrorReadAll(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -162,7 +162,7 @@ func TestOpUpdateErrorClose(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	ngsi.FileReader = &MockFileLib{CloseError: errors.New("close error")}
@@ -195,7 +195,7 @@ func TestOpUpdateErrorToken(t *testing.T) {
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -224,7 +224,7 @@ func TestOpUpdateErrorJSONDelim(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -253,7 +253,7 @@ func TestOpUpdateErrorJSONDelim2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -283,7 +283,7 @@ func TestOpUpdateErrorDecode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -322,7 +322,7 @@ func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -361,7 +361,7 @@ func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -391,7 +391,7 @@ func TestOpUpdateErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -421,7 +421,7 @@ func TestOpUpdateErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")
@@ -450,7 +450,7 @@ func TestOpUpdateArrayDataError(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = opUpdate(c, ngsi, client, "append_strict")

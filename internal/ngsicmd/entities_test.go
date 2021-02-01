@@ -292,7 +292,7 @@ func TestEntitiesListErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -738,7 +738,7 @@ func TestEntitiesCountErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

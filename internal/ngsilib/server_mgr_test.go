@@ -36,165 +36,165 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateBroker(t *testing.T) {
+func TestCreateServer(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 
 	if assert.NoError(t, err) {
-		actual := ngsi.brokerList["orion"]
-		expected := &Broker{BrokerHost: "http://orion"}
+		actual := ngsi.serverList["orion"]
+		expected := &Server{ServerHost: "http://orion", ServerType: "broker"}
 		assert.Equal(t, expected, actual)
 	}
 }
 
-func TestCreateBrokerErrorParam(t *testing.T) {
+func TestCreateServerErrorParam(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["host"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
 }
 
-func TestCreateBrokerErrorAllParam(t *testing.T) {
+func TestCreateServerErrorAllParam(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "orion-v2"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "brokerHost error: orion-v2", ngsiErr.Message)
+		assert.Equal(t, "host error: orion-v2", ngsiErr.Message)
 	}
 }
 
-func TestCreateBrokerErrorSave(t *testing.T) {
+func TestCreateServerErrorSave(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := "config"
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName, OpenErr: errors.New("open error")}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }
 
-func TestUpdateBroker(t *testing.T) {
+func TestUpdateServer(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["brokerHost"] = "https://orion-ld"
-	err = ngsi.UpdateBroker("orion", param)
+	err = ngsi.UpdateServer("orion", param)
 
 	if assert.NoError(t, err) {
-		actual := ngsi.brokerList["orion"]
-		expected := &Broker{BrokerHost: "https://orion-ld"}
+		actual := ngsi.serverList["orion"]
+		expected := &Server{ServerHost: "https://orion-ld", ServerType: "broker"}
 		assert.Equal(t, expected, actual)
 	}
 }
 
-func TestUpdateBrokerErrorParam(t *testing.T) {
+func TestUpdateServerErrorParam(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["host"] = "https://orion-ld"
-	err = ngsi.UpdateBroker("orion", param)
+	err = ngsi.UpdateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
 }
 
-func TestUpdateBrokerErrorCheckParam(t *testing.T) {
+func TestUpdateServerErrorCheckParam(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["brokerHost"] = "orion-ld"
-	err = ngsi.UpdateBroker("orion", param)
+	err = ngsi.UpdateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "brokerHost error: orion-ld", ngsiErr.Message)
+		assert.Equal(t, "host error: orion-ld", ngsiErr.Message)
 	}
 }
 
-func TestUpdateBrokerErrorSave(t *testing.T) {
+func TestUpdateServerErrorSave(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	fileName = "config"
@@ -202,70 +202,70 @@ func TestUpdateBrokerErrorSave(t *testing.T) {
 
 	param = make(map[string]string)
 	param["brokerHost"] = "https://orion-ld"
-	err = ngsi.UpdateBroker("orion", param)
+	err = ngsi.UpdateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }
 
-func TestUpdateBrokerErrorNotFound(t *testing.T) {
+func TestUpdateServerErrorNotFound(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["brokerHost"] = "orion-ld"
-	err = ngsi.UpdateBroker("orion-ld", param)
+	err = ngsi.UpdateServer("orion-ld", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}
 }
 
-func TestDeleteBroker(t *testing.T) {
+func TestDeleteServer(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["brokerHost"] = "https://orion-ld"
-	err = ngsi.DeleteBroker("orion")
+	err = ngsi.DeleteServer("orion")
 
 	assert.NoError(t, err)
 }
 
-func TestDeleteBrokerErrorSave(t *testing.T) {
+func TestDeleteServerErrorSave(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	fileName = "config"
@@ -273,34 +273,34 @@ func TestDeleteBrokerErrorSave(t *testing.T) {
 
 	param = make(map[string]string)
 	param["brokerHost"] = "https://orion-ld"
-	err = ngsi.DeleteBroker("orion")
+	err = ngsi.DeleteServer("orion")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }
 
-func TestDeleteBrokerErrorNotFound(t *testing.T) {
+func TestDeleteServerErrorNotFound(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
-	InitBrokerList()
+	InitServerList()
 
 	param := make(map[string]string)
 	param["brokerHost"] = "http://orion"
 
-	err := ngsi.CreateBroker("orion", param)
+	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
 	param = make(map[string]string)
 	param["brokerHost"] = "orion-ld"
-	err = ngsi.DeleteBroker("orion-ld")
+	err = ngsi.DeleteServer("orion-ld")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}

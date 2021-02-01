@@ -47,7 +47,7 @@ func subscriptionsList(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -66,7 +66,7 @@ func subscriptionGet(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -85,7 +85,7 @@ func subscriptionsCreate(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -104,7 +104,7 @@ func subscriptionsUpdate(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -122,7 +122,7 @@ func subscriptionsDelete(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -165,7 +165,7 @@ func subscriptionsCount(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

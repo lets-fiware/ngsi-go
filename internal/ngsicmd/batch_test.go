@@ -220,7 +220,7 @@ func TestBatchErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -296,7 +296,7 @@ func TestBatchCreate(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchCreate(c, ngsi, client)
@@ -320,7 +320,7 @@ func TestBatchCreateContext(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchCreate(c, ngsi, client)
@@ -337,7 +337,7 @@ func TestBatchCreateErrorReadAll(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchCreate(c, ngsi, client)
@@ -367,7 +367,7 @@ func TestBatchCreateErrorContext(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchCreate(c, ngsi, client)
@@ -396,7 +396,7 @@ func TestBatchCreateErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchCreate(c, ngsi, client)
@@ -425,7 +425,7 @@ func TestBatchCreateErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchCreate(c, ngsi, client)
@@ -454,7 +454,7 @@ func TestBatchUpdate(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpdate(c, ngsi, client)
@@ -478,7 +478,7 @@ func TestBatchUpdateContext(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpdate(c, ngsi, client)
@@ -495,7 +495,7 @@ func TestBatchUpdateErrorReadAll(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpdate(c, ngsi, client)
@@ -525,7 +525,7 @@ func TestBatchUpdateErrorContext(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpdate(c, ngsi, client)
@@ -554,7 +554,7 @@ func TestBatchUpdateErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpdate(c, ngsi, client)
@@ -583,7 +583,7 @@ func TestBatchUpdateErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpdate(c, ngsi, client)
@@ -612,7 +612,7 @@ func TestBatchUpsert(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpsert(c, ngsi, client)
@@ -636,7 +636,7 @@ func TestBatchUpsertContext(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpsert(c, ngsi, client)
@@ -653,7 +653,7 @@ func TestBatchUpsertErrorReadAll(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpsert(c, ngsi, client)
@@ -683,7 +683,7 @@ func TestBatchUpsertErrorContext(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpsert(c, ngsi, client)
@@ -712,7 +712,7 @@ func TestBatchUpsertErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpsert(c, ngsi, client)
@@ -741,7 +741,7 @@ func TestBatchUpsertErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchUpsert(c, ngsi, client)
@@ -770,7 +770,7 @@ func TestBatchDelete(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchDelete(c, ngsi, client)
@@ -787,7 +787,7 @@ func TestBatchDeleteErrorReadAll(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchDelete(c, ngsi, client)
@@ -816,7 +816,7 @@ func TestBatchDeleteErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchDelete(c, ngsi, client)
@@ -845,7 +845,7 @@ func TestBatchDeleteErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = batchDelete(c, ngsi, client)

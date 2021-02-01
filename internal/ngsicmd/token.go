@@ -47,7 +47,7 @@ func tokenCommand(c *cli.Context) error {
 
 	host := ngsi.Host
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

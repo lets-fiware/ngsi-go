@@ -39,7 +39,7 @@ import (
 
 // Client is
 type Client struct {
-	Broker        *Broker
+	Server        *Server
 	URL           *url.URL
 	Headers       map[string]string
 	Token         string
@@ -73,14 +73,14 @@ func (client *Client) InitHeader() error {
 	}
 	if client.Tenant != "" {
 		if err := client.CheckTenant(client.Tenant); err != nil {
-			return &NgsiLibError{funcName, 1, err.Error(), err}
+			return &LibError{funcName, 1, err.Error(), err}
 		}
 		client.Headers["Fiware-Service"] = client.Tenant
 	}
 	if client.NgsiType == ngsiV2 {
 		if client.Scope != "" {
 			if err := client.CheckScope(client.Scope); err != nil {
-				return &NgsiLibError{funcName, 2, err.Error(), err}
+				return &LibError{funcName, 2, err.Error(), err}
 			}
 			client.Headers["Fiware-ServicePath"] = client.Scope
 		}
@@ -132,11 +132,13 @@ func (client *Client) SetAcceptJSON() {
 
 // SetPath is ...
 func (client *Client) SetPath(path string) {
-	if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache"}, path) {
-		if client.NgsiType == ngsiLd {
-			path = "/ngsi-ld/v1" + path
-		} else {
-			path = "/v2" + path
+	if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/health", "/STH"}, path) {
+		if client.Server.ServerType == "broker" {
+			if client.NgsiType == ngsiLd {
+				path = "/ngsi-ld/v1" + path
+			} else {
+				path = "/v2" + path
+			}
 		}
 	}
 	if client.APIPathBefore != "" {
@@ -185,12 +187,12 @@ func (client *Client) ResultsCount(res *http.Response) (int, error) {
 }
 
 func (client *Client) idmURL() string {
-	tokenURL := client.Broker.IdmHost
+	tokenURL := client.Server.IdmHost
 	if strings.HasPrefix(tokenURL, "http") {
 		return tokenURL
 	}
-	baseURL, _ := url.Parse(client.Broker.BrokerHost)
-	baseURL.Path = client.Broker.IdmHost
+	baseURL, _ := url.Parse(client.Server.ServerHost)
+	baseURL.Path = client.Server.IdmHost
 	return baseURL.String()
 }
 
@@ -209,7 +211,7 @@ func (client *Client) CheckTenant(tenant string) error {
 	if isTenantString(tenant) {
 		return nil
 	}
-	return &NgsiLibError{funcName, 1, fmt.Sprintf("error FIWARE Service: %s", tenant), nil}
+	return &LibError{funcName, 1, fmt.Sprintf("error FIWARE Service: %s", tenant), nil}
 }
 
 // CheckScope is ...
@@ -219,5 +221,5 @@ func (client *Client) CheckScope(scope string) error {
 	if isScopeString(scope) {
 		return nil
 	}
-	return &NgsiLibError{funcName, 1, fmt.Sprintf("error FIWARE ServicePath: %s", scope), nil}
+	return &LibError{funcName, 1, fmt.Sprintf("error FIWARE ServicePath: %s", scope), nil}
 }

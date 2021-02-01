@@ -45,7 +45,7 @@ func TestOpUpdate(t *testing.T) {
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	client := &Client{HTTP: mock, URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{HTTP: mock, URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 
 	entities := `[]`
 	actionType := "update"
@@ -64,7 +64,7 @@ func TestOpUpdateKeyValues(t *testing.T) {
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	client := &Client{HTTP: mock, URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{HTTP: mock, URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 
 	entities := `[]`
 	actionType := "update"
@@ -83,7 +83,7 @@ func TestOpUpdateErrorJSON(t *testing.T) {
 	reqRes.Res.StatusCode = http.StatusOK
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	client := &Client{HTTP: mock, URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{HTTP: mock, URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
 
 	entities := `[]`
@@ -94,7 +94,7 @@ func TestOpUpdateErrorJSON(t *testing.T) {
 	_, _, err := client.OpUpdate(entities, actionType, keyValues, safeString)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json.Marshal error", ngsiErr.Message)
 	}

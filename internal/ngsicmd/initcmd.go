@@ -144,7 +144,7 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 	ngsi.Destination = c.String("destination")
 
 	if requiredHost && ngsi.Host == "" {
-		return nil, &ngsiCmdError{funcName, 5, "Required host not found", err}
+		return nil, &ngsiCmdError{funcName, 5, "required host not found", err}
 	}
 
 	var cacheFile *string

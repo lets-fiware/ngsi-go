@@ -45,7 +45,7 @@ func batch(c *cli.Context, mode string) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

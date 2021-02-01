@@ -44,7 +44,7 @@ func cbVersion(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

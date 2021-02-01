@@ -40,9 +40,10 @@ import (
 
 // NGSI is ...
 type NGSI struct {
-	brokerList  BrokerList
-	tokenList   tokenInfoList
-	contextList ContextsInfo
+	configVresion string
+	serverList    ServerList
+	tokenList     tokenInfoList
+	contextList   ContextsInfo
 
 	LogLevel      int
 	ConfigFile    IoLib
@@ -83,6 +84,7 @@ var gNGSI *NGSI
 func NewNGSI() *NGSI {
 	if gNGSI == nil {
 		gNGSI = &NGSI{}
+		gNGSI.configVresion = "1"
 		gNGSI.InitLog(os.Stdin, os.Stdout, os.Stderr)
 		gNGSI.HTTP = &httpRequest{}
 		gNGSI.Margin = 180
@@ -97,7 +99,7 @@ func NewNGSI() *NGSI {
 		gNGSI.SyslogLib = &syslogLib{}
 		gNGSI.PreviousArgs = &Settings{UsePreviousArgs: true}
 		gNGSI.TimeLib = &timeLib{}
-		gNGSI.brokerList = make(BrokerList)
+		gNGSI.serverList = make(ServerList)
 		gNGSI.contextList = make(ContextsInfo)
 		gNGSI.contextList["etsi"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
 		gNGSI.contextList["ld"] = "https://schema.lab.fiware.org/ld/context"
@@ -135,7 +137,7 @@ func (ngsi *NGSI) BoolFlag(s string) (bool, error) {
 	case "on", "true":
 		return true, nil
 	}
-	return false, &NgsiLibError{funcName, 1, fmt.Sprintf("unknown parameter: %s", s), nil}
+	return false, &LibError{funcName, 1, fmt.Sprintf("unknown parameter: %s", s), nil}
 }
 
 func getConfigDir(io IoLib) (string, error) {
@@ -144,7 +146,7 @@ func getConfigDir(io IoLib) (string, error) {
 	var path string
 	home, err := io.UserHomeDir()
 	if err != nil {
-		return "", &NgsiLibError{funcName, 1, err.Error(), err}
+		return "", &LibError{funcName, 1, err.Error(), err}
 	}
 	if gNGSI.OsType == "windows" {
 		path = io.Getenv("APPDATA")
@@ -161,7 +163,7 @@ func getConfigDir(io IoLib) (string, error) {
 	if !existsFile(io, home) {
 		err := io.MkdirAll(home, 0700)
 		if err != nil {
-			return "", &NgsiLibError{funcName, 2, err.Error(), nil}
+			return "", &LibError{funcName, 2, err.Error(), nil}
 		}
 	}
 	return home, nil

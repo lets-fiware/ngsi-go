@@ -2,10 +2,12 @@
 
 -   [Syntax](#syntax)
     -   [NGSI Command](#ngsi-command)
+    -   [Time series command](#time-series-command)
     -   [Convenience command](#convenience-command)
     -   [Management commnad](#management-commnad)
     -   [Global Options](#global-options)
     -   [Common options](#common-options)
+-   [DateTime options](#datetime-options)
 -   [--data option](#data-option)
 -   [Safe string](#safe-string)
 -   [Error message](#error-message)
@@ -54,21 +56,42 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | subscription | update subscription |
 | [upsert](./ngsi/upsert.md)   | entities     | upsert entities     |
 
+<a name="time-series-command"/>
+
+### Time series command
+
+| command                             | sub-command | Description                                                           |
+| ----------------------------------- | ----------- | --------------------------------------------------------------------- |
+| [hdelete](./time_series/hdelete.md) | attr        | delete all the data associated to certain attribute of certain entity |
+|                                     | entity      | delete historical data of a certain entity                            |
+|                                     | entities    | delete historical data of all entities of a certain type              |
+| [hget](./time_series/hget.md)       | attr        | get hstory of an attribute                                            |
+|                                     | attrs       | get history of attributes                                             |
+|                                     | entities    | list of all the entity id                                             |
+
 <a name="convenience-command"/>
 
 ### Convenience command
 
-| command                               | sub-command  | Description                                                      |
-| ------------------------------------- | ------------ | ---------------------------------------------------------------- |
-| [cp](./convenience/cp.md)             | -            | copy entities                                                    |
-| [wc](./convenience/wc.md)             | -            | print number of entities, subscriptions, registrations, or types |
-| [man](./convenience/man.md)           | -            | print urls of document                                           |
-| [ls](./convenience/ls.md)             | -            | list entities                                                    |
-| [rm](./convenience/rm.md)             | -            | remove entities                                                  |
-| [receiver](./convenience/receiver.md) | -            | notification receiver                                            |
-| [template](./convenience/template.md) | subscription | create template of subscription                                  |
-|                                       | registration | create template of registration                                  |
-| [version](./convenience/version.md)   | -            | print the version of Context Broker                              |
+| command                               | sub-command     | Description                                                      |
+| ------------------------------------- | --------------- | ---------------------------------------------------------------- |
+| [admin](./convenience/admin.md)       | log             | print or set logging level for FIWARE Orion                      |
+|                                       | trace           | print, set or delete trace level for FIWARE Orion                | 
+|                                       | semaphore       | print semaphore for FIWARE Orion                                 |
+|                                       | metrics         | print, reset or delete metrics for FIWARE Orion                  |
+|                                       | statistics      | print or delete statistics for FIWARE Orion                      |
+|                                       | cacheStatistics | print or delete cache statistics for FIWARE Orion                |
+| [apis](.convenience/apis.md)          | -               | print endpoints of FWARE Open APIs                               |
+| [cp](./convenience/cp.md)             | -               | copy entities                                                    |
+| [wc](./convenience/wc.md)             | -               | print number of entities, subscriptions, registrations, or types |
+| [man](./convenience/man.md)           | -               | print urls of document                                           |
+| [health](./convenience/health.md)     | -               | print health status of FIWARE GEs                                |
+| [ls](./convenience/ls.md)             | -               | list entities                                                    |
+| [rm](./convenience/rm.md)             | -               | remove entities                                                  |
+| [receiver](./convenience/receiver.md) | -               | notification receiver                                            |
+| [template](./convenience/template.md) | subscription    | create template of subscription                                  |
+|                                       | registration    | create template of registration                                  |
+| [version](./convenience/version.md)   | -               | print the version of Context Broker                              |
 
 <a name="management-commnad"/>
 
@@ -77,10 +100,10 @@ ngsi [global options] command [common options] sub-command [options]
 | command                              | sub-command  | Description     |
 | ------------------------------------ | ------------ | --------------- |
 | [broker](./management/broker.md)     | list         | list brokers    |
-|                                      | get          | get brokes      |
-|                                      | add          | add brokes      |
-|                                      | update       | update brokes   |
-|                                      | delete       | delete brokes   |
+|                                      | get          | get broker      |
+|                                      | add          | add broker      |
+|                                      | update       | update broker   |
+|                                      | delete       | delete broker   |
 | [context](./management/context.md)   | list         | list @context   |
 |                                      | add          | add @context    |
 |                                      | update       | udpate @context |
@@ -88,6 +111,11 @@ ngsi [global options] command [common options] sub-command [options]
 | [settings](./management/settings.md) | list         | list settings   |
 |                                      | delete       | delete settings |
 |                                      | clear        | clear settings  |
+| [server](./management/server.md)     | list         | list servers    |
+|                                      | get          | get server      |
+|                                      | add          | add server      |
+|                                      | update       | update server   |
+|                                      | delete       | delete server   |
 | [token](./management/token.md)       | -            | manage token    |
 
 <a name="global-options"/>
@@ -115,6 +143,46 @@ ngsi [global options] command [common options] sub-command [options]
 | --service value, -s value | specify FIWARE Service     |
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
+
+<a name="datetime-options"/>
+
+## DateTime options
+
+Some commands have the following options for specifying the date and time:
+
+- expires {value}
+- fromDate {value}
+- toDate {value}
+
+These options can have a value as shown:
+
+| Values          | Examples                                          |
+| --------------- | ------------------------------------------------- |
+| ISO8601         | YYYY-MM-DDThh:mm:ss.ssZ, YYYY-MM-DDThh:mm:ss.sssZ |
+| year, years     | 1year, 3years, -5years                            |
+| month, months   | 1month, 11months, -3months                        |
+| day, days       | 1day, 3days, -10days                              |
+| hour, hours     | 1hour, 5hours, -2hours                            |
+| minute, minutes | 1minute, 7minutes, -1minute                       |
+
+You can specify a negative value for a date and time in the past.
+
+### Examples
+
+Specify a future date for an expiration date.
+
+```console
+ngsi create --host orion subscription --idPattern ".*" --type Sensor \
+--wAttrs temperature --nAttrs temperature --url http://orion:1026/ \
+--expires 1day
+```
+
+To get historical data, specify a past date.
+
+```console
+ngsi hget --host quantumleap attrs --id device001 --attrs A1,A2 --hLimit 3 \
+--fromDate -5years --toDate -3years
+```
 
 <a name="data-option"/>
 

@@ -37,7 +37,7 @@ import (
 )
 
 func TestErrorMessage(t *testing.T) {
-	e := NgsiLibError{"test", 1, "message", nil}
+	e := LibError{"test", 1, "message", nil}
 
 	actual := e.Error()
 	expected := "message"
@@ -47,7 +47,7 @@ func TestErrorMessage(t *testing.T) {
 }
 
 func TestErrorString(t *testing.T) {
-	e := NgsiLibError{"test", 1, "message", nil}
+	e := LibError{"test", 1, "message", nil}
 
 	actual := e.String()
 	expected := "test001 message"
@@ -58,7 +58,7 @@ func TestErrorString(t *testing.T) {
 
 func TestErrorUnwap(t *testing.T) {
 	expected := syscall.Errno(1)
-	e := NgsiLibError{"test", 1, "message", expected}
+	e := LibError{"test", 1, "message", expected}
 
 	actual := e.Unwrap()
 

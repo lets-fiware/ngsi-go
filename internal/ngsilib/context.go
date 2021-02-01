@@ -42,7 +42,7 @@ func (ngsi *NGSI) AddContext(key string, value string) error {
 	const funcName = "AddContext"
 
 	if _, ok := ngsi.contextList[key]; ok {
-		return &NgsiLibError{funcName, 1, fmt.Sprintf("%s already exists", key), nil}
+		return &LibError{funcName, 1, fmt.Sprintf("%s already exists", key), nil}
 	}
 	if IsHTTP(value) {
 		ngsi.contextList[key] = value
@@ -50,13 +50,13 @@ func (ngsi *NGSI) AddContext(key string, value string) error {
 		var json interface{}
 		err := JSONUnmarshal([]byte(value), &json)
 		if err != nil {
-			return &NgsiLibError{funcName, 2, fmt.Sprintf("%s is neither url nor json", value), nil}
+			return &LibError{funcName, 2, fmt.Sprintf("%s is neither url nor json", value), nil}
 		}
 		ngsi.contextList[key] = json
 	}
 
 	if err := ngsi.saveConfigFile(); err != nil {
-		return &NgsiLibError{funcName, 3, err.Error(), err}
+		return &LibError{funcName, 3, err.Error(), err}
 	}
 
 	return nil
@@ -68,15 +68,15 @@ func (ngsi *NGSI) UpdateContext(key string, value string) error {
 
 	if _, ok := ngsi.contextList[key]; ok {
 		if !IsHTTP(value) {
-			return &NgsiLibError{funcName, 1, fmt.Sprintf("%s is not url", value), nil}
+			return &LibError{funcName, 1, fmt.Sprintf("%s is not url", value), nil}
 		}
 		ngsi.contextList[key] = value
 		if err := ngsi.saveConfigFile(); err != nil {
-			return &NgsiLibError{funcName, 2, err.Error(), err}
+			return &LibError{funcName, 2, err.Error(), err}
 		}
 		return nil
 	}
-	return &NgsiLibError{funcName, 3, fmt.Sprintf("%s not found", key), nil}
+	return &LibError{funcName, 3, fmt.Sprintf("%s not found", key), nil}
 }
 
 // DeleteContext is ...
@@ -84,16 +84,16 @@ func (ngsi *NGSI) DeleteContext(key string) error {
 	const funcName = "DeleteContext"
 
 	if err := ngsi.IsContextReferenced(key); err != nil {
-		return &NgsiLibError{funcName, 1, key + " is referenced", err}
+		return &LibError{funcName, 1, key + " is referenced", err}
 	}
 	if _, ok := ngsi.contextList[key]; ok {
 		delete(ngsi.contextList, key)
 		if err := ngsi.saveConfigFile(); err != nil {
-			return &NgsiLibError{funcName, 2, err.Error(), err}
+			return &LibError{funcName, 2, err.Error(), err}
 		}
 		return nil
 	}
-	return &NgsiLibError{funcName, 3, fmt.Sprintf("%s not found", key), nil}
+	return &LibError{funcName, 3, fmt.Sprintf("%s not found", key), nil}
 }
 
 // GetContext is ...
@@ -107,21 +107,21 @@ func (ngsi *NGSI) GetContext(key string) (string, error) {
 		value := ngsi.contextList[key]
 		switch value := value.(type) {
 		default:
-			return "", &NgsiLibError{funcName, 1, fmt.Sprintf("%s neither url nor json", key), nil}
+			return "", &LibError{funcName, 1, fmt.Sprintf("%s neither url nor json", key), nil}
 		case string:
 			if IsHTTP(value) {
 				return value, nil
 			}
-			return "", &NgsiLibError{funcName, 2, fmt.Sprintf("%s is not url", key), nil}
+			return "", &LibError{funcName, 2, fmt.Sprintf("%s is not url", key), nil}
 		case []interface{}, map[string]interface{}:
 			b, err := JSONMarshal(value)
 			if err != nil {
-				return "", &NgsiLibError{funcName, 3, err.Error(), err}
+				return "", &LibError{funcName, 3, err.Error(), err}
 			}
 			return string(b), nil
 		}
 	}
-	return "", &NgsiLibError{funcName, 4, fmt.Sprintf("%s not found", key), nil}
+	return "", &LibError{funcName, 4, fmt.Sprintf("%s not found", key), nil}
 }
 
 // GetContextHTTP is ...
@@ -130,12 +130,12 @@ func (ngsi *NGSI) GetContextHTTP(key string) (string, error) {
 
 	s, err := ngsi.GetContext(key)
 	if err != nil {
-		return "", &NgsiLibError{funcName, 1, err.Error(), err}
+		return "", &LibError{funcName, 1, err.Error(), err}
 	}
 	if IsHTTP(s) {
 		return s, nil
 	}
-	return "", &NgsiLibError{funcName, 2, fmt.Sprintf("%s is not url", key), nil}
+	return "", &LibError{funcName, 2, fmt.Sprintf("%s is not url", key), nil}
 }
 
 // GetContextList is ...

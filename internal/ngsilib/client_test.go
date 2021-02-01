@@ -95,7 +95,7 @@ func TestInitHeaderErrorTenant(t *testing.T) {
 	err := client.InitHeader()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
@@ -132,7 +132,7 @@ func TestInitHeaderErrorNgsiV2Scope(t *testing.T) {
 	err := client.InitHeader()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE ServicePath: iot", ngsiErr.Message)
 	}
@@ -236,7 +236,7 @@ func TestSetContentTypeLD(t *testing.T) {
 }
 
 func TestSetPath(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 	client.NgsiType = ngsiV2
 
 	client.SetPath("/version")
@@ -247,7 +247,7 @@ func TestSetPath(t *testing.T) {
 }
 
 func TestSetPathV2(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 	client.NgsiType = ngsiV2
 
 	client.SetPath("/entities")
@@ -258,7 +258,7 @@ func TestSetPathV2(t *testing.T) {
 }
 
 func TestSetPathLD(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 	client.NgsiType = ngsiLd
 
 	client.SetPath("/entities")
@@ -269,7 +269,7 @@ func TestSetPathLD(t *testing.T) {
 }
 
 func TestSetPathV2APIPath(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 	client.NgsiType = ngsiV2
 	client.APIPathBefore = "/"
 	client.APIPathAfter = "/orion"
@@ -380,8 +380,8 @@ func TestResultsCountLd(t *testing.T) {
 }
 
 func TestIdmURL(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
-	client.Broker.IdmHost = "https://keyrock"
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
+	client.Server.IdmHost = "https://keyrock"
 
 	actual := client.idmURL()
 	expected := "https://keyrock"
@@ -389,9 +389,9 @@ func TestIdmURL(t *testing.T) {
 }
 
 func TestIdmURLPath(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
-	client.Broker.IdmHost = "/token"
-	client.Broker.BrokerHost = "https://orion"
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
+	client.Server.IdmHost = "/token"
+	client.Server.ServerHost = "https://orion"
 
 	actual := client.idmURL()
 	expected := "https://orion/token"
@@ -399,7 +399,7 @@ func TestIdmURLPath(t *testing.T) {
 }
 
 func TestStoreToken(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
 
 	client.storeToken("token")
 	actual := client.Token
@@ -408,7 +408,7 @@ func TestStoreToken(t *testing.T) {
 }
 
 func TestGetExpiresIn(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
 
 	actual := client.getExpiresIn()
 	expected := int64(3600)
@@ -416,38 +416,38 @@ func TestGetExpiresIn(t *testing.T) {
 }
 
 func TestCheckTenant(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
 
 	err := client.CheckTenant("fiware")
 	assert.NoError(t, err)
 }
 
 func TestCheckTenantError(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
 
 	err := client.CheckTenant("FIWARE")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
 }
 
 func TestCheckScope(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
 
 	err := client.CheckScope("/fiware")
 	assert.NoError(t, err)
 }
 
 func TestCheckScopeError(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Broker: &Broker{}}
+	client := &Client{URL: &url.URL{}, Server: &Server{}}
 
 	err := client.CheckScope("fiware")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*NgsiLibError)
+		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE ServicePath: fiware", ngsiErr.Message)
 	}

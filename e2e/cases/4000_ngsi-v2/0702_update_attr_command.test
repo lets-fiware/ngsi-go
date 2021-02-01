@@ -709,7 +709,7 @@ Required flags "id, attrName" not set
 ngsi update attr --id E1 --attrName A1
 
 ```1
-attrUpdate001 Required host not found
+attrUpdate001 required host not found
 ```
 
 #

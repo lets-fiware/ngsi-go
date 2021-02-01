@@ -92,5 +92,5 @@ func LogLevel(s string) (int, error) {
 	case "debug":
 		return LogDebug, nil
 	}
-	return -1, &NgsiLibError{funcName, 1, fmt.Sprintf("unknown LogLevel: %s", s), nil}
+	return -1, &LibError{funcName, 1, fmt.Sprintf("unknown LogLevel: %s", s), nil}
 }

@@ -82,7 +82,7 @@ ngsiType ld
 ngsi broker get --host orion --json
 
 ```0
-{"brokerHost":"http://orion:1026","ngsiType":"v2"}
+{"serverType":"broker","serverHost":"http://orion:1026","ngsiType":"v2"}
 ```
 
 #
@@ -92,7 +92,8 @@ ngsi broker get --host orion --json --pretty
 
 ```0
 {
-  "brokerHost": "http://orion:1026",
+  "serverType": "broker",
+  "serverHost": "http://orion:1026",
   "ngsiType": "v2"
 }
 ```
@@ -103,7 +104,7 @@ ngsi broker get --host orion --json --pretty
 ngsi broker get
 
 ```1
-brokersGet002 Required host not found
+brokersGet002 required host not found
 ```
 
 #

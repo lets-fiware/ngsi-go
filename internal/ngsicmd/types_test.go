@@ -100,7 +100,7 @@ func TestTypesListErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -151,7 +151,7 @@ func TestTypesListV2V2(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -183,7 +183,7 @@ func TestTypesListV2CountZero(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -216,7 +216,7 @@ func TestTypesListV2CountPage(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -249,7 +249,7 @@ func TestTypesListV2JSON(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -282,7 +282,7 @@ func TestTypesListV2Pretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -312,7 +312,7 @@ func TestTypesListV2ErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -342,7 +342,7 @@ func TestTypesListV2ErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -371,7 +371,7 @@ func TestTypesListV2ErrorResultsCount(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -402,7 +402,7 @@ func TestTypesListV2ErrorJSONUnmarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -436,7 +436,7 @@ func TestTypesListV2ErrorJSON(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListV2(c, ngsi, client)
@@ -469,7 +469,7 @@ func TestTypesListV2ErrorPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -502,7 +502,7 @@ func TestTypesListLDLD(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListLd(c, ngsi, client)
@@ -533,7 +533,7 @@ func TestTypesListLDLink(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListLd(c, ngsi, client)
@@ -565,7 +565,7 @@ func TestTypesListLDPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListLd(c, ngsi, client)
@@ -597,7 +597,7 @@ func TestTypesListLDJSON(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListLd(c, ngsi, client)
@@ -628,7 +628,7 @@ func TestTypesListLDErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListLd(c, ngsi, client)
@@ -659,7 +659,7 @@ func TestTypesListLDErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = typesListLd(c, ngsi, client)
@@ -690,7 +690,7 @@ func TestTypesListLDErrorPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -723,7 +723,7 @@ func TestTypesListLDErrorJSONUnmarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONDecodeErr(ngsi, 0)
@@ -802,7 +802,7 @@ func TestTypesGetErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -945,7 +945,7 @@ func TestTypesCountErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

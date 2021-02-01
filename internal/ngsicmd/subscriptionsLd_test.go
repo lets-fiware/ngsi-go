@@ -56,7 +56,7 @@ func TestSubscriptionsListLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -89,7 +89,7 @@ func TestSubscriptionsListLdCount(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -128,7 +128,7 @@ func TestSubscriptionsListLdPage(t *testing.T) {
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
 
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -160,7 +160,7 @@ func TestSubscriptionsListLdStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -192,7 +192,7 @@ func TestSubscriptionsListLdQuery(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -224,7 +224,7 @@ func TestSubscriptionsListLdCountZero(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -257,7 +257,7 @@ func TestSubscriptionsListLdJson(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -290,7 +290,7 @@ func TestSubscriptionsListLdJsonPretty(t *testing.T) {
 	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -323,7 +323,7 @@ func TestSubscriptionsListLdJsonCount0(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -356,7 +356,7 @@ func TestSubscriptionsListLdVerbose(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -389,7 +389,7 @@ func TestSubscriptionsListLdLocaltime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -422,7 +422,7 @@ func TestSubscriptionsListLdErrorStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -454,7 +454,7 @@ func TestSubscriptionsListLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -486,7 +486,7 @@ func TestSubscriptionsListLdErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -516,7 +516,7 @@ func TestSubscriptionsListLdErrorResultsCount(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -550,7 +550,7 @@ func TestSubscriptionsListLdErrorJSONUnmarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -585,7 +585,7 @@ func TestSubscriptionsListLdErrorJSONMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -618,7 +618,7 @@ func TestSubscriptionsListLdErrorJsonPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -654,7 +654,7 @@ func TestSubscriptionsListLdErrorItems(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsListLd(c, ngsi, client)
@@ -685,7 +685,7 @@ func TestSubscriptionsGetLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -717,7 +717,7 @@ func TestSubscriptionsGetLdPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -749,7 +749,7 @@ func TestSubscriptionsGetLdLocalTime(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -780,7 +780,7 @@ func TestSubscriptionsGetLdSafeString(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -810,7 +810,7 @@ func TestSubscriptionsGetLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -840,7 +840,7 @@ func TestSubscriptionsGetLdErrorHTTPStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -871,7 +871,7 @@ func TestSubscriptionsGetLdErrorSafeString(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -904,7 +904,7 @@ func TestSubscriptionsGetLdErrorJSONMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionGetLd(c, ngsi, client)
@@ -936,7 +936,7 @@ func TestSubscriptionsGetLdErrorPretty(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	setJSONIndentError(ngsi)
@@ -969,7 +969,7 @@ func TestSubscriptionsCreateLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateLd(c, ngsi, client)
@@ -1000,7 +1000,7 @@ func TestSubscriptionsCreateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateLd(c, ngsi, client)
@@ -1033,7 +1033,7 @@ func TestSubscriptionsCreateLdErrorJSONMarshal(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateLd(c, ngsi, client)
@@ -1064,7 +1064,7 @@ func TestSubscriptionsCreateLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateLd(c, ngsi, client)
@@ -1094,7 +1094,7 @@ func TestSubscriptionsCreateLdErrorStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsCreateLd(c, ngsi, client)
@@ -1124,7 +1124,7 @@ func TestSubscriptionsUpdateLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateLd(c, ngsi, client)
@@ -1151,7 +1151,7 @@ func TestSubscriptionsUpdateLdErrorSetSubscriptionValuesLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateLd(c, ngsi, client)
@@ -1185,7 +1185,7 @@ func TestSubscriptionsUpdateLdErrorJSONMarshalEncode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateLd(c, ngsi, client)
@@ -1217,7 +1217,7 @@ func TestSubscriptionsUpdateLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateLd(c, ngsi, client)
@@ -1249,7 +1249,7 @@ func TestSubscriptionsUpdateLdErrorStatus(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsUpdateLd(c, ngsi, client)
@@ -1278,7 +1278,7 @@ func TestSubscriptionsDeleteLd(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsDeleteLd(c, ngsi, client)
@@ -1302,7 +1302,7 @@ func TestSubscriptionsDeleteLdErrorHTTP(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsDeleteLd(c, ngsi, client)
@@ -1332,7 +1332,7 @@ func TestSubscriptionsDeleteLdErrorStatusCode(t *testing.T) {
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
 	err = subscriptionsDeleteLd(c, ngsi, client)

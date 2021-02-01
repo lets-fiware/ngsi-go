@@ -41,17 +41,17 @@ import (
 func TestVersionV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/version"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
+
 	err := cbVersion(c)
 
 	assert.NoError(t, err)
@@ -60,17 +60,17 @@ func TestVersionV2(t *testing.T) {
 func TestVersionLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/version"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld"})
+
 	err := cbVersion(c)
 
 	assert.NoError(t, err)
@@ -81,12 +81,13 @@ func TestVersionErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
+
 	err := cbVersion(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -95,17 +96,17 @@ func TestVersionErrorInitCmd(t *testing.T) {
 func TestVersionErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/version"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,link")
 
+	setupFlagString(set, "host,link")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
+
 	err := cbVersion(c)
 
 	if assert.Error(t, err) {
@@ -120,7 +121,6 @@ func TestVersionErrorNewClient(t *testing.T) {
 func TestVersionErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/version"
@@ -128,10 +128,11 @@ func TestVersionErrorHTTP(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
+
 	err := cbVersion(c)
 
 	if assert.Error(t, err) {
@@ -145,17 +146,17 @@ func TestVersionErrorHTTP(t *testing.T) {
 func TestVersionErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/version"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
+	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
+
 	err := cbVersion(c)
 
 	if assert.Error(t, err) {

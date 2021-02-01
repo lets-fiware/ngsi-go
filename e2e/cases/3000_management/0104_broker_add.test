@@ -573,7 +573,7 @@ ngsi broker delete --host tenant
 ngsi broker add
 
 ```1
-brokersAdd002 Required host not found
+brokersAdd002 required host not found
 ```
 
 #
@@ -591,5 +591,5 @@ brokersAdd005 brokerHost is missing
 ngsi broker add --host fiware --brokerHost orion-v2
 
 ```1
-brokersAdd008 brokerHost error: orion-v2
+brokersAdd008 host error: orion-v2
 ```

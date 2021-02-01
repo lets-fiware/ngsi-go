@@ -170,7 +170,7 @@ func TestAttrReadErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -203,6 +203,33 @@ func TestAttrReadErrorNewClient(t *testing.T) {
 	}
 }
 
+func TestAttrReadErrorId(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte("99")
+	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:001/attrs/price"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagBool(set, "append,keyValues")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--attrName=price"})
+
+	err := attrRead(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "missing entity id", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestAttrReadErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -223,7 +250,7 @@ func TestAttrReadErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -250,7 +277,7 @@ func TestAttrReadErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -278,7 +305,7 @@ func TestAttrReadV2ErrorSafeString(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: {\"name\"", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -307,7 +334,7 @@ func TestAttrReadV2ErrorPretty(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -712,7 +739,7 @@ func TestAttrUpdateErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -935,7 +962,7 @@ func TestAttrDeleteErrorInitCmd(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "Required host not found", ngsiErr.Message)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

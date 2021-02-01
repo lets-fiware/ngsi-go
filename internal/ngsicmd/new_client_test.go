@@ -46,7 +46,7 @@ func TestNewClient(t *testing.T) {
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
 
-	_, err = newClient(ngsi, c, false)
+	_, err = newClient(ngsi, c, false, []string{"broker"})
 
 	assert.NoError(t, err)
 }
@@ -58,7 +58,7 @@ func TestNewClientError(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--link=fiware"})
 
-	_, err := newClient(ngsi, c, false)
+	_, err := newClient(ngsi, c, false, []string{"broker"})
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
