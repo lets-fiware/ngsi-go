@@ -26,8 +26,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if [ ! -e script/walkthrough.sh ]; then
+if [ -e tutorial.sh ]; then
+  cd ..
+fi
+
+if [ ! -e script/tutorial.sh ]; then
   echo "directory error"
+  exit 127
 fi
 
 for i in  docker docker-compose uname make
@@ -41,6 +46,7 @@ done
 
 if [ $(uname -m) != "x86_64" ]; then
   echo "not x86_64"
+  exit 127
 fi
 
 usage="usage: walkthrough.sh [start|stop|shell]"
@@ -81,6 +87,6 @@ case "${command}" in
     *)
         echo "Command not Found."
         echo "$usage"
-        exit 127;
+        exit 127
         ;;
 esac

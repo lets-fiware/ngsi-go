@@ -29,7 +29,7 @@
 #
 ngsi man --help
 
-```0
+```
 NAME:
    ngsi man - print urls of document
 
@@ -49,7 +49,7 @@ OPTIONS:
 #
 ngsi man
 
-```0
+```
 English:
   https://fiware-orion.readthedocs.io/
   https://telefonicaid.github.io/fiware-orion/api/v2/stable/

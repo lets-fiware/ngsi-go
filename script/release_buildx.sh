@@ -28,6 +28,10 @@
 
 set -e
 
+if [ -e release_buildx.sh ]; then
+  cd ..
+fi
+
 NGSIGO_TARGET=$1
 if [ -z "$NGSIGO_TARGET" ]; then
   NGSIGO_TARGET=build-all

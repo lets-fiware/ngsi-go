@@ -29,7 +29,7 @@
 #
 ngsi server get --host comet
 
-```0
+```
 serverType comet
 serverHost http://comet:8666
 FIWARE-Serivce openiot
@@ -42,7 +42,7 @@ FIWARE-SerivcePath /
 ngsi hget --host comet --service openiot --path / \
 attr --type Thing --id device001 --attrName A1 --hLimit 10 --hOffset 0 --pretty
 
-```0
+```
 {
   "type": "StructuredValue",
   "value": [
@@ -106,7 +106,7 @@ attr --type Thing --id device001 --attrName A1 --hLimit 10 --hOffset 0 --pretty
 ngsi hget --host comet --service openiot --path / \
 attr --type Thing --id device001 --attrName A1 --lastN 10 --pretty
 
-```0
+```
 {
   "type": "StructuredValue",
   "value": [
@@ -170,7 +170,7 @@ attr --type Thing --id device001 --attrName A1 --lastN 10 --pretty
 ngsi hget --host comet --service openiot --path / \
 attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod hour --pretty
 
-```0
+```
 {
   "type": "StructuredValue",
   "value": [
@@ -461,7 +461,7 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod hou
 ngsi hget --host comet --service openiot --path / \
 attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod day --pretty
 
-```0
+```
 {
   "type": "StructuredValue",
   "value": [
@@ -499,7 +499,7 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod day
 ngsi hget --host comet --service openiot --path / \
 attr --type Thing --id device001 --attrName A1 --aggrMethod max --aggrPeriod day --pretty
 
-```0
+```
 {
   "type": "StructuredValue",
   "value": [
@@ -537,7 +537,7 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod max --aggrPeriod day
 ngsi hget --host comet \
 attr --type Thing --id device001 --attrName A1 --aggrMethod min --aggrPeriod day --pretty
 
-```0
+```
 {
   "type": "StructuredValue",
   "value": [
@@ -574,5 +574,5 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod min --aggrPeriod day
 #
 ngsi hdelete --host comet attr --type Thing --id device001 --attrName A1 --run
 
-```0
+```
 ```

@@ -90,5 +90,5 @@ http post ${csource}/register \
   }
 ]'
 
-```0
+```
 ```

@@ -29,7 +29,7 @@
 #
 ngsi token --help
 
-```0
+```
 NAME:
    ngsi token - manage token
 

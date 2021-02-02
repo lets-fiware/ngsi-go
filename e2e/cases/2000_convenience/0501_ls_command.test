@@ -29,7 +29,7 @@
 #
 ngsi ls --help
 
-```0
+```
 NAME:
    ngsi ls - list entities
 

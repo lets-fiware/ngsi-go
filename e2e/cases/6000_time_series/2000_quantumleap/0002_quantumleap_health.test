@@ -34,7 +34,7 @@ wait ${quantumleap}/health --retry 600 --status pass
 #
 ngsi health --host quantumleap
 
-```0
+```
 {
   "status": "pass"
 }

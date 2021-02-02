@@ -25,10 +25,10 @@
 # SOFTWARE.
 
 #
-# 0002 ngsi --version
+# 0001 ngsi --version
 #
 ngsi --version
 
-```0
+```
 ngsi version REGEX(.*)
 ```

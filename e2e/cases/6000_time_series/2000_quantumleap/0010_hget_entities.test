@@ -29,7 +29,7 @@
 #
 ngsi hget entities
 
-```0
+```
 [
   {
     "id": "Event001",
@@ -67,7 +67,7 @@ ngsi hget entities
 #
 ngsi hget entities --type Event
 
-```0
+```
 [
   {
     "id": "Event001",

@@ -28,6 +28,10 @@
 
 set -e
 
+if [ -e e2e-test.sh ]; then
+  cd ..
+fi
+
 make build
 cd e2e
 if [ ! "$(docker-compose ps -a | wc -l)" = "2" ]; then

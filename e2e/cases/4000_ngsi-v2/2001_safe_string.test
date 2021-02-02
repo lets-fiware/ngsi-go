@@ -6,8 +6,6 @@
 #
 # https://github.com/lets-fiware/ngsi-go
 #
-# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-v2
-#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -32,7 +30,7 @@
 #
 ngsi rm --host orion --type SafeString --run
 
-```0
+```
 REGEX(.*)
 ```
 
@@ -49,7 +47,7 @@ ngsi create entity --safeString on \
   }
 }'
 
-```0
+```
 ```
 
 #
@@ -57,7 +55,7 @@ ngsi create entity --safeString on \
 #
 ngsi get entity --id urn:ngsi-ld:SafeString:001 --safeString off -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:SafeString:001",
   "type": "SafeString",
@@ -74,7 +72,7 @@ ngsi get entity --id urn:ngsi-ld:SafeString:001 --safeString off -P
 #
 ngsi get entity --id urn:ngsi-ld:SafeString:001 --safeString on -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:SafeString:001",
   "type": "SafeString",
@@ -109,7 +107,7 @@ ngsi create entities --safeString on \
   }
 ]'
 
-```0
+```
 ```
 
 #
@@ -117,7 +115,7 @@ ngsi create entities --safeString on \
 #
 ngsi list entities --safeString off -P
 
-```0
+```
 [
   {
     "id": "urn:ngsi-ld:SafeString:001",
@@ -154,7 +152,7 @@ ngsi list entities --safeString off -P
 #
 ngsi list entities --safeString on -P
 
-```0
+```
 [
   {
     "id": "urn:ngsi-ld:SafeString:001",
@@ -199,7 +197,7 @@ ngsi create entity --safeString on \
   }
 }'
 
-```0
+```
 ```
 
 #
@@ -207,7 +205,7 @@ ngsi create entity --safeString on \
 #
 ngsi get entity --id urn:ngsi-ld:SafeString:010 --safeString off -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:SafeString:010",
   "type": "SafeString",
@@ -224,7 +222,7 @@ ngsi get entity --id urn:ngsi-ld:SafeString:010 --safeString off -P
 #
 ngsi get entity --id urn:ngsi-ld:SafeString:010 --safeString on -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:SafeString:010",
   "type": "SafeString",
@@ -310,6 +308,6 @@ opUpdate011 400 Bad Request {"error":"BadRequest","description":"Invalid charact
 #
 ngsi rm --host orion --type SafeString --run
 
-```0
+```
 REGEX(.*)
 ```

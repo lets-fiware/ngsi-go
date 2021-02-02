@@ -29,7 +29,7 @@
 #
 ngsi cp --help
 
-```0
+```
 NAME:
    ngsi cp - copy entities
 

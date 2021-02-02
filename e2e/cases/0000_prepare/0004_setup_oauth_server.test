@@ -47,5 +47,5 @@ http post ${oauth}/admin/ \
   }
 }'
 
-```0
+```
 ```

@@ -147,7 +147,7 @@ http post ${atcontext}/ngsi-context.jsonld \
     }
 }'
 
-```0
+```
 ```
 
 #
@@ -156,7 +156,7 @@ http post ${atcontext}/ngsi-context.jsonld \
 
 http get ${atcontext}/ngsi-context.jsonld
 
-```0
+```
 {
     "@context": {
         "type": "@type",
@@ -280,7 +280,7 @@ http get ${atcontext}/ngsi-context.jsonld
 #
 ngsi context list --name ctx
 
-```0
+```
 http://atcontext:8000/ngsi-context.jsonld
 ```
 
@@ -456,7 +456,7 @@ http post ${atcontext}/ngsi-ld.json \
 
 http get ${atcontext}/ngsi-ld.json
 
-```0
+```
 {
     "@context": {
       "ngsi-ld": "https://uri.etsi.org/ngsi-ld/",
@@ -622,7 +622,7 @@ http get ${atcontext}/ngsi-ld.json
 #
 ngsi context add --name tutorial --url ${atcontext}/ngsi-ld.json
 
-```0
+```
 ```
 
 #
@@ -630,7 +630,7 @@ ngsi context add --name tutorial --url ${atcontext}/ngsi-ld.json
 #
 ngsi context list --name tutorial
 
-```0
+```
 http://atcontext:8000/ngsi-ld.json
 ```
 
@@ -674,7 +674,7 @@ http post ${atcontext}/japanese.json \
 
 http get ${atcontext}/japanese.json
 
-```0
+```
 {
   "@context": {
 
@@ -709,7 +709,7 @@ http get ${atcontext}/japanese.json
 #
 ngsi context add --name japanese --url ${atcontext}/japanese.json
 
-```0
+```
 ```
 
 #
@@ -717,6 +717,6 @@ ngsi context add --name japanese --url ${atcontext}/japanese.json
 #
 ngsi context list --name japanese
 
-```0
+```
 http://atcontext:8000/japanese.json
 ```

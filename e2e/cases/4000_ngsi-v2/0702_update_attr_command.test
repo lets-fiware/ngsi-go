@@ -32,7 +32,7 @@
 #
 ngsi update attr --help
 
-```0
+```
 NAME:
    ngsi update attr - update attr
 
@@ -56,7 +56,7 @@ OPTIONS:
 #
 ngsi rm --host orion --type Thing --run
 
-```0
+```
 REGEX(.*)
 ```
 
@@ -83,7 +83,7 @@ ngsi create entity --keyValues \
   }
 }'
 
-```0
+```
 ```
 
 #
@@ -91,7 +91,7 @@ ngsi create entity --keyValues \
 #
 ngsi get entity --id E1 -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -154,7 +154,7 @@ ngsi get entity --id E1 -pretty
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -181,7 +181,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A1 --data null
 
-```0
+```
 ```
 
 #
@@ -189,7 +189,7 @@ ngsi update attr --id E1 --attrName A1 --data null
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -216,7 +216,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A3 --data true
 
-```0
+```
 ```
 
 #
@@ -224,7 +224,7 @@ ngsi update attr --id E1 --attrName A3 --data true
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -251,7 +251,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A2 --data false
 
-```0
+```
 ```
 
 #
@@ -259,7 +259,7 @@ ngsi update attr --id E1 --attrName A2 --data false
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -286,7 +286,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A4 --data 999
 
-```0
+```
 ```
 
 #
@@ -294,7 +294,7 @@ ngsi update attr --id E1 --attrName A4 --data 999
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -321,7 +321,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A5 --data 567.89
 
-```0
+```
 ```
 
 #
@@ -329,7 +329,7 @@ ngsi update attr --id E1 --attrName A5 --data 567.89
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -356,7 +356,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A6 --data FIWARE
 
-```0
+```
 ```
 
 #
@@ -364,7 +364,7 @@ ngsi update attr --id E1 --attrName A6 --data FIWARE
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -391,7 +391,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A6 --data "Open APIs"
 
-```0
+```
 ```
 
 #
@@ -399,7 +399,7 @@ ngsi update attr --id E1 --attrName A6 --data "Open APIs"
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -426,7 +426,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A6 --data '""'
 
-```0
+```
 ```
 
 #
@@ -434,7 +434,7 @@ ngsi update attr --id E1 --attrName A6 --data '""'
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -461,7 +461,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A6 --safeString on --data '""'
 
-```0
+```
 ```
 
 #
@@ -469,7 +469,7 @@ ngsi update attr --id E1 --attrName A6 --safeString on --data '""'
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -496,7 +496,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A6 --safeString on --data "<>"
 
-```0
+```
 ```
 
 #
@@ -504,7 +504,7 @@ ngsi update attr --id E1 --attrName A6 --safeString on --data "<>"
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -531,7 +531,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A6 --safeString on --data "<Open APIs>"
 
-```0
+```
 ```
 
 #
@@ -539,7 +539,7 @@ ngsi update attr --id E1 --attrName A6 --safeString on --data "<Open APIs>"
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -566,7 +566,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A8 --data '[ 5, 6, 7 ]'
 
-```0
+```
 ```
 
 #
@@ -574,7 +574,7 @@ ngsi update attr --id E1 --attrName A8 --data '[ 5, 6, 7 ]'
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -601,7 +601,7 @@ ngsi get entity --id E1 --keyValues -pretty
 #
 ngsi update attr --id E1 --attrName A9 --data '{"A91": 567.89}'
 
-```0
+```
 ```
 
 #
@@ -609,7 +609,7 @@ ngsi update attr --id E1 --attrName A9 --data '{"A91": 567.89}'
 #
 ngsi get entity --id E1 --keyValues -pretty
 
-```0
+```
 {
   "id": "E1",
   "type": "Thing",
@@ -643,7 +643,7 @@ ngsi create entity \
   }
 }'
 
-```0
+```
 ```
 
 #
@@ -651,7 +651,7 @@ ngsi create entity \
 #
 ngsi get entity --id E2 --pretty
 
-```0
+```
 {
   "id": "E2",
   "type": "Thing",
@@ -668,14 +668,14 @@ ngsi get entity --id E2 --pretty
 #
 ngsi update attr --id E2 --attrName timestamp --data 2022-12-31T11:45:01.111Z
 
-```0
+```
 ```
 #
 # 0034 Check attributes
 #
 ngsi get entity --id E2 --pretty
 
-```0
+```
 {
   "id": "E2",
   "type": "Thing",
@@ -691,7 +691,7 @@ ngsi get entity --id E2 --pretty
 #
 ngsi settings clear
 
-```0
+```
 ```
 
 #
@@ -771,6 +771,6 @@ attrUpdate006 data length error
 #
 ngsi rm --host orion --type Thing --run
 
-```0
+```
 REGEX(.*)
 ```

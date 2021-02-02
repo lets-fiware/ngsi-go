@@ -29,7 +29,7 @@
 #
 ngsi hget --host quantumleap attrs --id device001 --attrs A1,A2 --hLimit 10
 
-```0
+```
 {
   "attributes": [
     {
@@ -84,7 +84,7 @@ ngsi hget --host quantumleap attrs --id device001 --attrs A1,A2 --hLimit 10
 #
 ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --value
 
-```0
+```
 {
   "attributes": [
     {
@@ -138,7 +138,7 @@ ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --value
 #
 ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --hOffset 10
 
-```0
+```
 {
   "attributes": [
     {
@@ -193,7 +193,7 @@ ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --hOffset 10
 #
 ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --hOffset 10 --value
 
-```0
+```
 {
   "attributes": [
     {
@@ -247,7 +247,7 @@ ngsi hget attrs --id device001 --attrs A1,A2 --hLimit 10 --hOffset 10 --value
 #
 ngsi hget attrs --id device001 --attrs A1,A2 --lastN 10
 
-```0
+```
 {
   "attributes": [
     {
@@ -302,7 +302,7 @@ ngsi hget attrs --id device001 --attrs A1,A2 --lastN 10
 #
 ngsi hget attrs --id device001 --attrs A1,A2 --lastN 10 --value
 
-```0
+```
 {
   "attributes": [
     {

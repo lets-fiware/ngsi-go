@@ -29,6 +29,6 @@
 #
 ngsi version --host $comet
 
-```0
+```
 {"version":"REGEX(.*)"}
 ```

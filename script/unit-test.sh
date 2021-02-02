@@ -28,5 +28,9 @@
 
 set -e
 
+if [ -e unit-test.sh ]; then
+  cd ..
+fi
+
 cd internal
 go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...

@@ -29,7 +29,7 @@
 #
 ngsi wc --help
 
-```0
+```
 NAME:
    ngsi wc - print number of entities, subscriptions, registrations or types
 

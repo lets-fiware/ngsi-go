@@ -68,20 +68,20 @@ func compareCmd(line int, args []string) error {
 
 	line = line - len(args) + 1
 
-	if len(args[0]) < 4 {
-		return &ngsiCmdError{funcName, 1, "expected code error", nil}
+	expectedCode := "0"
+	if len(args[0]) > 3 {
+		expectedCode = args[0][3:]
 	}
-	expectedCode := args[0][3:]
 
 	v, ok := val["?"]
 	if !ok {
-		return &ngsiCmdError{funcName, 2, "acttual code error", nil}
+		return &ngsiCmdError{funcName, 1, "acttual code error", nil}
 	}
 	actualCode := v[0]
 
 	if expectedCode != actualCode {
 		fmt.Printf("Exit code error, expected:%s, actual:%s\n", expectedCode, actualCode)
-		err = &ngsiCmdError{funcName, 3, fmt.Sprintf("Exit code error, expected:%s, actual:%s", expectedCode, actualCode), nil}
+		err = &ngsiCmdError{funcName, 2, fmt.Sprintf("Exit code error, expected:%s, actual:%s", expectedCode, actualCode), nil}
 	}
 
 	expected := args[1 : len(args)-1]
@@ -91,7 +91,7 @@ func compareCmd(line int, args []string) error {
 	}
 
 	if err := diffLines(line, expected, actual); err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 
 	return err

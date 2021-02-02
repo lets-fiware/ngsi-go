@@ -31,7 +31,7 @@
 #
 ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
 
-```0
+```
 REGEX(.*)
 ```
 
@@ -53,14 +53,14 @@ ngsi create --host orion-ld entity --link ctx \
       }
 }'
 
-```0
+```
 ```
 #
 # 0002 Get Entity
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -93,7 +93,7 @@ ngsi append attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
       }
 }'
 
-```0
+```
 ```
 
 #
@@ -101,7 +101,7 @@ ngsi append attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -173,7 +173,7 @@ ngsi create entities --link ctx \
     }
 ]'
 
-```0
+```
 {"@context":"http://REGEX(.*)/ngsi-context.jsonld","success":\["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003","urn:ngsi-ld:TemperatureSensor:004"\],"errors":\[\]}
 ```
 
@@ -210,7 +210,7 @@ ngsi upsert entities --link ctx \
     }
 ]'
 
-```0
+```
 ```
 
 #
@@ -218,7 +218,7 @@ ngsi upsert entities --link ctx \
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --sysAttrs -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -259,7 +259,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --sysAttrs -P
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrs temperature -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -277,7 +277,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrs temper
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -294,7 +294,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues -P
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues --attrs category,temperature -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -309,7 +309,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --keyValues --
 #
 ngsi list entities --link ctx --type TemperatureSensor -P
 
-```0
+```
 [
   {
     "@context": "http://REGEX(.*)/ngsi-context.jsonld",
@@ -384,7 +384,7 @@ ngsi list entities --link ctx --type TemperatureSensor -P
 #
 ngsi list entities -link ctx --type TemperatureSensor --attrs temperature --keyValues --verbose -P
 
-```0
+```
 [
   {
     "@context": "http://REGEX(.*)/ngsi-context.jsonld",
@@ -418,7 +418,7 @@ ngsi list entities -link ctx --type TemperatureSensor --attrs temperature --keyV
 #
 ngsi list entities --link ctx --id urn:ngsi-ld:TemperatureSensor:001,urn:ngsi-ld:TemperatureSensor:002 --attrs temperature --keyValues -P
 
-```0
+```
 [
   {
     "@context": "http://REGEX(.*)/ngsi-context.jsonld",
@@ -444,7 +444,7 @@ ngsi update attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName ca
     "type": "Property"
 }'
 
-```0
+```
 ```
 
 #
@@ -465,7 +465,7 @@ ngsi update attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
       }
 }'
 
-```0
+```
 ```
 
 #
@@ -473,7 +473,7 @@ ngsi update attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -531,7 +531,7 @@ ngsi upsert entities --link ctx --update \
   }
 ]'
 
-```0
+```
 ```
 
 #
@@ -539,7 +539,7 @@ ngsi upsert entities --link ctx --update \
 #
 ngsi list entities --link ctx --type TemperatureSensor --idPattern urn:ngsi-ld:TemperatureSensor:00[3-4] -P
 
-```0
+```
 [
   {
     "@context": "http://REGEX(.*)/ngsi-context.jsonld",
@@ -607,7 +607,7 @@ ngsi update entities --link ctx --replace \
   }
 ]'
 
-```0
+```
 ```
 
 #
@@ -615,7 +615,7 @@ ngsi update entities --link ctx --replace \
 #
 ngsi list entities --link ctx --type TemperatureSensor --idPattern urn:ngsi-ld:TemperatureSensor:00[3-4] -P
 
-```0
+```
 [
   {
     "@context": "http://REGEX(.*)/ngsi-context.jsonld",
@@ -662,7 +662,7 @@ ngsi list entities --link ctx --type TemperatureSensor --idPattern urn:ngsi-ld:T
 #
 ngsi delete entity --link ctx --id urn:ngsi-ld:TemperatureSensor:004
 
-```0
+```
 ```
 
 #
@@ -670,7 +670,7 @@ ngsi delete entity --link ctx --id urn:ngsi-ld:TemperatureSensor:004
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -704,7 +704,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 #
 ngsi delete attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName batteryLevel
 
-```0
+```
 ```
 
 #
@@ -712,7 +712,7 @@ ngsi delete attr --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrName ba
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
-```0
+```
 {
   "@context": "http://REGEX(.*)/ngsi-context.jsonld",
   "id": "urn:ngsi-ld:TemperatureSensor:001",
@@ -745,7 +745,7 @@ ngsi delete entities --link ctx \
   "urn:ngsi-ld:TemperatureSensor:003"
 ]'
 
-```0
+```
 {"success":["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"],"errors":[]}
 ```
 
@@ -754,6 +754,6 @@ ngsi delete entities --link ctx \
 #
 ngsi rm --type TemperatureSensor --link ctx --run
 
-```0
+```
 REGEX(.*)
 ```
