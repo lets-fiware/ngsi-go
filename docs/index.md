@@ -21,12 +21,12 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 
 -   [Usage](usage.md)
 -   [Quick Start Guide](quick_start_guide.md)
--   [Walkthrough](tutorial/index.md)
+-   [Tutorial](tutorial/index.md)
 -   [Install](install.md)
 -   [Build from source](build_source.md)
 -   [FIWARE Open APIs mapping lists](apis_mapping_list.md)
 
-## Walkthrough
+## Tutorial
 
 -   [NGSI-LD CRUD](tutorial/ngsi-ld-crud.md)
 -   [NGSIv2 CRUD](tutorial/ngsi-v2-crud.md)

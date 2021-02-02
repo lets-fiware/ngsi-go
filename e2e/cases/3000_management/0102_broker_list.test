@@ -29,7 +29,7 @@
 #
 ngsi list --help
 
-```0
+```
 NAME:
    ngsi list - list types, entities, subscriptions or registrations
 
@@ -58,7 +58,7 @@ OPTIONS:
 #
 ngsi broker list
 
-```0
+```
 orion orion-ld
 ```
 
@@ -67,7 +67,7 @@ orion orion-ld
 #
 ngsi broker list --json
 
-```0
+```
 {"orion":{"serverType":"broker","serverHost":"http://orion:1026","ngsiType":"v2"},"orion-ld":{"serverType":"broker","serverHost":"http://orion-ld:1026","ngsiType":"ld"}}
 ```
 
@@ -76,7 +76,7 @@ ngsi broker list --json
 #
 ngsi broker list --json --pretty
 
-```0
+```
 {
   "orion": {
     "serverType": "broker",
@@ -96,7 +96,7 @@ ngsi broker list --json --pretty
 #
 ngsi broker list --host orion
 
-```0
+```
 brokerHost http://orion:1026
 ngsiType v2
 ```
@@ -106,7 +106,7 @@ ngsiType v2
 #
 ngsi broker list --host orion-ld
 
-```0
+```
 brokerHost http://orion-ld:1026
 ngsiType ld
 ```

@@ -29,7 +29,7 @@
 #
 ngsi hget --host quantumleap attr --type Thing --attrName A2 --sameType --hLimit 6
 
-```0
+```
 {
   "attrName": "A2",
   "entities": [
@@ -69,7 +69,7 @@ ngsi hget --host quantumleap attr --type Thing --attrName A2 --sameType --hLimit
 #
 ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6
 
-```0
+```
 {
   "attrName": "A2",
   "entities": [
@@ -109,7 +109,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6
 #
 ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6
 
-```0
+```
 {
   "attrName": "A2",
   "entities": [
@@ -149,7 +149,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6
 #
 ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --value
 
-```0
+```
 {
   "values": [
     {
@@ -187,7 +187,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --value
 #
 ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6 --value
 
-```0
+```
 {
   "values": [
     {
@@ -225,7 +225,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6 --va
 #
 ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6 --value
 
-```0
+```
 {
   "values": [
     {

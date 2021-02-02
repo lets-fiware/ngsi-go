@@ -28,6 +28,10 @@
 
 set -e
 
+if [ -e coverage.sh ]; then
+  cd ..
+fi
+
 cd internal
 go test -coverprofile=../coverage/coverage.out -covermode=atomic ./...
 cd ..

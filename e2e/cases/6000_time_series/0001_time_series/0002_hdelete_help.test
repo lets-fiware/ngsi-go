@@ -29,7 +29,7 @@
 #
 ngsi hdelete --help
 
-```0
+```
 NAME:
    ngsi hdelete - delete historical raw and aggregated time series context information
 

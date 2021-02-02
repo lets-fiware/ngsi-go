@@ -29,7 +29,7 @@
 #
 ngsi hget --host quantumleap entities
 
-```0
+```
 [
   {
     "id": "Event001",
@@ -79,7 +79,7 @@ qlEntityDeleteMain004 404 NOT FOUND {
 #
 ngsi hdelete entity --id device002 --run
 
-```0
+```
 ```
 
 sleep 3
@@ -89,7 +89,7 @@ sleep 3
 #
 ngsi hget entities
 
-```0
+```
 [
   {
     "id": "Event001",
@@ -120,7 +120,7 @@ ngsi hget entities
 #
 ngsi hdelete entities --type Event --run
 
-```0
+```
 ```
 
 sleep 3
@@ -130,7 +130,7 @@ sleep 3
 #
 ngsi hget entities
 
-```0
+```
 [
   {
     "id": "device001",
@@ -159,7 +159,7 @@ qlEntityDeleteMain004 404 NOT FOUND {
 #
 ngsi hdelete entity --id device001 --type Thing --run
 
-```0
+```
 ```
 
 sleep 3

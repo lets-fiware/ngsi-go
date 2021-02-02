@@ -30,6 +30,33 @@
 #
 
 #
+# 0000 Clean up
+#
+ngsi rm --host orion --type InventoryItem --run
+
+```
+REGEX(.*)
+```
+
+ngsi rm --type Product --run
+
+```
+REGEX(.*)
+```
+
+ngsi rm --type Shelf --run
+
+```
+REGEX(.*)
+```
+
+ngsi rm --type Store --run
+
+```
+REGEX(.*)
+```
+
+#
 # 0001 Create four Store Entities in various locations across Berlin
 #
 ngsi create --host orion entities \
@@ -59,7 +86,7 @@ ngsi create --host orion entities \
   	}
 ]'
 
-```0
+```
 ```
 
 
@@ -141,7 +168,7 @@ ngsi create --host orion entities \
   	}
 ]'
 
-```0
+```
 ```
 
 #
@@ -206,7 +233,7 @@ ngsi create --host orion entities \
     }
 ]'
 
-```0
+```
 ```
 
 #
@@ -241,7 +268,7 @@ ngsi create --host orion entities \
   	}
 ]'
 
-```0
+```
 ```
 
 #
@@ -268,7 +295,7 @@ ngsi create --host orion entities \
   	}
 ]'
 
-```0
+```
 ```
 
 #
@@ -304,7 +331,7 @@ ngsi create --host orion entities \
   	}
 ]'
 
-```0
+```
 ```
 
 #
@@ -323,5 +350,5 @@ ngsi create --host orion entities \
   	}
 ]'
 
-```0
+```
 ```

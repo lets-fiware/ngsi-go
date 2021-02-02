@@ -29,7 +29,7 @@
 #
 ngsi server list
 
-```0
+```
 comet quantumleap
 ```
 
@@ -38,7 +38,7 @@ comet quantumleap
 #
 ngsi server get --host quantumleap
 
-```0
+```
 serverType quantumleap
 serverHost http://quantumleap:8668
 FIWARE-Serivce openiot
@@ -102,7 +102,7 @@ sleep 5
 ngsi hget --host quantumleap --service openiot --path / entities
 
 
-```0
+```
 [
   {
     "id": "Event001",

@@ -29,7 +29,7 @@
 #
 ngsi broker delete --help
 
-```0
+```
 NAME:
    ngsi broker delete - delete broker
 
@@ -50,7 +50,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2
 
-```0
+```
 ```
 
 #
@@ -64,7 +64,7 @@ ngsi broker add \
 --username keyrock001@letsfiware.jp \
 --password 0123456789
 
-```0
+```
 ```
 
 #
@@ -72,7 +72,7 @@ ngsi broker add \
 # 
 ngsi broker get --host tokenproxy
 
-```0
+```
 brokerHost base
 IdmType tokenproxy
 IdmHost https://keyrock
@@ -95,7 +95,7 @@ brokersDelete006 base is referenced
 ngsi broker delete --host tokenproxy
 
 
-```0
+```
 ```
 
 #
@@ -103,7 +103,7 @@ ngsi broker delete --host tokenproxy
 #
 ngsi broker delete --host base
 
-```0
+```
 ```
 
 #

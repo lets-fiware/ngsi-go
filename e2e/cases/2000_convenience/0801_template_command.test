@@ -29,7 +29,7 @@
 #
 ngsi template --help
 
-```0
+```
 NAME:
    ngsi template - create template of subscription or registration
 

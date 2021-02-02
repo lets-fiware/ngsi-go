@@ -29,7 +29,7 @@
 #
 ngsi get --help
 
-```0
+```
 NAME:
    ngsi get - get entity(ies), attribute(s), subscription, registration or type
 
@@ -61,7 +61,7 @@ OPTIONS:
 #
 ngsi broker get --host orion
 
-```0
+```
 brokerHost http://orion:1026
 ngsiType v2
 ```
@@ -71,7 +71,7 @@ ngsiType v2
 #
 ngsi broker get --host orion-ld
 
-```0
+```
 brokerHost http://orion-ld:1026
 ngsiType ld
 ```
@@ -81,7 +81,7 @@ ngsiType ld
 #
 ngsi broker get --host orion --json
 
-```0
+```
 {"serverType":"broker","serverHost":"http://orion:1026","ngsiType":"v2"}
 ```
 
@@ -90,7 +90,7 @@ ngsi broker get --host orion --json
 #
 ngsi broker get --host orion --json --pretty
 
-```0
+```
 {
   "serverType": "broker",
   "serverHost": "http://orion:1026",

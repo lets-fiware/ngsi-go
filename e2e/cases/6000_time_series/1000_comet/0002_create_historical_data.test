@@ -29,7 +29,7 @@
 #
 ngsi server get --host comet
 
-```0
+```
 serverType comet
 serverHost http://comet:8666
 FIWARE-Serivce openiot

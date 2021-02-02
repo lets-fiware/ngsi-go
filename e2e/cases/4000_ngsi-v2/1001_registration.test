@@ -31,7 +31,7 @@ ngsi create registration --description "context source mock" \
 --provider ${csource}/v2 --attrs temperature,atmosphericPressure,relativeHumidity \
 --providedId urn:ngsi-ld:WeatherObserved:sensor001 --type WeatherObserved
 
-```0
+```
 REGEX([0-9a-z]{24})
 ```
 
@@ -42,7 +42,7 @@ $id=$$
 #
 ngsi list registrations -P
 
-```0
+```
 [
   {
     "id": "REGEX([0-9a-z]{24})",
@@ -78,7 +78,7 @@ ngsi list registrations -P
 #
 ngsi get registration --id $id -P
 
-```0
+```
 {
   "id": "REGEX([0-9a-z]{24})",
   "description": "context source mock",
@@ -111,7 +111,7 @@ ngsi get registration --id $id -P
 #
 ngsi get entity --id urn:ngsi-ld:WeatherObserved:sensor001 -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:WeatherObserved:sensor001",
   "type": "WeatherObserved",
@@ -138,5 +138,5 @@ ngsi get entity --id urn:ngsi-ld:WeatherObserved:sensor001 -P
 #
 ngsi delete registration --id $id
 
-```0
+```
 ```

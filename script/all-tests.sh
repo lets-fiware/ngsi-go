@@ -28,6 +28,10 @@
 
 set -e
 
+if [ -e all-tests.sh ]; then
+  cd ..
+fi
+
 echo "*** build test ***"
 make build
 echo "*** unit test ***"

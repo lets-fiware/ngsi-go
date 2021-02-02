@@ -29,7 +29,7 @@
 #
 ngsi hget --host quantumleap attrs --nTypes --hLimit 12
 
-```0
+```
 {
   "attrs": [
     {
@@ -313,7 +313,7 @@ ngsi hget --host quantumleap attrs --nTypes --hLimit 12
 #
 ngsi hget attrs --nTypes --hLimit 12 --value
 
-```0
+```
 {
   "values": [
     {
@@ -598,7 +598,7 @@ ngsi hget attrs --nTypes --hLimit 12 --value
 #
 ngsi hget attrs --nTypes --lastN 12
 
-```0
+```
 {
   "attrs": [
     {
@@ -883,7 +883,7 @@ ngsi hget attrs --nTypes --lastN 12
 #
 ngsi hget attrs --nTypes --lastN 12 --value
 
-```0
+```
 {
   "values": [
     {

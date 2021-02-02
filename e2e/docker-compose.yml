@@ -55,7 +55,7 @@ services:
       - DB_URI=mongo:27017
 
   quantumleap:
-    image: smartsdk/quantumleap:0.8
+    image: smartsdk/quantumleap:0.7.6
     depends_on:
       - crate
     environment:

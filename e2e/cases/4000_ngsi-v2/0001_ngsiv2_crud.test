@@ -30,7 +30,7 @@
 #
 
 #
-# 0001 Create a New Data Entity
+# 1001 Create a New Data Entity
 #
 ngsi create --host orion entity \
 --data '{
@@ -40,15 +40,15 @@ ngsi create --host orion entity \
       "price":{"type":"Integer", "value": 99}
 }'
 
-```0
+```
 ```
 
 #
-# 0002 Get entity
+# 1002 Get entity
 #
 ngsi get entity --id urn:ngsi-ld:Product:010 --type Product -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:Product:010",
   "type": "Product",
@@ -71,22 +71,22 @@ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product -P
 ```
 
 #
-# 0003 Create a New Attribute
+# 1003 Create a New Attribute
 #
 ngsi append attrs --id urn:ngsi-ld:Product:001 \
 --data '{
       "specialOffer":{"value": true}
 }'
 
-```0
+```
 ```
 
 #
-# 0004 Get entity
+# 1004 Get entity
 #
 ngsi get entity --id urn:ngsi-ld:Product:001 --type Product -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:Product:001",
   "type": "Product",
@@ -114,7 +114,7 @@ ngsi get entity --id urn:ngsi-ld:Product:001 --type Product -P
 ```
 
 #
-# 0005 Batch Create New Data Entities or Attributes
+# 1005 Batch Create New Data Entities or Attributes
 #
 ngsi create entities \
 --data '[
@@ -136,11 +136,11 @@ ngsi create entities \
   }
 ]'
 
-```0
+```
 ```
 
 #
-# 0006 Upsert entities
+# 1006 Upsert entities
 #
 ngsi upsert entities \
 --data '[
@@ -158,15 +158,15 @@ ngsi upsert entities \
   }
 ]'
 
-```0
+```
 ```
 
 #
-# 0007 Read a Data Entity (verbose)
+# 1007 Read a Data Entity (verbose)
 #
 ngsi get entity --id urn:ngsi-ld:Product:010 --type Product -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:Product:010",
   "type": "Product",
@@ -189,20 +189,20 @@ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product -P
 ```
 
 #
-# 0008 Read an Attribute from a Data Entity
+# 1008 Read an Attribute from a Data Entity
 #
 ngsi get attr --id urn:ngsi-ld:Product:001 --attrName name
 
-```0
+```
 "Beer"
 ```
 
 #
-# 0009 Read a Data Entity (key-value pairs)
+# 1009 Read a Data Entity (key-value pairs)
 #
 ngsi get entity --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs name,price -P
 
-```0
+```
 {
   "id": "urn:ngsi-ld:Product:001",
   "type": "Product",
@@ -212,11 +212,11 @@ ngsi get entity --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs 
 ```
 
 #
-# 0009 Read a Data Entity (key-value pairs)
+# 1009 Read a Data Entity (key-value pairs)
 #
 ngsi get attrs --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs name,price -P
 
-```0
+```
 {
   "name": "Beer",
   "price": 99
@@ -224,60 +224,60 @@ ngsi get attrs --keyValues --type Product --id urn:ngsi-ld:Product:001 --attrs n
 ```
 
 #
-# 0010 Read Multiple attributes values from a Data Entity
+# 1010 Read Multiple attributes values from a Data Entity
 #
 ngsi get attrs --id urn:ngsi-ld:Product:001 --attrs name,price --values
 
-```0
+```
 ["Beer",99]
 ```
 
 #
-# 0011 List all Data Entities (verbose)
+# 1011 List all Data Entities (verbose)
 #
 ngsi list entities --type Product --verbose
 
-```0
+```
 [{"id":"urn:ngsi-ld:Product:001","type":"Product","name":{"type":"Text","value":"Beer","metadata":{}},"offerPrice":{"type":"Integer","value":89,"metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}},"specialOffer":{"type":"Boolean","value":true,"metadata":{}}},{"id":"urn:ngsi-ld:Product:002","type":"Product","name":{"type":"Text","value":"Red Wine","metadata":{}},"price":{"type":"Integer","value":1099,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}},{"id":"urn:ngsi-ld:Product:003","type":"Product","name":{"type":"Text","value":"White Wine","metadata":{}},"price":{"type":"Integer","value":1499,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}},{"id":"urn:ngsi-ld:Product:004","type":"Product","name":{"type":"Text","value":"Vodka","metadata":{}},"price":{"type":"Integer","value":5000,"metadata":{}},"size":{"type":"Text","value":"XL","metadata":{}}},{"id":"urn:ngsi-ld:Product:005","type":"Product","name":{"type":"Text","value":"Lager","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:006","type":"Product","name":{"type":"Text","value":"Whisky","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:007","type":"Product","name":{"type":"Text","value":"Gin","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:008","type":"Product","name":{"type":"Text","value":"Apple Juice","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:009","type":"Product","name":{"type":"Text","value":"Orange Juice","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:010","type":"Product","name":{"type":"Text","value":"Lemonade","metadata":{}},"price":{"type":"Integer","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}},{"id":"urn:ngsi-ld:Product:011","type":"Product","name":{"type":"Text","value":"Brandy","metadata":{}},"price":{"type":"Integer","value":1199,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}},{"id":"urn:ngsi-ld:Product:012","type":"Product","name":{"type":"Text","value":"Port","metadata":{}},"price":{"type":"Integer","value":1099,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}}]
 ```
 
 #
-# 0012 List all Data Entities (key-value pairs)
+# 1012 List all Data Entities (key-value pairs)
 #
 ngsi list entities --type Product -attrs name,price --keyValues --verbose
 
-```0
+```
 [{"id":"urn:ngsi-ld:Product:001","type":"Product","name":"Beer","price":99},{"id":"urn:ngsi-ld:Product:002","type":"Product","name":"Red Wine","price":1099},{"id":"urn:ngsi-ld:Product:003","type":"Product","name":"White Wine","price":1499},{"id":"urn:ngsi-ld:Product:004","type":"Product","name":"Vodka","price":5000},{"id":"urn:ngsi-ld:Product:005","type":"Product","name":"Lager","price":99},{"id":"urn:ngsi-ld:Product:006","type":"Product","name":"Whisky","price":99},{"id":"urn:ngsi-ld:Product:007","type":"Product","name":"Gin","price":99},{"id":"urn:ngsi-ld:Product:008","type":"Product","name":"Apple Juice","price":99},{"id":"urn:ngsi-ld:Product:009","type":"Product","name":"Orange Juice","price":99},{"id":"urn:ngsi-ld:Product:010","type":"Product","name":"Lemonade","price":99},{"id":"urn:ngsi-ld:Product:011","type":"Product","name":"Brandy","price":1199},{"id":"urn:ngsi-ld:Product:012","type":"Product","name":"Port","price":1099}]
 ```
 
 #
-# 0013 List Data Entity by ID
+# 1013 List Data Entity by ID
 #
 ngsi list entities --type Product -attrs id --verbose
 
-```0
+```
 [{"id":"urn:ngsi-ld:Product:001","type":"Product"},{"id":"urn:ngsi-ld:Product:002","type":"Product"},{"id":"urn:ngsi-ld:Product:003","type":"Product"},{"id":"urn:ngsi-ld:Product:004","type":"Product"},{"id":"urn:ngsi-ld:Product:005","type":"Product"},{"id":"urn:ngsi-ld:Product:006","type":"Product"},{"id":"urn:ngsi-ld:Product:007","type":"Product"},{"id":"urn:ngsi-ld:Product:008","type":"Product"},{"id":"urn:ngsi-ld:Product:009","type":"Product"},{"id":"urn:ngsi-ld:Product:010","type":"Product"},{"id":"urn:ngsi-ld:Product:011","type":"Product"},{"id":"urn:ngsi-ld:Product:012","type":"Product"}]
 ```
 
 #
-# 0014 Overwrite the value of an Attribute value
+# 1014 Overwrite the value of an Attribute value
 #
 ngsi update attr --id urn:ngsi-ld:Product:001 --attrName price --data 89
 
-```0
+```
 ```
 
 #
-# 0014 Get attribute value
+# 1014 Get attribute value
 #
 ngsi get attr --id urn:ngsi-ld:Product:001 --attrName price
 
-```0
+```
 89
 ```
 
 #
-# 0015 Overwrite Multiple Attributes of a Data Entity
+# 1015 Overwrite Multiple Attributes of a Data Entity
 #
 ngsi update attrs --id urn:ngsi-ld:Product:001 \
 --data ' {
@@ -285,20 +285,20 @@ ngsi update attrs --id urn:ngsi-ld:Product:001 \
     "name": {"type":"Text", "value": "Ale"}
 }'
 
-```0
+```
 ```
 
 #
-# 0015 Get attribute values
+# 1015 Get attribute values
 #
 ngsi get attrs --id urn:ngsi-ld:Product:001 --attrs name,price --values
 
-```0
+```
 ["Ale",88]
 ```
 
 #
-# 0016 Batch Overwrite Attributes of Multiple Data Entities
+# 1016 Batch Overwrite Attributes of Multiple Data Entities
 #
 ngsi update entities \
 --data '[
@@ -313,15 +313,15 @@ ngsi update entities \
   }
 ]'
 
-```0
+```
 ```
 
 #
-# 0016 Get entities
+# 1016 Get entities
 #
 ngsi list entities --idPattern urn:ngsi-ld:Product:00[1-2] -P
 
-```0
+```
 [
   {
     "id": "urn:ngsi-ld:Product:001",
@@ -375,7 +375,7 @@ ngsi list entities --idPattern urn:ngsi-ld:Product:00[1-2] -P
 ```
 
 #
-# 0017 Batch Create/Overwrite Attributes of Multiple Data Entities
+# 1017 Batch Create/Overwrite Attributes of Multiple Data Entities
 #
 ngsi upsert entities \
 --data '[
@@ -390,15 +390,15 @@ ngsi upsert entities \
   }
 ]'
 
-```0
+```
 ```
 
 #
-# 0017 Get entities
+# 1017 Get entities
 #
 ngsi list entities --idPattern urn:ngsi-ld:Product:00[1-2] -P
 
-```0
+```
 [
   {
     "id": "urn:ngsi-ld:Product:001",
@@ -457,16 +457,16 @@ ngsi list entities --idPattern urn:ngsi-ld:Product:00[1-2] -P
 ```
 
 #
-# 0018 Get attribute value
+# 1018 Get attribute value
 #
 ngsi get attr --id urn:ngsi-ld:Product:010 --attrName price
 
-```0
+```
 99
 ```
 
 #
-# 0018 Batch Replace Entity Data
+# 1018 Batch Replace Entity Data
 #
 ngsi replace entities \
 --data '[
@@ -476,54 +476,54 @@ ngsi replace entities \
   }
 ]'
 
-```0
+```
 ```
 
 #
-# 0018 Get attribute value
+# 1018 Get attribute value
 #
 ngsi get attr --id urn:ngsi-ld:Product:010 --attrName price
 
-```0
+```
 1199
 ```
 
 #
-# 0019 Delete an Entity
+# 1019 Delete an Entity
 #
 ngsi delete entity --id urn:ngsi-ld:Product:010
 
-```0
+```
 ```
 
 #
-# 0020 Get entity
+# 1020 Get entity
 #
 ngsi get entity --id urn:ngsi-ld:Product:001
 
-```0
+```
 {"id":"urn:ngsi-ld:Product:001","type":"Product","name":{"type":"Text","value":"Ale","metadata":{}},"offerPrice":{"type":"Integer","value":89,"metadata":{}},"price":{"type":"Integer","value":1188,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}},"specialOffer":{"type":"Boolean","value":true,"metadata":{}}}
 ```
 
 #
-# 0020 Delete an Attribute from an Entity
+# 1020 Delete an Attribute from an Entity
 #
 ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
 
-```0
+```
 ```
 
 #
-# 0020 Get entity
+# 1020 Get entity
 #
 ngsi get entity --id urn:ngsi-ld:Product:001
 
-```0
+```
 {"id":"urn:ngsi-ld:Product:001","type":"Product","name":{"type":"Text","value":"Ale","metadata":{}},"offerPrice":{"type":"Integer","value":89,"metadata":{}},"price":{"type":"Integer","value":1188,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}}
 ```
 
 #
-# 0021 Batch Delete Multiple Entities
+# 1021 Batch Delete Multiple Entities
 #
 ngsi delete entities \
 --data '[
@@ -535,20 +535,20 @@ ngsi delete entities \
   }
 ]'
 
-```0
+```
 ```
 
 #
-# 0022 Get entity
+# 1022 Get entity
 #
 ngsi get entity --id urn:ngsi-ld:Product:003
 
-```0
+```
 {"id":"urn:ngsi-ld:Product:003","type":"Product","name":{"type":"Text","value":"White Wine","metadata":{}},"price":{"type":"Integer","value":1499,"metadata":{}},"size":{"type":"Text","value":"M","metadata":{}}}
 ```
 
 #
-# 0022 Batch Delete Multiple Attributes from an Entity
+# 1022 Batch Delete Multiple Attributes from an Entity
 #
 ngsi delete entities \
 --data '[
@@ -559,15 +559,15 @@ ngsi delete entities \
   }
 ]'
 
-```0
+```
 ```
 
 #
-# 0023 Find existing data relationships
+# 1023 Find existing data relationships
 #
 ngsi list entities -q refProduct==urn:ngsi-ld:Product:001 --attrs type -P
 
-```0
+```
 [
   {
     "id": "urn:ngsi-ld:InventoryItem:001",
@@ -589,28 +589,28 @@ ngsi list entities -q refProduct==urn:ngsi-ld:Product:001 --attrs type -P
 ```
 
 #
-# 0024 Delete entities
+# 9999 Clean up
 #
 ngsi rm --type InventoryItem --run
 
-```0
+```
 9
 ```
 
 ngsi rm --type Product --run
 
-```0
+```
 9
 ```
 
 ngsi rm --type Shelf --run
 
-```0
+```
 10
 ```
 
 ngsi rm --type Store --run
 
-```0
+```
 4
 ```

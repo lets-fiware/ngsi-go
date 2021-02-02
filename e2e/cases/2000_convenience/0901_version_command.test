@@ -29,7 +29,7 @@
 #
 ngsi version --help
 
-```0
+```
 NAME:
    ngsi version - print the version
 
@@ -52,7 +52,7 @@ OPTIONS:
 #
 ngsi version --host orion
 
-```0
+```
 {
 "orion" : {
   "version" : "REGEX(.*)",
@@ -80,7 +80,7 @@ ngsi version --host orion
 #
 ngsi version --host orion-ld
 
-```0
+```
 {
   "orionld version": "REGEX(.*)",
   "orion version":   "REGEX(.*)",

@@ -29,7 +29,7 @@
 #
 ngsi version --host quantumleap
 
-```0
+```
 {
   "version": "REGEX(.*)"
 }

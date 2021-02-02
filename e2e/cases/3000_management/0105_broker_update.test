@@ -29,7 +29,7 @@
 #
 ngsi broker update --help
 
-```0
+```
 NAME:
    ngsi broker update - update broker
 
@@ -63,7 +63,7 @@ ngsi broker add \
 --brokerHost http://orion-v2 \
 --ngsiType v2
 
-```0
+```
 ```
 
 #
@@ -73,7 +73,7 @@ ngsi broker update \
 --host orion-v2 \
 --ngsiType ld
 
-```0
+```
 ```
 
 #
@@ -81,7 +81,7 @@ ngsi broker update \
 # 
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost http://orion-v2
 ngsiType ld
 ```
@@ -91,7 +91,7 @@ ngsiType ld
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -102,7 +102,7 @@ ngsi broker add \
 --brokerHost https://orion-ld \
 --ngsiType ld \
 
-```0
+```
 ```
 
 #
@@ -117,7 +117,7 @@ ngsi broker update \
 --clientId 00000000-1111-2222-3333-444444444444 \
 --clientSecret 55555555-6666-7777-8888-999999999999
 
-```0
+```
 ```
 
 #
@@ -125,7 +125,7 @@ ngsi broker update \
 # 
 ngsi broker get --host keyrock
 
-```0
+```
 brokerHost https://orion-ld
 ngsiType ld
 IdmType keyrock
@@ -141,7 +141,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 #
 ngsi broker delete --host keyrock
 
-```0
+```
 ```
 
 #
@@ -152,7 +152,7 @@ ngsi broker add \
 --brokerHost https://orion-ld \
 --ngsiType ld \
 
-```0
+```
 ```
 
 #
@@ -167,7 +167,7 @@ ngsi broker update \
 --clientId 00000000-1111-2222-3333-444444444444 \
 --clientSecret 55555555-6666-7777-8888-999999999999
 
-```0
+```
 ```
 
 #
@@ -175,7 +175,7 @@ ngsi broker update \
 # 
 ngsi broker get --host password
 
-```0
+```
 brokerHost https://orion-ld
 ngsiType ld
 IdmType password
@@ -191,7 +191,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 #
 ngsi broker delete --host password
 
-```0
+```
 ```
 
 #
@@ -202,7 +202,7 @@ ngsi broker add \
 --brokerHost https://orion-ld \
 --ngsiType ld \
 
-```0
+```
 ```
 
 #
@@ -215,7 +215,7 @@ ngsi broker update \
 --username keyrock001@letsfiware.jp \
 --password 0123456789
 
-```0
+```
 ```
 
 #
@@ -223,7 +223,7 @@ ngsi broker update \
 # 
 ngsi broker get --host KeyrockTokenProvider
 
-```0
+```
 brokerHost https://orion-ld
 ngsiType ld
 IdmType keyrocktokenprovider
@@ -237,7 +237,7 @@ Password 0123456789
 #
 ngsi broker delete --host KeyrockTokenProvider
 
-```0
+```
 ```
 
 #
@@ -248,7 +248,7 @@ ngsi broker add \
 --brokerHost https://orion-ld \
 --ngsiType ld \
 
-```0
+```
 ```
 
 #
@@ -261,7 +261,7 @@ ngsi broker update \
 --username keyrock001@letsfiware.jp \
 --password 0123456789
 
-```0
+```
 ```
 
 #
@@ -269,7 +269,7 @@ ngsi broker update \
 # 
 ngsi broker get --host tokenproxy
 
-```0
+```
 brokerHost https://orion-ld
 ngsiType ld
 IdmType tokenproxy
@@ -283,7 +283,7 @@ Password 0123456789
 #
 ngsi broker delete --host tokenproxy
 
-```0
+```
 ```
 
 #
@@ -294,7 +294,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2
 
-```0
+```
 ```
 
 #
@@ -308,7 +308,7 @@ ngsi broker add \
 --username keyrock001@letsfiware.jp \
 --password 0123456789
 
-```0
+```
 ```
 #
 # 0024 Update broker
@@ -317,7 +317,7 @@ ngsi broker update \
 --host tokenproxy \
 --password 9999999999
 
-```0
+```
 ```
 
 #
@@ -325,7 +325,7 @@ ngsi broker update \
 # 
 ngsi broker get --host tokenproxy
 
-```0
+```
 brokerHost base
 IdmType tokenproxy
 IdmHost https://keyrock
@@ -338,7 +338,7 @@ Password 9999999999
 #
 ngsi broker delete --host tokenproxy
 
-```0
+```
 ```
 
 #
@@ -346,7 +346,7 @@ ngsi broker delete --host tokenproxy
 #
 ngsi broker delete --host base
 
-```0
+```
 ```
 
 #
@@ -357,7 +357,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2 \
 
-```0
+```
 ```
 
 #
@@ -367,7 +367,7 @@ ngsi broker update \
 --host orion-v2 \
 --service iot
 
-```0
+```
 ```
 
 #
@@ -375,7 +375,7 @@ ngsi broker update \
 #
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost https://orion-v2
 ngsiType v2
 FIWARE-Serivce iot
@@ -386,7 +386,7 @@ FIWARE-Serivce iot
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -397,7 +397,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2 \
 
-```0
+```
 ```
 
 #
@@ -407,7 +407,7 @@ ngsi broker update \
 --host orion-v2 \
 --path /iot
 
-```0
+```
 ```
 
 #
@@ -415,7 +415,7 @@ ngsi broker update \
 #
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost https://orion-v2
 ngsiType v2
 FIWARE-SerivcePath /iot
@@ -426,7 +426,7 @@ FIWARE-SerivcePath /iot
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -437,7 +437,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2 \
 
-```0
+```
 ```
 
 #
@@ -447,7 +447,7 @@ ngsi broker update \
 --host orion-v2 \
 --apiPath "/,/orion" 
 
-```0
+```
 ```
 
 #
@@ -455,7 +455,7 @@ ngsi broker update \
 #
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost https://orion-v2
 ngsiType v2
 APIPath /,/orion
@@ -466,7 +466,7 @@ APIPath /,/orion
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -477,7 +477,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2 \
 
-```0
+```
 ```
 
 #
@@ -487,7 +487,7 @@ ngsi broker update \
 --host orion-v2 \
 --apiPath "/v2,/orion/v2.0"
 
-```0
+```
 ```
 
 #
@@ -495,7 +495,7 @@ ngsi broker update \
 #
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost https://orion-v2
 ngsiType v2
 APIPath /v2,/orion/v2.0
@@ -506,7 +506,7 @@ APIPath /v2,/orion/v2.0
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -517,7 +517,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2 \
 
-```0
+```
 ```
 
 #
@@ -527,7 +527,7 @@ ngsi broker update \
 --host orion-v2 \
 --safeString on
 
-```0
+```
 ```
 
 #
@@ -535,7 +535,7 @@ ngsi broker update \
 #
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost https://orion-v2
 ngsiType v2
 SafeString on
@@ -546,7 +546,7 @@ SafeString on
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -557,7 +557,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2 \
 
-```0
+```
 ```
 
 #
@@ -567,7 +567,7 @@ ngsi broker update \
 --host orion-v2 \
 --safeString off
 
-```0
+```
 ```
 
 #
@@ -575,7 +575,7 @@ ngsi broker update \
 #
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost https://orion-v2
 ngsiType v2
 SafeString off
@@ -586,7 +586,7 @@ SafeString off
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -597,7 +597,7 @@ ngsi broker add \
 --brokerHost https://orion-v2 \
 --ngsiType v2 \
 
-```0
+```
 ```
 
 #
@@ -607,7 +607,7 @@ ngsi broker update \
 --host orion-v2 \
 --token b495476d545a7e90362eaa0496af8a5dcdf18d9f
 
-```0
+```
 ```
 
 #
@@ -615,7 +615,7 @@ ngsi broker update \
 #
 ngsi broker get --host orion-v2
 
-```0
+```
 brokerHost https://orion-v2
 ngsiType v2
 Token b495476d545a7e90362eaa0496af8a5dcdf18d9f
@@ -626,7 +626,7 @@ Token b495476d545a7e90362eaa0496af8a5dcdf18d9f
 #
 ngsi broker delete --host orion-v2
 
-```0
+```
 ```
 
 #
@@ -637,7 +637,7 @@ ngsi broker add \
 --brokerHost http://orion:1026 \
 --ngsiType v2
 
-```0
+```
 ```
 
 #
@@ -647,7 +647,7 @@ ngsi broker update \
 --host tenant \
 --service Foo
 
-```0
+```
 ```
 
 #
@@ -655,7 +655,7 @@ ngsi broker update \
 #
 ngsi broker get --host tenant
 
-```0
+```
 brokerHost http://orion:1026
 ngsiType v2
 FIWARE-Serivce foo
@@ -666,7 +666,7 @@ FIWARE-Serivce foo
 #
 ngsi broker delete --host tenant
 
-```0
+```
 ```
 
 #

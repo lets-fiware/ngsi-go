@@ -29,7 +29,7 @@
 #
 ngsi debug --help
 
-```0
+```
 NAME:
    ngsi debug - test
 

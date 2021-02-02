@@ -29,7 +29,7 @@
 #
 ngsi receiver --help
 
-```0
+```
 NAME:
    ngsi receiver - notification receiver
 

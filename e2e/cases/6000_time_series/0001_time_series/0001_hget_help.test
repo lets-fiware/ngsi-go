@@ -29,7 +29,7 @@
 #
 ngsi hget --help
 
-```0
+```
 NAME:
    ngsi hget - get historical raw and aggregated time series context information
 
