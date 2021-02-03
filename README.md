@@ -13,7 +13,7 @@
 ![CI](https://github.com/lets-fiware/ngsi-go/workflows/CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/lets-fiware/ngsi-go/badge.svg?branch=main)](https://coveralls.io/github/lets-fiware/ngsi-go?branch=main)
 
-The NGSI Go is a Unix command-line tool for FIWARE NGSI v2 and NGSI-LD.
+The NGSI Go is a command-line interface supporting FIWARE Open APIs for FIWARE developers.
 
 | :books: [Documentation](https://ngsi-go.letsfiware.jp/) | :dart: [Roadmap](./roadmap.md) |
 |---------------------------------------------------------|--------------------------------|
@@ -25,6 +25,7 @@ The NGSI Go is a Unix command-line tool for FIWARE NGSI v2 and NGSI-LD.
 
 -   [Getting Started with NGSI Go](#getting-started-with-ngsi-go)
 -   [Usage](#usage)
+-   [Tutorial](#tutorial)
 -   [Install](#install)
 -   [Third party packages](#third-party-packages)
 -   [Copyright and License](#copyright-and-license)
@@ -33,45 +34,38 @@ The NGSI Go is a Unix command-line tool for FIWARE NGSI v2 and NGSI-LD.
 
 # What is NGSI Go?
 
-The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) and [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf), which simplifies syntax.
-
 > "Brave (hero), bearer of the blood of Erdrick, hero of legend! Know that your weapon will not
 > serve to vanquish the Dragonload."
 >
 > — DRAGON WARRIOR (DRAGON QUEST)
 
+The NGSI Go is a command-line interface supporting FIWARE Open APIs, which simplifies syntax.
+It's a powerful tool and easy to use. It has various features as shown:
+
+-   Supported FIWARE Open APIs
+    - FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) APIs
+    - [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) APIs
+    - [STH-Comet APIs](https://github.com/telefonicaid/fiware-sth-comet)
+    - [QuantumLeap APIs](https://github.com/smartsdk/ngsi-timeseries-api)
+-   Various convenience commands
+    -   NGSI commands to manage NGSI Entity, subscription, registration and so on
+    -   Time series commands to manage historical data
+    -   Convenience commands
+        -   Print version, health-check status and API lists of FIWARE GEs
+        -   Admin command for FIWARE Orion
+        -   Copy and remove entities at once
+        -   Create template of subscription or registration
+        -   Notification receiver
+    -   Management commands
+        -   Broker alias or server alias with API endpoint URL, FIWARE Service and FIWARE ServicePath
+        -   Manage @context
+        -   Integrated oauth token management
+-   Compatible with a number of traditional UNIX commands for filtering text
+-   A single binary program written in Golang
+
 ## Getting Started with NGSI Go
 
-You can get the version of your context broker instance as shown:
-
-```console
-ngsi version -h localhost:1026
-```
-
-```json
-{
- "orion" : {
-   "version" : "2.5.2",
-   "uptime" : "0 d, 13 h, 54 m, 48 s",
-   "git_hash" : "11e4cbfef30d28347162e5c4ef4de3a5d2797c69",
-   "compile_time" : "Thu Dec 17 08:43:46 UTC 2020",
-   "compiled_by" : "root",
-   "compiled_in" : "5a4a8800b1fa",
-   "release_date" : "Thu Dec 17 08:43:46 UTC 2020",
-   "doc" : "https://fiware-orion.rtfd.io/en/2.5.2/",
-   "libversions": {
-      "boost": "1_53",
-      "libcurl": "libcurl/7.29.0 NSS/3.53.1 zlib/1.2.7 libidn/1.28 libssh2/1.8.0",
-      "libmicrohttpd": "0.9.70",
-      "openssl": "1.0.2k",
-      "rapidjson": "1.1.0",
-      "mongodriver": "legacy-1.1.2"
-   }
- }
-}
-```
-
-You can register an alias to access the broker.
+You register an alias to access the broker.
 
 ```console
 ngsi broker add --host letsfiware --brokerHost http://localhost:1026 --ngsiType v2
@@ -122,30 +116,33 @@ ngsi settings list
 
 ```text
 NAME:
-   ngsi - unix-like command-line tool for FIWARE NGSI and NGSI-LD
+   ngsi - command-line tool for FIWARE NGSI and NGSI-LD
 
 USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.5.0 (git_hash:bd14dc0bcd75e80723bb6399bf3db0213df350e6)
+   0.6.0 (git_hash:7478e2622d5cb8a6075e2d8700b2de719996c86d)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
    CONVENIENCE:
      admin     admin command for FIWARE Orion
+     apis      print endpoints of API
      cp        copy entities
      wc        print number of entities, subscriptions, registrations or types
      man       print urls of document
+     health    print health status
      ls        list entities
      rm        remove entities
      receiver  notification receiver
      template  create template of subscription or registration
-     version   print the version of Context Broker
+     version   print the version
    MANAGEMENT:
      broker    manage config for broker
      context   manage @context
      settings  manage settings
+     server    manage config for server
      token     manage token
    NGSI:
      append   append attributes
@@ -156,6 +153,9 @@ COMMANDS:
      replace  replace entities or attributes
      update   update entities, attribute(s) or subscription
      upsert   upsert entity or entities
+   TIME SERIES:
+     hdelete  delete historical raw and aggregated time series context information
+     hget     get historical raw and aggregated time series context information
 
 GLOBAL OPTIONS:
    --syslog LEVEL  specify logging LEVEL (off, err, info, debug)
@@ -170,26 +170,31 @@ COPYRIGHT:
    (c) 2020-2021 Kazuhito Suda
 ```
 
+## Tutorial
+
+You can try [the tutorial](docs/tutorial/index.md) to understand how to use the NGSI Go.
+You need a environment running Docker engine and docker-compose.
+
 ## Install
 
 ### Install NGSI Go binary
 
 The NGSI Go binary is installed in `/usr/local/bin`.
 
-#### Installation on UNIX
+#### Installation on Linux
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.5.0/ngsi-v0.5.0-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.5.0-linux-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.6.0/ngsi-v0.6.0-linux-amd64.tar.gz
+sudo tar zxvf ngsi-v0.6.0-linux-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.5.0-linux-arm.tar.gz` and `ngsi-v0.5.0-linux-arm64.tar.gz` binaries are also available.
+`ngsi-v0.6.0-linux-arm.tar.gz` and `ngsi-v0.6.0-linux-arm64.tar.gz` binaries are also available.
 
 #### Installation on Mac
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.5.0/ngsi-v0.5.0-darwin-amd64.tar.gz
-sudo tar zxvf ngsi-v0.5.0-darwin-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.6.0/ngsi-v0.6.0-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.6.0-darwin-amd64.tar.gz -C /usr/local/bin
 ```
 
 ### Install bash autocomplete file for NGSI Go
@@ -216,4 +221,4 @@ The dependencies of dependencies have been omitted from the list.
 ## Copyright and License
 
 Copyright (c) 2020-2021 Kazuhito Suda<br>
-Licensed under the [MIT license](./LICENSE).
+Licensed under the [MIT License](./LICENSE).
