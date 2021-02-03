@@ -36,30 +36,33 @@ ngsi --help
 
 ```text
 NAME:
-   ngsi - unix-like command-line tool for FIWARE NGSI and NGSI-LD
+   ngsi - command-line tool for FIWARE NGSI and NGSI-LD
 
 USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.5.0 (git_hash:bd14dc0bcd75e80723bb6399bf3db0213df350e6)
+   0.6.0 (git_hash:7478e2622d5cb8a6075e2d8700b2de719996c86d)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
    CONVENIENCE:
      admin     admin command for FIWARE Orion
+     apis      print endpoints of API
      cp        copy entities
      wc        print number of entities, subscriptions, registrations or types
      man       print urls of document
+     health    print health status
      ls        list entities
      rm        remove entities
      receiver  notification receiver
      template  create template of subscription or registration
-     version   print the version of Context Broker
+     version   print the version
    MANAGEMENT:
      broker    manage config for broker
      context   manage @context
      settings  manage settings
+     server    manage config for server
      token     manage token
    NGSI:
      append   append attributes
@@ -70,6 +73,9 @@ COMMANDS:
      replace  replace entities or attributes
      update   update entities, attribute(s) or subscription
      upsert   upsert entity or entities
+   TIME SERIES:
+     hdelete  delete historical raw and aggregated time series context information
+     hget     get historical raw and aggregated time series context information
 
 GLOBAL OPTIONS:
    --syslog LEVEL  specify logging LEVEL (off, err, info, debug)
@@ -93,5 +99,5 @@ ngsi --version
 ```
 
 ```text
-ngsi version 0.5.0 (git_hash:bd14dc0bcd75e80723bb6399bf3db0213df350e6)
+ngsi version 0.6.0 (git_hash:7478e2622d5cb8a6075e2d8700b2de719996c86d)
 ```
