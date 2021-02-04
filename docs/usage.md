@@ -81,7 +81,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                                       | metrics         | print, reset or delete metrics for FIWARE Orion                  |
 |                                       | statistics      | print or delete statistics for FIWARE Orion                      |
 |                                       | cacheStatistics | print or delete cache statistics for FIWARE Orion                |
-| [apis](.convenience/apis.md)          | -               | print endpoints of FWARE Open APIs                               |
+| [apis](./convenience/apis.md)          | -               | print endpoints of FWARE Open APIs                              |
 | [cp](./convenience/cp.md)             | -               | copy entities                                                    |
 | [wc](./convenience/wc.md)             | -               | print number of entities, subscriptions, registrations, or types |
 | [man](./convenience/man.md)           | -               | print urls of document                                           |

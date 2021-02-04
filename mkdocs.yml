@@ -9,7 +9,9 @@ nav:
     - 'Install': install.md
     - 'Build from source': build_source.md
     - 'files': files.md
+    - 'APIs mapping table': apis_mapping_table.md
   - 'NGSI Go tutorial':
+    - 'Index': tutorial/index.md
     - 'NGSI-LD CRUD': tutorial/ngsi-ld-crud.md
     - 'NGSIv2 CRUD': tutorial/ngsi-v2-crud.md
     - 'STH-Comet': tutorial/comet.md
@@ -34,6 +36,7 @@ nav:
     -   'man': convenience/man.md
     -   'health': convenience/health.md
     -   'ls': convenience/ls.md
+    -   'receiver': convenience/receiver.md
     -   'rm': convenience/rm.md
     -   'template': convenience/template.md
     -   'version': convenience/version.md
