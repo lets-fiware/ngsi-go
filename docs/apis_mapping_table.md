@@ -1,6 +1,6 @@
-# FIWARE Open APIs mapping lists
+# FIWARE Open APIs mapping table
 
-These lists shows the mapping from FIWARE Open APIs to NGSI Go commands.
+These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 
 ## STH-Comet APIs
 
