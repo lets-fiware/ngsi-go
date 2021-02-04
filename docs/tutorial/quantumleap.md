@@ -1,13 +1,5 @@
 # NGSI Go tutorial for QuantumLeap
 
-## Add QuantumLeap
-
-```console
-ngsi server add --host quantumleap \
---serverHost http://quantumleap:8668 --serverType quantumleap \
---service openiot --path /
-```
-
 ## Get settings of alias
 
 ```console
