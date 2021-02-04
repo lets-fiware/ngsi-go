@@ -46,7 +46,7 @@ It's a powerful tool and easy to use. It has various features as shown:
     - FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) APIs
     - [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) APIs
     - [STH-Comet APIs](https://github.com/telefonicaid/fiware-sth-comet)
-    - [QuantumLeap APIs](https://github.com/smartsdk/ngsi-timeseries-api)
+    - [QuantumLeap APIs](https://github.com/orchestracities/ngsi-timeseries-api)
 -   Various convenience commands
     -   NGSI commands to manage NGSI Entity, subscription, registration and so on
     -   Time series commands to manage historical data
