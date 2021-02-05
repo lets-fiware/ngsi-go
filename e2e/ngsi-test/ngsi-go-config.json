@@ -1,1 +1,49 @@
-{"brokers":{"orion":{"brokerHost":"http://orion:1026","ngsiType":"v2"},"orion-ld":{"brokerHost":"http://orion-ld:1026","ngsiType":"ld"},"comet":{"serverType":"comet","brokerHost":"http://comet:8666","tenant":"openiot","scope":"/"},"quantumleap":{"serverType": "quantumleap","brokerHost": "http://quantumleap:8668","tenant":"openiot","scope":"/"}},"contexts":{"etsi":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld","ld":"https://schema.lab.fiware.org/ld/context","ctx":"http://atcontext:8000/ngsi-context.jsonld"},"settings":{"usePreviousArgs":true,"syslog":"","stderr":"","logfile":"","loglevel":"","cachefile":"","host":"orion","tenant":"","scope":"","token":""}}
+{
+  "version": "1",
+  "contexts": {
+    "etsi": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld",
+    "ld": "https://schema.lab.fiware.org/ld/context"
+  },
+  "servers": {
+    "comet": {
+      "serverType": "comet",
+      "serverHost": "http://comet:8666",
+      "tenant": "openiot",
+      "scope": "/"
+    },
+    "iota": {
+      "serverType": "iota",
+      "serverHost": "http://iot-agent:4041",
+      "tenant": "openiot",
+      "scope": "/"
+    },
+    "orion": {
+      "serverType": "broker",
+      "serverHost": "http://orion:1026",
+      "ngsiType": "v2"
+    },
+    "orion-ld": {
+      "serverType": "broker",
+      "serverHost": "http://orion-ld:1026",
+      "ngsiType": "ld"
+    },
+    "quantumleap": {
+      "serverType": "quantumleap",
+      "serverHost": "http://quantumleap:8668",
+      "tenant": "openiot",
+      "scope": "/"
+    }
+  },
+  "settings": {
+    "usePreviousArgs": true,
+    "syslog": "",
+    "stderr": "",
+    "logfile": "",
+    "loglevel": "",
+    "cachefile": "",
+    "host": "",
+    "tenant": "",
+    "scope": "",
+    "token": ""
+  }
+}

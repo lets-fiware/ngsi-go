@@ -32,6 +32,7 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 -   [NGSIv2 CRUD](tutorial/ngsi-v2-crud.md)
 -   [STH-Comet](tutorial/comet.md)
 -   [QuantumLeap](tutorial/quantumleap.md)
+-   [IoT Agent](tutorial/iot-agent.md)
 
 ## Command reference
 

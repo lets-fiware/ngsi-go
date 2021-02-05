@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 
@@ -49,7 +50,11 @@ func cbVersion(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	client.SetPath("/version")
+	if client.Server.ServerType == "iota" {
+		client.SetPath("/iot/about")
+	} else {
+		client.SetPath("/version")
+	}
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
@@ -57,6 +62,16 @@ func cbVersion(c *cli.Context) error {
 	}
 	if res.StatusCode != http.StatusOK {
 		return &ngsiCmdError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		return nil
 	}
 
 	fmt.Fprint(ngsi.StdWriter, string(body))

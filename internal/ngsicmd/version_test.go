@@ -76,7 +76,55 @@ func TestVersionLD(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// initCmd() Error: no host
+func TestVersionIota(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/iot/about"
+	reqRes.ResBody = []byte(`{"libVersion":"2.14.0","port":"4041","baseRoot":"/","version":"1.15.0"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=iota"})
+
+	err := cbVersion(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"libVersion\":\"2.14.0\",\"port\":\"4041\",\"baseRoot\":\"/\",\"version\":\"1.15.0\"}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestVersionIotaPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/iot/about"
+	reqRes.ResBody = []byte(`{"libVersion":"2.14.0","port":"4041","baseRoot":"/","version":"1.15.0"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=iota", "--pretty"})
+
+	err := cbVersion(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"libVersion\": \"2.14.0\",\n  \"port\": \"4041\",\n  \"baseRoot\": \"/\",\n  \"version\": \"1.15.0\"\n}\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestVersionErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -164,5 +212,32 @@ func TestVersionErrorStatusCode(t *testing.T) {
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
+	}
+}
+
+func TestVersionIotaErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/iot/about"
+	reqRes.ResBody = []byte(`{"libVersion":"2.14.0","port":"4041","baseRoot":"/","version":"1.15.0"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=iota", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
+	err := cbVersion(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }

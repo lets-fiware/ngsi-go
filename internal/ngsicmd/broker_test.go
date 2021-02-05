@@ -47,7 +47,7 @@ func TestBrokersList(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "orion orion-ld\n"
+		expected := "orion orion-alias orion-ld\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -83,7 +83,7 @@ func TestBrokersListJSON(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"orion\":{\"serverType\":\"broker\",\"serverHost\":\"https://orion\",\"ngsiType\":\"v2\"},\"orion-ld\":{\"serverType\":\"broker\",\"serverHost\":\"https://orion-ld\",\"ngsiType\":\"ld\"}}"
+		expected := "{\"orion\":{\"serverType\":\"broker\",\"serverHost\":\"https://orion\",\"ngsiType\":\"v2\"},\"orion-alias\":{\"serverType\":\"broker\",\"serverHost\":\"orion-ld\",\"ngsiType\":\"ld\"},\"orion-ld\":{\"serverType\":\"broker\",\"serverHost\":\"https://orion-ld\",\"ngsiType\":\"ld\"}}"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -101,7 +101,7 @@ func TestBrokersListJSONPretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"orion\": {\n    \"serverType\": \"broker\",\n    \"serverHost\": \"https://orion\",\n    \"ngsiType\": \"v2\"\n  },\n  \"orion-ld\": {\n    \"serverType\": \"broker\",\n    \"serverHost\": \"https://orion-ld\",\n    \"ngsiType\": \"ld\"\n  }\n}\n"
+		expected := "{\n  \"orion\": {\n    \"serverType\": \"broker\",\n    \"serverHost\": \"https://orion\",\n    \"ngsiType\": \"v2\"\n  },\n  \"orion-alias\": {\n    \"serverType\": \"broker\",\n    \"serverHost\": \"orion-ld\",\n    \"ngsiType\": \"ld\"\n  },\n  \"orion-ld\": {\n    \"serverType\": \"broker\",\n    \"serverHost\": \"https://orion-ld\",\n    \"ngsiType\": \"ld\"\n  }\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()

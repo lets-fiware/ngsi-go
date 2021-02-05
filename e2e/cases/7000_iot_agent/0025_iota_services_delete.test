@@ -25,19 +25,21 @@
 # SOFTWARE.
 
 #
-# 0001 wait for services
+# 0001 ngsi services delete --help
 #
-wait ${accumulator}/health
-wait ${atcontext}/health
-wait ${csource}/health
-wait ${oauth}/health
-wait ${orion}/version
-wait ${orion-ld}/version
-wait ${quantumleap}/version
-wait ${comet}/version
-wait ${iota}/version
+ngsi services delete --help
 
-#
-# 0002 check health status
-#
-wait ${quantumleap}/health --retry 600 --status pass
+```
+NAME:
+   ngsi services delete - remove a configuration group
+
+USAGE:
+   ngsi services delete [command options] [arguments...]
+
+OPTIONS:
+   --apikey value    a key used for devices belonging to this service
+   --resource value  uri for the iotagent
+   --device          remove devices in service/subservice (default: false)
+   --help            show help (default: false)
+   
+```

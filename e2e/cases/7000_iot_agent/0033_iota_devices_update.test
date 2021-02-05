@@ -25,19 +25,20 @@
 # SOFTWARE.
 
 #
-# 0001 wait for services
+# 0001 ngsi devices update --help
 #
-wait ${accumulator}/health
-wait ${atcontext}/health
-wait ${csource}/health
-wait ${oauth}/health
-wait ${orion}/version
-wait ${orion-ld}/version
-wait ${quantumleap}/version
-wait ${comet}/version
-wait ${iota}/version
+ngsi devices update --help
 
-#
-# 0002 check health status
-#
-wait ${quantumleap}/health --retry 600 --status pass
+```
+NAME:
+   ngsi devices update - update a device
+
+USAGE:
+   ngsi devices update [command options] [arguments...]
+
+OPTIONS:
+   --id value    device id
+   --data value  data body (payload)
+   --help        show help (default: false)
+   
+```

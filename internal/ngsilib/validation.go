@@ -38,7 +38,7 @@ import (
 
 var (
 	tenantRegexp            = regexp.MustCompile(`^[-0-9a-z_]{1,50}$`)
-	scopeRegexp             = regexp.MustCompile(`^(/[-0-9A-Za-z_]{1,50}(/[0-9A-Za-z_]{1,50}){0,9},[ ]*)*/[0-9A-Za-z_]{1,50}(/[0-9A-Za-z_]{1,50}){0,9}$`)
+	scopeRegexp             = regexp.MustCompile(`^(/[-0-9A-Za-z_#\*]{1,50}(/[0-9A-Za-z_#\*]{1,50}){0,9},[ ]*)*/[0-9A-Za-z_#\*]{1,50}(/[0-9A-Za-z_#\*]{1,50}){0,9}$`)
 	ipRegexp                = regexp.MustCompile(`^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(:[1-9][0-9]*)*$`)
 	localhostRegexp         = regexp.MustCompile(`^localhost(:[1-9][0-9]{0,3})*$`)
 	expirationDateRegexp    = regexp.MustCompile(`^[1-9][0-9]{0,2}(year|month|day|hour|minute)s?$`)

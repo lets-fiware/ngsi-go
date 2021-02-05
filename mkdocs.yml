@@ -28,6 +28,9 @@ nav:
   - 'Time series commnad':
     -   'hdelete': time_series/hdelete.md
     -   'hget': time_series/hget.md
+  - 'IoT Agent commnad':
+    -   'services': iot_agent/services.md
+    -   'devices': iot_agent/devices.md
   - 'Convenience command':
     -   'admin': convenience/admin.md
     -   'apis': convenience/apis.md

@@ -1,0 +1,741 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi devices create --help
+#
+ngsi devices create --help
+
+```
+NAME:
+   ngsi devices create - create a device
+
+USAGE:
+   ngsi devices create [command options] [arguments...]
+
+OPTIONS:
+   --data value  data body (payload)
+   --help        show help (default: false)
+   
+```
+
+#
+# 0010 apikey
+#
+$apikey=apikey001
+$device1=sensor001
+$device2=sensor002
+$device3=sensor003
+
+#
+# 0011 Create service
+#
+ngsi services --host iota create --data \
+'{
+  "services": [
+    {
+      "apikey": "${apikey}",
+      "cbroker": "http://orion:1026",
+      "entity_type": "Thing",
+      "resource": "/iot/d"
+    }
+  ]
+}'
+
+```
+```
+
+#
+# 0012 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 1,
+  "services": [
+    {
+      "commands": [],
+      "lazy": [],
+      "attributes": [],
+      "_id": "REGEX(.*)",
+      "resource": "/iot/d",
+      "apikey": "apikey001",
+      "service": "openiot",
+      "subservice": "/",
+      "__v": 0,
+      "static_attributes": [],
+      "internal_attributes": [],
+      "entity_type": "Thing"
+    }
+  ]
+}
+```
+
+#
+# 0013 Create device 
+#
+ngsi devices create --data \
+'{
+ "devices": [
+   {
+     "device_id":   "${device1}",
+     "entity_name": "urn:ngsi-ld:WeatherObserved:${device1}",
+     "entity_type": "Sensor",
+     "timezone":    "Asia/Tokyo",
+     "attributes": [
+       { "object_id": "d", "name": "dateObserved", "type": "DateTime" },
+       { "object_id": "t", "name": "temperature", "type": "Number" },
+       { "object_id": "h", "name": "relativeHumidity", "type": "Number" },
+       { "object_id": "p", "name": "atmosphericPressure", "type": "Number" }
+     ],
+     "static_attributes": [
+       { "name":"location", "type": "geo:json", "value" : { "type": "Point", "coordinates" : [ 139.7671, 35.68117 ] } }
+     ]
+   }
+ ]
+}'
+
+```
+```
+
+#
+# 0014 devices list --pretty
+#
+ngsi devices list --pretty
+
+```
+{
+  "count": 1,
+  "devices": [
+    {
+      "device_id": "sensor001",
+      "service": "openiot",
+      "service_path": "/",
+      "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
+      "entity_type": "Sensor",
+      "transport": "HTTP",
+      "attributes": [
+        {
+          "object_id": "d",
+          "name": "dateObserved",
+          "type": "DateTime"
+        },
+        {
+          "object_id": "t",
+          "name": "temperature",
+          "type": "Number"
+        },
+        {
+          "object_id": "h",
+          "name": "relativeHumidity",
+          "type": "Number"
+        },
+        {
+          "object_id": "p",
+          "name": "atmosphericPressure",
+          "type": "Number"
+        }
+      ],
+      "lazy": [],
+      "commands": [],
+      "static_attributes": [
+        {
+          "name": "location",
+          "type": "geo:json",
+          "value": {
+            "type": "Point",
+            "coordinates": [
+              139.7671,
+              35.68117
+            ]
+          }
+        }
+      ],
+      "explicitAttrs": false
+    }
+  ]
+}
+```
+
+#
+# 0015 Create device
+#
+ngsi devices create --data \
+'{
+ "devices": [
+   {
+     "device_id":   "${device2}",
+     "entity_name": "urn:ngsi-ld:WeatherObserved:${device2}",
+     "entity_type": "Sensor",
+     "timezone":    "Asia/Tokyo",
+     "attributes": [
+       { "object_id": "d", "name": "dateObserved", "type": "DateTime" },
+       { "object_id": "t", "name": "temperature", "type": "Number" },
+       { "object_id": "h", "name": "relativeHumidity", "type": "Number" },
+       { "object_id": "p", "name": "atmosphericPressure", "type": "Number" }
+     ],
+     "static_attributes": [
+       { "name":"location", "type": "geo:json", "value" : { "type": "Point", "coordinates" : [ 139.7671, 35.68117 ] } }
+     ]
+   }
+ ]
+}'
+
+```
+```
+
+#
+# 0015 List devices
+#
+ngsi devices list --pretty
+
+```
+{
+  "count": 2,
+  "devices": [
+    {
+      "device_id": "sensor001",
+      "service": "openiot",
+      "service_path": "/",
+      "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
+      "entity_type": "Sensor",
+      "transport": "HTTP",
+      "attributes": [
+        {
+          "object_id": "d",
+          "name": "dateObserved",
+          "type": "DateTime"
+        },
+        {
+          "object_id": "t",
+          "name": "temperature",
+          "type": "Number"
+        },
+        {
+          "object_id": "h",
+          "name": "relativeHumidity",
+          "type": "Number"
+        },
+        {
+          "object_id": "p",
+          "name": "atmosphericPressure",
+          "type": "Number"
+        }
+      ],
+      "lazy": [],
+      "commands": [],
+      "static_attributes": [
+        {
+          "name": "location",
+          "type": "geo:json",
+          "value": {
+            "type": "Point",
+            "coordinates": [
+              139.7671,
+              35.68117
+            ]
+          }
+        }
+      ],
+      "explicitAttrs": false
+    },
+    {
+      "device_id": "sensor002",
+      "service": "openiot",
+      "service_path": "/",
+      "entity_name": "urn:ngsi-ld:WeatherObserved:sensor002",
+      "entity_type": "Sensor",
+      "transport": "HTTP",
+      "attributes": [
+        {
+          "object_id": "d",
+          "name": "dateObserved",
+          "type": "DateTime"
+        },
+        {
+          "object_id": "t",
+          "name": "temperature",
+          "type": "Number"
+        },
+        {
+          "object_id": "h",
+          "name": "relativeHumidity",
+          "type": "Number"
+        },
+        {
+          "object_id": "p",
+          "name": "atmosphericPressure",
+          "type": "Number"
+        }
+      ],
+      "lazy": [],
+      "commands": [],
+      "static_attributes": [
+        {
+          "name": "location",
+          "type": "geo:json",
+          "value": {
+            "type": "Point",
+            "coordinates": [
+              139.7671,
+              35.68117
+            ]
+          }
+        }
+      ],
+      "explicitAttrs": false
+    }
+  ]
+}
+```
+
+#
+# 0016 Get sensor001
+#
+ngsi devices get --id sensor001 --pretty
+
+```
+{
+  "device_id": "sensor001",
+  "service": "openiot",
+  "service_path": "/",
+  "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
+  "entity_type": "Sensor",
+  "transport": "HTTP",
+  "attributes": [
+    {
+      "object_id": "d",
+      "name": "dateObserved",
+      "type": "DateTime"
+    },
+    {
+      "object_id": "t",
+      "name": "temperature",
+      "type": "Number"
+    },
+    {
+      "object_id": "h",
+      "name": "relativeHumidity",
+      "type": "Number"
+    },
+    {
+      "object_id": "p",
+      "name": "atmosphericPressure",
+      "type": "Number"
+    }
+  ],
+  "lazy": [],
+  "commands": [],
+  "static_attributes": [
+    {
+      "name": "location",
+      "type": "geo:json",
+      "value": {
+        "type": "Point",
+        "coordinates": [
+          139.7671,
+          35.68117
+        ]
+      }
+    }
+  ],
+  "explicitAttrs": false
+}
+```
+
+#
+# 0017 Get sensor002
+#
+ngsi devices get --id sensor002
+
+```
+{"device_id":"sensor002","service":"openiot","service_path":"/","entity_name":"urn:ngsi-ld:WeatherObserved:sensor002","entity_type":"Sensor","transport":"HTTP","attributes":[{"object_id":"d","name":"dateObserved","type":"DateTime"},{"object_id":"t","name":"temperature","type":"Number"},{"object_id":"h","name":"relativeHumidity","type":"Number"},{"object_id":"p","name":"atmosphericPressure","type":"Number"}],"lazy":[],"commands":[],"static_attributes":[{"name":"location","type":"geo:json","value":{"type":"Point","coordinates":[139.7671,35.68117]}}],"explicitAttrs":false}
+```
+
+#
+# 0018 Create device 
+#
+ngsi devices create --data \
+'{
+ "devices": [
+   {
+     "device_id":   "${device3}",
+     "entity_name": "urn:ngsi-ld:WeatherObserved:${device3}",
+     "entity_type": "Sensor",
+     "timezone":    "Asia/Tokyo",
+     "attributes": [
+       { "object_id": "d", "name": "dateObserved", "type": "DateTime" },
+       { "object_id": "t", "name": "temperature", "type": "Number" },
+       { "object_id": "h", "name": "relativeHumidity", "type": "Number" },
+       { "object_id": "p", "name": "atmosphericPressure", "type": "Number" }
+     ],
+     "static_attributes": [
+       { "name":"location", "type": "geo:json", "value" : { "type": "Point", "coordinates" : [ 139.7671, 35.68117 ] } }
+     ]
+   }
+ ]
+}'
+
+```
+```
+
+#
+# 0019 Get sensor003
+#
+ngsi devices get --id sensor003 --pretty
+
+```
+{
+  "device_id": "sensor003",
+  "service": "openiot",
+  "service_path": "/",
+  "entity_name": "urn:ngsi-ld:WeatherObserved:sensor003",
+  "entity_type": "Sensor",
+  "transport": "HTTP",
+  "attributes": [
+    {
+      "object_id": "d",
+      "name": "dateObserved",
+      "type": "DateTime"
+    },
+    {
+      "object_id": "t",
+      "name": "temperature",
+      "type": "Number"
+    },
+    {
+      "object_id": "h",
+      "name": "relativeHumidity",
+      "type": "Number"
+    },
+    {
+      "object_id": "p",
+      "name": "atmosphericPressure",
+      "type": "Number"
+    }
+  ],
+  "lazy": [],
+  "commands": [],
+  "static_attributes": [
+    {
+      "name": "location",
+      "type": "geo:json",
+      "value": {
+        "type": "Point",
+        "coordinates": [
+          139.7671,
+          35.68117
+        ]
+      }
+    }
+  ],
+  "explicitAttrs": false
+}
+```
+
+#
+# 0020 Update sensor003
+#
+ngsi devices update --id sensor003 --data '{"entity_name": "urn:ngsi-ld:WeatherObserved:sensor333"}'
+
+```
+```
+
+#
+# 0021 Get sensor003
+#
+ngsi devices get --id sensor003 --pretty
+
+```
+{
+  "device_id": "sensor003",
+  "service": "openiot",
+  "service_path": "/",
+  "entity_name": "urn:ngsi-ld:WeatherObserved:sensor333",
+  "entity_type": "Sensor",
+  "transport": "HTTP",
+  "attributes": [
+    {
+      "object_id": "d",
+      "name": "dateObserved",
+      "type": "DateTime"
+    },
+    {
+      "object_id": "t",
+      "name": "temperature",
+      "type": "Number"
+    },
+    {
+      "object_id": "h",
+      "name": "relativeHumidity",
+      "type": "Number"
+    },
+    {
+      "object_id": "p",
+      "name": "atmosphericPressure",
+      "type": "Number"
+    }
+  ],
+  "lazy": [],
+  "commands": [],
+  "static_attributes": [
+    {
+      "name": "location",
+      "type": "geo:json",
+      "value": {
+        "type": "Point",
+        "coordinates": [
+          139.7671,
+          35.68117
+        ]
+      }
+    }
+  ],
+  "explicitAttrs": false
+}
+```
+
+#
+# 0022 Delete sensor003
+#
+ngsi devices delete --id sensor003
+
+```
+```
+
+#
+# 0023 Get sensor003
+#
+ngsi devices get --id sensor003
+
+```1
+idasDevicesGet005 404 Not Found {"name":"DEVICE_NOT_FOUND","message":"No device was found with id:sensor003"}
+```
+
+#
+# 0024 List devices
+#
+ngsi devices list --pretty
+
+```
+{
+  "count": 2,
+  "devices": [
+    {
+      "device_id": "sensor001",
+      "service": "openiot",
+      "service_path": "/",
+      "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
+      "entity_type": "Sensor",
+      "transport": "HTTP",
+      "attributes": [
+        {
+          "object_id": "d",
+          "name": "dateObserved",
+          "type": "DateTime"
+        },
+        {
+          "object_id": "t",
+          "name": "temperature",
+          "type": "Number"
+        },
+        {
+          "object_id": "h",
+          "name": "relativeHumidity",
+          "type": "Number"
+        },
+        {
+          "object_id": "p",
+          "name": "atmosphericPressure",
+          "type": "Number"
+        }
+      ],
+      "lazy": [],
+      "commands": [],
+      "static_attributes": [
+        {
+          "name": "location",
+          "type": "geo:json",
+          "value": {
+            "type": "Point",
+            "coordinates": [
+              139.7671,
+              35.68117
+            ]
+          }
+        }
+      ],
+      "explicitAttrs": false
+    },
+    {
+      "device_id": "sensor002",
+      "service": "openiot",
+      "service_path": "/",
+      "entity_name": "urn:ngsi-ld:WeatherObserved:sensor002",
+      "entity_type": "Sensor",
+      "transport": "HTTP",
+      "attributes": [
+        {
+          "object_id": "d",
+          "name": "dateObserved",
+          "type": "DateTime"
+        },
+        {
+          "object_id": "t",
+          "name": "temperature",
+          "type": "Number"
+        },
+        {
+          "object_id": "h",
+          "name": "relativeHumidity",
+          "type": "Number"
+        },
+        {
+          "object_id": "p",
+          "name": "atmosphericPressure",
+          "type": "Number"
+        }
+      ],
+      "lazy": [],
+      "commands": [],
+      "static_attributes": [
+        {
+          "name": "location",
+          "type": "geo:json",
+          "value": {
+            "type": "Point",
+            "coordinates": [
+              139.7671,
+              35.68117
+            ]
+          }
+        }
+      ],
+      "explicitAttrs": false
+    }
+  ]
+}
+```
+
+#
+# 00025 Delete sensor001
+#
+ngsi devices delete --id sensor001
+
+```
+```
+
+#
+# 0026 List devices
+#
+ngsi devices list --pretty
+
+```
+{
+  "count": 1,
+  "devices": [
+    {
+      "device_id": "sensor002",
+      "service": "openiot",
+      "service_path": "/",
+      "entity_name": "urn:ngsi-ld:WeatherObserved:sensor002",
+      "entity_type": "Sensor",
+      "transport": "HTTP",
+      "attributes": [
+        {
+          "object_id": "d",
+          "name": "dateObserved",
+          "type": "DateTime"
+        },
+        {
+          "object_id": "t",
+          "name": "temperature",
+          "type": "Number"
+        },
+        {
+          "object_id": "h",
+          "name": "relativeHumidity",
+          "type": "Number"
+        },
+        {
+          "object_id": "p",
+          "name": "atmosphericPressure",
+          "type": "Number"
+        }
+      ],
+      "lazy": [],
+      "commands": [],
+      "static_attributes": [
+        {
+          "name": "location",
+          "type": "geo:json",
+          "value": {
+            "type": "Point",
+            "coordinates": [
+              139.7671,
+              35.68117
+            ]
+          }
+        }
+      ],
+      "explicitAttrs": false
+    }
+  ]
+}
+```
+
+#
+# 0027 Delete services and devices
+#
+ngsi services delete --resource /iot/d --device on
+
+```
+```
+
+#
+# 0028 List devices
+#
+ngsi devices list --pretty
+
+```
+{
+  "count": 0,
+  "devices": []
+}
+```
+
+#
+# 0029 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 0,
+  "services": []
+}
+```

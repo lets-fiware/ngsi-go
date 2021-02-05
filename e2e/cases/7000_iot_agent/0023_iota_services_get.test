@@ -25,19 +25,22 @@
 # SOFTWARE.
 
 #
-# 0001 wait for services
+# 0001 ngsi services list --help
 #
-wait ${accumulator}/health
-wait ${atcontext}/health
-wait ${csource}/health
-wait ${oauth}/health
-wait ${orion}/version
-wait ${orion-ld}/version
-wait ${quantumleap}/version
-wait ${comet}/version
-wait ${iota}/version
+ngsi services list --help
 
-#
-# 0002 check health status
-#
-wait ${quantumleap}/health --retry 600 --status pass
+```
+NAME:
+   ngsi services list - list configuration group
+
+USAGE:
+   ngsi services list [command options] [arguments...]
+
+OPTIONS:
+   --limit value     maximum number of services (default: 0)
+   --offset value    offset to skip a given number of elements at the beginning (default: 0)
+   --resource value  uri for the iotagent
+   --pretty, -P      pretty format (default: false)
+   --help            show help (default: false)
+   
+```

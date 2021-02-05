@@ -8,216 +8,141 @@ import (
 )
 
 func TestIsTenantString(t *testing.T) {
+	cases := []struct {
+		arg      string
+		expected bool
+	}{
+		{arg: "fiware", expected: true},
+		{arg: "open_iot", expected: true},
+		{arg: "open@iot", expected: false},
+		{arg: "FIWARE", expected: false},
+	}
 
-	actual := isTenantString("fiware")
-	expected := true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isTenantString("open_iot")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isTenantString("open@iot")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = isTenantString("FIWARE")
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := isTenantString(c.arg)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestIsScopeString(t *testing.T) {
+	cases := []struct {
+		arg      string
+		expected bool
+	}{
+		{arg: "", expected: true},
+		{arg: "/", expected: true},
+		{arg: "/fiware", expected: true},
+		{arg: "/FIWARE", expected: true},
+		{arg: "/FIWARE_orion", expected: true},
+		{arg: "/fiware/orion", expected: true},
+		{arg: "/fiware/orion,/keyrock", expected: true},
+		{arg: "/fiware/orion,/keyrock, /abc, /def, /xyz/abc", expected: true},
+		{arg: "/#", expected: true},
+		{arg: "/*", expected: true},
+		{arg: "/FIWARE@orion", expected: false},
+		{arg: "FIWARE", expected: false},
+	}
 
-	actual := isScopeString("")
-	expected := true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/fiware")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/FIWARE")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/FIWARE_orion")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/FIWARE@orion")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("FIWARE")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/fiware/orion")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/fiware/orion,/keyrock")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isScopeString("/fiware/orion,/keyrock, /abc, /def, /xyz/abc")
-	expected = true
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := isScopeString(c.arg)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestIsHTTP(t *testing.T) {
-	actual := IsHTTP("http://orion")
-	expected := true
+	cases := []struct {
+		arg      string
+		expected bool
+	}{
+		{arg: "http://orion", expected: true},
+		{arg: "https://orion", expected: true},
+		{arg: "http:/orion", expected: false},
+		{arg: "https:/orion", expected: false},
+		{arg: "orion", expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = IsHTTP("https://orion")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsHTTP("https:/orion")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsHTTP("http:/orion")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsHTTP("orion")
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := IsHTTP(c.arg)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestIsIPAddress(t *testing.T) {
-	actual := isIPAddress("192.168.1.1")
-	expected := true
+	cases := []struct {
+		arg      string
+		expected bool
+	}{
+		{arg: "192.168.1.1", expected: true},
+		{arg: "192.168.1.1:1026", expected: true},
+		{arg: "orion", expected: false},
+		{arg: "orion:1026", expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = isIPAddress("192.168.1.1:1026")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isIPAddress("orion")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = isIPAddress("orion:1026")
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := isIPAddress(c.arg)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestIsLocalHost(t *testing.T) {
-	actual := isLocalHost("localhost")
-	expected := true
+	cases := []struct {
+		arg      string
+		expected bool
+	}{
+		{arg: "localhost", expected: true},
+		{arg: "localhost:1026", expected: true},
+		{arg: "192.168.1.1", expected: false},
+		{arg: "192.168.1.1:1026", expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = isLocalHost("localhost:1026")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isLocalHost("192.168.1.1")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = isLocalHost("192.168.1.1:1026")
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := isLocalHost(c.arg)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestContains(t *testing.T) {
 	list := []string{"abc", "def", "xyz", "123"}
 
-	actual := Contains(list, "abc")
-	expected := true
+	cases := []struct {
+		arg      string
+		expected bool
+	}{
+		{arg: "abc", expected: true},
+		{arg: "123", expected: true},
+		{arg: "orion", expected: false},
+		{arg: "576", expected: false},
+		{arg: "", expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = Contains(list, "123")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = Contains(list, "orion")
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = Contains(list, "567")
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := Contains(list, c.arg)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestIsExpirationDate(t *testing.T) {
-	actual := isExpirationDate("10years")
-	expected := true
+	cases := []struct {
+		arg      string
+		expected bool
+	}{
+		{arg: "10years", expected: true},
+		{arg: "1year", expected: true},
+		{arg: "65months", expected: true},
+		{arg: "1month", expected: true},
+		{arg: "365days", expected: true},
+		{arg: "1day", expected: true},
+		{arg: "123hours", expected: true},
+		{arg: "1hour", expected: true},
+		{arg: "orion", expected: false},
+		{arg: "576", expected: false},
+		{arg: "", expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = isExpirationDate("1year")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isExpirationDate("65months")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isExpirationDate("1month")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isExpirationDate("365days")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isExpirationDate("1day")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isExpirationDate("123hours")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = isExpirationDate("1hour")
-	expected = true
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := isExpirationDate(c.arg)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestGetExpirationDate1Year(t *testing.T) {
