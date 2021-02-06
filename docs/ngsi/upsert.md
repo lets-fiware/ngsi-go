@@ -15,7 +15,7 @@ This command upserts entities.
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="upsert-an-entity"/>
+<a name="upsert-an-entity"></a>
 
 ## Upset an entity
 
@@ -48,7 +48,7 @@ ngsi upsert entity \
 }'
 ```
 
-<a name="upsert-multiple-entities"/>
+<a name="upsert-multiple-entities"></a>
 
 ## Upsert multiple entities
 

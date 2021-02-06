@@ -15,7 +15,7 @@ This command replaces multiple entities or attributes
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="replace-multiple-entities"/>
+<a name="replace-multiple-entities"></a>
 
 ## Replace multiple entities
 
@@ -45,7 +45,7 @@ ngsi replace entities \
 ]'
 ```
 
-<a name="replace-multiple-attributes"/>
+<a name="replace-multiple-attributes"></a>
 
 ## Replace multiple attributes
 

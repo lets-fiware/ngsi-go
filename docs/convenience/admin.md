@@ -17,7 +17,7 @@ This command gives you various system information for FIWARE Orion. You can use 
 | --token value             | specify oauth token        |
 | --help                    | show help (default: false) |
 
-<a name="log"/>
+<a name="log"></a>
 
 ## log
 
@@ -54,7 +54,7 @@ ngsi admin log
 ngsi admin log --level info
 ```
 
-<a name="trace"/>
+<a name="trace"></a>
 
 ## Trace
 
@@ -104,7 +104,7 @@ ngsi admin trace --delete --level t1-t2
 ngsi admin trace --delete --level t1-t2,t3-t4
 ```
 
-<a name="semaphore"/>
+<a name="semaphore"></a>
 
 ## Semaphore
 
@@ -168,7 +168,7 @@ ngsi admin semaphore --pretty
 }
 ```
 
-<a name="metrics"/>
+<a name="metrics"></a>
 
 ## Metrics
 
@@ -278,7 +278,7 @@ ngsi admin metrics --reset --pretty
 ngsi admin metrics --delete
 ```
 
-<a name="statistics"/>
+<a name="statistics"></a>
 
 ## Statistics
 
@@ -318,7 +318,7 @@ ngsi admin [command options] statistics [options]
 ngsi admin statistics --delete
 ```
 
-<a name="cache-statistics"/>
+<a name="cache-statistics"></a>
 
 ## Cache statistics
 

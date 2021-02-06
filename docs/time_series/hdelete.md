@@ -14,7 +14,7 @@
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="delete-all-the-data-associated-to-certain-attribute-of-certain-entity"/>
+<a name="delete-all-the-data-associated-to-certain-attribute-of-certain-entity"></a>
 
 ## Delete all the data associated to certain attribute of certain entity
 
@@ -41,7 +41,7 @@ ngsi hdelete [common options] attr [options]
 ```console
 ngsi hdelete --host comet attr --type device --id device001 --attrName A1
 ```
-<a name="delete-historical-data-of-a-certain-entity"/>
+<a name="delete-historical-data-of-a-certain-entity"></a>
 
 ## Delete historical data of a certain entity
 
@@ -76,7 +76,7 @@ ngsi hdelete --host comet entity --type device --id device001
 ngsi hdelete --host quantumleap entity --id device003
 ```
 
-<a name="delete-historical-data-of-all-entities-of-a-certain-type"/>
+<a name="delete-historical-data-of-all-entities-of-a-certain-type"></a>
 
 ## Delete historical data of all entities of a certain type
 

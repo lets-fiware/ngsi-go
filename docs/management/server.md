@@ -6,7 +6,7 @@
 -   [Update server](#update-server)
 -   [Delete server](#delete-server)
 
-<a name="list-servers"/>
+<a name="list-servers"></a>
 
 ## List servers
 
@@ -33,7 +33,7 @@ ngsi server list
 comet 
 ```
 
-<a name="get-server"/>
+<a name="get-server"></a>
 
 ## Get server
 
@@ -73,7 +73,7 @@ ngsi server get --host comet--json
 {"serverType":"comet","serverHost":"http://localhost:8666","tenant":"openiot","scope":"/"}
 ```
 
-<a name="add-server"/>
+<a name="add-server"></a>
 
 ## Add server
 
@@ -212,7 +212,7 @@ You should set the `--apiPath` parameter to as shown:
 --apiPath "/v2,/quantumleap/v2.0"
 ```
 
-<a name="update-server"/>
+<a name="update-server"></a>
 
 ## Update server
 
@@ -245,7 +245,7 @@ ngsi server upadte [options]
 ngsi server update --host comet --serverHost http://sth-comet:8666
 ```
 
-<a name="delete-server"/>
+<a name="delete-server"></a>
 
 ## Delete server
 

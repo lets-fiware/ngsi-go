@@ -14,7 +14,7 @@ This command appends multiple attributes.
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="append-multiple-attributes"/>
+<a name="append-multiple-attributes"></a>
 
 ## Append multiple attributes
 

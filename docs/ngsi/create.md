@@ -15,7 +15,7 @@
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="create-an-entity"/>
+<a name="create-an-entity"></a>
 
 ## Create an entity
 
@@ -84,7 +84,7 @@ ngsi get entity --id urn:ngsi-ld:Product:110 --type Product
 {"id":"urn:ngsi-ld:Product:110","type":"Product","name":{"type":"Text","value":"Lemonade","metadata":{}},"price":{"type":"Number","value":99,"metadata":{}},"size":{"type":"Text","value":"S","metadata":{}}}
 ```
 
-<a name="create-multiple-entities"/>
+<a name="create-multiple-entities"></a>
 
 ## Create multiple entities
 
@@ -160,7 +160,7 @@ ngsi create entities --keyValues \
 ]'
 ```
 
-<a name="create-a-subscription"/>
+<a name="create-a-subscription"></a>
 
 ## Create a subscription
 
@@ -289,7 +289,7 @@ ngsi create subscription \
 urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 ```
 
-<a name="create-a-registration"/>
+<a name="create-a-registration"></a>
 
 ## Create a registration
 

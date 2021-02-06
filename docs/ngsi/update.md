@@ -17,7 +17,7 @@ This command will update entities, attribute(s), or subscription.
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="update-multiple-entities"/>
+<a name="update-multiple-entities"></a>
 
 ## Update multiple entities
 
@@ -45,7 +45,7 @@ ngsi update [common options] entities [options]
 ngsi update entities
 ```
 
-<a name="update-an-attribute"/>
+<a name="update-an-attribute"></a>
 
 ## Update an attribute
 
@@ -72,7 +72,7 @@ ngsi update [common options] attr [options]
 ngsi update attr
 ```
 
-<a name="update-multiple-attributes"/>
+<a name="update-multiple-attributes"></a>
 
 ## Update multiple attributes
 
@@ -100,7 +100,7 @@ ngsi update [common options] attrs [options]
 ngsi update attrs
 ```
 
-<a name="update-a-subscription"/>
+<a name="update-a-subscription"></a>
 
 ## Update a subscription
 

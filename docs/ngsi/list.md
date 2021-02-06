@@ -17,7 +17,7 @@ This command lists types, entities, subscriptions or registrations.
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="list-multiple-types"/>
+<a name="list-multiple-types"></a>
 
 ## List multiple types
 
@@ -62,7 +62,7 @@ ngsi list types --json
 ["InventoryItem","Product","Shelf","Store"]
 ```
 
-<a name="list-multiple-entities"/>
+<a name="list-multiple-entities"></a>
 
 ## List multiple entities
 
@@ -310,7 +310,7 @@ ngsi list entities --type Product --idPattern '1{2}' --count
 ngsi list entities -q "refProduct%==urn:ngsi-ld:Product:001" --attrs type
 ```
 
-<a name="list-multiple-subscriptions"/>
+<a name="list-multiple-subscriptions"></a>
 
 ## List multiple subscriptions
 
@@ -422,7 +422,7 @@ ngsi list subscriptions --json --pretty
 ]
 ```
 
-<a name="list-multiple-registrations"/>
+<a name="list-multiple-registrations"></a>
 
 ## List multiple registrations
 
