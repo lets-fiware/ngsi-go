@@ -16,7 +16,7 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="get-hstory-of-an-attribute"/>
+<a name="get-hstory-of-an-attribute"></a>
 
 ## Get hstory of an attribute
 
@@ -106,7 +106,7 @@ attr --id device001 --attrName A1 --fromDate -5years -hLimit 3
 }
 ```
 
-<a name="get-history-of-attributes"/>
+<a name="get-history-of-attributes"></a>
 
 ## Get history of attributes
 
@@ -176,7 +176,7 @@ attrs --id device001 --attrs A1,A2 --fromDate -5years -hLimit 3
 }
 ```
 
-<a name="list-of-all-the-entity-id"/>
+<a name="list-of-all-the-entity-id"></a>
 
 ## List of all the entity id
 

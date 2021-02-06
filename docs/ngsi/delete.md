@@ -16,7 +16,7 @@
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="delete-an-entity"/>
+<a name="delete-an-entity"></a>
 
 ## Delete an entity
 
@@ -43,7 +43,7 @@ ngsi delete [common options] entity [options]
 ngsi delete entity --id urn:ngsi-ld:Product:010
 ```
 
-<a name="delete-multiple-entities"/>
+<a name="delete-multiple-entities"></a>
 
 ## Delete multiple entities
 
@@ -96,7 +96,7 @@ ngsi delete entities \
 ]'
 ```
 
-<a name="delete-an-attribute"/>
+<a name="delete-an-attribute"></a>
 
 ## Delete an Attribute from an Entity
 
@@ -124,7 +124,7 @@ ngsi delete [common options] attr [options]
 ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
 ```
 
-<a name="delete-a-subscription"/>
+<a name="delete-a-subscription"></a>
 
 ## Delete a subscription
 
@@ -149,7 +149,7 @@ ngsi delete [common options] subscription [options]
 ngsi delete subscription --id urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 ```
 
-<a name="delete-a-registration"/>
+<a name="delete-a-registration"></a>
 
 ## Delete a registration
 

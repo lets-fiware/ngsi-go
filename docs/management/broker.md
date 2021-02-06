@@ -6,7 +6,7 @@
 -   [Update broker](#update-broker)
 -   [Delete broker](#delete-broker)
 
-<a name="list-brokers"/>
+<a name="list-brokers"></a>
 
 ## List brokers
 
@@ -55,7 +55,7 @@ ngsi broker list --json
 {"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"on"}
 ```
 
-<a name="get-broker"/>
+<a name="get-broker"></a>
 
 ## Get broker
 
@@ -93,7 +93,7 @@ ngsi broker get --host orion --json
 {"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"off"}
 ```
 
-<a name="add-broker"/>
+<a name="add-broker"></a>
 
 ## Add broker
 
@@ -238,7 +238,7 @@ You should set the `--apiPath` parameter to as shown:
 --apiPath "/v2,/orion/v2.0"
 ```
 
-<a name="update-broker"/>
+<a name="update-broker"></a>
 
 ## Update broker
 
@@ -272,7 +272,7 @@ ngsi broker upadte [options]
 ngsi broker update --host orion --ngsiType v2
 ```
 
-<a name="delete-broker"/>
+<a name="delete-broker"></a>
 
 ## Delete broker
 

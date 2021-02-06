@@ -19,7 +19,7 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="get-an-entity"/>
+<a name="get-an-entity"></a>
 
 ## Get an entity
 
@@ -78,7 +78,7 @@ ngsi get entity --id urn:ngsi-ld:Product:010 --type Product --keyValues --attrs 
 {"id":"urn:ngsi-ld:Product:010","type":"Product","size":"S"}
 ```
 
-<a name="get-an-entities"/>
+<a name="get-an-entities"></a>
 
 ## Get multiple entities
 
@@ -112,7 +112,7 @@ ngsi get [command options] entities [options]
 ngsi get entities --data '{"entities": [{"type": "Device", "idPattern": ".*"}],"attrs":["name"]}'
 ```
 
-<a name="get-an-attribute"/>
+<a name="get-an-attribute"></a>
 
 ## Get an attribute
 
@@ -141,7 +141,7 @@ ngsi get [common options] attr [options]
 ngsi get attr --id urn:ngsi-ld:Product:010 --type Product --attrName size "S"
 ```
 
-<a name="get-multiple-attributes"/>
+<a name="get-multiple-attributes"></a>
 
 ## Get multiple attributes
 
@@ -198,7 +198,7 @@ ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price --
 ["Beer",99]
 ```
 
-<a name="get-a-subscription"/>
+<a name="get-a-subscription"></a>
 
 ## Get a subscription
 
@@ -331,7 +331,7 @@ ngsi get subscription --id urn:ngsi-ld:Subscription:5f67fd65ef40bb66fe006dce --p
 }
 ```
 
-<a name="get-a-registration"/>
+<a name="get-a-registration"></a>
 
 ## Get a registration
 

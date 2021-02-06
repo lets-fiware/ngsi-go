@@ -19,7 +19,7 @@ This command prints number of entities, subscriptions, registrations, or types.
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="print-number-of-entities"/>
+<a name="print-number-of-entities"></a>
 
 ## Print number of entities
 
@@ -59,7 +59,7 @@ ngsi wc --host orion entities --type EvacuationSpace
 231
 ```
 
-<a name="print-number-of-subscriptions"/>
+<a name="print-number-of-subscriptions"></a>
 
 ## Print number of subscriptions
 
@@ -81,7 +81,7 @@ ngsi wc --host orion subscriptions
 2
 ```
 
-<a name="print-number-of-registrations"/>
+<a name="print-number-of-registrations"></a>
 
 ## Print number of registrations
 
@@ -103,7 +103,7 @@ ngsi wc --host orion registrations
 1
 ```
 
-<a name="print-number-of-types"/>
+<a name="print-number-of-types"></a>
 
 ## Print number of types
 

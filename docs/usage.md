@@ -13,7 +13,7 @@
 -   [Error message](#error-message)
     -   [Detailed error information](#detailed-error-information)
 
-<a name="syntax"/>
+<a name="syntax"></a>
 
 ## Syntax
 
@@ -21,7 +21,7 @@
 ngsi [global options] command [common options] sub-command [options]
 ```
 
-<a name="ngsi-command"/>
+<a name="ngsi-command"></a>
 
 ### NGSI command
 
@@ -56,7 +56,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | subscription | update subscription |
 | [upsert](./ngsi/upsert.md)   | entities     | upsert entities     |
 
-<a name="time-series-command"/>
+<a name="time-series-command"></a>
 
 ### Time series command
 
@@ -69,7 +69,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                                     | attrs       | get history of attributes                                             |
 |                                     | entities    | list of all the entity id                                             |
 
-<a name="convenience-command"/>
+<a name="convenience-command"></a>
 
 ### Convenience command
 
@@ -93,7 +93,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                                       | registration    | create template of registration                                  |
 | [version](./convenience/version.md)   | -               | print the version of Context Broker                              |
 
-<a name="management-commnad"/>
+<a name="management-commnad"></a>
 
 ### Management commnad
 
@@ -118,7 +118,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                                      | delete       | delete server   |
 | [token](./management/token.md)       | -            | manage token    |
 
-<a name="global-options"/>
+<a name="global-options"></a>
 
 ### Global Options
 
@@ -132,7 +132,7 @@ ngsi [global options] command [common options] sub-command [options]
 | --help         | show help (default: false)                       |
 | --version, -v  | print the version (default: false)               |
 
-<a name="common-options"/>
+<a name="common-options"></a>
 
 ### Common options
 
@@ -144,7 +144,7 @@ ngsi [global options] command [common options] sub-command [options]
 | --path value, -p value    | specify FIWARE ServicePath |
 | --help                    | show help (default: false) |
 
-<a name="datetime-options"/>
+<a name="datetime-options"></a>
 
 ## DateTime options
 
@@ -184,7 +184,7 @@ ngsi hget --host quantumleap attrs --id device001 --attrs A1,A2 --hLimit 3 \
 --fromDate -5years --toDate -3years
 ```
 
-<a name="data-option"/>
+<a name="data-option"></a>
 
 ## --data option
 
@@ -233,7 +233,7 @@ data.json:
 }
 ```
 
-<a name="safe-string"/>
+<a name="safe-string"></a>
 
 ## Safe string
 
@@ -295,7 +295,7 @@ ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString on
 "<Lemonade>"
 ```
 
-<a name="error-message"/>
+<a name="error-message"></a>
 
 ## Error message
 
@@ -308,7 +308,7 @@ entityCreate006 400 Bad Request {"error":"BadReqest","description":"Invalid char
 The error message has `entityCreate006` as a prefix. A prefix consists of a Go function name and a position in the funciton.
 The function name is `entityCreate`. The position is 6th.
 
-<a name="detailed-error-information"/>
+<a name="detailed-error-information"></a>
 
 ### Detailed error information
 
