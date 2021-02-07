@@ -60,6 +60,11 @@ var configData = `{
 		"ngsiType": "ld",
 		"serverType": "broker"
 	  },
+	  "orion-alias": {
+		"serverHost": "orion-ld",
+		"ngsiType": "ld",
+		"serverType": "broker"
+	  },
 	  "comet": {
 		"serverHost": "https://comet",
 		"serverType": "comet"
@@ -67,6 +72,10 @@ var configData = `{
 	  "ql": {
 		"serverHost": "https://quantumleap",
 		"serverType": "quantumleap"
+	  },
+	  "iota": {
+		"serverHost": "https://iota",
+		"serverType": "iota"
 	  }
 	},
 	"contexts": {

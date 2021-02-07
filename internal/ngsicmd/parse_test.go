@@ -168,12 +168,12 @@ func TestParseOptions(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	setupFlagString(set, "limit,offset,link,query")
-	setupFlagBool(set, "keyValues,values")
+	setupFlagBool(set, "keyValues,values,device")
 
 	_ = set.Parse([]string{"--limit=100", "--offset=-1", "--link=etsi", "--query=query"})
-	_ = set.Parse([]string{"--keyValues", "--values"})
+	_ = set.Parse([]string{"--keyValues", "--values", "--device"})
 
-	args := []string{"limit", "offset", "link", "query"}
+	args := []string{"limit", "offset", "link", "query", "device"}
 	opts := []string{"keyValues", "values"}
 
 	values := parseOptions(c, args, opts)
@@ -182,6 +182,7 @@ func TestParseOptions(t *testing.T) {
 	assert.Equal(t, "etsi", values.Get("link"))
 	assert.Equal(t, "query", values.Get("q"))
 	assert.Equal(t, "keyValues,values", values.Get("options"))
+	assert.Equal(t, "true", values.Get("device"))
 }
 
 func TestParseOptions2(t *testing.T) {

@@ -1,13 +1,5 @@
 # NGSI Go tutorial for STH-Comet
 
-## Add STH-Comet
-
-```console
-ngsi server add --host comet \
---serverHost http://sth-comet:8666 --serverType comet \
---service openiot --path /
-```
-
 ## Get settings of alias
 
 ```console

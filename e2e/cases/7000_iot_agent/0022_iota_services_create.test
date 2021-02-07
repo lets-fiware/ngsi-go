@@ -1,0 +1,205 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi services create --help
+#
+ngsi services create --help
+
+```
+NAME:
+   ngsi services create - create a configuration group
+
+USAGE:
+   ngsi services create [command options] [arguments...]
+
+OPTIONS:
+   --data value            data body (payload)
+   --apikey value          a key used for devices belonging to this service
+   --token value           token obtained from the authentication system
+   --cbroker value         url of context broker or broker alias
+   --type value, -t value  Entity Type
+   --resource value        uri for the iotagent
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0010 apikey
+#
+$apikey1=apikey001
+$apikey2=apikey002
+$apikey3=apikey003
+
+#
+# 0011 Create service
+#
+ngsi services --host iota create --data \
+'{
+  "services": [
+    {
+      "apikey": "${apikey1}",
+      "cbroker": "http://orion:1026",
+      "entity_type": "Thing",
+      "resource": "/iot/d"
+    }
+  ]
+}'
+
+```
+```
+
+#
+# 0012 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 1,
+  "services": [
+    {
+      "commands": [],
+      "lazy": [],
+      "attributes": [],
+      "_id": "REGEX(.*)",
+      "resource": "/iot/d",
+      "apikey": "apikey001",
+      "service": "openiot",
+      "subservice": "/",
+      "__v": 0,
+      "static_attributes": [],
+      "internal_attributes": [],
+      "entity_type": "Thing"
+    }
+  ]
+}
+```
+
+#
+# 0013 Create service
+#
+ngsi services create --apikey $apikey2 --cbroker http://orion:1026 --type Event --resource /iot/d
+
+```
+```
+
+#
+# 0014 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 2,
+  "services": [
+    {
+      "commands": [],
+      "lazy": [],
+      "attributes": [],
+      "_id": "REGEX(.*)",
+      "resource": "/iot/d",
+      "apikey": "apikey001",
+      "service": "openiot",
+      "subservice": "/",
+      "__v": 0,
+      "static_attributes": [],
+      "internal_attributes": [],
+      "entity_type": "Thing"
+    },
+    {
+      "commands": [],
+      "lazy": [],
+      "attributes": [],
+      "_id": "REGEX(.*)",
+      "resource": "/iot/d",
+      "apikey": "apikey002",
+      "service": "openiot",
+      "subservice": "/",
+      "__v": 0,
+      "static_attributes": [],
+      "internal_attributes": [],
+      "entity_type": "Event"
+    }
+  ]
+}
+```
+
+#
+# 0015 Delete service
+#
+ngsi services delete --resource /iot/d
+
+```
+```
+
+#
+# 0016 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 1,
+  "services": [
+    {
+      "commands": [],
+      "lazy": [],
+      "attributes": [],
+      "_id": "REGEX(.*)",
+      "resource": "/iot/d",
+      "apikey": "apikey002",
+      "service": "openiot",
+      "subservice": "/",
+      "__v": 0,
+      "static_attributes": [],
+      "internal_attributes": [],
+      "entity_type": "Event"
+    }
+  ]
+}
+```
+
+#
+# 0017 Delete service
+#
+ngsi services delete --resource /iot/d
+
+```
+```
+
+#
+# 0018 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 0,
+  "services": []
+}
+```
+

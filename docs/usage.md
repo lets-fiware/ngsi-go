@@ -3,6 +3,7 @@
 -   [Syntax](#syntax)
     -   [NGSI Command](#ngsi-command)
     -   [Time series command](#time-series-command)
+    -   [IoT Agent command](#iot-agent-command)
     -   [Convenience command](#convenience-command)
     -   [Management commnad](#management-commnad)
     -   [Global Options](#global-options)
@@ -69,6 +70,22 @@ ngsi [global options] command [common options] sub-command [options]
 |                                     | attrs       | get history of attributes                                             |
 |                                     | entities    | list of all the entity id                                             |
 
+<a name="iot-agent-command"></a>
+
+### IoT Agent command
+
+| command                           | sub-command                                                  | Description                  |
+| --------------------------------- | ------------------------------------------------------------ | ---------------------------- |
+| [services](iot_agent/services.md) | [list](iot_agent/services.md#list-configuration-group)       | List configuration groups    |
+|                                   | [create](iot_agent/services.md#create-a-configuration-group) | Create a configuration group |
+|                                   | [update](iot_agent/services.md#update-a-configuration-group) | Update a configuration group |
+|                                   | [delete](iot_agent/services.md#delete-a-configuration-group) | Delete a configuration group |
+| [devices](iot_agent/devices.md)   | [list](iot_agent/devices.md#list-all-devices)                | List all devices             |
+|                                   | [create](iot_agent/devices.md#create-a-device)               | Create a device              |
+|                                   | [get](iot_agent/devices.md#create-a-get-device)              | Get a device                 |
+|                                   | [update](iot_agent/devices.md#update-a-device)               | Update a device              |
+|                                   | [delete](iot_agent/devices.md#delete-a-device)               | Delete a device              |
+
 <a name="convenience-command"></a>
 
 ### Convenience command
@@ -81,7 +98,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                                       | metrics         | print, reset or delete metrics for FIWARE Orion                  |
 |                                       | statistics      | print or delete statistics for FIWARE Orion                      |
 |                                       | cacheStatistics | print or delete cache statistics for FIWARE Orion                |
-| [apis](./convenience/apis.md)          | -               | print endpoints of FWARE Open APIs                              |
+| [apis](./convenience/apis.md)         | -               | print endpoints of FWARE Open APIs                               |
 | [cp](./convenience/cp.md)             | -               | copy entities                                                    |
 | [wc](./convenience/wc.md)             | -               | print number of entities, subscriptions, registrations, or types |
 | [man](./convenience/man.md)           | -               | print urls of document                                           |

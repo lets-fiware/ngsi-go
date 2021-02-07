@@ -276,7 +276,15 @@ http get ${atcontext}/ngsi-context.jsonld
 ```
 
 #
-# 0003 ngsi context list --name ctx
+# 0003 ngsi context add --name japanese
+#
+ngsi context add --name ctx --url ${atcontext}/ngsi-context.jsonld
+
+```
+```
+
+#
+# 0004 ngsi context list --name ctx
 #
 ngsi context list --name ctx
 

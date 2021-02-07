@@ -316,6 +316,72 @@ var (
 	}
 )
 
+// IoT Agent
+var (
+	servicesLimitFlag = &cli.Int64Flag{
+		Name:  "limit",
+		Usage: "maximum number of services",
+	}
+	servicesOffsetFlag = &cli.Int64Flag{
+		Name:  "offset",
+		Usage: "offset to skip a given number of elements at the beginning",
+	}
+	resourceFlag = &cli.StringFlag{
+		Name:  "resource",
+		Usage: "uri for the iotagent",
+	}
+	apikeyFlag = &cli.StringFlag{
+		Name:  "apikey",
+		Usage: "a key used for devices belonging to this service",
+	}
+	cbrokerFlag = &cli.StringFlag{
+		Name:  "cbroker",
+		Usage: "url of context broker or broker alias",
+	}
+	servicesDeviceFlag = &cli.BoolFlag{
+		Name:  "device",
+		Usage: "remove devices in service/subservice",
+		Value: false,
+	}
+	servicesDataFlag = &cli.StringFlag{
+		Name:  "data",
+		Usage: "data body (payload)",
+	}
+	servicesTokenFlag = &cli.StringFlag{
+		Name:  "token",
+		Usage: "token obtained from the authentication system",
+	}
+	devicesLimit = &cli.Int64Flag{
+		Name:  "limit",
+		Usage: "maximum number of devices",
+	}
+	devicesOffset = &cli.Int64Flag{
+		Name:  "offset",
+		Usage: "offset to skip a given number of elements at the beginning",
+	}
+	devicesDetailed = &cli.StringFlag{
+		Name:  "detailed",
+		Usage: "all device information (on) or only name (off)",
+		Value: "off",
+	}
+	devicesEntity = &cli.StringFlag{
+		Name:  "entity",
+		Usage: "get a device from entity name",
+	}
+	devicesProtocol = &cli.StringFlag{
+		Name:  "protocol",
+		Usage: "get devices with this protocol",
+	}
+	devicesDataFlag = &cli.StringFlag{
+		Name:  "data",
+		Usage: "data body (payload)",
+	}
+	devicesIDFlag = &cli.StringFlag{
+		Name:  "id",
+		Usage: "device id",
+	}
+)
+
 // TIME SERIES
 var (
 	hLimitFlag = &cli.Int64Flag{

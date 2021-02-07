@@ -59,6 +59,12 @@ ngsi server list --pretty
     "tenant": "openiot",
     "scope": "/"
   },
+  "iota": {
+    "serverType": "iota",
+    "serverHost": "http://iot-agent:4041",
+    "tenant": "openiot",
+    "scope": "/"
+  },
   "quantumleap": {
     "serverType": "quantumleap",
     "serverHost": "http://quantumleap:8668",
@@ -72,6 +78,7 @@ ngsi server list --pretty
 -   [NGSIv2 CRUD](ngsi-v2-crud.md)
 -   [STH-Comet](comet.md)
 -   [QuantumLeap](quantumleap.md)
+-   [IoT Agent](iot-agent.md)
 
 ### Stop
 

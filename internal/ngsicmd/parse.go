@@ -130,10 +130,15 @@ func parseOptions(c *cli.Context, args []string, opts []string) *url.Values {
 				value := c.Int64(key)
 				v.Set(key, strconv.FormatInt(value, 10))
 			} else {
-				if key == "query" {
-					v.Set("q", c.String(key))
-				} else {
+				switch key {
+				default:
 					v.Set(key, c.String(key))
+				case "query":
+					v.Set("q", c.String(key))
+				case "device":
+					if b := c.Bool(("device")); b {
+						v.Set(key, "true")
+					}
 				}
 			}
 		}

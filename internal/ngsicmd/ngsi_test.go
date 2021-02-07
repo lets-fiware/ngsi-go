@@ -121,6 +121,15 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"hdelete", "attr"}, rc: 1},
 		{args: []string{"hdelete", "entity"}, rc: 1},
 		{args: []string{"hdelete", "entities"}, rc: 1},
+		{args: []string{"services", "list"}, rc: 1},
+		{args: []string{"services", "create"}, rc: 1},
+		{args: []string{"services", "update"}, rc: 1},
+		{args: []string{"services", "delete"}, rc: 1},
+		{args: []string{"devices", "list"}, rc: 1},
+		{args: []string{"devices", "create"}, rc: 1},
+		{args: []string{"devices", "get"}, rc: 1},
+		{args: []string{"devices", "update"}, rc: 1},
+		{args: []string{"devices", "delete"}, rc: 1},
 	}
 
 	for _, c := range cases {

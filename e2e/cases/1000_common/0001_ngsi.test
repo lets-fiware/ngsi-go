@@ -53,6 +53,9 @@ COMMANDS:
      receiver  notification receiver
      template  create template of subscription or registration
      version   print the version
+   IoT Agent:
+     devices   devices command for IoT Agent
+     services  services command for IoT Agent
    MANAGEMENT:
      broker    manage config for broker
      context   manage @context

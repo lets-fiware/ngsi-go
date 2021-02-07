@@ -113,6 +113,7 @@ func getNgsiApp() *cli.App {
 			&createCmd,
 			&debugCmd,
 			&deleteCmd,
+			&devicesCmd,
 			&documentsCmd,
 			&getCmd,
 			&hDeleteCmd,
@@ -125,6 +126,7 @@ func getNgsiApp() *cli.App {
 			&replaceCmd,
 			&settingsCmd,
 			&serverCmd,
+			&servicesCmd,
 			&templateCmd,
 			&tokenCmd,
 			&updateCmd,
@@ -1583,6 +1585,146 @@ var hDeleteCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return cometAttrDelete(c)
+			},
+		},
+	},
+}
+
+var servicesCmd = cli.Command{
+	Name:     "services",
+	Usage:    "services command for IoT Agent",
+	Category: "IoT Agent",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+		tenantFlag,
+		scopeFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list configuration group",
+			Flags: []cli.Flag{
+				servicesLimitFlag,
+				servicesOffsetFlag,
+				resourceFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasServicesList(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create a configuration group",
+			Flags: []cli.Flag{
+				servicesDataFlag,
+				apikeyFlag,
+				servicesTokenFlag,
+				cbrokerFlag,
+				typeFlag,
+				resourceFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasServicesCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update a configuration group",
+			Flags: []cli.Flag{
+				servicesDataFlag,
+				apikeyFlag,
+				servicesTokenFlag,
+				cbrokerFlag,
+				typeFlag,
+				resourceFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasServicesUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "remove a configuration group",
+			Flags: []cli.Flag{
+				apikeyFlag,
+				resourceFlag,
+				servicesDeviceFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasServicesDelete(c)
+			},
+		},
+	},
+}
+
+var devicesCmd = cli.Command{
+	Name:     "devices",
+	Usage:    "devices command for IoT Agent",
+	Category: "IoT Agent",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+		tenantFlag,
+		scopeFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list all devices",
+			Flags: []cli.Flag{
+				devicesLimit,
+				devicesOffset,
+				devicesDetailed,
+				devicesEntity,
+				devicesProtocol,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasDevicesList(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create a device",
+			Flags: []cli.Flag{
+				devicesDataFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasDevicesCreate(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get a device",
+			Flags: []cli.Flag{
+				devicesIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasDevicesGet(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update a device",
+			Flags: []cli.Flag{
+				devicesIDFlag,
+				devicesDataFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasDevicesUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete a device",
+			Flags: []cli.Flag{
+				devicesIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return idasDevicesDelete(c)
 			},
 		},
 	},

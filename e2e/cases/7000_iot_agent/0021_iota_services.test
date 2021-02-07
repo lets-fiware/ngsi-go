@@ -1,0 +1,131 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+#
+# 0001 apikey
+#
+$apikey=4jggokgpepnvsb2uv4s40d59ov
+
+#
+# 0001 Create services
+#
+ngsi services --host iota create --data \
+'{
+  "services": [
+    {
+      "apikey": "${apikey}",
+      "cbroker": "http://orion:1026",
+      "entity_type": "Thing",
+      "resource": "/iot/d"
+    }
+  ]
+}'
+
+```
+```
+
+#
+# 0012 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 1,
+  "services": [
+    {
+      "commands": [],
+      "lazy": [],
+      "attributes": [],
+      "_id": "REGEX(.*)",
+      "resource": "/iot/d",
+      "apikey": "4jggokgpepnvsb2uv4s40d59ov",
+      "service": "openiot",
+      "subservice": "/",
+      "__v": 0,
+      "static_attributes": [],
+      "internal_attributes": [],
+      "entity_type": "Thing"
+    }
+  ]
+}
+```
+
+#
+# 0013 Update service
+#
+ngsi services update --resource /iot/d --apikey 4jggokgpepnvsb2uv4s40d59ov --type Event
+
+```
+```
+
+#
+# 0014 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 1,
+  "services": [
+    {
+      "commands": [],
+      "lazy": [],
+      "attributes": [],
+      "_id": "REGEX(.*)",
+      "resource": "/iot/d",
+      "apikey": "4jggokgpepnvsb2uv4s40d59ov",
+      "service": "openiot",
+      "subservice": "/",
+      "__v": 0,
+      "static_attributes": [],
+      "internal_attributes": [],
+      "entity_type": "Event"
+    }
+  ]
+}
+```
+
+#
+# 0015 Delete service
+#
+ngsi services delete --apikey $apikey --resource /iot/d
+
+```
+```
+
+#
+# 0016 List services
+#
+ngsi services list --pretty
+
+```
+{
+  "count": 0,
+  "services": []
+}
+```

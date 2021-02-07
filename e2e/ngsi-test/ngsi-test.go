@@ -44,11 +44,13 @@ import (
 )
 
 var (
-	gConfig     = flag.String("config", "./.ngsi-test-config.json", "config file for ngsi-test")
-	gNgsiConfig = flag.String("ngsi-config", "", "config file for NGSI Go")
-	gNgsiCache  = flag.String("ngsi-cache", "", "cahce file for NGSI Go")
-	gVerbose    = flag.Bool("verbose", false, "verobose")
-	gArgs       = flag.Bool("args", false, "")
+	gConfig        = flag.String("config", "./.ngsi-test-config.json", "config file for ngsi-test")
+	gNgsiConfig    = flag.String("ngsi-config", "", "config file for NGSI Go")
+	gNgsiCache     = flag.String("ngsi-cache", "", "cahce file for NGSI Go")
+	gSkipCases     = flag.String("skip", "", "skip test cases nubmers")
+	gVerbose       = flag.Bool("verbose", false, "verobose")
+	gArgs          = flag.Bool("args", false, "")
+	gSkipCasesList = []string{}
 )
 
 var val map[string][]string
@@ -133,6 +135,11 @@ func runTestCases(fileName string) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
+	gSkipCasesList = strings.Split(*gSkipCases, ",")
+	if len(*gSkipCases) == 0 {
+		gSkipCasesList = nil
+	}
+
 	if fInfo.IsDir() {
 		dirs := 0
 		files := 0
@@ -155,6 +162,12 @@ func runTestCases(fileName string) error {
 
 func runTestCaseDir(dirName string, dirs, files, cases *int) error {
 	const funcName = "runTestCaseFile"
+
+	for _, skip := range gSkipCasesList {
+		if strings.HasPrefix(dirName, skip) {
+			return nil
+		}
+	}
 
 	fmt.Println("directory: " + dirName)
 	*dirs++
