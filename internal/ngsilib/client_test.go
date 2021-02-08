@@ -87,6 +87,21 @@ func TestInitHeaderTenant(t *testing.T) {
 	}
 }
 
+func TestInitHeaderTenantLD(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.XAuthToken = false
+	client.Tenant = "fiware"
+	client.NgsiType = ngsiLd
+
+	err := client.InitHeader()
+	actual := client.Headers["NGSILD-Tenant"]
+	expected := client.Tenant
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestInitHeaderErrorTenant(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
 	client.XAuthToken = false
