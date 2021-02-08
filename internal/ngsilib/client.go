@@ -75,7 +75,11 @@ func (client *Client) InitHeader() error {
 		if err := client.CheckTenant(client.Tenant); err != nil {
 			return &LibError{funcName, 1, err.Error(), err}
 		}
-		client.Headers["Fiware-Service"] = client.Tenant
+		if client.NgsiType == ngsiLd {
+			client.Headers["NGSILD-Tenant"] = client.Tenant
+		} else {
+			client.Headers["Fiware-Service"] = client.Tenant
+		}
 	}
 	if client.NgsiType == ngsiV2 {
 		if client.Scope != "" {
