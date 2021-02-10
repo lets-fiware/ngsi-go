@@ -25,21 +25,50 @@
 # SOFTWARE.
 
 #
-# 0001 wait for services
+# 0001 ngsi admin --host perseo log --pretty
 #
-wait ${accumulator}/health
-wait ${atcontext}/health
-wait ${csource}/health
-wait ${oauth}/health
-wait ${orion}/version
-wait ${orion-ld}/version
-wait ${quantumleap}/version
-wait ${comet}/version
-wait ${iota}/iot/about
-wait ${perseo}/version
-wait ${perseo-core}/perseo-core/version
+ngsi admin --host perseo log --pretty
+
+```
+{
+  "level": "INFO"
+}
+```
 
 #
-# 0002 check health status
+# 0002 ngsi admin log --level DEBUG
 #
-wait ${quantumleap}/health --retry 600 --status pass
+ngsi admin log --level DEBUG
+
+```
+```
+
+#
+# 0003 ngsi admin --host perseo log --pretty
+#
+ngsi admin --host perseo log --pretty
+
+```
+{
+  "level": "DEBUG"
+}
+```
+
+#
+# 0004 ngsi admin log --level INFO
+#
+ngsi admin log --level info
+
+```
+```
+
+#
+# 0005 ngsi admin --host perseo log --pretty
+#
+ngsi admin --host perseo log --pretty
+
+```
+{
+  "level": "INFO"
+}
+```

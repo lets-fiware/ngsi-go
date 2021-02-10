@@ -140,6 +140,9 @@ Specify the following value to `--serverType` option when you add an alias for F
 | ----------- | ----------- |
 | STH-Comet   | comet       |
 | QuantumLeap | quantumleap |
+| IoT Agent   | iota        |
+| Perseo FE   | perseo      |
+| Perseo Core | perseo-core |
 
 ### Parameters for Identity Managers
 

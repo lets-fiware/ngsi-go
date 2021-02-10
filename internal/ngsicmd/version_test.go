@@ -125,6 +125,30 @@ func TestVersionIotaPretty(t *testing.T) {
 	}
 }
 
+func TestVersionPerseoCore(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/perseo-core/version"
+	reqRes.ResBody = []byte("1.5.0")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=perseo-core"})
+
+	err := cbVersion(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "1.5.0"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestVersionErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 

@@ -65,6 +65,10 @@ ngsi server list --pretty
     "tenant": "openiot",
     "scope": "/"
   },
+  "perseo": {
+    "serverType": "perseo",
+    "serverHost": "http://perseo:9090"
+  },
   "quantumleap": {
     "serverType": "quantumleap",
     "serverHost": "http://quantumleap:8668",
@@ -79,6 +83,7 @@ ngsi server list --pretty
 -   [STH-Comet](comet.md)
 -   [QuantumLeap](quantumleap.md)
 -   [IoT Agent](iot-agent.md)
+-   [PERSEO](perseo.md)
 
 ### Stop
 

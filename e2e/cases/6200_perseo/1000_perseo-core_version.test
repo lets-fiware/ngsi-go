@@ -25,21 +25,10 @@
 # SOFTWARE.
 
 #
-# 0001 wait for services
+# 0001 ngsi version --host perseo --pretty
 #
-wait ${accumulator}/health
-wait ${atcontext}/health
-wait ${csource}/health
-wait ${oauth}/health
-wait ${orion}/version
-wait ${orion-ld}/version
-wait ${quantumleap}/version
-wait ${comet}/version
-wait ${iota}/iot/about
-wait ${perseo}/version
-wait ${perseo-core}/perseo-core/version
+ngsi version --host perseo-core --pretty
 
-#
-# 0002 check health status
-#
-wait ${quantumleap}/health --retry 600 --status pass
+```
+1.6.0
+```

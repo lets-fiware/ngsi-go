@@ -32,6 +32,14 @@
       "serverHost": "http://quantumleap:8668",
       "tenant": "openiot",
       "scope": "/"
+    },
+    "perseo": {
+      "serverType": "perseo",
+      "serverHost": "http://perseo:9090"
+    },
+    "perseo-core": {
+      "serverType": "perseo-core",
+      "serverHost": "http://perseo-core:8080"
     }
   },
   "settings": {

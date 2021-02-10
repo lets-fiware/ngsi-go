@@ -136,7 +136,7 @@ func (client *Client) SetAcceptJSON() {
 
 // SetPath is ...
 func (client *Client) SetPath(path string) {
-	if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/health", "/STH", "/iot"}, path) {
+	if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/health", "/STH", "/iot", "/rules", "/perseo-core"}, path) {
 		if client.Server.ServerType == "broker" {
 			if client.NgsiType == ngsiLd {
 				path = "/ngsi-ld/v1" + path

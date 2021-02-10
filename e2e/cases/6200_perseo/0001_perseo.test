@@ -25,52 +25,22 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi services
+# 0001 ngsi rules
 #
-ngsi services
+ngsi rules
 
 ```
 NAME:
-   ngsi services - services command for IoT Agent
+   ngsi rules - rules command for PERSEO
 
 USAGE:
-   ngsi services command [command options] [arguments...]
+   ngsi rules command [command options] [arguments...]
 
 COMMANDS:
-   list     list configuration group
-   create   create a configuration group
-   update   update a configuration group
-   delete   remove a configuration group
-   help, h  Shows a list of commands or help for one command
-
-OPTIONS:
-   --host value, -h value     host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --help                     show help (default: false)
-   --version, -v              print the version (default: false)
-   
-```
-
-#
-# 0002 ngsi devices
-#
-ngsi devices
-
-```
-NAME:
-   ngsi devices - devices command for IoT Agent
-
-USAGE:
-   ngsi devices command [command options] [arguments...]
-
-COMMANDS:
-   list     list all devices
-   create   create a device
-   get      get a device
-   update   update a device
-   delete   delete a device
+   list     list all plain rules
+   create   create a plain rule
+   get      get a plain rule
+   delete   delete a plain rule
    help, h  Shows a list of commands or help for one command
 
 OPTIONS:
@@ -89,17 +59,15 @@ OPTIONS:
 ngsi server list
 
 ```
-comet iota quantumleap
+comet iota perseo perseo-core quantumleap
 ```
 
 #
-# 0012 server list --host iota
+# 0012 server list --host perseo
 #
-ngsi server list --host iota
+ngsi server list --host perseo
 
 ```
-serverType iota
-serverHost http://iot-agent:4041
-FIWARE-Serivce openiot
-FIWARE-SerivcePath /
+serverType perseo
+serverHost http://perseo:9090
 ```

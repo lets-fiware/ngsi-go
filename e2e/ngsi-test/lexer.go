@@ -254,10 +254,15 @@ func (l *lexer) readSingleQuotedWord() error {
 		}
 		if escaped {
 			escaped = false
+			if c == '\'' {
+				l.s = l.s[:len(l.s)-2]
+				l.s += "'"
+			} else if c == '\\' {
+				l.s = l.s[:len(l.s)-1]
+                        }
 		} else {
 			if c == '\\' {
 				escaped = true
-				l.s = l.s[:len(l.s)-1]
 			} else if c == '\'' {
 				l.s = l.s[:len(l.s)-1]
 				break

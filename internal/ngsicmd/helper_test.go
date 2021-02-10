@@ -76,6 +76,14 @@ var configData = `{
 	  "iota": {
 		"serverHost": "https://iota",
 		"serverType": "iota"
+	  },
+	  "perseo": {
+		"serverHost": "https://perseo",
+		"serverType": "perseo"
+	  },
+	  "perseo-core": {
+		"serverHost": "https://perseo-core",
+		"serverType": "perseo-core"
 	  }
 	},
 	"contexts": {

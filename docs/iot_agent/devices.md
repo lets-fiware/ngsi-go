@@ -1,6 +1,6 @@
 # services - IoT Agent command
 
-This command gets an entity, an attribute, multiple attributes, a subscription or a registration.
+This command allows you to list, create, update and delete device entry for IoT Agent.
 
 -   [List all devices](#list-all-devices)
 -   [Create a device](#create-a-device)
@@ -104,9 +104,9 @@ ngsi devices list --pretty
 
 <a name="create-a-device"></a>
 
-## Create a devices
+## Create a device
 
-This command creates a devices.
+This command creates a device.
 
 ```console
 ngsi devices [command options] create [options]
@@ -148,9 +148,9 @@ ngsi devices create --data \
 
 <a name="get-a-device"></a>
 
-## Get a devices
+## Get a device
 
-This command gets a devices.
+This command gets a device.
 
 ```console
 ngsi devices [command options] get [options]
@@ -223,9 +223,9 @@ ngsi devices get --id sensor001 --pretty
 
 <a name="update-a-device"></a>
 
-## Update a devices
+## Update a device
 
-This command updates a devices.
+This command updates a device.
 
 ```console
 ngsi devices [command options] update [options]
@@ -251,9 +251,9 @@ ngsi devices update \
 
 <a name="delete-a-device"></a>
 
-## Delete a devices
+## Delete a device
 
-This command deletes a devices.
+This command deletes a device.
 
 ```console
 ngsi devices [command options] delete [options]
