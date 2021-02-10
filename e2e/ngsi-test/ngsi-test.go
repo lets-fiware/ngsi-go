@@ -47,7 +47,7 @@ var (
 	gConfig        = flag.String("config", "./.ngsi-test-config.json", "config file for ngsi-test")
 	gNgsiConfig    = flag.String("ngsi-config", "", "config file for NGSI Go")
 	gNgsiCache     = flag.String("ngsi-cache", "", "cahce file for NGSI Go")
-	gSkipCases     = flag.String("skip", "", "skip test cases nubmers")
+	gSkipCases     = flag.String("skip", "", "test case numbers which is skipped")
 	gVerbose       = flag.Bool("verbose", false, "verobose")
 	gArgs          = flag.Bool("args", false, "")
 	gSkipCasesList = []string{}

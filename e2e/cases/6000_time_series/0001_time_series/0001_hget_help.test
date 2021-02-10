@@ -37,7 +37,7 @@ USAGE:
    ngsi hget command [command options] [arguments...]
 
 COMMANDS:
-   attr      hstory of an attribute
+   attr      history of an attribute
    attrs     history of attributes
    entities  list of all the entity id
    help, h   Shows a list of commands or help for one command

@@ -1466,7 +1466,7 @@ var hGetCmd = cli.Command{
 	Subcommands: []*cli.Command{
 		{
 			Name:  "attr",
-			Usage: "hstory of an attribute",
+			Usage: "history of an attribute",
 			Flags: []cli.Flag{
 				typeFlag,
 				idFlag,
