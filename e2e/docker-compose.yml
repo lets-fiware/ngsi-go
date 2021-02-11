@@ -71,8 +71,6 @@ services:
     image: fiware/iotagent-ul:1.15.0
     depends_on:
       - mongo
-    ports:
-      - 4041:4041
     environment:
       - IOTA_CB_HOST=orion
       - IOTA_CB_PORT=1026
@@ -85,6 +83,22 @@ services:
       - IOTA_MONGO_DB=iotagentul
       - IOTA_HTTP_PORT=7896
       - IOTA_PROVIDER_URL=http://iot-agent:4041
+
+  perseo:
+    image: telefonicaiot/perseo-fe:1.15.0
+    restart: always
+    depends_on:
+      - mongo
+      - perseo-core
+    environment:
+      - PERSEO_MONGO_ENDPOINT=mongo
+      - PERSEO_CORE_URL=http://perseo-core:8080
+      - PERSEO_ORION_URL=http://orion:1026/
+
+  perseo-core:
+    image: telefonicaiot/perseo-core:1.6.0
+    environment:
+      - PERSEO_FE_URL=http://perseo:9090
 
   accumulator:
     build: ./server/accumulator

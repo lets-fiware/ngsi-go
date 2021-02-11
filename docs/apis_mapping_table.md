@@ -46,16 +46,40 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 
 ## IoT Agent Provision API
 
-| IoT Agent Provision API                            | NGSI Go commands                                                       |
-| -------------------------------------------------- | ---------------------------------------------------------------------- |
-| GET /services                                      | services list                                                          |
-| POST /services                                     | services create                                                        |
-| PUT /serivces                                      | services update                                                        |
-| DELETE /services                                   | services delete                                                        |
-| GET /devices                                       | devices list                                                           |
-| GET /devices/{device_id}                           | devices get --id {device_id}                                           |
-| POST /devices/{device_id}                          | devices create --id {device_id}                                        |
-| PUT /devices/{device_id}                           | devices update --id {device_id}                                        |
-| DELETE /devices/{device_id}                        | devices delete --id {device_id}                                        |
+| IoT Agent Provision API     | NGSI Go commands                |
+| --------------------------- | ------------------------------- |
+| GET /services               | services list                   |
+| POST /services              | services create                 |
+| PUT /serivces               | services update                 |
+| DELETE /services            | services delete                 |
+| GET /devices                | devices list                    |
+| GET /devices/{device_id}    | devices get --id {device_id}    |
+| POST /devices/{device_id}   | devices create --id {device_id} |
+| PUT /devices/{device_id}    | devices update --id {device_id} |
+| DELETE /devices/{device_id} | devices delete --id {device_id} |
 
 -   [IoT Agent Provision API - GitHub](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib)
+
+## PERSEO FE
+
+| PESEO FE API                  | NGSI Go commands             |
+| ----------------------------- | ---------------------------- |
+| POST /notices                 | (not yet implemented)        |
+| GET /rules                    | rules list                   |
+| GET /rules/{id}               | rules get --id {rulesId}     |
+| POST /rules                   | rules create                 |
+| DELETE /rules/{id}            | rules delete --id {rulesId}  |
+| GET /verion                   | version                      |
+| PUT /admin/log?level={level}  | admin log --level {level}    |
+| GET /admin/log                | admin log                    |
+| GET /admin/metrics            | admin metrics                |
+| GET /admin/metrics?reset=true | admin emtrics --reset        |
+| DELETE /admin/metrics         | admin metrics --delete       |
+
+-   [PERSEO FE API - GitHub](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md)
+
+## PERSEO CORE
+
+| PESEO CORE API           | NGSI Go commands |
+| ------------------------ | ---------------- |
+| GET /perseo-core/version | version          |

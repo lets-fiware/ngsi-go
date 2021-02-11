@@ -1,6 +1,6 @@
 # services - IoT Agent command
 
-This command gets an entity, an attribute, multiple attributes, a subscription or a registration.
+This command allows you to list, create, update and delete service entry for IoT Agent.
 
 -   [List configuration groups](#list-configuration-group)
 -   [Create a configuration group](#create-a-configuration-group)

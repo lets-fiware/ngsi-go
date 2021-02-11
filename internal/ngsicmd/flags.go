@@ -804,3 +804,33 @@ var (
 		Usage:   "logging",
 	}
 )
+
+// PERSEO FE
+var (
+	perseoRulesNameFlag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "rule name",
+	}
+	perseoRulesDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "rule data",
+	}
+	perseoRulesLimitFlag = &cli.Int64Flag{
+		Name:  "limit",
+		Usage: "maximum number of rules",
+	}
+	perseoRulesOffsetFlag = &cli.Int64Flag{
+		Name:  "offset",
+		Usage: "offset to skip a given number of rules at the beginning",
+	}
+	perseoRulesRaw = &cli.BoolFlag{
+		Name:  "raw",
+		Usage: "print raw data",
+	}
+	perseoRulesCount = &cli.BoolFlag{
+		Name:  "count",
+		Usage: "print number of rules",
+	}
+)

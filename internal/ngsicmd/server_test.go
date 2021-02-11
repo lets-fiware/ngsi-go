@@ -47,7 +47,7 @@ func TestServersList(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "comet iota ql\n"
+		expected := "comet iota perseo perseo-core ql\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -83,7 +83,7 @@ func TestServersListJSON(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"https://comet\"},\"iota\":{\"serverType\":\"iota\",\"serverHost\":\"https://iota\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"https://quantumleap\"}}"
+		expected := "{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"https://comet\"},\"iota\":{\"serverType\":\"iota\",\"serverHost\":\"https://iota\"},\"perseo\":{\"serverType\":\"perseo\",\"serverHost\":\"https://perseo\"},\"perseo-core\":{\"serverType\":\"perseo-core\",\"serverHost\":\"https://perseo-core\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"https://quantumleap\"}}"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -101,7 +101,7 @@ func TestServersListJSONPretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"comet\": {\n    \"serverType\": \"comet\",\n    \"serverHost\": \"https://comet\"\n  },\n  \"iota\": {\n    \"serverType\": \"iota\",\n    \"serverHost\": \"https://iota\"\n  },\n  \"ql\": {\n    \"serverType\": \"quantumleap\",\n    \"serverHost\": \"https://quantumleap\"\n  }\n}\n"
+		expected := "{\n  \"comet\": {\n    \"serverType\": \"comet\",\n    \"serverHost\": \"https://comet\"\n  },\n  \"iota\": {\n    \"serverType\": \"iota\",\n    \"serverHost\": \"https://iota\"\n  },\n  \"perseo\": {\n    \"serverType\": \"perseo\",\n    \"serverHost\": \"https://perseo\"\n  },\n  \"perseo-core\": {\n    \"serverType\": \"perseo-core\",\n    \"serverHost\": \"https://perseo-core\"\n  },\n  \"ql\": {\n    \"serverType\": \"quantumleap\",\n    \"serverHost\": \"https://quantumleap\"\n  }\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()

@@ -124,6 +124,7 @@ func getNgsiApp() *cli.App {
 			&removeCmd,
 			&receiverCmd,
 			&replaceCmd,
+			&perseoRulesCmd,
 			&settingsCmd,
 			&serverCmd,
 			&servicesCmd,
@@ -1725,6 +1726,69 @@ var devicesCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return idasDevicesDelete(c)
+			},
+		},
+	},
+}
+
+// PERSEO FE Rules
+var perseoRulesCmd = cli.Command{
+	Name:     "rules",
+	Usage:    "rules command for PERSEO",
+	Category: "Context-Aware CEP",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+		tenantFlag,
+		scopeFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list all plain rules",
+			Flags: []cli.Flag{
+				perseoRulesLimitFlag,
+				perseoRulesOffsetFlag,
+				perseoRulesCount,
+				perseoRulesRaw,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return perseoRulesList(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create a plain rule",
+			Flags: []cli.Flag{
+				perseoRulesDataFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return perseoRulesCreate(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get a plain rule",
+			Flags: []cli.Flag{
+				perseoRulesNameFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return perseoRulesGet(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete a plain rule",
+			Flags: []cli.Flag{
+				perseoRulesNameFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return perseoRulesDelete(c)
 			},
 		},
 	},

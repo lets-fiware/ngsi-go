@@ -49,12 +49,12 @@ func adminLog(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"broker"})
+	client, err := newClient(ngsi, c, false, []string{"broker", "perseo"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if client.IsNgsiLd() {
+	if client.IsNgsiLd() && client.Server.ServerType == "broker" {
 		return &ngsiCmdError{funcName, 3, "only available on NGSIv2", err}
 	}
 
@@ -68,8 +68,10 @@ func adminLog(c *cli.Context) error {
 		}
 
 		client.SetPath(path)
-		v := parseOptions(c, []string{"level"}, nil)
-		client.SetQuery(v)
+
+		v := url.Values{}
+		v.Set("level", strings.ToUpper(c.String("level")))
+		client.SetQuery(&v)
 
 		res, body, err := client.HTTPPut("")
 		if err != nil {
@@ -190,12 +192,12 @@ func adminMetrics(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"broker"})
+	client, err := newClient(ngsi, c, false, []string{"broker", "perseo"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if client.IsNgsiLd() {
+	if client.IsNgsiLd() && client.Server.ServerType == "broker" {
 		return &ngsiCmdError{funcName, 3, "only available on NGSIv2", err}
 	}
 

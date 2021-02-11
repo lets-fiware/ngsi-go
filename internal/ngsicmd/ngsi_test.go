@@ -130,6 +130,10 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"devices", "get"}, rc: 1},
 		{args: []string{"devices", "update"}, rc: 1},
 		{args: []string{"devices", "delete"}, rc: 1},
+		{args: []string{"rules", "list"}, rc: 1},
+		{args: []string{"rules", "create"}, rc: 1},
+		{args: []string{"rules", "get"}, rc: 1},
+		{args: []string{"rules", "delete"}, rc: 1},
 	}
 
 	for _, c := range cases {

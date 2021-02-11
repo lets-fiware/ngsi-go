@@ -1,0 +1,138 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi admin --host perseo metrics --pretty
+#
+ngsi rules --help
+
+```
+NAME:
+   ngsi rules - rules command for PERSEO
+
+USAGE:
+   ngsi rules command [command options] [arguments...]
+
+COMMANDS:
+   list     list all plain rules
+   create   create a plain rule
+   get      get a plain rule
+   delete   delete a plain rule
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --host value, -h value     host or alias
+   --token value              oauth token
+   --service value, -s value  FIWARE Service
+   --path value, -p value     FIWARE ServicePath
+   --help                     show help (default: false)
+   --version, -v              print the version (default: false)
+   
+```
+
+#
+# 0010 rules list -raw --prett
+#
+ngsi rules --host perseo list --raw --pretty
+
+```
+{
+  "error": null,
+  "data": [],
+  "count": 0
+}
+```
+
+#
+# 0011 rules create
+#
+ngsi rules --host perseo create \
+--data '{
+    "name": "blood_rule_update",
+    "text": "select *, *, ev.BloodPressure? as Pressure, ev.id? as Meter from pattern [every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5 and type=\"BloodMeter\")]",
+    "action": {
+        "type": "update",
+        "parameters": {
+            "attributes": [
+                {
+                    "name": "abnormal",
+                    "value": "true",
+                    "type": "boolean"
+                }
+            ]
+        }
+    }
+}'
+
+```
+```
+
+#
+# 0012 rules list
+#
+ngsi rules list
+
+```
+blood_rule_update
+```
+
+#
+# 0013 rules get --name
+#
+ngsi rules get --name blood_rule_update --pretty
+
+```
+{
+  "error": null,
+  "data": {
+    "_id": "REGEX(.*)",
+    "name": "blood_rule_update",
+    "text": "select \"blood_rule_update\" as ruleName, *, *, ev.BloodPressure? as Pressure, ev.id? as Meter from pattern [every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5 and type=\"BloodMeter\")]",
+    "action": {
+      "type": "update",
+      "parameters": {
+        "attributes": [
+          {
+            "name": "abnormal",
+            "value": "true",
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    "subservice": "/",
+    "service": "unknownt"
+  }
+}
+```
+
+#
+# 0013 rules delete --name
+#
+ngsi rules delete --name blood_rule_update
+
+```
+```

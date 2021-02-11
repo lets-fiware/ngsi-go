@@ -31,6 +31,8 @@ nav:
   - 'IoT Agent commnad':
     -   'services': iot_agent/services.md
     -   'devices': iot_agent/devices.md
+  - 'Context-Aware CEP':
+    -   'rules': cep/rules.md
   - 'Convenience command':
     -   'admin': convenience/admin.md
     -   'apis': convenience/apis.md
