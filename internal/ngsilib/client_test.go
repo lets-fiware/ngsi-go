@@ -39,6 +39,16 @@ import (
 
 func TestInitHeader(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
+
+	err := client.InitHeader()
+
+	assert.NoError(t, err)
+}
+
+func TestInitHeaderKeyrock(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Token: "1234"}
+	client.Server = &Server{ServerType: "keyrock"}
 
 	err := client.InitHeader()
 
@@ -47,6 +57,7 @@ func TestInitHeader(t *testing.T) {
 
 func TestInitHeaderXAuthToken(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.XAuthToken = true
 	client.Token = "000000000000000000000"
 
@@ -61,6 +72,7 @@ func TestInitHeaderXAuthToken(t *testing.T) {
 
 func TestInitHeaderAuthorization(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.XAuthToken = false
 	client.Token = "000000000000000000000"
 
@@ -75,6 +87,7 @@ func TestInitHeaderAuthorization(t *testing.T) {
 
 func TestInitHeaderTenant(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.XAuthToken = false
 	client.Tenant = "fiware"
 
@@ -89,6 +102,7 @@ func TestInitHeaderTenant(t *testing.T) {
 
 func TestInitHeaderTenantLD(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.XAuthToken = false
 	client.Tenant = "fiware"
 	client.NgsiType = ngsiLd
@@ -104,6 +118,7 @@ func TestInitHeaderTenantLD(t *testing.T) {
 
 func TestInitHeaderErrorTenant(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.XAuthToken = false
 	client.Tenant = "FIWARE"
 
@@ -118,6 +133,7 @@ func TestInitHeaderErrorTenant(t *testing.T) {
 
 func TestInitHeaderNgsiV2(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	err := client.InitHeader()
@@ -127,6 +143,7 @@ func TestInitHeaderNgsiV2(t *testing.T) {
 
 func TestInitHeaderNgsiV2Scope(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 	client.Scope = "/iot"
 
@@ -155,6 +172,7 @@ func TestInitHeaderErrorNgsiV2Scope(t *testing.T) {
 
 func TestInitHeaderNgsiLD(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiLd
 
 	err := client.InitHeader()
@@ -164,6 +182,7 @@ func TestInitHeaderNgsiLD(t *testing.T) {
 
 func TestInitHeaderNgsiLdLink(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiLd
 	link := "http://context"
 	client.Link = &link
@@ -179,6 +198,7 @@ func TestInitHeaderNgsiLdLink(t *testing.T) {
 
 func TestSetHeadersNil(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	client.SetHeaders(nil)
@@ -186,6 +206,7 @@ func TestSetHeadersNil(t *testing.T) {
 
 func TestSetHeaders(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	headers := make(map[string]string)
@@ -197,6 +218,7 @@ func TestSetHeaders(t *testing.T) {
 
 func TestSetHeader(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	client.SetHeader("Fiware-Service", "iot")
@@ -206,6 +228,7 @@ func TestSetHeader(t *testing.T) {
 
 func TestRemoveHeader(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	client.SetHeader("Fiware-Service", "iot")
@@ -219,6 +242,7 @@ func TestRemoveHeader(t *testing.T) {
 
 func TestSetContentType(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	client.SetContentType()
@@ -228,18 +252,9 @@ func TestSetContentType(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestSetAcceptJSON(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
-
-	client.SetAcceptJSON()
-
-	actual := client.Headers["Accept"]
-	expected := "application/json"
-	assert.Equal(t, expected, actual)
-}
-
 func TestSetContentTypeLD(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiLd
 	client.Link = nil
 
@@ -250,8 +265,30 @@ func TestSetContentTypeLD(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestSetContentJSON(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+
+	client.SetContentJSON()
+
+	actual := client.Headers["Content-Type"]
+	expected := "application/json"
+	assert.Equal(t, expected, actual)
+}
+
+func TestSetAcceptJSON(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
+
+	client.SetAcceptJSON()
+
+	actual := client.Headers["Accept"]
+	expected := "application/json"
+	assert.Equal(t, expected, actual)
+}
+
 func TestSetPath(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	client.SetPath("/version")
@@ -263,6 +300,7 @@ func TestSetPath(t *testing.T) {
 
 func TestSetPathV2(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 
 	client.SetPath("/entities")
@@ -274,6 +312,7 @@ func TestSetPathV2(t *testing.T) {
 
 func TestSetPathLD(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiLd
 
 	client.SetPath("/entities")
@@ -285,6 +324,7 @@ func TestSetPathLD(t *testing.T) {
 
 func TestSetPathV2APIPath(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
+	client.Server = &Server{ServerType: "broker"}
 	client.NgsiType = ngsiV2
 	client.APIPathBefore = "/"
 	client.APIPathAfter = "/orion"

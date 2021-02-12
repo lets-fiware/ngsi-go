@@ -257,6 +257,34 @@ func TestNgsiGetToken(t *testing.T) {
 	}
 }
 
+func TestNgsiGetTokenKeyrock(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"expires":1613170563,"keyrock":{"token":{"methods":["password"],"expires_at":"2021-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"keyrock_token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	token := "1234"
+	ngsi.tokenList["9e7067026d0aac494e8fedf66b1f585e79f52935"] = TokenInfo{KeyrockToken: &token, Expires: 9613169598}
+
+	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+
+	actual, err := ngsi.GetToken(client)
+
+	if assert.NoError(t, err) {
+		expected := "1234"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestNgsiGetTokenExpires(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
@@ -264,15 +292,46 @@ func TestNgsiGetTokenExpires(t *testing.T) {
 	ngsi.LogWriter = &bytes.Buffer{}
 	ngsi.HTTP = &MockHTTP{}
 	ngsi.TimeLib = &MockTimeLib{unixTime: 0}
+	token := OauthToken{AccessToken: "123456"}
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
-	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Expires: 3600}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Expires: 3600, OauthToken: &token}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
 
+	actual, err := ngsi.GetToken(client)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "123456", actual)
+	}
+}
+
+func TestNgsiGetTokenErrorTokenList(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"expires":1613170563,"keyrock":{"token":{"methods":["password"],"expires_at":"2021-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"keyrock_token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	ngsi.tokenList["9e7067026d0aac494e8fedf66b1f585e79f52935"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+
 	_, err := ngsi.GetToken(client)
 
-	assert.NoError(t, err)
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "token list error", ngsiErr.Message)
+	}
 }
 
 func TestNgsiGetTokenNotFound(t *testing.T) {
@@ -290,7 +349,7 @@ func TestNgsiGetTokenNotFound(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "username is required", ngsiErr.Message)
 	}
 }
@@ -316,6 +375,31 @@ func TestGetToken(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestGetTokenKeyrockIDM(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"expires":1613170563,"keyrock":{"token":{"methods":["password"],"expires_at":"2021-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"keyrock_token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+
+	actual, err := getToken(ngsi, client)
+
+	if assert.NoError(t, err) {
+		expected := ""
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -572,7 +656,7 @@ func TestGetTokenErrorJSONUnmarshal6(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
@@ -597,7 +681,7 @@ func TestGetTokenErrorJSONUnmarshal7(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
 	_, err := getToken(ngsi, client)
 
@@ -605,6 +689,32 @@ func TestGetTokenErrorJSONUnmarshal7(t *testing.T) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "decode error", ngsiErr.Message)
+	}
+}
+
+func TestGetTokenErrorKeyrockIDM(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`"tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"expires":1613170563,"keyrock":{"token":{"methods":["password"],"expires_at":"2021-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"keyrock_token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+
+	_, err := getToken(ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "json: cannot unmarshal string into Go value of type ngsilib.KeyrockToken Field: (8) \"tokens\":{\"9e7067026d0a", ngsiErr.Message)
 	}
 }
 

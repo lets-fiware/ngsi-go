@@ -117,7 +117,7 @@ ngsi broker delete --host orion-ld2
 # 0008 Add broker with keyrock
 #
 ngsi broker add \
---host keyrock \
+--host idm \
 --brokerHost https://orion-ld \
 --ngsiType ld \
 --idmType keyrock \
@@ -133,7 +133,7 @@ ngsi broker add \
 #
 # 0009 Check broker info
 # 
-ngsi broker get --host keyrock
+ngsi broker get --host idm
 
 ```
 brokerHost https://orion-ld
@@ -149,7 +149,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 #
 # 0010 Delete broker
 #
-ngsi broker delete --host keyrock
+ngsi broker delete --host idm
 
 ```
 ```

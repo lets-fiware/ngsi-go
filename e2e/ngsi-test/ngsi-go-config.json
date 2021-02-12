@@ -17,6 +17,14 @@
       "tenant": "openiot",
       "scope": "/"
     },
+    "keyrock": {
+      "serverType": "keyrock",
+      "serverHost": "http://keyrock:3000",
+      "idmType": "idm",
+      "idmHost": "http://keyrock:3000",
+      "username": "admin@letsfiware.jp",
+      "password": "1234"
+    },
     "orion": {
       "serverType": "broker",
       "serverHost": "http://orion:1026",

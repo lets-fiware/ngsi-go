@@ -31,6 +31,7 @@ package ngsicmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -84,6 +85,10 @@ var configData = `{
 	  "perseo-core": {
 		"serverHost": "https://perseo-core",
 		"serverType": "perseo-core"
+	  },
+	  "keyrock": {
+		"serverHost": "https://keyrock",
+		"serverType": "keyrock"
 	  }
 	},
 	"contexts": {
@@ -220,6 +225,7 @@ type MockIoLib struct {
 	HomeDir   error
 	PathAbs   error
 	StatErr   error
+	Tokens    *string
 }
 
 func (io *MockIoLib) Open() (err error) {
@@ -239,6 +245,9 @@ func (io *MockIoLib) Close() error {
 }
 
 func (io *MockIoLib) Decode(v interface{}) error {
+	if io.Tokens != nil {
+		return json.Unmarshal([]byte(*io.Tokens), v)
+	}
 	config, ok := v.(*ngsilib.NgsiConfig)
 	if ok {
 		config.DefaultValues = ngsilib.Settings{UsePreviousArgs: true}

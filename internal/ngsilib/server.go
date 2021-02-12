@@ -80,6 +80,7 @@ const (
 	cKeyrock              = "keyrock"
 	cKeyrocktokenprovider = "keyrocktokenprovider"
 	cTokenproxy           = "tokenproxy"
+	cKeyrockIDM           = "idm"
 )
 
 const (
@@ -94,19 +95,20 @@ const (
 )
 
 const (
-	cComet       = "comet"
-	cQuantumLeap = "quantumleap"
-	cIota        = "iota"
-	cPerseo      = "perseo"
-	cPerseoCore  = "perseo-core"
+	cComet         = "comet"
+	cQuantumLeap   = "quantumleap"
+	cIota          = "iota"
+	cfiwareKeyrock = "keyrock"
+	cPerseo        = "perseo"
+	cPerseoCore    = "perseo-core"
 )
 
 var (
 	brokerArgs = []string{cServerType, cServerHost, cBrokerHost, cNgsiType, cAPIPath,
 		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret,
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
-	serverTypeArgs = []string{cComet, cQuantumLeap, cIota, cPerseo, cPerseoCore}
-	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy}
+	serverTypeArgs = []string{cComet, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore}
+	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM}
 	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes    = []string{cNgsiLd, cLd}
 	apiPaths       = []string{cPathRoot, cPathV2, cPathNgsiLd}
@@ -195,6 +197,8 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 	clientID string, clientSecret string) error {
 	const funcName = "checkIdmParams"
 
+	idmType = strings.ToLower(idmType)
+
 	if idmType == "" {
 		if !(idmHost == "" && username == "" && password == "" && clientID == "" && clientSecret == "") {
 			return &LibError{funcName, 1, "required idmType not found", nil}
@@ -213,13 +217,13 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 		return &LibError{funcName, 4, fmt.Sprintf("idmHost error: %s", idmHost), nil}
 	}
 
-	switch strings.ToLower(idmType) {
+	switch idmType {
 	case cKeyrock, cPasswordCredentials:
 		if clientID == "" || clientSecret == "" {
 			return &LibError{funcName, 5, "clientID and clientSecret are needed", nil}
 		}
 		fallthrough
-	case cKeyrocktokenprovider, cTokenproxy:
+	case cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM:
 		if username == "" && password != "" {
 			return &LibError{funcName, 6, "username is needed", nil}
 		}

@@ -65,7 +65,10 @@ func (client *Client) InitHeader() error {
 	client.Headers = make(map[string]string)
 
 	if client.Token != "" {
-		if client.XAuthToken {
+		if client.Server.ServerType == "keyrock" {
+			client.Headers["X-Auth-Token"] = client.Token
+			client.Headers["X-Subject-token"] = client.Token
+		} else if client.XAuthToken {
 			client.Headers["X-Auth-Token"] = client.Token
 		} else {
 			client.Headers["Authorization"] = "Bearer " + client.Token
@@ -129,6 +132,11 @@ func (client *Client) SetContentType() {
 	}
 }
 
+// SetContentJSON is ...
+func (client *Client) SetContentJSON() {
+	client.Headers["Content-Type"] = "application/json"
+}
+
 // SetAcceptJSON is ...
 func (client *Client) SetAcceptJSON() {
 	client.Headers["Accept"] = "application/json"
@@ -136,8 +144,8 @@ func (client *Client) SetAcceptJSON() {
 
 // SetPath is ...
 func (client *Client) SetPath(path string) {
-	if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/health", "/STH", "/iot", "/rules", "/perseo-core"}, path) {
-		if client.Server.ServerType == "broker" {
+	if client.Server.ServerType == "broker" {
+		if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache"}, path) {
 			if client.NgsiType == ngsiLd {
 				path = "/ngsi-ld/v1" + path
 			} else {

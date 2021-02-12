@@ -32,6 +32,7 @@ package ngsicmd
 import (
 	"bytes"
 	"fmt"
+	"net/http"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
@@ -62,16 +63,24 @@ func tokenCommand(c *cli.Context) error {
 	}
 
 	if c.Bool("verbose") || c.Bool("pretty") {
-		token.Token.ExpiresIn = time
-		b, err := ngsilib.JSONMarshal(token.Token)
-		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+		var b []byte
+		if token.OauthToken != nil {
+			token.OauthToken.ExpiresIn = time
+			b, err = ngsilib.JSONMarshal(token.OauthToken)
+			if err != nil {
+				return &ngsiCmdError{funcName, 4, err.Error(), err}
+			}
+		} else {
+			b, err = getKeyrockUserInfo(client, *token.KeyrockToken)
+			if err != nil {
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
+			}
 		}
 		if c.Bool("pretty") {
 			newBuf := new(bytes.Buffer)
 			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 5, err.Error(), err}
+				return &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
@@ -84,4 +93,25 @@ func tokenCommand(c *cli.Context) error {
 	}
 
 	return nil
+}
+
+func getKeyrockUserInfo(client *ngsilib.Client, token string) ([]byte, error) {
+	const funcName = "getKeyrockUserInfo"
+
+	if token == "" {
+		return nil, &ngsiCmdError{funcName, 1, "token is empty", nil}
+	}
+
+	client.SetPath("/v1/auth/tokens")
+	client.SetHeader("Content-Type", "application/json")
+	client.SetHeader("X-Subject-token", token)
+
+	res, body, err := client.HTTPGet()
+	if err != nil {
+		return nil, &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return nil, &ngsiCmdError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+	return body, nil
 }

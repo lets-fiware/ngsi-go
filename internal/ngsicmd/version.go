@@ -50,6 +50,10 @@ func cbVersion(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
+	if client.Server.ServerType == "keyrock" {
+		return &ngsiCmdError{funcName, 3, "not supported by keyrock", nil}
+	}
+
 	switch client.Server.ServerType {
 	default:
 		client.SetPath("/version")
@@ -61,17 +65,17 @@ func cbVersion(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
 	if c.Bool("pretty") && client.Server.ServerType != "perseo-core" {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil

@@ -100,6 +100,35 @@ services:
     environment:
       - PERSEO_FE_URL=http://perseo:9090
 
+  pep-proxy:
+    image: fiware/pep-proxy:7.9.1
+    depends_on:
+      - keyrock
+   
+  keyrock:
+    image: fiware/idm:7.9.1
+    depends_on:
+      - mysql
+    ports:
+      - 3000:3000
+    environment:
+      - IDM_DIALECT=mysql
+      - IDM_DB_HOST=mysql
+      - IDM_DB_NAME=idm
+      - IDM_DB_USER=keyrock
+      - IDM_DB_PASS=1234
+      - IDM_ADMIN_ID=admin
+      - IDM_ADMIN_USER=admin
+      - IDM_ADMIN_EMAIL=admin@letsfiware.jp
+      - IDM_ADMIN_PASS=1234
+
+  mysql:
+    image: mysql:5.7.33
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+    volumes:
+      - ./config/mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql:ro
+
   accumulator:
     build: ./server/accumulator
     image: letsfiware/accumulator:latest
