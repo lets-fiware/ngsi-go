@@ -86,6 +86,17 @@ ngsi [global options] command [common options] sub-command [options]
 |                                   | [update](iot_agent/devices.md#update-a-device)               | Update a device              |
 |                                   | [delete](iot_agent/devices.md#delete-a-device)               | Delete a device              |
 
+<a name="context-aware-cep"></a>
+
+### Context-Aware CEP command
+
+| command               | sub-command                           | Description    |
+| --------------------- | ------------------------------------- | -------------- |
+| [rules](cep/rules.md) | [list](cep/rules.md#list-all-rules)   | List all rules |
+|                       | [create](cep/rules.md#create-a-rule)  | Creates a rule |
+|                       | [get](cep/rules.md#create-a-get-rule) | Get a rule     |
+|                       | [delete](cep/rules.md#delete-a-rule)  | Delete a rule  |
+
 <a name="convenience-command"></a>
 
 ### Convenience command
