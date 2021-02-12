@@ -38,10 +38,11 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
-// Token is ...
-type Token struct {
+// OauthToken is ...
+type OauthToken struct {
 	AccessToken  string   `json:"access_token"`
 	ExpiresIn    int64    `json:"expires_in"`
 	RefreshToken string   `json:"refresh_token"`
@@ -49,10 +50,24 @@ type Token struct {
 	TokenType    string   `json:"token_type"`
 }
 
+// KeyrockToken is ...
+type KeyrockToken struct {
+	Token struct {
+		Methods   []string `json:"methods"`
+		ExpiresAt string   `json:"expires_at"`
+	} `json:"token"`
+	IdmAuthorizationConfig struct {
+		Level      string `json:"level"`
+		Authzforce bool   `json:"authzforce"`
+	} `json:"idm_authorization_config"`
+}
+
 // TokenInfo is ...
 type TokenInfo struct {
-	Expires int64 `json:"expires"`
-	Token   Token `json:"token"`
+	Expires      int64         `json:"expires,omitempty"`
+	OauthToken   *OauthToken   `json:"token,omitempty"`
+	Keyrock      *KeyrockToken `json:"keyrock,omitempty"`
+	KeyrockToken *string       `json:"keyrock_token,omitempty"`
 }
 
 type tokenInfoList map[string]TokenInfo
@@ -163,9 +178,15 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 	hash := getHash(client)
 	info, ok := ngsi.tokenList[hash]
 	if ok {
+		accessToken := ""
 		expires := info.Expires
-		token := info.Token
-		accessToken := token.AccessToken
+		if info.OauthToken != nil {
+			accessToken = info.OauthToken.AccessToken
+		} else if info.KeyrockToken != nil {
+			accessToken = *info.KeyrockToken
+		} else {
+			return "", &LibError{funcName, 1, "token list error", nil}
+		}
 
 		utime := ngsi.TimeLib.NowUnix()
 
@@ -177,9 +198,9 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 	}
 	token, err := getToken(ngsi, client)
 	if err != nil {
-		err = &LibError{funcName, 1, err.Error(), err}
+		return "", &LibError{funcName, 2, err.Error(), err}
 	}
-	return token, err
+	return token, nil
 }
 
 func getToken(ngsi *NGSI, client *Client) (string, error) {
@@ -205,6 +226,8 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 	idmType := strings.ToLower(broker.IdmType)
 
 	switch idmType {
+	default:
+		return "", &LibError{funcName, 3, "unknown idm type: " + idmType, nil}
 	case cKeyrock:
 		idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
 		auth := fmt.Sprintf("%s:%s", broker.ClientID, broker.ClientSecret)
@@ -219,43 +242,62 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 	case cTokenproxy:
 		idm.SetHeader(cContentType, cAppJSON)
 		data = fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password)
-	default:
-		return "", &LibError{funcName, 3, "unknown idm type: " + idmType, nil}
+	case cKeyrockIDM: // Keyrock
+		idm.SetHeader(cContentType, cAppJSON)
+		data = fmt.Sprintf("{\"name\": \"%s\", \"password\": \"%s\"}", username, password)
 	}
 
 	res, body, err := idm.HTTPPost(data)
 	if err != nil {
 		return "", &LibError{funcName, 4, err.Error(), err}
 	}
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
 		return "", &LibError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	var token Token
-
-	if idmType == cKeyrocktokenprovider {
-		r := fmt.Sprintf(`{"access_token":"%s", "expires_in":%d}`, string(body), client.getExpiresIn())
-		err := JSONUnmarshal([]byte(r), &token)
-		if err != nil {
-			return "", &LibError{funcName, 6, err.Error(), err}
-		}
-	} else {
-		err := JSONUnmarshal(body, &token)
-		if err != nil {
-			return "", &LibError{funcName, 7, err.Error(), err}
-		}
-	}
-
-	client.storeToken(token.AccessToken)
+	accessToken := ""
 
 	var tokenInfo TokenInfo
 	utime := ngsi.TimeLib.NowUnix()
 
-	hash := getHash(client)
-	tokenInfo.Expires = utime + token.ExpiresIn
-	tokenInfo.Token = token
+	switch idmType {
+	default:
+		var token OauthToken
+		err := JSONUnmarshal(body, &token)
+		if err != nil {
+			return "", &LibError{funcName, 6, err.Error(), err}
+		}
+		tokenInfo.Expires = utime + token.ExpiresIn
+		tokenInfo.OauthToken = &token
+		accessToken = token.AccessToken
+	case cKeyrocktokenprovider:
+		var token OauthToken
+		r := fmt.Sprintf(`{"access_token":"%s", "expires_in":%d}`, string(body), client.getExpiresIn())
+		err := JSONUnmarshal([]byte(r), &token)
+		if err != nil {
+			return "", &LibError{funcName, 7, err.Error(), err}
+		}
+		tokenInfo.Expires = utime + token.ExpiresIn
+		tokenInfo.OauthToken = &token
+		accessToken = token.AccessToken
+	case cKeyrockIDM:
+		var token KeyrockToken
+		err := JSONUnmarshal(body, &token)
+		if err != nil {
+			return "", &LibError{funcName, 8, err.Error(), err}
+		}
+		layout := "2006-01-02T15:04:05.000Z"
+		t, _ := time.Parse(layout, token.Token.ExpiresAt)
+		accessToken = res.Header.Get("X-Subject-Token")
+		tokenInfo.Expires = t.Unix()
+		tokenInfo.Keyrock = &token
+		tokenInfo.KeyrockToken = &accessToken
+	}
+
+	client.storeToken(accessToken)
 
 	newTokenList := make(tokenInfoList)
+	hash := getHash(client)
 	newTokenList[hash] = tokenInfo
 
 	for k, v := range ngsi.tokenList {
@@ -273,7 +315,7 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 	if err != nil {
 		return "", &LibError{funcName, 8, err.Error(), err}
 	}
-	return token.AccessToken, nil
+	return accessToken, nil
 }
 
 func saveToken(file string, tokens map[string]interface{}) error {

@@ -268,6 +268,50 @@ func TestVersionTokenCommandExpiresZero(t *testing.T) {
 	}
 }
 
+func TestVersionTokenCommandKeyrock(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"idm": {
+				"serverHost": "http://localhost:3000/",
+				"serverType": "keyrock",
+				"idmType": "idm",
+				"idmHost": "http://idm",
+				"username": "admin@letsfiware.jp",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	tokens := `{"tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"expires":2613170563,"keyrock":{"token":{"methods":["password"],"expires_at":"2121-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"keyrock_token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`
+	ngsi.CacheFile = &MockIoLib{Tokens: &tokens}
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":1156,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ResBody = []byte(`{}`)
+	reqRes2.Path = "/v1/auth/token"
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	set.Bool("verbose", false, "doc")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=idm", "--verbose"})
+
+	err := tokenCommand(c)
+
+	assert.NoError(t, err)
+}
+
 // initCmd() Error: no host
 func TestTokenCommandErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
@@ -370,6 +414,46 @@ func TestVersionTokenCommandErrorJSON(t *testing.T) {
 	}
 }
 
+func TestVersionTokenCommandErrorKeyrock(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"idm": {
+				"serverHost": "http://idm",
+				"serverType": "keyrock",
+				"idmType": "idm",
+				"idmHost": "http://idm",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":1156,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	set.Bool("verbose", false, "doc")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=idm", "--verbose"})
+
+	err := tokenCommand(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "token is empty", ngsiErr.Message)
+		assert.Error(t, err)
+	}
+}
+
 func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -406,9 +490,127 @@ func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
+	}
+}
+
+func TestGetKeyrockUserInfoError(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{}`)
+	reqRes.Path = "/v1/auth/tokens"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=keyrock"})
+	c := cli.NewContext(app, set, nil)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, nil)
+	assert.NoError(t, err)
+
+	actual, err := getKeyrockUserInfo(client, "1234")
+
+	if assert.NoError(t, err) {
+		expected := []byte("{}")
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestGetKeyrockUserInfoErrorToken(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{}`)
+	reqRes.Path = "/v1/auth/token"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=keyrock"})
+	c := cli.NewContext(app, set, nil)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, nil)
+	assert.NoError(t, err)
+
+	_, err = getKeyrockUserInfo(client, "")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "token is empty", ngsiErr.Message)
+	}
+}
+
+func TestGetKeyrockUserInfoErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{}`)
+	reqRes.Path = "/v1/auth/token"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=keyrock"})
+	c := cli.NewContext(app, set, nil)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, nil)
+	assert.NoError(t, err)
+
+	_, err = getKeyrockUserInfo(client, "1234")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	}
+}
+
+func TestGetKeyrockUserInfoErrorStatus(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Res.Status = "400"
+	reqRes.ResBody = []byte(`{"code":"400","reasonPhrase":"Bad Request"}`)
+	reqRes.Path = "/v1/auth/tokens"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=keyrock"})
+	c := cli.NewContext(app, set, nil)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, nil)
+	assert.NoError(t, err)
+
+	_, err = getKeyrockUserInfo(client, "1234")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "error 400 {\"code\":\"400\",\"reasonPhrase\":\"Bad Request\"}", ngsiErr.Message)
 	}
 }

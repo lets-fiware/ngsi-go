@@ -190,6 +190,32 @@ func TestVersionErrorNewClient(t *testing.T) {
 	}
 }
 
+func TestVersionErrorKeyrock(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/version"
+	reqRes.Err = errors.New("error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=keyrock"})
+
+	err := cbVersion(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "not supported by keyrock", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestVersionErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -209,7 +235,7 @@ func TestVersionErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -233,7 +259,7 @@ func TestVersionErrorStatusCode(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -261,7 +287,7 @@ func TestVersionIotaErrorPretty(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }

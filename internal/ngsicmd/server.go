@@ -171,6 +171,11 @@ func serverAdd(c *cli.Context) error {
 		}
 	}
 
+	if serverType == "keyrock" {
+		param["idmType"] = "idm"
+		param["idmHost"] = strings.TrimRight(param["serverHost"], "/") + "/v1/auth/tokens"
+	}
+
 	err = ngsi.CreateServer(host, param)
 	if err != nil {
 		return &ngsiCmdError{funcName, 8, err.Error(), err}
