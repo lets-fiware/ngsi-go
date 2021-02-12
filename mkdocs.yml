@@ -10,6 +10,18 @@ nav:
     - 'Build from source': build_source.md
     - 'files': files.md
     - 'APIs mapping table': apis_mapping_table.md
+  - 'Convenience command':
+    -   'admin': convenience/admin.md
+    -   'apis': convenience/apis.md
+    -   'cp': convenience/cp.md
+    -   'wc': convenience/wc.md
+    -   'man': convenience/man.md
+    -   'health': convenience/health.md
+    -   'ls': convenience/ls.md
+    -   'receiver': convenience/receiver.md
+    -   'rm': convenience/rm.md
+    -   'template': convenience/template.md
+    -   'version': convenience/version.md
   - 'NGSI Go tutorial':
     - 'Index': tutorial/index.md
     - 'NGSI-LD CRUD': tutorial/ngsi-ld-crud.md
@@ -33,18 +45,18 @@ nav:
     -   'devices': iot_agent/devices.md
   - 'Context-Aware CEP':
     -   'rules': cep/rules.md
-  - 'Convenience command':
-    -   'admin': convenience/admin.md
-    -   'apis': convenience/apis.md
-    -   'cp': convenience/cp.md
-    -   'wc': convenience/wc.md
-    -   'man': convenience/man.md
-    -   'health': convenience/health.md
-    -   'ls': convenience/ls.md
-    -   'receiver': convenience/receiver.md
-    -   'rm': convenience/rm.md
-    -   'template': convenience/template.md
-    -   'version': convenience/version.md
+  - 'Keyrcok':
+    -   'users': users.md
+    -   'organizations': organizations.md
+        -   'users': organizations-users.md
+    -   'applications': applications.md
+        -   'roles': applications-roles.md
+        -   'permissions': applications-permissions.md
+        -   'organizations': applications-organizations.md
+        -   'pep-proxies': applications-pep-proxies.md
+        -   'iot-agent': applications-iot-agent.md
+        -   'trusted-applications': applications-trusted-applications.md
+    -   'providers': providers.md
   - 'Management command':
     -    'broker': management/broker.md
     -    'context': management/context.md

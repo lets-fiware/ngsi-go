@@ -49,7 +49,7 @@ if [ $(uname -m) != "x86_64" ]; then
   exit 127
 fi
 
-usage="usage: walkthrough.sh [start|stop|shell]"
+usage="usage: tutorial.sh [start|stop|shell|ps]"
 
 if [ $# -ne 1 ]; then
     echo "Illegal number of parameters"
@@ -86,6 +86,10 @@ case "${command}" in
         make rmi
         make up
         ./run.sh cases/0000_prepare/
+        ;;
+    "ps")
+        cd e2e
+        make ps
         ;;
     "stop")
         cd e2e

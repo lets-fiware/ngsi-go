@@ -31,7 +31,7 @@ ngsi services
 
 ```
 NAME:
-   ngsi services - services command for IoT Agent
+   ngsi services - manage services for IoT Agent
 
 USAGE:
    ngsi services command [command options] [arguments...]
@@ -60,7 +60,7 @@ ngsi devices
 
 ```
 NAME:
-   ngsi devices - devices command for IoT Agent
+   ngsi devices - manage devices for IoT Agent
 
 USAGE:
    ngsi devices command [command options] [arguments...]

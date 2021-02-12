@@ -83,7 +83,8 @@ ngsi server list --pretty
 -   [STH-Comet](comet.md)
 -   [QuantumLeap](quantumleap.md)
 -   [IoT Agent](iot-agent.md)
--   [PERSEO](perseo.md)
+-   [Perseo](perseo.md)
+-   [keyrock](keyrock.md)
 
 ### Stop
 

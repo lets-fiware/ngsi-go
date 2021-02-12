@@ -25,8 +25,8 @@
       "serverType": "keyrock",
       "serverHost": "http://keyrock:3000",
       "idmType": "idm",
-      "idmHost": "http://keyrock:3000",
-      "username": "admin@letsfiware.jp",
+      "idmHost": "http://keyrock:3000/v1/auth/tokens",
+      "username": "keyrock@letsfiware.jp",
       "password": "1234"
     },
     "orion": {

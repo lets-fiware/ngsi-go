@@ -133,6 +133,10 @@ func getNgsiApp() *cli.App {
 			&updateCmd,
 			&upsertCmd,
 			&versionCmd,
+			&applicationsCmd,
+			&usersCmd,
+			&organizationsCmd,
+			&providersCmd,
 		},
 	}
 }
@@ -1593,7 +1597,7 @@ var hDeleteCmd = cli.Command{
 
 var servicesCmd = cli.Command{
 	Name:     "services",
-	Usage:    "services command for IoT Agent",
+	Usage:    "manage services for IoT Agent",
 	Category: "IoT Agent",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1662,7 +1666,7 @@ var servicesCmd = cli.Command{
 
 var devicesCmd = cli.Command{
 	Name:     "devices",
-	Usage:    "devices command for IoT Agent",
+	Usage:    "manage devices for IoT Agent",
 	Category: "IoT Agent",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1791,5 +1795,777 @@ var perseoRulesCmd = cli.Command{
 				return perseoRulesDelete(c)
 			},
 		},
+	},
+}
+
+// Keyrock
+var usersCmd = cli.Command{
+	Name:     "users",
+	Usage:    "manage users for Keyrock",
+	Category: "Keyrock",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list users",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return usersList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get user",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return usersGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create user",
+			Flags: []cli.Flag{
+				keyrockUserNameFlag,
+				keyrockPasswordFlag,
+				keyrockEmailFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return usersCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update user",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				keyrockUserNameFlag,
+				keyrockPasswordFlag,
+				keyrockEmailFlag,
+				keyrockGravatarFlag,
+				keyrockDescriptionFlag,
+				keyrockWebsiteFlag,
+				keyrockExtraFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return usersUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete user",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return usersDelete(c)
+			},
+		},
+	},
+}
+
+var applicationsCmd = cli.Command{
+	Name:     "applications",
+	Usage:    "manage applications for Keyrock",
+	Category: "Keyrock",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list applications",
+			Flags: []cli.Flag{
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return applicationsList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get application",
+			Flags: []cli.Flag{
+				keyrockApplicationIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return applicationsGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create application",
+			Flags: []cli.Flag{
+				keyrcokApplicationDataFlag,
+				keyrcokApplicationNameFlag,
+				keyrcokApplicationDescriptionFlag,
+				keyrcokApplicationURLFlag,
+				keyrcokApplicationRedirectURIFlag,
+				keyrcokApplicationGrantTypeFlag,
+				keyrcokApplicationTokenTypesFlag,
+				keyrcokApplicationResponseTypeFlag,
+				keyrcokApplicationClientTypeFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return applicationsCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update application",
+			Flags: []cli.Flag{
+				keyrockApplicationIDFlag,
+				keyrcokApplicationDataFlag,
+				keyrcokApplicationNameFlag,
+				keyrcokApplicationDescriptionFlag,
+				keyrcokApplicationURLFlag,
+				keyrcokApplicationRedirectURIFlag,
+				keyrcokApplicationGrantTypeFlag,
+				keyrcokApplicationTokenTypesFlag,
+				keyrcokApplicationResponseTypeFlag,
+				keyrcokApplicationClientTypeFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return applicationsUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete application",
+			Flags: []cli.Flag{
+				keyrockApplicationIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return applicationsDelete(c)
+			},
+		},
+		&rolesCmd,
+		&permissionsCmd,
+		&pepProxiesCmd,
+		&iotAgentCmd,
+		&appsUsersCmd,
+		&appsOrgsCmd,
+		&trustedAppsCmd,
+	},
+}
+
+var organizationsCmd = cli.Command{
+	Name:     "organizations",
+	Usage:    "manage organizations for Keyrock",
+	Category: "Keyrock",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list organizations",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return organizationsList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get organization",
+			Flags: []cli.Flag{
+				keyrockOrganizationIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return organizationsGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create organization",
+			Flags: []cli.Flag{
+				keyrockOrganizationNameFlag,
+				keyrockDescriptionFlag,
+				keyrockWebsiteFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return organizationsCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update organization",
+			Flags: []cli.Flag{
+				keyrockOrganizationIDFlag,
+				keyrockOrganizationNameFlag,
+				keyrockDescriptionFlag,
+				keyrockWebsiteFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return organizationsUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete organization",
+			Flags: []cli.Flag{
+				keyrockOrganizationIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return organizationsDelete(c)
+			},
+		},
+		&orgsUsersCmd,
+	},
+}
+
+var rolesCmd = cli.Command{
+	Name:     "roles",
+	Usage:    "manage roles for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockApplicationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list roles",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return rolesList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get a role",
+			Flags: []cli.Flag{
+				keyrockRolesIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return rolesGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create a role",
+			Flags: []cli.Flag{
+				keyrockRoleDataFlag,
+				keyrockRoleNameFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return rolesCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update a role",
+			Flags: []cli.Flag{
+				keyrockRolesIDFlag,
+				keyrockRoleDataFlag,
+				keyrockRoleNameFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return rolesUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete a role",
+			Flags: []cli.Flag{
+				keyrockRolesIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return rolesDelete(c)
+			},
+		},
+		{
+			Name:  "permissions",
+			Usage: "list permissions associated to a role",
+			Flags: []cli.Flag{
+				keyrockRolesIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsRolePermList(c)
+			},
+		},
+		{
+			Name:  "assign",
+			Usage: "Assign a permission to a role",
+			Flags: []cli.Flag{
+				keyrockRolesIDFlag,
+				keyrockPermissionIDFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsRolePermAssign(c)
+			},
+		},
+		{
+			Name:  "unassign",
+			Usage: "delete a permission from a role",
+			Flags: []cli.Flag{
+				keyrockRolesIDFlag,
+				keyrockPermissionIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsRolePermDelete(c)
+			},
+		},
+	},
+}
+
+var permissionsCmd = cli.Command{
+	Name:     "permissions",
+	Usage:    "manage permissions for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockApplicationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list permissions",
+			Flags: []cli.Flag{
+				keyrockPermissionIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return permissionsList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get permission",
+			Flags: []cli.Flag{
+				keyrockPermissionIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return permissionsGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create permission",
+			Flags: []cli.Flag{
+				keyrcokPermissionDataFlag,
+				keyrockPermissionNameFlag,
+				keyrockPermissionDescriptionFlag,
+				keyrockPermissionActionFlag,
+				keyrockPermissionResourceFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return permissionsCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update permission",
+			Flags: []cli.Flag{
+				keyrockPermissionIDFlag,
+				keyrcokPermissionDataFlag,
+				keyrockPermissionNameFlag,
+				keyrockPermissionDescriptionFlag,
+				keyrockPermissionActionFlag,
+				keyrockPermissionResourceFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return permissionsUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete permission",
+			Flags: []cli.Flag{
+				keyrockPermissionIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return permissionsDelete(c)
+			},
+		},
+	},
+}
+
+var pepProxiesCmd = cli.Command{
+	Name:     "pep",
+	Usage:    "manage PEP Proxies for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockApplicationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list pep proxy",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return pepProxiesList(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create pep proxy",
+			Flags: []cli.Flag{
+				runFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return pepProxiesCreate(c)
+			},
+		},
+		{
+			Name:  "reset",
+			Usage: "reset pep proxy",
+			Flags: []cli.Flag{
+				runFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return pepProxiesReset(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete pep proxy",
+			Action: func(c *cli.Context) error {
+				return pepProxiesDelete(c)
+			},
+			Flags: []cli.Flag{
+				runFlag,
+			},
+		},
+	},
+}
+
+var iotAgentCmd = cli.Command{
+	Name:     "iota",
+	Usage:    "manage IoT Agents for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockApplicationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list iot agents",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return iotAgentsList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get iot agent",
+			Flags: []cli.Flag{
+				keyrockIotAgentsIDFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return iotAgentsGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create iot agent",
+			Flags: []cli.Flag{
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return iotAgentsCreate(c)
+			},
+		},
+		{
+			Name:  "reset",
+			Usage: "reset iot agent",
+			Flags: []cli.Flag{
+				keyrockIotAgentsIDFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return iotAgentsReset(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete iot agent",
+			Flags: []cli.Flag{
+				keyrockIotAgentsIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return iotAgentsDelete(c)
+			},
+		},
+	},
+}
+
+var appsUsersCmd = cli.Command{
+	Name:     "users",
+	Usage:    "manage authorized users in an application for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockApplicationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list users in an application",
+			Flags: []cli.Flag{
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsUsersList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get roles of a user in an application",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsUsersGet(c)
+			},
+		},
+		{
+			Name:  "assign",
+			Usage: "assign a role to a user",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				keyrockRolesIDFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsUsersAssign(c)
+			},
+		},
+		{
+			Name:  "unassign",
+			Usage: "delete a role assignment from a user",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				keyrockRolesIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsUsersUnassign(c)
+			},
+		},
+	},
+}
+
+var appsOrgsCmd = cli.Command{
+	Name:     "organizations",
+	Usage:    "manage authorized organizations in an application for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockApplicationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list organizations in an application",
+			Flags: []cli.Flag{
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsOrgsRolesList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get roles of an organization in an application",
+			Flags: []cli.Flag{
+				keyrockOrganizationIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsOrgsRolesGet(c)
+			},
+		},
+		{
+			Name:  "assign",
+			Usage: "assign a role to an organization",
+			Flags: []cli.Flag{
+				keyrockOrganizationIDFlag,
+				keyrockRolesIDFlag,
+				keyrcokOrganizationRoleIDFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsOrgsRolesAssign(c)
+			},
+		},
+		{
+			Name:  "unassign",
+			Usage: "delete a role assignment from an organization",
+			Flags: []cli.Flag{
+				keyrockOrganizationIDFlag,
+				keyrockRolesIDFlag,
+				keyrcokOrganizationRoleIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appsOrgsRolesUnassign(c)
+			},
+		},
+	},
+}
+
+var orgsUsersCmd = cli.Command{
+	Name:     "users",
+	Usage:    "manage users of an organization for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockOrganizationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list users of an organization",
+			Flags: []cli.Flag{
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return orgUsersList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get info of user organization relationship",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return orgUsersGet(c)
+			},
+		},
+		{
+			Name:  "add",
+			Usage: "add a user to an organization",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				keyrcokOrganizationRoleIDFlag,
+				verboseFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return orgUsersCreate(c)
+			},
+		},
+		{
+			Name:  "remove",
+			Usage: "remove a user from an organization",
+			Flags: []cli.Flag{
+				keyrockUserIDFlag,
+				keyrcokOrganizationRoleIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return orgUsersDelete(c)
+			},
+		},
+	},
+}
+
+var trustedAppsCmd = cli.Command{
+	Name:     "trusted",
+	Usage:    "manage trusted applications for Keyrock",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		keyrockApplicationIDFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list trusted applications associated to an application",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return trustedAppList(c)
+			},
+		},
+		{
+			Name:  "add",
+			Usage: "add trusted application",
+			Flags: []cli.Flag{
+				keyrockTrustedIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return trustedAppAdd(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete trusted application",
+			Flags: []cli.Flag{
+				keyrockTrustedIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return trustedAppDelete(c)
+			},
+		},
+	},
+}
+
+var providersCmd = cli.Command{
+	Name:     "providers",
+	Usage:    "print service providers for Keyrock",
+	Category: "Keyrock",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+		prettyFlag,
+	},
+	Action: func(c *cli.Context) error {
+		return providersGet(c)
 	},
 }

@@ -1,0 +1,235 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 List applications
+#
+ngsi applications --host keyrock list --pretty
+
+```
+{
+  "applications": []
+}
+```
+
+#
+# 0002 Create application
+#
+ngsi applications create --name "Test_application 1" \
+--description "test app" \
+--redirectUri http://localhost/login \
+--url http://localhost \
+--grantType authorization_code,implicit,password \
+--tokenTypes jwt,permanent
+
+```
+REGEX(.*)
+```
+
+#
+# 0003 Save application id
+#
+$aid=$$
+
+#
+# 0011 List a permissions
+#
+ngsi applications permissions --aid $aid list
+
+```
+6
+5
+4
+3
+2
+1
+```
+
+#
+# 0012 List a permissions --pretty
+#
+ngsi applications permissions --aid $aid list --pretty
+
+```
+{
+  "permissions": [
+    {
+      "id": "6",
+      "name": "Get and assign only public owned roles",
+      "description": null,
+      "action": null,
+      "resource": null,
+      "xml": null
+    },
+    {
+      "id": "5",
+      "name": "Get and assign all public application roles",
+      "description": null,
+      "action": null,
+      "resource": null,
+      "xml": null
+    },
+    {
+      "id": "4",
+      "name": "Manage authorizations",
+      "description": null,
+      "action": null,
+      "resource": null,
+      "xml": null
+    },
+    {
+      "id": "3",
+      "name": "Manage roles",
+      "description": null,
+      "action": null,
+      "resource": null,
+      "xml": null
+    },
+    {
+      "id": "2",
+      "name": "Manage the application",
+      "description": null,
+      "action": null,
+      "resource": null,
+      "xml": null
+    },
+    {
+      "id": "1",
+      "name": "Get and assign all internal application roles",
+      "description": null,
+      "action": null,
+      "resource": null,
+      "xml": null
+    }
+  ]
+}
+```
+
+#
+# 0013 Get built-in permission
+#
+ngsi applications permissions --aid $aid get --pid 1 --pretty
+
+```
+{
+  "permission": {
+    "id": "1",
+    "name": "Get and assign all internal application roles",
+    "description": null,
+    "is_internal": true,
+    "action": null,
+    "resource": null,
+    "is_regex": 0,
+    "xml": null,
+    "oauth_client_id": "idm_admin_app"
+  }
+}
+```
+
+#
+# 0014 Create a permission
+#
+ngsi applications permissions --aid $aid \
+create --name "permission1" \
+--description "test" \
+--action "GET" \
+--resource "login"
+
+```
+REGEX(.*)
+```
+
+#
+# 0015 Save a permission id
+#
+$pid=$$
+
+#
+# 0016 Get a permission
+#
+ngsi applications permissions --aid $aid get --pid $pid --pretty
+
+```
+{
+  "permission": {
+    "id": "REGEX(.*)",
+    "name": "permission1",
+    "description": "test",
+    "is_internal": false,
+    "action": "GET",
+    "resource": "login",
+    "is_regex": 0,
+    "xml": null,
+    "oauth_client_id": "REGEX(.*)"
+  }
+}
+```
+
+#
+# 0017 Update a permission
+#
+ngsi applications permissions --aid $aid update --pid $pid --name "perm1"
+
+```
+{"values_updated":{"name":"perm1"}}
+```
+
+#
+# 0018 Get a permission
+#
+ngsi applications permissions --aid $aid get --pid $pid --pretty
+
+```
+{
+  "permission": {
+    "id": "REGEX(.*)",
+    "name": "perm1",
+    "description": "test",
+    "is_internal": false,
+    "action": "GET",
+    "resource": "login",
+    "is_regex": 0,
+    "xml": null,
+    "oauth_client_id": "REGEX(.*)"
+  }
+}
+```
+
+#
+# 0020 Delete a permission
+#
+ngsi applications permissions --aid $aid delete --pid $pid
+
+```
+```
+
+#
+# 9999 Delete an application
+#
+ngsi applications delete --aid $aid
+
+```
+```

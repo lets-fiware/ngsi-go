@@ -1,0 +1,158 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 List applications
+#
+ngsi applications --host keyrock list --pretty
+
+```
+{
+  "applications": []
+}
+```
+
+#
+# 0002 Create application
+#
+ngsi applications create --name "Test_application 1" \
+--description "test app" \
+--redirectUri http://localhost/login \
+--url http://localhost \
+--grantType authorization_code,implicit,password \
+--tokenTypes jwt,permanent
+
+```
+REGEX(.*)
+```
+
+#
+# 0003 Save application id
+#
+$aid=$$
+
+#
+# 0004 List applications
+#
+ngsi applications list --pretty
+
+```
+{
+  "applications": [
+    {
+      "id": "REGEX(.*)",
+      "name": "Test_application 1",
+      "description": "test app",
+      "image": "default",
+      "url": "http://localhost",
+      "redirect_uri": "http://localhost/login",
+      "redirect_sign_out_uri": null,
+      "grant_type": "password,authorization_code,implicit",
+      "response_type": "code,token",
+      "token_types": "jwt,permanent,bearer",
+      "jwt_secret": "REGEX(.*)",
+      "client_type": null,
+      "urls": {
+        "permissions_url": "/v1/applications/REGEX(.*)/permissions",
+        "roles_url": "/v1/applications/REGEX(.*)/roles",
+        "users_url": "/v1/applications/REGEX(.*)/users",
+        "pep_proxies_url": "/v1/applications/REGEX(.*)/pep_proxies",
+        "iot_agents_url": "/v1/applications/REGEX(.*)/iot_agents",
+        "trusted_applications_url": "/v1/applications/REGEX(.*)/trusted_applications"
+      }
+    }
+  ]
+}
+```
+
+#
+# 0005 Get application
+#
+ngsi applications get --aid $aid --pretty
+
+```
+{
+  "application": {
+    "id": "REGEX(.*)",
+    "name": "Test_application 1",
+    "description": "test app",
+    "secret": "REGEX(.*)",
+    "url": "http://localhost",
+    "redirect_uri": "http://localhost/login",
+    "redirect_sign_out_uri": null,
+    "image": "default",
+    "grant_type": "password,authorization_code,implicit",
+    "response_type": "code,token",
+    "token_types": "jwt,permanent,bearer",
+    "jwt_secret": "REGEX(.*)",
+    "client_type": null,
+    "scope": null,
+    "extra": null,
+    "urls": {
+      "permissions_url": "/v1/applications/REGEX(.*)/permissions",
+      "roles_url": "/v1/applications/REGEX(.*)/roles",
+      "users_url": "/v1/applications/REGEX(.*)/users",
+      "pep_proxies_url": "/v1/applications/REGEX(.*)/pep_proxies",
+      "iot_agents_url": "/v1/applications/REGEX(.*)/iot_agents",
+      "trusted_applications_url": "/v1/applications/REGEX(.*)/trusted_applications"
+    }
+  }
+}
+```
+
+#
+# 0006 Update application
+#
+ngsi applications update --aid $aid --url http://fiware.app/ --pretty
+
+```
+{
+  "values_updated": {
+    "url": "http://fiware.app/",
+    "token_types": "jwt,permanent,bearer,bearer",
+    "scope": ""
+  }
+}
+```
+
+#
+# 0007 Delete application
+#
+ngsi applications delete --aid $aid
+
+```
+```
+
+#
+# 0008 List applications
+#
+ngsi applications --host keyrock list --pretty
+
+```
+{
+  "applications": []
+}
+```
