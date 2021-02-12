@@ -15,7 +15,33 @@
 
 # What is NGSI Go?
 
-The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) and [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf), which simplifies syntax.
+The NGSI Go is a command-line interface supporting FIWARE Open APIs, which simplifies syntax.
+It's a powerful tool and easy to use. It has various features as shown:
+
+-   Supported FIWARE Open APIs
+    - FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) APIs
+    - [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) APIs
+    - [STH-Comet APIs](https://github.com/telefonicaid/fiware-sth-comet)
+    - [QuantumLeap APIs](https://github.com/orchestracities/ngsi-timeseries-api)
+    - [IoT Agent](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib)
+    - [Perseo](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md)
+-   Various convenience commands
+    -   NGSI commands to manage NGSI Entity, subscription, registration and so on
+    -   Time series commands to manage historical data
+    -   IoT Agent commands to manage IoT Agent Provision APIs
+    -   Rules commands to manage Context-Aware CEP
+    -   Convenience commands
+        -   Print version, health-check status and API lists of FIWARE GEs
+        -   Admin command for FIWARE Orion
+        -   Copy and remove entities at once
+        -   Create template of subscription or registration
+        -   Notification receiver
+    -   Management commands
+        -   Broker alias or server alias with API endpoint URL, FIWARE Service and FIWARE ServicePath
+        -   Manage @context
+        -   Integrated oauth token management
+-   Compatible with a number of traditional UNIX commands for filtering text
+-   A single binary program written in Golang
 
 ## Contents
 
@@ -52,6 +78,15 @@ The NGSI Go is a UNIX command-line tool FIWARE supporting both [NGSI v2](https:/
 
 -   [hdelete](time_series/hdelete.md): delete historical data
 -   [hget](time_series/hget.md): get historical data
+
+## IoT Agent
+
+-   [services](iot_agent/services.md): services command for IoT Agent
+-   [devices](iot_agent/devices.md): devices command for IoT Agent
+
+## Context-Aware CEP
+
+-   [rules](cep/rules.md): rules command for Perseo
 
 ### Convenience
 

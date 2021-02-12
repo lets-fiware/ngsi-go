@@ -1,4 +1,4 @@
-# services - IoT Agent command
+# devices - IoT Agent command
 
 This command allows you to list, create, update and delete device entry for IoT Agent.
 
