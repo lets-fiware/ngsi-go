@@ -70,6 +70,10 @@ var configData = `{
 		"serverHost": "https://comet",
 		"serverType": "comet"
 	  },
+	  "cygnus": {
+		"serverHost": "https://cygnus",
+		"serverType": "cygnus"
+	  },
 	  "ql": {
 		"serverHost": "https://quantumleap",
 		"serverType": "quantumleap"

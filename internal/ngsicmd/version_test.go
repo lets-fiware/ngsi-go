@@ -100,6 +100,30 @@ func TestVersionIota(t *testing.T) {
 	}
 }
 
+func TestVersionCygnus(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v1/version"
+	reqRes.ResBody = []byte(`{"success":"true","version":"2.6.0.0f2695c2bb9a290854cce6243771c08abe07e281"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=cygnus"})
+
+	err := cbVersion(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := `{"success":"true","version":"2.6.0.0f2695c2bb9a290854cce6243771c08abe07e281"}`
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestVersionIotaPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 

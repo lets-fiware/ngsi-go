@@ -153,7 +153,7 @@ func serverAdd(c *cli.Context) error {
 		serverType = strings.ToLower(c.String("serverType"))
 	}
 	if !ngsilib.Contains(ngsi.ServerTypeArgs(), serverType) {
-		return &ngsiCmdError{funcName, 7, "serverType error: " + serverType + " (Coment, QuantumLeap, Iota)", err}
+		return &ngsiCmdError{funcName, 7, "serverType error: " + serverType + " (Comet, Cygnus, Iota, Keyrock, Perseo, QuantumLeap)", err}
 	}
 
 	param := make(map[string]string)

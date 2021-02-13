@@ -122,6 +122,20 @@ services:
       - IDM_ADMIN_EMAIL=admin@letsfiware.jp
       - IDM_ADMIN_PASS=1234
 
+  cygnus:
+    image: fiware/cygnus-ngsi:2.6.0
+    hostname: cygnus
+    container_name: fiware-cygnus
+    depends_on:
+        - mongo
+    networks:
+        - default
+    environment:
+        - "CYGNUS_MONGO_HOSTS=mongo:27017"
+        - "CYGNUS_MONGO_SERVICE_PORT=5051"
+        - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_SERVICE_PORT=5051"
+
   mysql:
     image: mysql:5.7.33
     environment:

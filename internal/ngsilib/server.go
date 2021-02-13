@@ -96,6 +96,7 @@ const (
 
 const (
 	cComet         = "comet"
+	cCygnus        = "cCygnus"
 	cQuantumLeap   = "quantumleap"
 	cIota          = "iota"
 	cfiwareKeyrock = "keyrock"
@@ -107,7 +108,7 @@ var (
 	brokerArgs = []string{cServerType, cServerHost, cBrokerHost, cNgsiType, cAPIPath,
 		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret,
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
-	serverTypeArgs = []string{cComet, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore}
+	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore}
 	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM}
 	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes    = []string{cNgsiLd, cLd}
