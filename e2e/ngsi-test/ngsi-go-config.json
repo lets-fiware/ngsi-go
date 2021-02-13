@@ -52,6 +52,10 @@
     "perseo-core": {
       "serverType": "perseo-core",
       "serverHost": "http://perseo-core:8080"
+    },
+    "wirecloud": {
+      "serverType": "wirecloud",
+      "serverHost": "http://wirecloud:8000"
     }
   },
   "settings": {

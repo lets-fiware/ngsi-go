@@ -8,6 +8,7 @@
     "iota": "http://iot-agent:4041",
     "perseo": "http://perseo:9090",
     "perseo-core": "http://perseo-core:8080",
+    "wirecloud": "http://wirecloud:8000",
     "accumulator": "http://accumulator:8000",
     "atcontext": "http://atcontext:8000",
     "csource": "http://csource:8000",

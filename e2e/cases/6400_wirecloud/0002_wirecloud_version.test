@@ -25,23 +25,21 @@
 # SOFTWARE.
 
 #
-# 0001 wait for services
+# 0001 version --host wirecloud
 #
-wait ${accumulator}/health
-wait ${atcontext}/health
-wait ${csource}/health
-wait ${oauth}/health
-wait ${orion}/version
-wait ${orion-ld}/version
-wait ${quantumleap}/version
-wait ${comet}/version
-wait ${iota}/iot/about
-wait ${perseo}/version
-wait ${perseo-core}/perseo-core/version
-wait ${cygnus}/v1/version
-wait ${wirecloud}/api/features
+ngsi version --host wirecloud --pretty
 
-#
-# 0002 check health status
-#
-wait ${quantumleap}/health --retry 600 --status pass
+```
+{
+  "ApplicationMashup": "REGEX(.*)",
+  "ComponentManagement": "REGEX(.*)",
+  "DashboardManagement": "REGEX(.*)",
+  "FIWARE": "REGEX(.*)",
+  "FullscreenWidget": "REGEX(.*)",
+  "NGSI": "REGEX(.*)",
+  "OAuth2Provider": "REGEX(.*)",
+  "ObjectStorage": "REGEX(.*)",
+  "StyledElements": "REGEX(.*)",
+  "Wirecloud": "REGEX(.*)"
+}
+```

@@ -59,7 +59,7 @@ OPTIONS:
 ngsi server list
 
 ```
-comet cygnus iota keyrock perseo perseo-core quantumleap
+comet cygnus iota keyrock perseo perseo-core quantumleap wirecloud
 ```
 
 #
