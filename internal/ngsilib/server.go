@@ -102,13 +102,14 @@ const (
 	cfiwareKeyrock = "keyrock"
 	cPerseo        = "perseo"
 	cPerseoCore    = "perseo-core"
+	cWireCloud     = "wirecloud"
 )
 
 var (
 	brokerArgs = []string{cServerType, cServerHost, cBrokerHost, cNgsiType, cAPIPath,
 		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret,
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
-	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore}
+	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud}
 	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM}
 	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes    = []string{cNgsiLd, cLd}

@@ -93,6 +93,10 @@ var configData = `{
 	  "keyrock": {
 		"serverHost": "https://keyrock",
 		"serverType": "keyrock"
+	  },
+	  "wirecloud": {
+		"serverHost": "https://wirecloud",
+		"serverType": "wirecloud"
 	  }
 	},
 	"contexts": {

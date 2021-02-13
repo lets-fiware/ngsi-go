@@ -124,6 +124,30 @@ func TestVersionCygnus(t *testing.T) {
 	}
 }
 
+func TestVersionWireCloud(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/api/features"
+	reqRes.ResBody = []byte(`{"ApplicationMashup": "2.2", "ComponentManagement": "1.0", "DashboardManagement": "1.0", "FIWARE": "7.7.1", "FullscreenWidget": "0.5", "NGSI": "1.2.1", "OAuth2Provider": "0.5", "ObjectStorage": "0.5", "StyledElements": "0.10.0", "Wirecloud": "1.3.1"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=wirecloud"})
+
+	err := cbVersion(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := `{"ApplicationMashup": "2.2", "ComponentManagement": "1.0", "DashboardManagement": "1.0", "FIWARE": "7.7.1", "FullscreenWidget": "0.5", "NGSI": "1.2.1", "OAuth2Provider": "0.5", "ObjectStorage": "0.5", "StyledElements": "0.10.0", "Wirecloud": "1.3.1"}`
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestVersionIotaPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 

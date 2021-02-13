@@ -63,6 +63,8 @@ func cbVersion(c *cli.Context) error {
 		client.SetPath("/iot/about")
 	case "perseo-core":
 		client.SetPath("/perseo-core/version")
+	case "wirecloud":
+		client.SetPath("/api/features")
 	}
 
 	res, body, err := client.HTTPGet()
