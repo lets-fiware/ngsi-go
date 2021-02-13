@@ -57,6 +57,8 @@ func cbVersion(c *cli.Context) error {
 	switch client.Server.ServerType {
 	default:
 		client.SetPath("/version")
+	case "cygnus":
+		client.SetPath("/v1/version")
 	case "iota":
 		client.SetPath("/iot/about")
 	case "perseo-core":

@@ -3,6 +3,7 @@
     "orion": "http://orion:1026",
     "orion-ld": "http://orion-ld:1026",
     "comet": "http://comet:8666",
+    "cygnus": "http://cygnus:5080",
     "quantumleap": "http://quantumleap:8668",
     "iota": "http://iot-agent:4041",
     "perseo": "http://perseo:9090",

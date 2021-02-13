@@ -47,7 +47,7 @@ func TestServersList(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "comet iota keyrock perseo perseo-core ql\n"
+		expected := "comet cygnus iota keyrock perseo perseo-core ql\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -83,7 +83,7 @@ func TestServersListJSON(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"https://comet\"},\"iota\":{\"serverType\":\"iota\",\"serverHost\":\"https://iota\"},\"keyrock\":{\"serverType\":\"keyrock\",\"serverHost\":\"https://keyrock\"},\"perseo\":{\"serverType\":\"perseo\",\"serverHost\":\"https://perseo\"},\"perseo-core\":{\"serverType\":\"perseo-core\",\"serverHost\":\"https://perseo-core\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"https://quantumleap\"}}"
+		expected := "{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"https://comet\"},\"cygnus\":{\"serverType\":\"cygnus\",\"serverHost\":\"https://cygnus\"},\"iota\":{\"serverType\":\"iota\",\"serverHost\":\"https://iota\"},\"keyrock\":{\"serverType\":\"keyrock\",\"serverHost\":\"https://keyrock\"},\"perseo\":{\"serverType\":\"perseo\",\"serverHost\":\"https://perseo\"},\"perseo-core\":{\"serverType\":\"perseo-core\",\"serverHost\":\"https://perseo-core\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"https://quantumleap\"}}"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -101,7 +101,7 @@ func TestServersListJSONPretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"comet\": {\n    \"serverType\": \"comet\",\n    \"serverHost\": \"https://comet\"\n  },\n  \"iota\": {\n    \"serverType\": \"iota\",\n    \"serverHost\": \"https://iota\"\n  },\n  \"keyrock\": {\n    \"serverType\": \"keyrock\",\n    \"serverHost\": \"https://keyrock\"\n  },\n  \"perseo\": {\n    \"serverType\": \"perseo\",\n    \"serverHost\": \"https://perseo\"\n  },\n  \"perseo-core\": {\n    \"serverType\": \"perseo-core\",\n    \"serverHost\": \"https://perseo-core\"\n  },\n  \"ql\": {\n    \"serverType\": \"quantumleap\",\n    \"serverHost\": \"https://quantumleap\"\n  }\n}\n"
+		expected := "{\n  \"comet\": {\n    \"serverType\": \"comet\",\n    \"serverHost\": \"https://comet\"\n  },\n  \"cygnus\": {\n    \"serverType\": \"cygnus\",\n    \"serverHost\": \"https://cygnus\"\n  },\n  \"iota\": {\n    \"serverType\": \"iota\",\n    \"serverHost\": \"https://iota\"\n  },\n  \"keyrock\": {\n    \"serverType\": \"keyrock\",\n    \"serverHost\": \"https://keyrock\"\n  },\n  \"perseo\": {\n    \"serverType\": \"perseo\",\n    \"serverHost\": \"https://perseo\"\n  },\n  \"perseo-core\": {\n    \"serverType\": \"perseo-core\",\n    \"serverHost\": \"https://perseo-core\"\n  },\n  \"ql\": {\n    \"serverType\": \"quantumleap\",\n    \"serverHost\": \"https://quantumleap\"\n  }\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -503,7 +503,7 @@ func TestServersAddErrorUnknownServerType(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
-		assert.Equal(t, "serverType error: fiware (Coment, QuantumLeap, Iota)", ngsiErr.Message)
+		assert.Equal(t, "serverType error: fiware (Comet, Cygnus, Iota, Keyrock, Perseo, QuantumLeap)", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

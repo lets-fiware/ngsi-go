@@ -11,6 +11,10 @@
       "tenant": "openiot",
       "scope": "/"
     },
+    "cygnus": {
+      "serverType": "cygnus",
+      "serverHost": "http://cygnus:5080"
+    },
     "iota": {
       "serverType": "iota",
       "serverHost": "http://iot-agent:4041",
