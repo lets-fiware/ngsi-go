@@ -24,7 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM golang:1.15.6-alpine3.12 AS builder
+FROM golang:1.16.0-alpine3.13 AS builder
 LABEL stage=ngsi-builder
 
 WORKDIR /opt/atcontext/
@@ -34,7 +34,7 @@ COPY ./main.go /opt/atcontext
 RUN \
     sed -n -e '/^nobody/p' /etc/passwd > /opt/passwd && \
     chmod 444 /opt/passwd && \
-    CGO_ENABLED=0 go build -ldflags "-w -s"
+    GO111MODULE=off CGO_ENABLED=0 go build -ldflags "-w -s"
 
 FROM scratch AS runner
 LABEL stage=ngsi-runner
