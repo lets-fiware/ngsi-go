@@ -464,13 +464,22 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 	if c.IsSet("type") && c.IsSet("typePattern") {
 		return &ngsiCmdError{funcName, 4, "type or typePattern", nil}
 	}
-	if c.IsSet("type") {
-		t.Subject.Entities[0].Type = c.String("type")
-		t.Subject.Entities[0].TypePattern = ""
-	}
-	if c.IsSet("typePattern") {
-		t.Subject.Entities[0].TypePattern = c.String("typePattern")
-		t.Subject.Entities[0].Type = ""
+
+	if c.IsSet("type") || c.IsSet("typePattern") {
+		if t.Subject == nil {
+			t.Subject = new(subscriptionSubjectV2)
+		}
+		if len(t.Subject.Entities) == 0 {
+			t.Subject.Entities = append(t.Subject.Entities, *new(subscriptionEntityV2))
+		}
+		if c.IsSet("type") {
+			t.Subject.Entities[0].Type = c.String("type")
+			t.Subject.Entities[0].TypePattern = ""
+		}
+		if c.IsSet("typePattern") {
+			t.Subject.Entities[0].TypePattern = c.String("typePattern")
+			t.Subject.Entities[0].Type = ""
+		}
 	}
 
 	if isSetOR(c, []string{"wAttrs", "query", "mq", "georel", "geometry", "coords"}) {

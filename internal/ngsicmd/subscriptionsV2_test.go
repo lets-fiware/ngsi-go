@@ -1505,7 +1505,7 @@ func TestSetSubscriptionValuesV2TypePattern(t *testing.T) {
 
 	setupFlagString(set, "typePattern,data,entityId,idPattern,url")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
+	_ = set.Parse([]string{"--data={}", "--typePattern=abc", "--url=http://ngsiproxy"})
 
 	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
 
