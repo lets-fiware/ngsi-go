@@ -112,11 +112,15 @@ build/linux_arm.tar.gz: $(SOURCES)
 	$(call tar,linux,arm,$(NAME))
 
 .PHONY: darwin
-darwin: build/darwin_amd64.tar.gz
+darwin: build/darwin_amd64.tar.gz build/darwin_arm64.tar.gz
 
 build/darwin_amd64.tar.gz: $(SOURCES)
 	$(call build,darwin,amd64,$(NAME))
 	$(call tar,darwin,amd64,$(NAME))
+
+build/darwin_arm64.tar.gz: $(SOURCES)
+	$(call build,darwin,arm64,$(NAME))
+	$(call tar,darwin,arm64,$(NAME))
 
 .PHONY: linux_amd64
 linux_amd64:
@@ -132,6 +136,10 @@ linux_arm:
 
 .PHONY: darwin_amd64
 darwin_amd64:
+	$(call buildx,$@)
+
+.PHONY: darwin_arm64
+darwin_arm64:
 	$(call buildx,$@)
 
 .PHONY: version

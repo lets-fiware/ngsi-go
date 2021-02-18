@@ -24,14 +24,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM golang:1.15.6-alpine3.12 AS builder
+FROM golang:1.16.0-alpine3.13 AS builder
 LABEL stage=ngsi-builder
 
 WORKDIR /opt/ngsi-test/
 
 COPY *.go /opt/ngsi-test/
 
-RUN CGO_ENABLED=0 go build -ldflags "-w -s"
+RUN GO111MODULE=off CGO_ENABLED=0 go build -ldflags "-w -s"
 
 FROM alpine:3.12.3 AS runner
 LABEL stage=ngsi-runner

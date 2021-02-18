@@ -24,13 +24,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM golang:1.15.6-alpine3.12 AS builder
+FROM golang:1.16.0-alpine3.13 AS builder
 
 RUN \
     apk update && \
     apk add --no-cache \
         make=4.3-r0 \
-        git=2.26.2-r0
+        git=2.30.1-r0
 
 WORKDIR /root/go/src/github.com/lets-fiware
 

@@ -29,8 +29,14 @@ make linux_arm64
 make linux_arm
 ```
 
-## Darwin
+## Darwin AMD64
 
 ```console
 make darwin_amd64
+```
+
+## Darwin ARM64
+
+```console
+make darwin_arm64
 ```
