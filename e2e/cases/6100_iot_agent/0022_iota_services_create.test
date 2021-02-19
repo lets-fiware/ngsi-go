@@ -184,7 +184,12 @@ ngsi services list --pretty
 ```
 
 #
-# 0017 Delete service
+# 0017 sleep 1
+#
+sleep 1
+
+#
+# 0018 Delete service
 #
 ngsi services delete --resource /iot/d
 
@@ -192,7 +197,7 @@ ngsi services delete --resource /iot/d
 ```
 
 #
-# 0018 List services
+# 0019 List services
 #
 ngsi services list --pretty
 
@@ -202,4 +207,3 @@ ngsi services list --pretty
   "services": []
 }
 ```
-
