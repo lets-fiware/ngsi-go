@@ -715,9 +715,13 @@ ngsi services delete --resource /iot/d --device on
 
 ```
 ```
+#
+# 0028 sleep 1
+#
+sleep 1
 
 #
-# 0028 List devices
+# 0029 List devices
 #
 ngsi devices list --pretty
 
@@ -729,7 +733,7 @@ ngsi devices list --pretty
 ```
 
 #
-# 0029 List services
+# 0030 List services
 #
 ngsi services list --pretty
 
