@@ -51,7 +51,7 @@ func entitiesList(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	attrs := "id"
+	attrs := "__NONE"
 	if client.IsNgsiLd() {
 		attrs = ""
 	}
@@ -237,7 +237,7 @@ func entitiesCount(c *cli.Context) error {
 	} else {
 		v.Set("limit", "1")
 		v.Set("options", "count")
-		v.Set("attrs", "id")
+		v.Set("attrs", "__NONE")
 	}
 	client.SetQuery(v)
 

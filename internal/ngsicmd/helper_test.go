@@ -174,6 +174,7 @@ type MockHTTPReqRes struct {
 	StatusCode int
 	ReqData    []byte
 	Path       string
+	RawQuery   *string
 }
 
 func AddReqRes(ngsi *ngsilib.NGSI, r MockHTTPReqRes) {
@@ -215,6 +216,11 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 	}
 	if r.Path != "" && r.Path != url.Path {
 		return nil, nil, &ngsiCmdError{funcName, 3, "url error", nil}
+	}
+	if r.RawQuery != nil {
+		if *r.RawQuery != url.RawQuery {
+			return nil, nil, &ngsiCmdError{funcName, 4, "raw query error", nil}
+		}
 	}
 	if r.ResHeader != nil {
 		r.Res.Header = r.ResHeader

@@ -72,6 +72,42 @@ func TestRemoveV2(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestRemoveV2AttrNone(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte("[{\"id\":\"9f6c254ac4a6068bb276774e\",\"description\":\"ngsi source subscription\",\"subject\":{\"entities\":[{\"idPattern\":\".*\"}],\"condition\":{\"attrs\":[\"dateObserved\"]}},\"notification\":{\"timesSent\":28,\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:13.00Z\",\"status\":\"inactive\"}]\n")
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"1"}}
+	reqRes1.Path = "/v2/entities"
+	rawQuery := "attrs=__NONE&limit=100&options=count&type=Thing"
+	reqRes1.RawQuery = &rawQuery
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte("{\"actionType\":\"delete\",\"entities\":[{\"description\":\"ngsi source subscription\",\"expires\":\"2020-09-24T07:49:13.00Z\",\"id\":\"9f6c254ac4a6068bb276774e\",\"notification\":{\"attrsFormat\":\"keyValues\",\"http\":{\"url\":\"https://ngsiproxy\"},\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"timesSent\":28},\"status\":\"inactive\",\"subject\":{\"condition\":{\"attrs\":[\"dateObserved\"]},\"entities\":[{\"idPattern\":\".*\"}]}}]}")
+	reqRes2.Path = "/v2/op/update"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[{\"id\":\"9f6c254ac4a6068bb276774e\",\"description\":\"ngsi source subscription\",\"subject\":{\"entities\":[{\"idPattern\":\".*\"}],\"condition\":{\"attrs\":[\"dateObserved\"]}},\"notification\":{\"timesSent\":28,\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:13.00Z\",\"status\":\"inactive\"}]\n")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "run")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--type=Thing", "--run"})
+
+	err := remove(c)
+
+	assert.NoError(t, err)
+}
+
 func TestRemoveLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 

@@ -74,7 +74,7 @@ func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error 
 		v.Set("type", entityType)
 		v.Set("options", "count")
 		v.Set("limit", fmt.Sprintf("%d", limit))
-		v.Set("attrs", "id")
+		v.Set("attrs", "__NONE")
 		client.SetQuery(&v)
 
 		res, body, err := client.HTTPGet()
