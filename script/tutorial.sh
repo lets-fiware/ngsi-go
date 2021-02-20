@@ -76,6 +76,17 @@ case "${command}" in
         ./run.sh cases/6000_time_series/1000_comet/0002_create_historical_data.test
         ./run.sh cases/6000_time_series/2000_quantumleap/0003_create_historical_data.test
         ;;
+    "up")
+        make build
+        cd e2e
+        if [ ! "$(docker-compose ps -a | wc -l)" = "2" ]; then
+            make down
+        fi
+        make build
+        make rmi
+        make up
+        ./run.sh cases/0000_prepare/
+        ;;
     "stop")
         cd e2e
         make down

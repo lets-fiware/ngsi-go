@@ -1,0 +1,177 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+#
+# Related issues:
+#  https://github.com/telefonicaid/fiware-orion/issues/3777
+#  https://github.com/lets-fiware/ngsi-go/issues/87
+#  https://github.com/FIWARE/tutorials.CRUD-Operations/issues/14 
+
+#
+# 0001 Create entity
+#
+ngsi create entity --data '{"id":"id001","A":{"type":"Text","value":"FIWARE"}}'
+
+```
+```
+
+#
+# 0002 List entities
+#
+ngsi list entities
+
+```
+id001
+```
+
+#
+# 0003 Count entities
+#
+ngsi list entities --count
+
+```
+1
+```
+
+#
+# 0004 List entities --verbose
+#
+ngsi list entities --verbose
+
+```
+[{"id":"id001","type":"Thing","A":{"type":"Text","value":"FIWARE","metadata":{}}}]
+```
+
+#
+# 0011 Create entity
+#
+ngsi create entity --data '{"id":"id002","type":"Event","A":{"type":"Text","value":"FIWARE"}}'
+
+```
+```
+
+#
+# 0012 List entities
+#
+ngsi list entities
+
+```
+id001
+id002
+```
+
+#
+# 0013 Count entities
+#
+ngsi list entities --count
+
+```
+2
+```
+
+#
+# 0014 List entities --verbose
+#
+ngsi list entities --pretty
+
+```
+[
+  {
+    "id": "id001",
+    "type": "Thing",
+    "A": {
+      "type": "Text",
+      "value": "FIWARE",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "id002",
+    "type": "Event",
+    "A": {
+      "type": "Text",
+      "value": "FIWARE",
+      "metadata": {}
+    }
+  }
+]
+```
+
+#
+# 0021 Remove entities
+#
+ngsi rm --type Thing --run
+
+```
+1
+```
+
+#
+# 0022 List entities
+#
+ngsi list entities
+
+```
+id002
+```
+
+#
+# 0023 Count entities
+#
+ngsi list entities --count
+
+```
+1
+```
+
+#
+# 0024 Count entities
+#
+ngsi list entities --type Thing --count
+
+```
+0
+```
+
+#
+# 0025 Remove entities
+#
+ngsi rm --type Event --run
+
+```
+1
+```
+
+#
+# 0026 Count entities
+#
+ngsi list entities --count
+
+```
+0
+```
+

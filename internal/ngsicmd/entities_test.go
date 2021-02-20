@@ -63,6 +63,35 @@ func TestEntitiesListCountV2(t *testing.T) {
 	}
 }
 
+func TestEntitiesListCountV2AttrNone(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entities"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
+	rawQuery := "attrs=__NONE&limit=1&options=count"
+	reqRes.RawQuery = &rawQuery
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--count"})
+
+	err := entitiesList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "9\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntitiesListCountLD(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -105,6 +134,36 @@ func TestEntitiesList(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--acceptJson"})
+	err := entitiesList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "airqualityobserved_0\nairqualityobserved_1\nairqualityobserved_2\nairqualityobserved_3\nairqualityobserved_4\nairqualityobserved_5\nairqualityobserved_6\nairqualityobserved_7\nairqualityobserved_8\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListAttrNone(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entities"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
+	reqRes.ResBody = []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+	rawQuery := "attrs=__NONE&limit=100&offset=0&options=count"
+	reqRes.RawQuery = &rawQuery
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "acceptJson")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--acceptJson"})
+
 	err := entitiesList(c)
 
 	if assert.NoError(t, err) {

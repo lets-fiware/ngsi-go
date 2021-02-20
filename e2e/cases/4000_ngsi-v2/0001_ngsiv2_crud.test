@@ -253,7 +253,12 @@ ngsi list entities --type Product -attrs name,price --keyValues --verbose
 #
 # 1013 List Data Entity by ID
 #
-ngsi list entities --type Product -attrs id --verbose
+# Related issues:
+#  https://github.com/telefonicaid/fiware-orion/issues/3777
+#  https://github.com/lets-fiware/ngsi-go/issues/87
+#  https://github.com/FIWARE/tutorials.CRUD-Operations/issues/14
+#
+ngsi list entities --type Product -attrs __NONE --verbose
 
 ```
 [{"id":"urn:ngsi-ld:Product:001","type":"Product"},{"id":"urn:ngsi-ld:Product:002","type":"Product"},{"id":"urn:ngsi-ld:Product:003","type":"Product"},{"id":"urn:ngsi-ld:Product:004","type":"Product"},{"id":"urn:ngsi-ld:Product:005","type":"Product"},{"id":"urn:ngsi-ld:Product:006","type":"Product"},{"id":"urn:ngsi-ld:Product:007","type":"Product"},{"id":"urn:ngsi-ld:Product:008","type":"Product"},{"id":"urn:ngsi-ld:Product:009","type":"Product"},{"id":"urn:ngsi-ld:Product:010","type":"Product"},{"id":"urn:ngsi-ld:Product:011","type":"Product"},{"id":"urn:ngsi-ld:Product:012","type":"Product"}]
