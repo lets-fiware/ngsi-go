@@ -323,3 +323,39 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | GET /v1/service_providers/configs                                                                                                  | providers                                                                                                                        |
 
 -   [Keyrock API - GitHub](https://github.com/ging/fiware-idm/blob/master/apiary.apib)
+
+## WireCloud
+
+| WireCloud API                                                                    | NGSI Go commands                                                       |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| /api/features                                                                    | version                                                                |
+| GET /api/preferences/platform                                                    |                                                                        |
+| POST /api/preferences/platform                                                   |                                                                        |
+| GET /api/workspaces                                                              | workspaces list                                                        |
+| POST /api/workspaces                                                             | workspaces create                                                      |
+| GET /api/workspace/{workspace_id}                                                | workspaces get --wid {workspace_id}                                    |
+| POST /api/workspace/{workspace_id}                                               | workspaces update --wid {workspace_id}                                 |
+| DELETE /api/workspace/{workspace_id}                                             | workspaces delete --wid {workspace_id}                                 |
+| POST /api/workspace/{workspace_id}/preferences                                   |                                                                        |
+| PATCH /api/workspace/{workspace_id}/wiring                                       |                                                                        |
+| PUT /api/workspace/{workspace_id}/wiring                                         |                                                                        |
+| POST /api/worksace/{workspace_id}/tabs                                           | tabs create --wid {workspace_id}                                       |
+| GET /api/workspace/{workspace_id}/tab/{tab_id}                                   | tabs get --wid {workspace_id} --tid {tab_id}                           |
+| UPDATE /api/workspace/{workspace_id}/tab/{tab_id}                                | tabs update --wid {workspace_id} --tid {tab_id}                        |
+| DELETE /api/workspace/{workspace_id}/tab/{tab_id}                                | tabs delete --wid {workspace_id} --tid {tab_id}                        |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/preferences                      |                                                                        |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidgets                         | widgets                                                                |
+| DELETE /api/workspace/{workspace_id}/tab/{tab_id}/iwidgets                       | widgets                                                                |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}             |                                                                        |
+| GET /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/preferences  |                                                                        |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/preferences |                                                                        |
+| GET /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/properties   |                                                                        |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/properties  |                                                                        |
+| GET /api/workspace/{workspace_id}/operators/{operator_id}/variables              |                                                                        |
+| GET /api/resources                                                               |                                                                        |
+| POST /api/resources                                                              |                                                                        |
+| GET /api/resource/{vendor}/{name}/{version}                                      |                                                                        |
+| DELETE /api/resource/{vendor}/{name}/{version}                                   |                                                                        |
+| DELETE /api/resource/{vendor}/{name}                                             |                                                                        |
+
+-   [WireCloud API - GitHub](https://github.com/Wirecloud/wirecloud/blob/develop/docs/restapi/applicationmashup.apib)

@@ -33,9 +33,11 @@ import (
 	"bufio"
 	"bytes"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"time"
@@ -290,4 +292,53 @@ func (f *MockFileLib) File() bufio.Reader {
 	r := f.fileError
 	f.fileError = f.fileError2
 	return r
+}
+
+//
+//  MockIoutilLib
+//
+type MockIoutilLib struct {
+	CopyErr      error
+	WriteFileErr error
+	ReadFileErr  error
+}
+
+func (i *MockIoutilLib) Copy(dst io.Writer, src io.Reader) (int64, error) {
+	if i.CopyErr != nil {
+		return 0, i.CopyErr
+	}
+	return io.Copy(dst, src)
+}
+
+func (i *MockIoutilLib) WriteFile(filename string, data []byte, perm os.FileMode) error {
+	if i.WriteFileErr != nil {
+		return i.WriteFileErr
+	}
+	return ioutil.WriteFile(filename, data, perm)
+}
+
+func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
+	if i.ReadFileErr != nil {
+		return nil, i.ReadFileErr
+	}
+	return ioutil.ReadFile(filename)
+}
+
+//
+// MockFilePathLib
+//
+type MockFilePathLib struct {
+	PathAbsErr error
+}
+
+func (i *MockFilePathLib) FilePathAbs(path string) (string, error) {
+	return path, i.PathAbsErr
+}
+
+func (i *MockFilePathLib) FilePathJoin(elem ...string) string {
+	return strings.Join(elem, "/")
+}
+
+func (i *MockFilePathLib) FilePathBase(path string) string {
+	return filepath.Base(path)
 }

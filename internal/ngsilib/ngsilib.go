@@ -54,6 +54,8 @@ type NGSI struct {
 	LogWriter     io.Writer
 	FileReader    FileLib
 	JSONConverter JSONLib
+	FilePath      FilePathLib
+	Ioutil        IoutilLib
 	Host          string
 	Destination   string
 	Margin        int64
@@ -95,6 +97,8 @@ func NewNGSI() *NGSI {
 		gNGSI.CacheFile = &ioLib{}
 		gNGSI.JSONConverter = &jsonLib{}
 		gNGSI.FileReader = &fileLib{}
+		gNGSI.FilePath = &filePathLib{}
+		gNGSI.Ioutil = &ioutilLib{}
 		gNGSI.Stderr = os.Stderr
 		gNGSI.OsType = runtime.GOOS
 		gNGSI.SyslogLib = &syslogLib{}

@@ -150,6 +150,9 @@ func getNgsiApp() *cli.App {
 			&providersCmd,
 			&cygnusNamemappingsCmd,
 			&cygnusGroupingrulesCmd,
+			&wireCloudPreferencesCmd,
+			&wireCloudResourcesCmd,
+			&wireCloudWorkspacesCmd,
 		},
 	}
 }
@@ -2835,7 +2838,7 @@ var cygnusAppendersCmd = cli.Command{
 			Name:  "get",
 			Usage: "get appender",
 			Flags: []cli.Flag{
-				cygnusAppendersNamelag,
+				cygnusAppendersNameFlag,
 				cygnusAppendersTransientFlag,
 				prettyFlag,
 			},
@@ -2847,7 +2850,7 @@ var cygnusAppendersCmd = cli.Command{
 			Name:  "create",
 			Usage: "create appender",
 			Flags: []cli.Flag{
-				cygnusAppendersNamelag,
+				cygnusAppendersNameFlag,
 				cygnusAppendersDataFlag,
 				cygnusAppendersTransientFlag,
 				prettyFlag,
@@ -2860,7 +2863,7 @@ var cygnusAppendersCmd = cli.Command{
 			Name:  "update",
 			Usage: "update appender",
 			Flags: []cli.Flag{
-				cygnusAppendersNamelag,
+				cygnusAppendersNameFlag,
 				cygnusAppendersDataFlag,
 				cygnusAppendersTransientFlag,
 				prettyFlag,
@@ -2873,7 +2876,7 @@ var cygnusAppendersCmd = cli.Command{
 			Name:  "delete",
 			Usage: "delete appender",
 			Flags: []cli.Flag{
-				cygnusAppendersNamelag,
+				cygnusAppendersNameFlag,
 				cygnusAppendersTransientFlag,
 				prettyFlag,
 			},
@@ -3038,6 +3041,139 @@ var scorpioCmd = cli.Command{
 			Usage: "print health",
 			Action: func(c *cli.Context) error {
 				return scorpioCommand(c, "health")
+			},
+		},
+	},
+}
+
+var wireCloudWorkspacesCmd = cli.Command{
+	Name:     "workspaces",
+	Usage:    "manage workspaces for WireCloud",
+	Category: "APPLICATION MASHUP",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list workspaces",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudWorkspacesList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get workspace",
+			Flags: []cli.Flag{
+				wireCloudWorkspaceIdFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudWorkspacesGet(c)
+			},
+		},
+	},
+}
+
+var wireCloudResourcesCmd = cli.Command{
+	Name:     "resources",
+	Usage:    "manage resources for WireCloud",
+	Category: "APPLICATION MASHUP",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list resources",
+			Flags: []cli.Flag{
+				wireCloudWidgetFlag,
+				wireCloudOperatorFlag,
+				wireCloudMashupFlag,
+				wireCloudVenderFlag,
+				wireCloudNameFlag,
+				wireCloudVersionFlag,
+				jsonFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudResourcesList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get resource",
+			Flags: []cli.Flag{
+				wireCloudVenderFlag,
+				wireCloudNameFlag,
+				wireCloudVersionFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudResourceGet(c)
+			},
+		},
+		{
+			Name:  "download",
+			Usage: "download resource",
+			Flags: []cli.Flag{
+				wireCloudVenderFlag,
+				wireCloudNameFlag,
+				wireCloudVersionFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudResourceDownload(c)
+			},
+		},
+		{
+			Name:  "install",
+			Usage: "install resource",
+			Flags: []cli.Flag{
+				wireCloudFileFlag,
+				wireCloudPublicFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudResourceInstall(c)
+			},
+		},
+		{
+			Name:  "uninstall",
+			Usage: "uninstall resource",
+			Flags: []cli.Flag{
+				wireCloudVenderFlag,
+				wireCloudNameFlag,
+				wireCloudVersionFlag,
+				runFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudResourceUninstall(c)
+			},
+		},
+	},
+}
+
+var wireCloudPreferencesCmd = cli.Command{
+	Name:     "preferences",
+	Usage:    "manage preferences for WireCloud",
+	Category: "APPLICATION MASHUP",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "get",
+			Usage: "get preferences",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudPreferencesGet(c)
 			},
 		},
 	},

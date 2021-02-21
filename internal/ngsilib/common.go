@@ -232,3 +232,47 @@ func (t *timeLib) Now() time.Time {
 func (t *timeLib) NowUnix() int64 {
 	return time.Now().Unix()
 }
+
+// IoutilLib is ...
+type IoutilLib interface {
+	Copy(dst io.Writer, src io.Reader) (int64, error)
+	WriteFile(filename string, data []byte, perm os.FileMode) error
+	ReadFile(filename string) ([]byte, error)
+}
+
+type ioutilLib struct {
+}
+
+func (i *ioutilLib) Copy(dst io.Writer, src io.Reader) (int64, error) {
+	return io.Copy(dst, src)
+}
+
+func (i *ioutilLib) WriteFile(filename string, data []byte, perm os.FileMode) error {
+	return ioutil.WriteFile(filename, data, perm)
+}
+
+func (i *ioutilLib) ReadFile(filename string) ([]byte, error) {
+	return ioutil.ReadFile(filename)
+}
+
+// FilePathLib is ...
+type FilePathLib interface {
+	FilePathAbs(path string) (string, error)
+	FilePathJoin(elem ...string) string
+	FilePathBase(path string) string
+}
+
+type filePathLib struct {
+}
+
+func (i *filePathLib) FilePathAbs(path string) (string, error) {
+	return filepath.Abs(path)
+}
+
+func (i *filePathLib) FilePathJoin(elem ...string) string {
+	return filepath.Join(elem...)
+}
+
+func (i *filePathLib) FilePathBase(path string) string {
+	return filepath.Base(path)
+}

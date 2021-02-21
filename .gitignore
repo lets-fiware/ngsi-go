@@ -9,3 +9,4 @@ node_modules/
 super-linter.log
 __debug_bin
 cygnus-name_mappings.conf
+*.wgt
