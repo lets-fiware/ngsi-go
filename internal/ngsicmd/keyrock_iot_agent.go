@@ -256,7 +256,7 @@ func iotAgentsDelete(c *cli.Context) error {
 	}
 	client.SetPath("/v1/applications/" + c.String("aid") + "/iot_agents/" + c.String("iid"))
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 5, err.Error(), err}
 	}

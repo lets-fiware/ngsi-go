@@ -149,7 +149,7 @@ func trustedAppDelete(c *cli.Context) error {
 	}
 	client.SetPath("/v1/applications/" + c.String("aid") + "/trusted_applications/" + c.String("tid"))
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}

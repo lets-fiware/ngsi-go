@@ -5,6 +5,8 @@ This command generates a json-style query text for subscription or registration.
 -   [Subscription](#subscription)
 -   [Registration](#registration)
 
+<a name="subscription"></a>
+
 ## Subscription
 
 This command generates a json-style query text to create a subscription and print it to stdout.
@@ -188,6 +190,8 @@ ngsi template subscription --ngsiType v2 --idPattern ".*" --type Sensor --wAttrs
   "expires": "2020-11-09T11:43:17.510Z"
 }
 ```
+
+<a name="registration"></a>
 
 ## Registration
 

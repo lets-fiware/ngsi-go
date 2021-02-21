@@ -25,33 +25,25 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi admin
+# 0011 cygnus metrics
 #
-ngsi admin
+ngsi admin --host cygnus metrics --pretty
 
 ```
-NAME:
-   ngsi admin - admin command for FIWARE Orion, Cygnus, Perseo
+{
+  "services": {},
+  "sum": {
+    "subservs": {},
+    "sum": {}
+  }
+}
+```
 
-USAGE:
-   ngsi admin command [command options] [arguments...]
+#
+# 0012 cygnus metrics --reset
+#
+ngsi admin --host cygnus metrics --reset
 
-COMMANDS:
-   log              admin log
-   trace            admin trace
-   semaphore        print semaphore
-   metrics          manage metrics
-   statistics       print statistics
-   cacheStatistics  print cache statistics
-   help, h          Shows a list of commands or help for one command
-   sub-command:
-     loggers    manage loggers for Cygnus
-     appenders  manage appenders for Cygnus
-
-OPTIONS:
-   --host value, -h value  host or alias
-   --token value           oauth token
-   --help                  show help (default: false)
-   --version, -v           print the version (default: false)
-   
+```
+{"services":{},"sum": {"subservs":{},"sum":{}}}
 ```

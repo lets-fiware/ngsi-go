@@ -226,7 +226,7 @@ func appsOrgsRolesUnassign(c *cli.Context) error {
 	path := fmt.Sprintf("/v1/applications/%s/organizations/%s/roles/%s/organization_roles/%s", c.String("aid"), c.String("oid"), c.String("rid"), c.String("orid"))
 	client.SetPath(path)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 7, err.Error(), err}
 	}

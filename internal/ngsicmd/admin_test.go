@@ -634,6 +634,30 @@ func TestAdminMetrics(t *testing.T) {
 	}
 }
 
+func TestAdminMetricsCygnus(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"services":{},"sum": {"subservs":{},"sum":{}}}`)
+	reqRes.Path = "/v1/admin/metrics"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging,reset")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=cygnus", "--reset", "--logging"})
+	err := adminMetrics(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := `{"services":{},"sum": {"subservs":{},"sum":{}}}`
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestAdminMetricsPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -1108,6 +1132,50 @@ func TestAdminStatistics(t *testing.T) {
 		expected := `{"uptime_in_secs":152275,"measuring_interval_in_secs":152275}`
 		assert.Equal(t, expected, actual)
 	}
+}
+
+func TestAdminStatisticsCygnus(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"success":"true","stats":{"sources":[{"name":"http-source-mongo","status":"START","setup_time":"2021-02-22T00:52:39.98Z","num_received_events":0,"num_processed_events":0}],"channels":[{"name":"mongo-channel","status":"START","setup_time":"2021-02-22T00:52:39.439Z","num_events":0,"num_puts_ok":0,"num_puts_failed":0,"num_takes_ok":0,"num_takes_failed":136},{"name":"sth-channel","status":"START","setup_time":"2021-02-22T00:52:39.436Z","num_events":0,"num_puts_ok":0,"num_puts_failed":0,"num_takes_ok":0,"num_takes_failed":136}],"sinks":[{"name":"mongo-sink","status":"START","setup_time":"2021-02-22T00:52:39.182Z","num_processed_events":0,"num_persisted_events":0},{"name":"sth-sink","status":"START","setup_time":"2021-02-22T00:52:39.196Z","num_processed_events":0,"num_persisted_events":0}]}}`)
+	reqRes.Path = "/v1/stats"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "logging")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=cygnus", "--logging"})
+	err := adminStatistics(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := `{"success":"true","stats":{"sources":[{"name":"http-source-mongo","status":"START","setup_time":"2021-02-22T00:52:39.98Z","num_received_events":0,"num_processed_events":0}],"channels":[{"name":"mongo-channel","status":"START","setup_time":"2021-02-22T00:52:39.439Z","num_events":0,"num_puts_ok":0,"num_puts_failed":0,"num_takes_ok":0,"num_takes_failed":136},{"name":"sth-channel","status":"START","setup_time":"2021-02-22T00:52:39.436Z","num_events":0,"num_puts_ok":0,"num_puts_failed":0,"num_takes_ok":0,"num_takes_failed":136}],"sinks":[{"name":"mongo-sink","status":"START","setup_time":"2021-02-22T00:52:39.182Z","num_processed_events":0,"num_persisted_events":0},{"name":"sth-sink","status":"START","setup_time":"2021-02-22T00:52:39.196Z","num_processed_events":0,"num_persisted_events":0}]}}`
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestAdminStatisticsCygnusDelete(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"success":"true","stats":{"sources":[{"name":"http-source-mongo","status":"START","setup_time":"2021-02-22T00:52:39.98Z","num_received_events":0,"num_processed_events":0}],"channels":[{"name":"mongo-channel","status":"START","setup_time":"2021-02-22T00:52:39.439Z","num_events":0,"num_puts_ok":0,"num_puts_failed":0,"num_takes_ok":0,"num_takes_failed":136},{"name":"sth-channel","status":"START","setup_time":"2021-02-22T00:52:39.436Z","num_events":0,"num_puts_ok":0,"num_puts_failed":0,"num_takes_ok":0,"num_takes_failed":136}],"sinks":[{"name":"mongo-sink","status":"START","setup_time":"2021-02-22T00:52:39.182Z","num_processed_events":0,"num_persisted_events":0},{"name":"sth-sink","status":"START","setup_time":"2021-02-22T00:52:39.196Z","num_processed_events":0,"num_persisted_events":0}]}}`)
+	reqRes.Path = "/v1/stats"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "delete")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=cygnus", "--delete"})
+	err := adminStatistics(c)
+
+	assert.NoError(t, err)
 }
 
 func TestAdminStatisticsPretty(t *testing.T) {

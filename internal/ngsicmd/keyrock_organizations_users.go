@@ -216,7 +216,7 @@ func orgUsersDelete(c *cli.Context) error {
 	}
 	client.SetPath("/v1/organizations/" + c.String("oid") + "/users/" + c.String("uid") + "/organization_roles/" + c.String("orid"))
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}

@@ -385,7 +385,7 @@ func subscriptionsDeleteV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	path := "/subscriptions/" + id
 	client.SetPath(path)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}

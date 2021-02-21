@@ -33,38 +33,178 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/urfave/cli/v2"
 )
 
-func pepProxiesList(c *cli.Context) error {
-	const funcName = "pepProxiesList"
+func groupingrulesList(c *cli.Context) error {
+	const funcName = "groupingrulesList"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
-
-	client, err := newClient(ngsi, c, false, []string{"keyrock"})
+	client, err := newClient(ngsi, c, false, []string{"cygnus"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if !c.IsSet("aid") {
-		return &ngsiCmdError{funcName, 3, "specify application id", nil}
-	}
-	client.SetPath("/v1/applications/" + c.String("aid") + "/pep_proxies")
+	client.SetPath("/v1/groupingrules")
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusOK {
-		if res.StatusCode == http.StatusNotFound {
-			fmt.Fprintln(ngsi.StdWriter, "pep proxy not found")
-			return nil
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		fmt.Fprint(ngsi.StdWriter, newBuf.String())
+		return nil
+	}
+
+	fmt.Fprint(ngsi.StdWriter, string(body))
+
+	return nil
+}
+
+func groupingrulesCreate(c *cli.Context) error {
+	const funcName = "groupingrulesCreate"
+
+	ngsi, err := initCmd(c, funcName, true)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	client, err := newClient(ngsi, c, false, []string{"cygnus"})
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	if !c.IsSet("data") {
+		return &ngsiCmdError{funcName, 3, "specify data", nil}
+	}
+
+	b, err := readAll(c, ngsi)
+	if err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
+	}
+
+	client.SetHeader("Content-Type", "application/json")
+	client.SetPath("/v1/groupingrules")
+
+	res, body, err := client.HTTPPost(b)
+	if err != nil {
+		return &ngsiCmdError{funcName, 5, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 7, err.Error(), err}
+		}
+		fmt.Fprint(ngsi.StdWriter, newBuf.String())
+		return nil
+	}
+
+	fmt.Fprint(ngsi.StdWriter, string(body))
+
+	return nil
+}
+
+func groupingrulesUpdate(c *cli.Context) error {
+	const funcName = "groupingrulesUpdate"
+
+	ngsi, err := initCmd(c, funcName, true)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	client, err := newClient(ngsi, c, false, []string{"cygnus"})
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	if !c.IsSet("id") {
+		return &ngsiCmdError{funcName, 3, "specify id", nil}
+	}
+
+	if !c.IsSet("data") {
+		return &ngsiCmdError{funcName, 4, "specify data", nil}
+	}
+
+	b, err := readAll(c, ngsi)
+	if err != nil {
+		return &ngsiCmdError{funcName, 5, err.Error(), err}
+	}
+
+	v := url.Values{}
+	v.Set("id", c.String("id"))
+	client.SetQuery(&v)
+
+	client.SetHeader("Content-Type", "application/json")
+	client.SetPath("/v1/groupingrules")
+
+	res, body, err := client.HTTPPut(b)
+	if err != nil {
+		return &ngsiCmdError{funcName, 6, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 8, err.Error(), err}
+		}
+		fmt.Fprint(ngsi.StdWriter, newBuf.String())
+		return nil
+	}
+
+	fmt.Fprint(ngsi.StdWriter, string(body))
+
+	return nil
+}
+
+func groupingrulesDelete(c *cli.Context) error {
+	const funcName = "groupingrulesDelete"
+
+	ngsi, err := initCmd(c, funcName, true)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	client, err := newClient(ngsi, c, false, []string{"cygnus"})
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	if !c.IsSet("id") {
+		return &ngsiCmdError{funcName, 3, "specify id", nil}
+	}
+
+	v := url.Values{}
+	v.Set("id", c.String("id"))
+	client.SetQuery(&v)
+
+	client.SetPath("/v1/groupingrules")
+
+	res, body, err := client.HTTPDelete(nil)
+	if err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNotFound {
+		return &ngsiCmdError{funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 
 	if c.Bool("pretty") {
@@ -73,138 +213,11 @@ func pepProxiesList(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
-		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		fmt.Fprint(ngsi.StdWriter, newBuf.String())
 		return nil
 	}
 
 	fmt.Fprint(ngsi.StdWriter, string(body))
-
-	return nil
-}
-
-func pepProxiesCreate(c *cli.Context) error {
-	const funcName = "pepProxiesCreate"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"keyrock"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if !c.IsSet("aid") {
-		return &ngsiCmdError{funcName, 3, "specify application id", nil}
-	}
-	client.SetPath("/v1/applications/" + c.String("aid") + "/pep_proxies")
-
-	client.SetHeader("Content-Type", "application/json")
-
-	if !c.IsSet("run") {
-		return &ngsiCmdError{funcName, 4, "run create with --run option", err}
-	}
-
-	res, body, err := client.HTTPPost([]byte(""))
-	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
-	}
-	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
-	}
-
-	if c.Bool("pretty") {
-		newBuf := new(bytes.Buffer)
-		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
-		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
-		}
-		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
-		return nil
-	}
-
-	fmt.Fprint(ngsi.StdWriter, string(body))
-
-	return nil
-}
-
-func pepProxiesReset(c *cli.Context) error {
-	const funcName = "pepProxiesReset"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"keyrock"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if !c.IsSet("aid") {
-		return &ngsiCmdError{funcName, 3, "specify application id", nil}
-	}
-	client.SetPath("/v1/applications/" + c.String("aid") + "/pep_proxies")
-
-	client.SetHeader("Content-Type", "application/json")
-
-	if !c.IsSet("run") {
-		return &ngsiCmdError{funcName, 4, "run reset with --run option", err}
-	}
-
-	res, body, err := client.HTTPPatch([]byte(""))
-	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
-	}
-	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
-	}
-
-	if c.Bool("pretty") {
-		newBuf := new(bytes.Buffer)
-		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
-		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
-		}
-		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
-		return nil
-	}
-
-	fmt.Fprint(ngsi.StdWriter, string(body))
-
-	return nil
-}
-
-func pepProxiesDelete(c *cli.Context) error {
-	const funcName = "pepProxiesDelete"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"keyrock"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if !c.IsSet("aid") {
-		return &ngsiCmdError{funcName, 3, "specify application id", nil}
-	}
-	client.SetPath("/v1/applications/" + c.String("aid") + "/pep_proxies")
-
-	if !c.IsSet("run") {
-		return &ngsiCmdError{funcName, 4, "run delete with --run option", err}
-	}
-
-	res, body, err := client.HTTPDelete(nil)
-	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
-	}
-	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
-	}
 
 	return nil
 }

@@ -49,12 +49,12 @@ func adminLog(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"broker", "perseo"})
+	client, err := newClient(ngsi, c, false, []string{"broker", "cygnus", "perseo"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if client.IsNgsiLd() && client.Server.ServerType == "broker" {
+	if client.Server.ServerType == "broker" && client.IsNgsiLd() {
 		return &ngsiCmdError{funcName, 3, "only available on NGSIv2", err}
 	}
 
@@ -158,7 +158,7 @@ func adminTrace(c *cli.Context) error {
 		}
 		client.SetPath(path)
 
-		res, body, err := client.HTTPDelete()
+		res, body, err := client.HTTPDelete(nil)
 		if err != nil {
 			return &ngsiCmdError{funcName, 8, err.Error(), err}
 		}
@@ -192,7 +192,7 @@ func adminMetrics(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"broker", "perseo"})
+	client, err := newClient(ngsi, c, false, []string{"broker", "perseo", "cygnus"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -206,11 +206,14 @@ func adminMetrics(c *cli.Context) error {
 	}
 
 	path := "/admin/metrics"
+	if client.Server.ServerType == "cygnus" {
+		path = "/v1/admin/metrics"
+	}
 
 	if c.IsSet("delete") {
 		client.SetPath(path)
 
-		res, body, err := client.HTTPDelete()
+		res, body, err := client.HTTPDelete(nil)
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
@@ -304,21 +307,31 @@ func adminStatistics(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"broker"})
+	client, err := newClient(ngsi, c, false, []string{"broker", "cygnus"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if client.IsNgsiLd() {
+	if client.Server.ServerType == "broker" && client.IsNgsiLd() {
 		return &ngsiCmdError{funcName, 3, "only available on NGSIv2", err}
 	}
 
 	path := "/statistics"
+	if client.Server.ServerType == "cygnus" {
+		path = "/v1/stats"
+	}
 
 	if c.IsSet("delete") {
 		client.SetPath(path)
+		var res *http.Response
+		var body []byte
+		var err error
 
-		res, body, err := client.HTTPDelete()
+		if client.Server.ServerType == "cygnus" {
+			res, body, err = client.HTTPPut("")
+		} else {
+			res, body, err = client.HTTPDelete(nil)
+		}
 		if err != nil {
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
@@ -376,7 +389,7 @@ func adminCacheStatistics(c *cli.Context) error {
 	if c.IsSet("delete") {
 		client.SetPath(path)
 
-		res, body, err := client.HTTPDelete()
+		res, body, err := client.HTTPDelete(nil)
 		if err != nil {
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}

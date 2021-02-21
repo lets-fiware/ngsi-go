@@ -33,6 +33,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 
@@ -68,14 +69,15 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	app := getNgsiApp()
 	err := app.Run(args)
 	if err != nil {
-		ngsi.Logging(ngsilib.LogErr, message(err)+"\n")
+		s := strings.TrimRight(message(err), "\n") + "\n"
+		ngsi.Logging(ngsilib.LogErr, s)
 		for err != nil {
 			err = errors.Unwrap(err)
 			if err == nil {
 				break
 			}
 			ngsi.Logging(ngsilib.LogDebug, fmt.Sprintf("%T\n", err))
-			ngsi.Logging(ngsilib.LogInfo, message(err)+"\n")
+			ngsi.Logging(ngsilib.LogInfo, s)
 		}
 		ngsi.Logging(ngsilib.LogInfo, "abnormal termination\n")
 		return 1
@@ -137,6 +139,8 @@ func getNgsiApp() *cli.App {
 			&usersCmd,
 			&organizationsCmd,
 			&providersCmd,
+			&cygnusNamemappingsCmd,
+			&cygnusGroupingrulesCmd,
 		},
 	}
 }
@@ -1348,7 +1352,7 @@ var upsertCmd = cli.Command{
 
 var adminCmd = cli.Command{
 	Name:     "admin",
-	Usage:    "admin command for FIWARE Orion",
+	Usage:    "admin command for FIWARE Orion, Cygnus, Perseo",
 	Category: "CONVENIENCE",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1428,6 +1432,8 @@ var adminCmd = cli.Command{
 				return adminCacheStatistics(c)
 			},
 		},
+		&cygnusLoggersCmd,
+		&cygnusAppendersCmd,
 	},
 }
 
@@ -2567,5 +2573,255 @@ var providersCmd = cli.Command{
 	},
 	Action: func(c *cli.Context) error {
 		return providersGet(c)
+	},
+}
+
+var cygnusLoggersCmd = cli.Command{
+	Name:     "loggers",
+	Usage:    "manage loggers for Cygnus",
+	Category: "sub-command",
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list loggers",
+			Flags: []cli.Flag{
+				cygnusLoggersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return loggersList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get logger",
+			Flags: []cli.Flag{
+				cygnusLoggersNameFlag,
+				cygnusLoggersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return loggersGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create logger",
+			Flags: []cli.Flag{
+				cygnusLoggersNameFlag,
+				cygnusLoggersDataFlag,
+				cygnusLoggersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return loggersCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update logger",
+			Flags: []cli.Flag{
+				cygnusLoggersNameFlag,
+				cygnusLoggersDataFlag,
+				cygnusLoggersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return loggersUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete logger",
+			Flags: []cli.Flag{
+				cygnusLoggersNameFlag,
+				cygnusLoggersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return loggersDelete(c)
+			},
+		},
+	},
+}
+
+var cygnusAppendersCmd = cli.Command{
+	Name:     "appenders",
+	Usage:    "manage appenders for Cygnus",
+	Category: "sub-command",
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list appenders",
+			Flags: []cli.Flag{
+				cygnusAppendersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appendersList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get appender",
+			Flags: []cli.Flag{
+				cygnusAppendersNamelag,
+				cygnusAppendersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appendersGet(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create appender",
+			Flags: []cli.Flag{
+				cygnusAppendersNamelag,
+				cygnusAppendersDataFlag,
+				cygnusAppendersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appendersCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update appender",
+			Flags: []cli.Flag{
+				cygnusAppendersNamelag,
+				cygnusAppendersDataFlag,
+				cygnusAppendersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appendersUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete appender",
+			Flags: []cli.Flag{
+				cygnusAppendersNamelag,
+				cygnusAppendersTransientFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return appendersDelete(c)
+			},
+		},
+	},
+}
+
+var cygnusNamemappingsCmd = cli.Command{
+	Name:     "namemappings",
+	Usage:    "manage namemappings for Cygnus",
+	Category: "PERSISTING CONTEXT DATA",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list namemappings",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return namemappingsList(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create namemapping",
+			Flags: []cli.Flag{
+				cygnusNamemappingsDataFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return namemappingsCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update namemapping",
+			Flags: []cli.Flag{
+				cygnusNamemappingsDataFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return namemappingsUpdate(c)
+			},
+			Hidden: true,
+		},
+		{
+			Name:  "delete",
+			Usage: "delete namemapping",
+			Flags: []cli.Flag{
+				cygnusNamemappingsDataFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return namemappingsDelete(c)
+			},
+		},
+	},
+}
+
+var cygnusGroupingrulesCmd = cli.Command{
+	Name:     "groupingrules",
+	Usage:    "manage groupingrules for Cygnus",
+	Category: "PERSISTING CONTEXT DATA",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list groupingrules",
+			Flags: []cli.Flag{
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return groupingrulesList(c)
+			},
+		},
+		{
+			Name:  "create",
+			Usage: "create groupingrule",
+			Flags: []cli.Flag{
+				cygnusGroupingrulesDataFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return groupingrulesCreate(c)
+			},
+		},
+		{
+			Name:  "update",
+			Usage: "update groupingrule",
+			Flags: []cli.Flag{
+				cygnusGroupingrulesIDFlag,
+				cygnusGroupingrulesDataFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return groupingrulesUpdate(c)
+			},
+		},
+		{
+			Name:  "delete",
+			Usage: "delete groupingrule",
+			Flags: []cli.Flag{
+				cygnusGroupingrulesIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return groupingrulesDelete(c)
+			},
+		},
 	},
 }

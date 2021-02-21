@@ -298,7 +298,7 @@ func rolesDelete(c *cli.Context) error {
 	}
 	client.SetPath("/v1/applications/" + c.String("aid") + "/roles/" + c.String("rid"))
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 5, err.Error(), err}
 	}

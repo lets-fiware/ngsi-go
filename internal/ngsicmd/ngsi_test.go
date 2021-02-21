@@ -36,6 +36,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
 )
@@ -187,13 +188,24 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"users", "update"}, rc: 1},
 		{args: []string{"users", "delete"}, rc: 1},
 		{args: []string{"providers"}, rc: 1},
-		/*
-			{args: []string{"list", "delete"}, rc: 1},
-			{args: []string{"get", "delete"}, rc: 1},
-			{args: []string{"create", "delete"}, rc: 1},
-			{args: []string{"update", "delete"}, rc: 1},
-			{args: []string{"delete", "delete"}, rc: 1},
-		*/
+		{args: []string{"admin", "appenders", "list"}, rc: 1},
+		{args: []string{"admin", "appenders", "get"}, rc: 1},
+		{args: []string{"admin", "appenders", "create"}, rc: 1},
+		{args: []string{"admin", "appenders", "update"}, rc: 1},
+		{args: []string{"admin", "appenders", "delete"}, rc: 1},
+		{args: []string{"admin", "loggers", "list"}, rc: 1},
+		{args: []string{"admin", "loggers", "get"}, rc: 1},
+		{args: []string{"admin", "loggers", "create"}, rc: 1},
+		{args: []string{"admin", "loggers", "update"}, rc: 1},
+		{args: []string{"admin", "loggers", "delete"}, rc: 1},
+		{args: []string{"namemappings", "list"}, rc: 1},
+		{args: []string{"namemappings", "create"}, rc: 1},
+		{args: []string{"namemappings", "update"}, rc: 1},
+		{args: []string{"namemappings", "delete"}, rc: 1},
+		{args: []string{"groupingrules", "list"}, rc: 1},
+		{args: []string{"groupingrules", "create"}, rc: 1},
+		{args: []string{"groupingrules", "update"}, rc: 1},
+		{args: []string{"groupingrules", "delete"}, rc: 1},
 	}
 
 	for _, c := range cases {
@@ -229,6 +241,22 @@ func TestNGSIMessage(t *testing.T) {
 	s := message(e)
 
 	assert.Equal(t, "error message", s)
+}
+
+func TestNGSIMessageLibError(t *testing.T) {
+
+	e := &ngsilib.LibError{ErrNo: 1, Message: "error message"}
+	s := message(e)
+
+	assert.Equal(t, "001 error message", s)
+}
+
+func TestNGSIMessageCmdError(t *testing.T) {
+
+	e := &ngsiCmdError{ErrNo: 1, Message: "error message"}
+	s := message(e)
+
+	assert.Equal(t, "001 error message", s)
 }
 
 func TestIsSetsORTrue(t *testing.T) {

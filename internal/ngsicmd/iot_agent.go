@@ -236,7 +236,7 @@ func idasServicesDelete(c *cli.Context) error {
 
 	client.SetPath("/iot/services")
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
@@ -431,7 +431,7 @@ func idasDevicesDelete(c *cli.Context) error {
 	path := "/iot/devices/" + c.String("id")
 	client.SetPath(path)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}

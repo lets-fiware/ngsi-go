@@ -240,7 +240,7 @@ func perseoRulesDelete(c *cli.Context) error {
 
 	client.SetPath("/rules/" + c.String("name"))
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
