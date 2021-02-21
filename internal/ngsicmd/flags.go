@@ -834,3 +834,195 @@ var (
 		Usage: "print number of rules",
 	}
 )
+
+// Keyrock Common
+var (
+	keyrockDescriptionFlag = &cli.StringFlag{
+		Name:    "description",
+		Aliases: []string{"d"},
+		Usage:   "description",
+	}
+	keyrockWebsiteFlag = &cli.StringFlag{
+		Name:    "website",
+		Aliases: []string{"w"},
+		Usage:   "website",
+	}
+	keyrcokOrganizationRoleIDFlag = &cli.StringFlag{
+		Name:    "orid",
+		Aliases: []string{"c"},
+		Usage:   "organization role id",
+	}
+)
+
+// Keyrock users
+var (
+	keyrockUserIDFlag = &cli.StringFlag{
+		Name:    "uid",
+		Aliases: []string{"i"},
+		Usage:   "user id",
+	}
+	keyrockUserNameFlag = &cli.StringFlag{
+		Name:    "username",
+		Aliases: []string{"u"},
+		Usage:   "user name",
+	}
+	keyrockPasswordFlag = &cli.StringFlag{
+		Name:    "password",
+		Aliases: []string{"p"},
+		Usage:   "password",
+	}
+	keyrockEmailFlag = &cli.StringFlag{
+		Name:    "email",
+		Aliases: []string{"e"},
+		Usage:   "email",
+	}
+	keyrockGravatarFlag = &cli.StringFlag{
+		Name:    "gravatar",
+		Aliases: []string{"g"},
+		Usage:   "gravatar (true or false)",
+	}
+	keyrockExtraFlag = &cli.StringFlag{
+		Name:    "extra",
+		Aliases: []string{"E"},
+		Usage:   "extra information",
+	}
+)
+
+// Keyrock applications
+var (
+	keyrockApplicationIDFlag = &cli.StringFlag{
+		Name:    "aid",
+		Aliases: []string{"i"},
+		Usage:   "application id",
+	}
+	keyrcokApplicationDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "application data",
+	}
+	keyrcokApplicationNameFlag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "application name",
+	}
+	keyrcokApplicationDescriptionFlag = &cli.StringFlag{
+		Name:    "description",
+		Aliases: []string{"D"},
+		Usage:   "description",
+	}
+	keyrcokApplicationRedirectURIFlag = &cli.StringFlag{
+		Name:    "redirectUri",
+		Aliases: []string{"R"},
+		Usage:   "redirect uri",
+	}
+	keyrcokApplicationURLFlag = &cli.StringFlag{
+		Name:    "url",
+		Aliases: []string{"u"},
+		Usage:   "url",
+	}
+	keyrcokApplicationGrantTypeFlag = &cli.StringFlag{
+		Name:    "grantType",
+		Aliases: []string{"g"},
+		Usage:   "grant type",
+	}
+	keyrcokApplicationTokenTypesFlag = &cli.StringFlag{
+		Name:    "tokenTypes",
+		Aliases: []string{"t"},
+		Usage:   "token types",
+	}
+	keyrcokApplicationResponseTypeFlag = &cli.StringFlag{
+		Name:    "responseType",
+		Aliases: []string{"r"},
+		Usage:   "response type",
+	}
+	keyrcokApplicationClientTypeFlag = &cli.StringFlag{
+		Name:    "clientType",
+		Aliases: []string{"c"},
+		Usage:   "client type",
+	}
+)
+
+// Keyrock organizations
+var (
+	keyrockOrganizationIDFlag = &cli.StringFlag{
+		Name:    "oid",
+		Aliases: []string{"o"},
+		Usage:   "organization id",
+	}
+	keyrockOrganizationNameFlag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "organization name",
+	}
+)
+
+// Keyrock roles
+var (
+	keyrockRolesIDFlag = &cli.StringFlag{
+		Name:    "rid",
+		Aliases: []string{"r"},
+		Usage:   "role id",
+	}
+	keyrockRoleDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "role data",
+	}
+	keyrockRoleNameFlag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "role name",
+	}
+)
+
+// Keyrock permissions
+var (
+	keyrockPermissionIDFlag = &cli.StringFlag{
+		Name:    "pid",
+		Aliases: []string{"p"},
+		Usage:   "permission id",
+	}
+	keyrcokPermissionDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "permissionrole data",
+	}
+	keyrockPermissionNameFlag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "permission name",
+	}
+	keyrockPermissionDescriptionFlag = &cli.StringFlag{
+		Name:    "description",
+		Aliases: []string{"D"},
+		Usage:   "description",
+	}
+	keyrockPermissionActionFlag = &cli.StringFlag{
+		Name:    "action",
+		Aliases: []string{"a"},
+		Usage:   "action",
+	}
+	keyrockPermissionResourceFlag = &cli.StringFlag{
+		Name:    "resource",
+		Aliases: []string{"r"},
+		Usage:   "resoruce",
+	}
+)
+
+// Keyrock Iot Agents
+var (
+	keyrockIotAgentsIDFlag = &cli.StringFlag{
+		Name:    "iid",
+		Aliases: []string{"i"},
+		Usage:   "IoT Agent id",
+	}
+)
+
+// Keyrock Trusted application
+var (
+	keyrockTrustedIDFlag = &cli.StringFlag{
+		Name:    "tid",
+		Aliases: []string{"t"},
+		Usage:   "trusted application id",
+	}
+)

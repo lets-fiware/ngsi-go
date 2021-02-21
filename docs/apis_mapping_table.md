@@ -60,7 +60,7 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 
 -   [IoT Agent Provision API - GitHub](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib)
 
-## PERSEO FE
+## Perseo FE
 
 | PESEO FE API                  | NGSI Go commands             |
 | ----------------------------- | ---------------------------- |
@@ -76,10 +76,73 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 | GET /admin/metrics?reset=true | admin emtrics --reset        |
 | DELETE /admin/metrics         | admin metrics --delete       |
 
--   [PERSEO FE API - GitHub](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md)
+-   [Perseo FE API - GitHub](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md)
 
-## PERSEO CORE
+## Perseo CORE
 
 | PESEO CORE API           | NGSI Go commands |
 | ------------------------ | ---------------- |
 | GET /perseo-core/version | version          |
+
+## Keyrock API 
+
+| Kerrock API                                                                                                                        | NGSI Go commands                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| GET /v1/auth/tokens                                                                                                                | token                                                                                                                            |
+| POST /v1/auth/tokens                                                                                                               | token                                                                                                                            |
+| DELETE /v1/auth/tokens                                                                                                             | (not yet implemented                                                                                                             |
+| GET /v1/applications                                                                                                               | application --aid {application_id} list                                                                                          |
+| POST /v1/applications                                                                                                              | applicaiton create                                                                                                               |
+| GET /v1/applications/{application_id}                                                                                              | application --aid {application_id} get                                                                                           |
+| DELETE /v1/applications/{application_id}                                                                                           | application --aid {application_id} delete                                                                                        |
+| PATCH /v1/applications/{application_id}                                                                                            | application --aid {application_id} update                                                                                        |
+| GET /v1/users                                                                                                                      | users list                                                                                                                       |
+| POST /v1/users                                                                                                                     | users create                                                                                                                     |
+| GET /v1/users/{user_id}                                                                                                            | users --uid {user_id} get                                                                                                        |
+| DELETE /v1/users/{user_id}                                                                                                         | users --uid {user_id} delete                                                                                                     |
+| PATCH /v1/users/{user_id}                                                                                                          | users --uid {user_id} update                                                                                                     |
+| GET /v1/organizations                                                                                                              | organizations --oid {organization_id} list                                                                                       |
+| POST /v1/organizations                                                                                                             | organizations --oid {organization_id} create                                                                                     |
+| GET /v1/organizations/{organization_id}                                                                                            | organizations --oid {organization_id} get                                                                                        |
+| DELETE /v1/organizations/{organization_id}                                                                                         | organizations --oid {organization_id} delete                                                                                     |
+| PATCH /v1/organizations/{organization_id}                                                                                          | organizations --oid {organization_id} update                                                                                     |
+| GET /v1/applications/{application_id}/roles                                                                                        | applications --aid {application_id} role --rid {role_id} list                                                                    |
+| POST /v1/applications/{application_id}/roles                                                                                       | applications --aid {application_id} role --rid {role_id} create                                                                  |
+| GET /v1/applications/{application_id}/roles/{role_id}                                                                              | applications --aid {application_id} role --rid {role_id} get                                                                     |
+| DELETE /v1/applications/{application_id}/roles/{role_id}                                                                           | applications --aid {application_id} role --rid {role_id} delete                                                                  |
+| PATCH /v1/applications/{application_id}/roles/{role_id}                                                                            | applications --aid {application_id} role --rid {role_id} update                                                                  |
+| GET /v1/applications/{application_id}/permissions                                                                                  | applications --aid {application_id} permissions list                                                                             |
+| POST /v1/applications/{application_id}/permissions                                                                                 | applications --aid {application_id} permissions create                                                                           |
+| GET /v1/applications/{application_id}/permissions/{permission_id}                                                                  | applications --aid {application_id} permissions --pid {permission_id} get                                                        |
+| DELETE /v1/applications/{application_id}/permissions/{permission_id}                                                               | applications --aid {application_id} permissions --pid {permission_id} delete                                                     |
+| PATCH /v1/applications/{application_id}/permissions/{permission_id}                                                                | applications --aid {application_id} permissions --pid {permission_id} update                                                     |
+| GET /v1/applications/{application_id}/pep_proxies                                                                                  | applications --aid {application_id} pep list                                                                                     |
+| POST /v1/applications/{application_id}/pep_proxies                                                                                 | applications --aid {application_id} pep create                                                                                   |
+| DELETE /v1/applications/{application_id}/pep_proxies                                                                               | applications --aid {application_id} pep delete                                                                                   |
+| PATCH /v1/applications/{application_id}/pep_proxies                                                                                | applications --aid {application_id} pep reset                                                                                    |
+| GET /v1/applications/{application_id}/iot_agents                                                                                   | applications --aid {application_id} iota list                                                                                    |
+| POST /v1/applications/{application_id}/iot_agents                                                                                  | applications --aid {application_id} iota create                                                                                  |
+| GET /v1/applications/{application_id}/permissions/{iot_agent_id}                                                                   | applications --aid {application_id} iota -iid {iot_agent_id} get                                                                 |
+| DELETE /v1/applications/{application_id}/permissions/{iot_agent_id}                                                                | applications --aid {application_id} iota -iid {iot_agent_id} delete                                                              |
+| PATCH /v1/applications/{application_id}/permissions/{iot_agent_id}                                                                 | applications --aid {application_id} iota -iid {iot_agent_id} reset                                                               |
+| GET /v1/applications/{application_id}/roles/{role_id}/permissions                                                                  | applications --aid {application_id} role --rid {role_id}s permissions --pid {permission_id}                                      |
+| POST /v1/applications/{application_id}/roles/{role_id}/permissions/{permission_id}                                                 | applications --aid {application_id} role --rid {role_id}s assign                                                                 |
+| DELETE /v1/applications/{application_id}/roles/{role_id}/permissions/{permission_id}                                               | applications --aid {application_id} role --rid {role_id}s unassign                                                               |
+| GET /v1/applications/{application_id}/users                                                                                        | applications --aid {application_id} users --uid {user_id} list                                                                   |
+| GET /v1/applications/{application_id}/users/{user_id}/roles                                                                        | applications --aid {application_id} users --uid {user_id} get                                                                    |
+| PUT /v1/applications/{application_id}/users/{user_id}/roles/{role_id}                                                              | applications --aid {application_id} users --uid {user_id} assign --rid {role_id}                                                 |
+| DELETE /v1/applications/{application_id}/users/{user_id}/roles/{role_id}                                                           | applications --aid {application_id} users --uid {user_id} unassign --rid {role_id}                                               |
+| GET /v1/applications/{application_id}/organizations                                                                                | applications --aid {application_id} organizations --oid {organization_id} list                                                   |
+| GET /v1/applications/{application_id}/organizations/{organization_id}/roles                                                        | applications --aid {application_id} organizations --oid {organization_id} get                                                    |  
+| PUT /v1/applications/{application_id}/organizations/{organization_id}/roles/{role_id}/organization_roles/{organization_role_id}    | applications --aid {application_id} organizations --oid {organization_id} assign --rid {role_id} --orid {organization_role_id}   |
+| DELETE /v1/applications/{application_id}/organizations/{organization_id}/roles/{role_id}/organization_roles/{organization_role_id} | applications --aid {application_id} organizations --oid {organization_id} unassign --rid {role_id} --orid {organization_role_id} |
+| GET /v1/organizations/{organization_id}/users                                                                                      | organizations --oid {organization_id} users --uid {user_id} list                                                                 |
+| GET /v1/organizations/{organization_id}/users/{user_id}/organization_roles                                                         | organizations --oid {organization_id} users --uid {user_id} get                                                                  |
+| PUT /v1/organizations/{organization_id}/users/{user_id}/organization_roles/{organization_role_id                                   | organizations --oid {organization_id} users --uid {user_id} create --orid {organization_role_id}                                 |
+| DELETE /v1/organizations/{organization_id}/users/{user_id}/organization_roles/{organization_role_id}                               | organizations --oid {organization_id} users --uid {user_id} delete --orid {organization_role_id}                                 |
+| GET /v1/applications/{application_id}/trusted_applications                                                                         | applications --aid {application_id} trusted list                                                                                 |
+| PUT /v1/applications/{application_id}/trusted_applications/{trustedApplicationId}                                                  | applications --aid {application_id} trusted add --tid {trustedApplicationId}                                                     |
+| DELETE /v1/applications/{application_id}/trusted_applications/{trustedApplicationId}                                               | applications --aid {application_id} trusted delete --tid {trustedApplicationId}                                                  |
+| GET /v1/service_providers/configs                                                                                                  | providers                                                                                                                        |
+
+-   [Keyrock API - GitHub](https://github.com/ging/fiware-idm/blob/master/apiary.apib)

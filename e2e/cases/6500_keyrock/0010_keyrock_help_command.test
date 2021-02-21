@@ -1,0 +1,355 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi applications --help
+#
+ngsi applications --help
+
+```
+NAME:
+   ngsi applications - manage applications for Keyrock
+
+USAGE:
+   ngsi applications command [command options] [arguments...]
+
+COMMANDS:
+   list     list applications
+   get      get application
+   create   create application
+   update   update application
+   delete   delete application
+   help, h  Shows a list of commands or help for one command
+   sub-command:
+     roles          manage roles for Keyrock
+     permissions    manage permissions for Keyrock
+     pep            manage PEP Proxies for Keyrock
+     iota           manage IoT Agents for Keyrock
+     users          manage authorized users in an application for Keyrock
+     organizations  manage authorized organizations in an application for Keyrock
+     trusted        manage trusted applications for Keyrock
+
+OPTIONS:
+   --host value, -h value  host or alias
+   --token value           oauth token
+   --help                  show help (default: false)
+   --version, -v           print the version (default: false)
+   
+```
+
+#
+# 0011 ngsi applications roles --help
+#
+ngsi applications roles --help
+
+```
+NAME:
+   ngsi applications roles - manage roles for Keyrock
+
+USAGE:
+   ngsi applications roles command [command options] [arguments...]
+
+COMMANDS:
+   list         list roles
+   get          get a role
+   create       create a role
+   update       update a role
+   delete       delete a role
+   permissions  list permissions associated to a role
+   assign       Assign a permission to a role
+   unassign     delete a permission from a role
+   help, h      Shows a list of commands or help for one command
+
+OPTIONS:
+   --aid value, -i value  application id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0012 ngsi applications permissions --help
+#
+ngsi applications permissions --help
+
+```
+NAME:
+   ngsi applications permissions - manage permissions for Keyrock
+
+USAGE:
+   ngsi applications permissions command [command options] [arguments...]
+
+COMMANDS:
+   list     list permissions
+   get      get permission
+   create   create permission
+   update   update permission
+   delete   delete permission
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --aid value, -i value  application id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0013 ngsi applications pep --help
+#
+ngsi applications pep --help
+
+```
+NAME:
+   ngsi applications pep - manage PEP Proxies for Keyrock
+
+USAGE:
+   ngsi applications pep command [command options] [arguments...]
+
+COMMANDS:
+   list     list pep proxy
+   create   create pep proxy
+   reset    reset pep proxy
+   delete   delete pep proxy
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --aid value, -i value  application id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0014 ngsi applications iota --help
+#
+ngsi applications iota --help
+
+```
+NAME:
+   ngsi applications iota - manage IoT Agents for Keyrock
+
+USAGE:
+   ngsi applications iota command [command options] [arguments...]
+
+COMMANDS:
+   list     list iot agents
+   get      get iot agent
+   create   create iot agent
+   reset    reset iot agent
+   delete   delete iot agent
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --aid value, -i value  application id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0015 ngsi applications users --help
+#
+ngsi applications users --help
+
+```
+NAME:
+   ngsi applications users - manage authorized users in an application for Keyrock
+
+USAGE:
+   ngsi applications users command [command options] [arguments...]
+
+COMMANDS:
+   list      list users in an application
+   get       get roles of a user in an application
+   assign    assign a role to a user
+   unassign  delete a role assignment from a user
+   help, h   Shows a list of commands or help for one command
+
+OPTIONS:
+   --aid value, -i value  application id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0016 ngsi applications organizations --help
+#
+ngsi applications organizations --help
+
+```
+NAME:
+   ngsi applications organizations - manage authorized organizations in an application for Keyrock
+
+USAGE:
+   ngsi applications organizations command [command options] [arguments...]
+
+COMMANDS:
+   list      list organizations in an application
+   get       get roles of an organization in an application
+   assign    assign a role to an organization
+   unassign  delete a role assignment from an organization
+   help, h   Shows a list of commands or help for one command
+
+OPTIONS:
+   --aid value, -i value  application id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0017 ngsi applications trusted --help
+#
+ngsi applications trusted --help
+
+```
+NAME:
+   ngsi applications trusted - manage trusted applications for Keyrock
+
+USAGE:
+   ngsi applications trusted command [command options] [arguments...]
+
+COMMANDS:
+   list     list trusted applications associated to an application
+   add      add trusted application
+   delete   delete trusted application
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --aid value, -i value  application id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0021 ngsi users --help
+#
+ngsi users --help
+
+```
+NAME:
+   ngsi users - manage users for Keyrock
+
+USAGE:
+   ngsi users command [command options] [arguments...]
+
+COMMANDS:
+   list     list users
+   get      get user
+   create   create user
+   update   update user
+   delete   delete user
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --host value, -h value  host or alias
+   --token value           oauth token
+   --help                  show help (default: false)
+   --version, -v           print the version (default: false)
+   
+```
+
+#
+# 0021 ngsi organizations --help
+#
+ngsi organizations --help
+
+```
+NAME:
+   ngsi organizations - manage organizations for Keyrock
+
+USAGE:
+   ngsi organizations command [command options] [arguments...]
+
+COMMANDS:
+   list     list organizations
+   get      get organization
+   create   create organization
+   update   update organization
+   delete   delete organization
+   help, h  Shows a list of commands or help for one command
+   sub-command:
+     users  manage users of an organization for Keyrock
+
+OPTIONS:
+   --host value, -h value  host or alias
+   --token value           oauth token
+   --help                  show help (default: false)
+   --version, -v           print the version (default: false)
+   
+```
+
+#
+# 0022 ngsi organizations users --help
+#
+ngsi organizations users --help
+
+```
+NAME:
+   ngsi organizations users - manage users of an organization for Keyrock
+
+USAGE:
+   ngsi organizations users command [command options] [arguments...]
+
+COMMANDS:
+   list     list users of an organization
+   get      get info of user organization relationship
+   add      add a user to an organization
+   remove   remove a user from an organization
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --oid value, -o value  organization id
+   --help                 show help (default: false)
+   --version, -v          print the version (default: false)
+   
+```
+
+#
+# 0031 ngsi providers --help
+#
+ngsi providers --help
+
+```
+NAME:
+   ngsi providers - print service providers for Keyrock
+
+USAGE:
+   ngsi providers [command options] [arguments...]
+
+CATEGORY:
+   Keyrock
+
+OPTIONS:
+   --host value, -h value  host or alias
+   --token value           oauth token
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```

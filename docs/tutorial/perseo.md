@@ -1,4 +1,4 @@
-# NGSI Go tutorial for PERSEO
+# NGSI Go tutorial for Perseo
 
 ## Get settings of alias
 

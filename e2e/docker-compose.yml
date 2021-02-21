@@ -109,8 +109,6 @@ services:
     image: fiware/idm:7.9.1
     depends_on:
       - mysql
-    ports:
-      - 3000:3000
     environment:
       - IDM_DIALECT=mysql
       - IDM_DB_HOST=mysql
@@ -119,13 +117,12 @@ services:
       - IDM_DB_PASS=1234
       - IDM_ADMIN_ID=admin
       - IDM_ADMIN_USER=admin
-      - IDM_ADMIN_EMAIL=admin@letsfiware.jp
+      - IDM_ADMIN_EMAIL=keyrock@letsfiware.jp
       - IDM_ADMIN_PASS=1234
 
   cygnus:
     image: fiware/cygnus-ngsi:2.6.0
     hostname: cygnus
-    container_name: fiware-cygnus
     depends_on:
         - mongo
     networks:
@@ -138,8 +135,6 @@ services:
 
   wirecloud:
     image: fiware/wirecloud:1.3.1
-    ports:
-      - 8000:8000
     volumes:
       - ./config/custom_createsuperuser.py:/usr/local/lib/python3.6/site-packages/wirecloud/commons/management/commands/custom_createsuperuser.py
 
@@ -181,7 +176,3 @@ services:
       - ../bin/ngsi:/usr/local/bin/ngsi:ro
       - ../autocomplete/ngsi_bash_autocomplete:/usr/share/bash-compeletion/completions/ngsi_bash_autocomplete:ro
       - .:/root/e2e
-
-volumes:
-    wirecloud-data:
-    wirecloud-static:

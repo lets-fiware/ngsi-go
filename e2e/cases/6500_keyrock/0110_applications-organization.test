@@ -1,0 +1,176 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 List applications
+#
+ngsi applications --host keyrock list --pretty
+
+```
+{
+  "applications": []
+}
+```
+
+#
+# 0002 Create application
+#
+ngsi applications create --name "Test_application 1" \
+--description "test app" \
+--redirectUri http://localhost/login \
+--url http://localhost \
+--grantType authorization_code,implicit,password \
+--tokenTypes jwt,permanent
+
+```
+REGEX(.*)
+```
+
+#
+# 0003 Save application id
+#
+$aid=$$
+print $aid
+
+#
+# 0004 List organizations
+#
+ngsi organizations --host keyrock list
+
+```
+Organizations not found
+```
+
+#
+# 0005 Create organization
+#
+ngsi organizations create --name test --description "test organizations"
+
+```
+REGEX(.*)
+```
+
+#
+# 0006 Save organization id
+#
+$oid=$$
+print $oid
+
+#
+# 0007 Create role
+#
+ngsi applications roles --aid $aid create --name role1
+
+```
+REGEX(.*)
+```
+
+#
+# 0008 Save role id
+#
+$rid=$$
+print $rid
+
+#
+# 0021 Create organization relationship
+#
+ngsi applications organizations --aid $aid assign --oid $oid --rid $rid --orid member --pretty
+
+```
+{
+  "role_organization_assignments": {
+    "role_id": "REGEX(.*)",
+    "organization_id": "REGEX(.*)",
+    "oauth_client_id": "REGEX(.*)",
+    "role_organization": "member"
+  }
+}
+```
+
+#
+# 0022 List organizations
+#
+ngsi applications organizations --aid $aid list --pretty
+
+```
+{
+  "role_organization_assignments": [
+    {
+      "organization_id": "REGEX(.*)",
+      "role_organization": "member",
+      "role_id": "REGEX(.*)"
+    }
+  ]
+}
+```
+
+#
+# 0023 Get roles of an organization in an application
+#
+ngsi applications organizations --aid $aid get --oid $oid --pretty
+
+```
+{
+  "role_organization_assignments": [
+    {
+      "organization_id": "REGEX(.*)",
+      "role_id": "REGEX(.*)"
+    }
+  ]
+}
+```
+
+#
+# 0024 Delete a role assignment from an organization
+#
+ngsi applications organizations --aid $aid unassign --oid $oid --rid $rid --orid member
+
+```
+```
+
+#
+# 9000 Delete a role
+#
+ngsi applications roles --aid $aid delete --rid $rid
+
+```
+```
+
+#
+# 9001 Delete an organization
+#
+ngsi organizations delete --oid $oid
+
+```
+```
+
+#
+# 9001 Delete an application
+#
+ngsi applications delete --aid $aid delete
+
+```
+```

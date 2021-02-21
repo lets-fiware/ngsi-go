@@ -56,8 +56,13 @@ COMMANDS:
    Context-Aware CEP:
      rules  rules command for PERSEO
    IoT Agent:
-     devices   devices command for IoT Agent
-     services  services command for IoT Agent
+     devices   manage devices for IoT Agent
+     services  manage services for IoT Agent
+   Keyrock:
+     applications   manage applications for Keyrock
+     users          manage users for Keyrock
+     organizations  manage organizations for Keyrock
+     providers      print service providers for Keyrock
    MANAGEMENT:
      broker    manage config for broker
      context   manage @context

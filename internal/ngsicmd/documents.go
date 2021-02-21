@@ -49,6 +49,7 @@ func documents(c *cli.Context) error {
 	fmt.Fprintln(ngsi.StdWriter, "Japanese:")
 	fmt.Fprintln(ngsi.StdWriter, "  https://fiware-orion.letsfiware.jp/")
 	fmt.Fprintln(ngsi.StdWriter, "  https://open-apis.letsfiware.jp/fiware-orion/api/v2/stable/")
+	fmt.Fprintln(ngsi.StdWriter, "  https://open-apis.letsfiware.jp/keyrock/")
 
 	return nil
 }

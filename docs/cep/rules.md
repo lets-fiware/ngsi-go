@@ -1,6 +1,6 @@
-# rules - PERSEO command
+# rules - Perseo command
 
-This command allows you to list, create, get and delete rule entry for PERSEO.
+This command allows you to list, create, get and delete rule entry for Perseo.
 
 -   [List all rules](#list-all-rules)
 -   [Create a rule](#create-a-rule)

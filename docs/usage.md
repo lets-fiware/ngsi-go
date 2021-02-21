@@ -1,10 +1,12 @@
 # Usage
 
 -   [Syntax](#syntax)
+    -   [Convenience command](#convenience-command)
     -   [NGSI Command](#ngsi-command)
     -   [Time series command](#time-series-command)
     -   [IoT Agent command](#iot-agent-command)
-    -   [Convenience command](#convenience-command)
+    -   [Perseo command](#context-aware-cep-command)
+    -   [Keyrock](#keyrock-command)
     -   [Management commnad](#management-commnad)
     -   [Global Options](#global-options)
     -   [Common options](#common-options)
@@ -21,6 +23,30 @@
 ```console
 ngsi [global options] command [common options] sub-command [options]
 ```
+
+<a name="convenience-command"></a>
+
+### Convenience command
+
+| command                               | sub-command     | Description                                                      |
+| ------------------------------------- | --------------- | ---------------------------------------------------------------- |
+| [admin](./convenience/admin.md)       | log             | print or set logging level for FIWARE Orion                      |
+|                                       | trace           | print, set or delete trace level for FIWARE Orion                | 
+|                                       | semaphore       | print semaphore for FIWARE Orion                                 |
+|                                       | metrics         | print, reset or delete metrics for FIWARE Orion                  |
+|                                       | statistics      | print or delete statistics for FIWARE Orion                      |
+|                                       | cacheStatistics | print or delete cache statistics for FIWARE Orion                |
+| [apis](./convenience/apis.md)         | -               | print endpoints of FWARE Open APIs                               |
+| [cp](./convenience/cp.md)             | -               | copy entities                                                    |
+| [wc](./convenience/wc.md)             | -               | print number of entities, subscriptions, registrations, or types |
+| [man](./convenience/man.md)           | -               | print urls of document                                           |
+| [health](./convenience/health.md)     | -               | print health status of FIWARE GEs                                |
+| [ls](./convenience/ls.md)             | -               | list entities                                                    |
+| [rm](./convenience/rm.md)             | -               | remove entities                                                  |
+| [receiver](./convenience/receiver.md) | -               | notification receiver                                            |
+| [template](./convenience/template.md) | subscription    | create template of subscription                                  |
+|                                       | registration    | create template of registration                                  |
+| [version](./convenience/version.md)   | -               | print the version of Context Broker                              |
 
 <a name="ngsi-command"></a>
 
@@ -86,7 +112,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                                   | [update](iot_agent/devices.md#update-a-device)               | Update a device              |
 |                                   | [delete](iot_agent/devices.md#delete-a-device)               | Delete a device              |
 
-<a name="context-aware-cep"></a>
+<a name="context-aware-cep-command"></a>
 
 ### Context-Aware CEP command
 
@@ -97,29 +123,56 @@ ngsi [global options] command [common options] sub-command [options]
 |                       | [get](cep/rules.md#create-a-get-rule) | Get a rule     |
 |                       | [delete](cep/rules.md#delete-a-rule)  | Delete a rule  |
 
-<a name="convenience-command"></a>
+<a name="keyrock-command"></a>
 
-### Convenience command
+### Keyrock
 
-| command                               | sub-command     | Description                                                      |
-| ------------------------------------- | --------------- | ---------------------------------------------------------------- |
-| [admin](./convenience/admin.md)       | log             | print or set logging level for FIWARE Orion                      |
-|                                       | trace           | print, set or delete trace level for FIWARE Orion                | 
-|                                       | semaphore       | print semaphore for FIWARE Orion                                 |
-|                                       | metrics         | print, reset or delete metrics for FIWARE Orion                  |
-|                                       | statistics      | print or delete statistics for FIWARE Orion                      |
-|                                       | cacheStatistics | print or delete cache statistics for FIWARE Orion                |
-| [apis](./convenience/apis.md)         | -               | print endpoints of FWARE Open APIs                               |
-| [cp](./convenience/cp.md)             | -               | copy entities                                                    |
-| [wc](./convenience/wc.md)             | -               | print number of entities, subscriptions, registrations, or types |
-| [man](./convenience/man.md)           | -               | print urls of document                                           |
-| [health](./convenience/health.md)     | -               | print health status of FIWARE GEs                                |
-| [ls](./convenience/ls.md)             | -               | list entities                                                    |
-| [rm](./convenience/rm.md)             | -               | remove entities                                                  |
-| [receiver](./convenience/receiver.md) | -               | notification receiver                                            |
-| [template](./convenience/template.md) | subscription    | create template of subscription                                  |
-|                                       | registration    | create template of registration                                  |
-| [version](./convenience/version.md)   | -               | print the version of Context Broker                              |
+| command                                   | sub-command                                                             | sub-sub-command                                                                                             | Description                                                                                   |
+| ----------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [users](keyrock/users.md)                 | [list](keyrock/users.md#list-users)                                     | -                                                                                                           | List users                                                                                    |
+|                                           | [get](keyrock/users.md#get-a-user)                                      | -                                                                                                           | Get a user                                                                                    |
+|                                           | [create](keyrock/users.md#create-a-user)                                | -                                                                                                           | Create a user                                                                                 |
+|                                           | [update](keyrock/users.md#update-a-user)                                | -                                                                                                           | Update a user                                                                                 |
+|                                           | [delete](keyrock/users.md#delete-a-user)                                | -                                                                                                           | Delete a user                                                                                 |
+| [organizations](keyrock/organizations.md) | [list](keyrock/organizations.md#list-organizations)                     | -                                                                                                           | List organizations                                                                            |
+|                                           | [get](keyrock/organizations.md#get-an-organization)                     | -                                                                                                           | Get an organization                                                                           |
+|                                           | [create](keyrock/organizations.md#create-an-organization)               | -                                                                                                           | Create an organization                                                                        |
+|                                           | [update](keyrock/organizations.md#update-an-organization)               | -                                                                                                           | Update an organization                                                                        |
+|                                           | [delete](keyrock/organizations.md#delete-an-organization)               | -                                                                                                           | Delete an organization                                                                        |
+|                                           | [users](keyrock/organizations-users.md)                                 | [list](keyrock/organizations-users.md#list-users-of-an-organization)                                        | List users of an organization                                                                 |
+|                                           |                                                                         | [get](keyrock/organizations-users.md#get-info-of-user-organization-relationship)                            | Get info of user organization relationship                                                    |
+|                                           |                                                                         | [add](keyrock/organizations-users.md#add-a-user-to-an-organization)                                         | Add a user to an organization                                                                 |
+|                                           |                                                                         | [remove](keyrock/organizations-users.md#remove-a-user-from-an-organization)                                 | Remove a user from an organization                                                            |
+| [applications](keyrock/applications.md)   | [list](keyrock/applications.md#list-applications)                       | -                                                                                                           | List applications                                                                             |
+|                                           | [get](keyrock/applications.md#get-an-application)                       | -                                                                                                           | Get an application                                                                            |
+|                                           | [create](keyrock/applications.md#create-an-application)                 | -                                                                                                           | Create an application                                                                         |
+|                                           | [update](keyrock/applications.md#update-an-get-application)             | -                                                                                                           | Update an application                                                                         |
+|                                           | [delete](keyrock/applications.md#delete-an-application)                 | -                                                                                                           | Delete an application                                                                         |
+|                                           | [roles](keyrock/applications-roles.md)                                  | [list](keyrock/applications-roles.md#list-roles)                                                            | List roles                                                                                    |
+|                                           |                                                                         | [get](keyrock/applications-roles.md#get-a-role)                                                             | Get a role                                                                                    |
+|                                           |                                                                         | [create](keyrock/applications-roles.md#create-a-role)                                                       | Create a role                                                                                 |
+|                                           |                                                                         | [update](keyrock/applications-roles.md#update-a-role)                                                       | Update a role                                                                                 |
+|                                           |                                                                         | [delete](keyrock/applications-roles.md#delete-a-role)                                                       | Delete a role                                                                                 |
+|                                           |                                                                         | [permissions](keyrock/applications-roles.md#list-permissions-associated-to-a-role)                          | List permissions associated to a role                                                         |
+|                                           |                                                                         | [assign](keyrock/applications-roles.md#assign-a-permission-to-a-role)                                       | Assign a permission to a role                                                                 |
+|                                           |                                                                         | [unassign](keyrock/applications-roles.md#delete-a-permission-to-a-role)                                     | Delete a permission from a role                                                               |
+|                                           | [permissions](keyrock/applications-permissions.md)                      | [list](keyrock/applications-permissions.md#list-permissions)                                                | List permissions                                                                              |
+|                                           |                                                                         | [get](keyrock/applications-permissions.md#get-a-permission)                                                 | Get a permission                                                                              |
+|                                           |                                                                         | [create](keyrock/applications-permissions.md#create-a-permission)                                           | Create a permission                                                                           |
+|                                           |                                                                         | [update](keyrock/applications-permissions.md#update-a-permission)                                           | Update a permission                                                                           |
+|                                           |                                                                         | [delete](keyrock/applications-permissions.md#delete-a-permission)                                           | Delete a permission                                                                           |
+|                                           | [organizations](keyrock/applications-organizations.md)                  | [ilst](keyrock/applications-organizations.md#list-organizations-in-an-application)                          | List organizations in an application                                                          |
+|                                           |                                                                         | [get](keyrock/applications-organizations.md#get-roles-of-an-organization-in-an-application)                 | Get roles of an organization in an application                                                |
+|                                           |                                                                         | [assign](keyrock/applications-organizations.md#assign-a-role-to-an-organization)                            | Assign a role to an organization                                                              |
+|                                           |                                                                         | [unassign](keyrock/applications-organizations.md#delete-a-role-assignment-from-an-organization)             | Delete a role assignment from an organization                                                 |
+|                                           | [pep-proxies](keyrock/applications-pep-proxies.md)                      | [list](keyrock/applications-pep-proxies.md#list-pep-proxies)                                                | List pep proxies                                                                              |
+|                                           |                                                                         | [create](keyrock/applications-pep-proxies.md#create-a-pep-proxy)                                            | Create a pep proxy                                                                            |
+|                                           |                                                                         | [reset](keyrock/applications-pep-proxies.md#reset-a-pep-proxy)                                              | Reset a pep proxy                                                                             |
+|                                           |                                                                         | [delete](keyrock/applications-pep-proxies.md#delete-a-pep-proxy)                                            | Delete a pep proxy                                                                            |
+|                                           | [trusted-applications.md](keyrock/applications-trusted-applications.md) | [list](keyrock/applications-trusted-applications.md#list-trusted-applications-associated-to-an-application) | List trusted applications associated to an application                                        |
+|                                           |                                                                         | [add](keyrock/applications-trusted-applications.md#add-a-trusted-application)                               | Add a trusted application                                                                     |
+|                                           |                                                                         | [delete](keyrock/applications-trusted-applications.md#delete-a-trusted-application)                         | Delete a trusted application                                                                  |
+| [providers](keyrock/providers.md)         | -                                                                       | -                                                                                                           | Print service providers                                                                       |
 
 <a name="management-commnad"></a>
 

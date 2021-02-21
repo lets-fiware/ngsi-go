@@ -25,6 +25,7 @@ It's a powerful tool and easy to use. It has various features as shown:
     - [QuantumLeap APIs](https://github.com/orchestracities/ngsi-timeseries-api)
     - [IoT Agent](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib)
     - [Perseo](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md)
+    - [Keyrock](https://github.com/ging/fiware-idm/blob/master/apiary.apib)
 -   Various convenience commands
     -   NGSI commands to manage NGSI Entity, subscription, registration and so on
     -   Time series commands to manage historical data
@@ -59,11 +60,26 @@ It's a powerful tool and easy to use. It has various features as shown:
 -   [STH-Comet](tutorial/comet.md)
 -   [QuantumLeap](tutorial/quantumleap.md)
 -   [IoT Agent](tutorial/iot-agent.md)
--   [PERSEO](tutorial/perseo.md)
+-   [Perseo](tutorial/perseo.md)
+-   [keyrock](tutorial/keyrock.md)
 
 ## Command reference
 
 ### NGSI
+
+### Convenience
+
+-   [admin](convenience/admin.md): administrative command for FIWARE Orion
+-   [apis](convenience/apis.md): print endpoints of FWARE Open APIs
+-   [cp](convenience/cp.md): copy entities
+-   [wc](convenience/wc.md): print number of entities, subscriptions or registrations
+-   [man](convenience/man.md): print  URLs of the documents related to the NGSI Go
+-   [health](convenience/health.md): print health status of FIWARE GEs
+-   [ls](convenience/ls.md): list entities
+-   [rm](convenience/rm.md): remove entities
+-   [receiver](convenience/receiver.md): notification receiver
+-   [template](convenience/template.md): create template of subscription or registration
+-   [version](convenience/version.md): print the version of Context Broker
 
 -   [append](ngsi/append.md): append attributes
 -   [create](ngsi/create.md): create entity(ies), subscription or registration
@@ -88,19 +104,19 @@ It's a powerful tool and easy to use. It has various features as shown:
 
 -   [rules](cep/rules.md): rules command for Perseo
 
-### Convenience
+## Keyrock
 
--   [admin](convenience/admin.md): administrative command for FIWARE Orion
--   [apis](convenience/apis.md): print endpoints of FWARE Open APIs
--   [cp](convenience/cp.md): copy entities
--   [wc](convenience/wc.md): print number of entities, subscriptions or registrations
--   [man](convenience/man.md): print  URLs of the documents related to the NGSI Go
--   [health](convenience/health.md): print health status of FIWARE GEs
--   [ls](convenience/ls.md): list entities
--   [rm](convenience/rm.md): remove entities
--   [receiver](convenience/receiver.md): notification receiver
--   [template](convenience/template.md): create template of subscription or registration
--   [version](convenience/version.md): print the version of Context Broker
+-   [users](users.md): manage users
+-   [organizations](organizations.md): manage organizations for Keyrock
+    -   [users](organizations-users.md): manage users of an organization for Keyrock
+-   [applications](applications.md): manage applications for Keyrock
+    -   [roles](applications-roles.md): manage roles
+    -   [permissions](applications-permissions.md): manage permissions
+    -   [organizations](applications-organizations.md): mange organizations in an application
+    -   [pep-proxies](applications-pep-proxies.md): mange PEP Proxies
+    -   [iot-agent](applications-iot-agent.md): maage IoT Agents
+    -   [trusted-applications.md](applications-trusted-applications.md): manage trusted applications
+-   [providers](providers.md): print service providers for Keyrock
 
 ### Management
 

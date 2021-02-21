@@ -6,3 +6,4 @@ bin/
 build/
 .vscode/
 super-linter.log
+__debug_bin
