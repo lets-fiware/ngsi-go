@@ -161,7 +161,7 @@ func appsRolePermDelete(c *cli.Context) error {
 	path := fmt.Sprintf("/v1/applications/%s/roles/%s/permissions/%s", c.String("aid"), c.String("rid"), c.String("pid"))
 	client.SetPath(path)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}

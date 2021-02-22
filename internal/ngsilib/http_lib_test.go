@@ -104,7 +104,7 @@ func TestHTTPDelete(t *testing.T) {
 	client := &Client{URL: u, Headers: map[string]string{}}
 	client.HTTP = NewHTTPRequet()
 
-	res, _, err := client.HTTPDelete()
+	res, _, err := client.HTTPDelete(nil)
 	if assert.NoError(t, err) {
 		assert.Equal(t, http.StatusOK, res.StatusCode)
 	}

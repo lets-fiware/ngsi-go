@@ -1,0 +1,413 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 cygnus loggers
+#
+# ngsi admin --host cygnus loggers list --pretty
+# 
+# ```
+# {
+#   "success": "true",
+#   "loggers": [
+#     {
+#       "name": "com.telefonica.iot.cygnus.management.ManagementInterface",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.jmx.MBeanContainer",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.servlet.BaseHolder",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.jmx.ObjectMBean",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.http.MimeTypes",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.lifecycle.LifecycleSupervisor",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.SecureRequestCustomizer",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.io.ManagedSelector",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.security.SecurityHandler",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.component.AbstractLifeCycle",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.handlers.NGSIRestHandler",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.thread.strategy.EatWhatYouKill",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.session",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.utils.NGSIUtils",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.source.http.HTTPSource",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.channel.MemoryChannel",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.http.HttpFields",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.URIUtil",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.Server",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.thread.QueuedThreadPool",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.handler.jmx.AbstractHandlerMBean",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.nodes.CygnusApplication",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.avro.ipc.NettyTransceiver",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.interceptors.NGSINameMappingsInterceptor",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.util.SSLUtil",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.source.DefaultSourceFactory",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.containers.NameMappings",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.SinkRunner",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.io.SelectorManager",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.conf.FlumeConfiguration",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.thread.Invocable$InvocableExecutor",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.interceptors.NGSINameMappingsInterceptor$PeriodicalNameMappingsReader",
+#       "level": null
+#     },
+#     {
+#       "name": "org.mongodb",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.apache.http",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.mortbay.log",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.http.JettyServer",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.node.Application",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.http.pathmap.PathMappings",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.handler.ContextHandler.ROOT",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.node.AbstractConfigurationProvider",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.handler.AbstractHandler",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.lifecycle",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.backends.mongo.MongoBackendImpl",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.servlet.Holder",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.channel.ChannelSelectorFactory",
+#       "level": null
+#     },
+#     {
+#       "name": "org.I0Itec",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.AbstractConnector",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.kafka",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.StringUtil",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.utils.CommonUtils",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.log",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.instrumentation.MonitoredCounterGroup",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.servlet.ServletHolder",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.DeprecationWarning",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.http.HttpGenerator",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.component.ContainerLifeCycle",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.handler.ContextHandler",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.servlet.ServletContextHandler",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.hadoop",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.eclipse.jetty.servlet.ServletHandler",
+#       "level": null
+#     },
+#     {
+#       "name": "org.mortbay",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.jboss",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.apache.flume.channel.ChannelProcessor",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.http.PreEncodedHttpField",
+#       "level": null
+#     },
+#     {
+#       "name": "com.amazonaws",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.apache.flume.node.PropertiesFileConfigurationProvider",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.sink.DefaultSinkFactory",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.sinks.NGSIMongoBaseSink",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.server.handler.ErrorHandler",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.channel.DefaultChannelFactory",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.flume.node.PollingPropertiesFileConfigurationProvider",
+#       "level": null
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.TypeUtil",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.management.LogHandlers",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.channels.CygnusMemoryChannel",
+#       "level": null
+#     },
+#     {
+#       "name": "org.apache.zookeeper",
+#       "level": "WARN"
+#     },
+#     {
+#       "name": "org.eclipse.jetty.util.DecoratedObjectFactory",
+#       "level": null
+#     },
+#     {
+#       "name": "com.telefonica.iot.cygnus.sinks.NGSISink",
+#       "level": null
+#     }
+#   ]
+# }
+# ```
+
+#
+# 0002 loggers get
+#
+ngsi admin loggers get --name org.mongodb
+
+```
+{"success":"true","logger":"[{"name":"org.mongodb","level":"WARN"}]"}
+```
+
+#
+# 0003 loggers update
+#
+ngsi admin --host cygnus loggers update --name org.mongodb --data '{"logger":{"name":"org.mongodb","level":"INFO"}}'
+
+```
+{"success":"true","result":"Logger 'org.mongodb' updated succesfully"}
+```
+
+#
+# 0004 loggers get
+#
+ngsi admin loggers get --name org.mongodb
+
+```
+{"success":"true","logger":"[{"name":"org.mongodb","level":"INFO"}]"}
+```
+
+#
+# 0005 logger delete
+#
+ngsi admin loggers delete --name org.mongodb
+
+```
+{"success":"true","result":" Logger 'org.mongodb' removed succesfully"}
+```
+
+#
+# 0006 logger get
+#
+ngsi admin loggers get --name org.mongodb
+
+```1
+loggersGet005 400 Bad Request {"success":"false","result":"Logger name not found"}
+```
+
+#
+# 0007 logger create
+#
+ngsi admin --host cygnus loggers create --data '{"logger":{"name":"org.mongodb","level":"WARN"}}'
+
+```
+{"success":"true","result":"Logger 'org.mongodb' put"}
+```
+
+#
+# 0008 logger get
+#
+ngsi admin loggers get --name org.mongodb
+
+```
+{"success":"true","logger":"[{"name":"org.mongodb","level":"WARN"}]"}
+```

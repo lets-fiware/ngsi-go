@@ -44,6 +44,45 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 
 -   [QuantumLeap API - GitHub](https://github.com/smartsdk/ngsi-timeseries-api/blob/master/specification/quantumleap.yml)
 
+## Cygnus API
+
+| Cygnus API                                         | NGSI Go commands                                                       |
+| -------------------------------------------------- | ---------------------------------------------------------------------- |
+| GET /v1/version                                    | version                                                                |
+| GET /v1/stats                                      | admin statistics                                                       |
+| PUT /v1/stats                                      | admin statistics --delete                                              |
+| GET /v1/namemappings                               | namemappings list                                                      |
+| POST /v1/namemappings                              | namemappings create                                                    |
+| PUT /v1/namemappings                               | namemappings update                                                    |
+| DELETE /v1/namemappings                            | namemappings delete                                                    |
+| GET /v1/groupingrules                              | groupingrules list                                                     |
+| GET /v1/groupingrules                              | groupingrules get                                                      |
+| POST /v1/groupingrules                             | groupingrules create                                                   |
+| PUT /v1/groupingrules                              | groupingrules update                                                   |
+| DELETE /v1/groupingrules                           | groupingrules delete                                                   |
+| POST /notify                                       | (not yet implemented)                                                  |
+| GET /v1/subscriptions                              | (not yet implemented)                                                  |
+| POST /v1/subscriptions                             | (not yet implemented)                                                  |
+| DELETE /v1/subscriptions                           | (not yet implemented)                                                  |
+| GET /admin/log                                     | admin log                                                              |
+| PUT /admin/log                                     | admin log --level {log_level}                                          |
+| GET /v1/admin/metrics                              | admin metrics                                                          |
+| DELETE /v1/admin/metrics                           | admin metrics --delete                                                 |
+| GET /v1/admin/log/loggers                          | admin loggers list                                                     |
+| GET /v1/admin/log/loggers?name={name}              | admin loggers get --name {name}                                        |
+| POST /v1/admin/log/loggers                         | admin loggers                                                          |
+| PUT /v1/admin/log/loggers                          | admin loggers                                                          |
+| DELETE /v1/admin/log/loggers                       | admin loggers delete                                                   |
+| DELETE /v1/admin/log/loggers?name={name}           | admin loggers delete --name {name}                                     | 
+| GET /v1/admin/log/appenders                        | admin appenders list                                                   |
+| GET /v1/admin/log/appenders?name={name}            | admin appenders get --name {name}                                      |
+| POST /v1/admin/log/appenders                       | admin appenders                                                        |
+| PUT /v1/admin/log/appenders                        | admin appenders                                                        |
+| DELETE /v1/admin/log/appenders                     | admin appenders delete                                                 |
+| DELETE /v1/admin/log/appenders?name={name}         | admin appenders delete --name {name}                                   |
+
+-   [Cygnus API - GitHub](https://github.com/telefonicaid/fiware-cygnus/blob/master/doc/cygnus-common/installation_and_administration_guide/management_interface_v1.md)
+
 ## IoT Agent Provision API
 
 | IoT Agent Provision API     | NGSI Go commands                |

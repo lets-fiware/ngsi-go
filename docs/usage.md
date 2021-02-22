@@ -4,6 +4,7 @@
     -   [Convenience command](#convenience-command)
     -   [NGSI Command](#ngsi-command)
     -   [Time series command](#time-series-command)
+    -   [Cygnus command](#cygnus-command)
     -   [IoT Agent command](#iot-agent-command)
     -   [Perseo command](#context-aware-cep-command)
     -   [Keyrock](#keyrock-command)
@@ -28,25 +29,35 @@ ngsi [global options] command [common options] sub-command [options]
 
 ### Convenience command
 
-| command                               | sub-command     | Description                                                      |
-| ------------------------------------- | --------------- | ---------------------------------------------------------------- |
-| [admin](./convenience/admin.md)       | log             | print or set logging level for FIWARE Orion                      |
-|                                       | trace           | print, set or delete trace level for FIWARE Orion                | 
-|                                       | semaphore       | print semaphore for FIWARE Orion                                 |
-|                                       | metrics         | print, reset or delete metrics for FIWARE Orion                  |
-|                                       | statistics      | print or delete statistics for FIWARE Orion                      |
-|                                       | cacheStatistics | print or delete cache statistics for FIWARE Orion                |
-| [apis](./convenience/apis.md)         | -               | print endpoints of FWARE Open APIs                               |
-| [cp](./convenience/cp.md)             | -               | copy entities                                                    |
-| [wc](./convenience/wc.md)             | -               | print number of entities, subscriptions, registrations, or types |
-| [man](./convenience/man.md)           | -               | print urls of document                                           |
-| [health](./convenience/health.md)     | -               | print health status of FIWARE GEs                                |
-| [ls](./convenience/ls.md)             | -               | list entities                                                    |
-| [rm](./convenience/rm.md)             | -               | remove entities                                                  |
-| [receiver](./convenience/receiver.md) | -               | notification receiver                                            |
-| [template](./convenience/template.md) | subscription    | create template of subscription                                  |
-|                                       | registration    | create template of registration                                  |
-| [version](./convenience/version.md)   | -               | print the version of Context Broker                              |
+| command                               | sub-command                                                | sub-sub-commnand                                       | Description                                                      |
+| ------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------- |
+| [admin](./convenience/admin.md)       | [log](./convenience/admin.md#log)                          | -                                                      | print or set logging level for FIWARE Orion                      |
+|                                       | [trace](./convenience/admin.md#trace)                      | -                                                      | print, set or delete trace level for FIWARE Orion                | 
+|                                       | [semaphore](./convenience/admin.md#semaphore)              | -                                                      | print semaphore for FIWARE Orion                                 |
+|                                       | [metrics](./convenience/admin.md#metrics)                  | -                                                      | print, reset or delete metrics for FIWARE Orion, Cygnus          |
+|                                       | [statistics](./convenience/admin.md#statistics)            | -                                                      | print or delete statistics for FIWARE Orion, Cygnus              |
+|                                       | [cacheStatistics](./convenience/admin.md#cache-statistics) | -                                                      | print or delete cache statistics for FIWARE Orion                |
+|                                       | [appenders](./convenience/appenders.md)                    | [list](./convenience/appenders.md#list-appenders)      | list appenders                                                   |
+|                                       |                                                            | [get](./convenience/appenders.md#get-a-appender)       | get a appender                                                   |
+|                                       |                                                            | [create](./convenience/appenders.md#create-a-appender) | create a appender                                                |
+|                                       |                                                            | [upadte](./convenience/appenders.md#update-a-appender) | update a appender                                                |
+|                                       |                                                            | [delete](./convenience/appenders.md#delete-a-appender) | delete a appender                                                |
+|                                       | [loggers](./convenience/loggers.md)                        | [list](./convenience/loggers.md#list-loggers)          | List loggers                                                     |
+|                                       |                                                            | [get](./convenience/loggers.md#get-a-logger)           | get a logger                                                     |
+|                                       |                                                            | [create](./convenience/loggers.md#create-a-logger)     | create a logger                                                  |
+|                                       |                                                            | [update](./convenience/loggers.md#update-a-logger)     | updata a logger                                                  |
+|                                       |                                                            | [delete](./convenience/loggers.md#delete-a-logger)     | delete a logger                                                  |
+| [apis](./convenience/apis.md)         | -                                                          | -                                                      | print endpoints of FWARE Open APIs                               |
+| [cp](./convenience/cp.md)             | -                                                          | -                                                      | copy entities                                                    |
+| [wc](./convenience/wc.md)             | -                                                          | -                                                      | print number of entities, subscriptions, registrations, or types |
+| [man](./convenience/man.md)           | -                                                          |                                                        | print urls of document                                           |
+| [health](./convenience/health.md)     | -                                                          |                                                        | print health status of FIWARE GEs                                |
+| [ls](./convenience/ls.md)             | -                                                          |                                                        | list entities                                                    |
+| [rm](./convenience/rm.md)             | -                                                          |                                                        | remove entities                                                  |
+| [receiver](./convenience/receiver.md) | -                                                          |                                                        | notification receiver                                            |
+| [template](./convenience/template.md) | [subscription](./convenience/template.md#subscription)     |                                                        | create template of subscription                                  |
+|                                       | [registration](./convenience/template.md#registration)     |                                                        | create template of registration                                  |
+| [version](./convenience/version.md)   | -                                                          |                                                        | print the version of Context Broker                              |
 
 <a name="ngsi-command"></a>
 
@@ -95,6 +106,20 @@ ngsi [global options] command [common options] sub-command [options]
 | [hget](./time_series/hget.md)       | attr        | get hstory of an attribute                                            |
 |                                     | attrs       | get history of attributes                                             |
 |                                     | entities    | list of all the entity id                                             |
+
+<a name="cygnus-command"></a>
+
+### Cygnus command
+
+| command                                    | sub-command                                               | Description            |
+| ------------------------------------------ | --------------------------------------------------------- | ---------------------- |
+| [groupingrules](./cygnus/groupingrules.md) | [list](./cygnus/groupingrules.md#list-groupingrules)      | List grouping rules    |
+|                                            | [create](./cygnus/groupingrules.md#create-a-groupingrule) | Create a grouping rule |
+|                                            | [update](./cygnus/groupingrules.md#update-a-groupingrule) | Update a grouping rule |
+|                                            | [delete](./cygnus/groupingrules.md#delete-a-groupingrule) | Delete a grouping rule |
+| [namemappings](./cygnus/namemappings.md)   | [list](./cygnus/namemappings.md#list-namemappings)        | List name mappings     |
+|                                            | [create](./cygnus/namemappings.md#create-a-namemapping)   | Create a name mapping  |
+|                                            | [delete](./cygnus/namemappings.md#delete-a-namemapping)   | Delete a name mapping  |
 
 <a name="iot-agent-command"></a>
 

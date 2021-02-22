@@ -1,6 +1,6 @@
 # admin - Convenience command
 
-This command gives you various system information for FIWARE Orion. You can use these information for troubleshooting.
+This command gives you various system information for FIWARE Orion, Cygnus, Perseo. You can use these information for troubleshooting.
 
 -   [Log](#log)
 -   [Trace](#trace)
@@ -8,6 +8,9 @@ This command gives you various system information for FIWARE Orion. You can use 
 -   [Metrics](#metrics)
 -   [Statistics](#statistics)
 -   [Cache statistics](#cache-statistics)
+-   Sub commnads
+    -   [appenders](appenders.md)
+    -   [loggers](loggers.md)
 
 ## Common Options
 
@@ -172,7 +175,7 @@ ngsi admin semaphore --pretty
 
 ## Metrics
 
-This command allows you to print, reset or delete metrics for FIWARE Orion.
+This command allows you to print, reset or delete metrics for FIWARE Orion, Cygnus.
 
 ```console
 ngsi admin [command options] metrics [options]
@@ -282,7 +285,7 @@ ngsi admin metrics --delete
 
 ## Statistics
 
-This command allows you to print or delete statistics for FIWARE Orion.
+This command allows you to print or delete statistics for FIWARE Orion, Cygnus.
 
 ```console
 ngsi admin [command options] statistics [options]

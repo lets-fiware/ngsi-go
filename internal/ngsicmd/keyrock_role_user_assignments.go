@@ -229,7 +229,7 @@ func appsUsersUnassign(c *cli.Context) error {
 	path := fmt.Sprintf("/v1/applications/%s/users/%s/roles/%s", c.String("aid"), c.String("uid"), c.String("rid"))
 	client.SetPath(path)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}

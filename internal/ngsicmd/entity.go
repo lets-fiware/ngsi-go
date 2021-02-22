@@ -223,7 +223,7 @@ func entityDelete(c *cli.Context) error {
 	v := parseOptions(c, args, nil)
 	client.SetQuery(v)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}

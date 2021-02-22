@@ -60,8 +60,8 @@ func (client *Client) HTTPPatch(body interface{}) (*http.Response, []byte, error
 }
 
 // HTTPDelete is
-func (client *Client) HTTPDelete() (*http.Response, []byte, error) {
-	return client.HTTP.Request(http.MethodDelete, client.URL, client.Headers, nil)
+func (client *Client) HTTPDelete(body interface{}) (*http.Response, []byte, error) {
+	return client.HTTP.Request(http.MethodDelete, client.URL, client.Headers, body)
 }
 
 // HTTPRequest is ...
@@ -83,10 +83,12 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 	var reader io.Reader
 
 	switch method {
-	case http.MethodPost, http.MethodPut, http.MethodPatch:
-		reader, err = newReader(body)
-		if err != nil {
-			return nil, nil, &LibError{funcName, 1, err.Error(), err}
+	case http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete:
+		if body != nil {
+			reader, err = newReader(body)
+			if err != nil {
+				return nil, nil, &LibError{funcName, 1, err.Error(), err}
+			}
 		}
 	}
 

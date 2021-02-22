@@ -27,7 +27,7 @@
 build:
 	docker-compose build --no-cache
 up:
-	docker-compose up -d
+	script/docker-compose-up.sh
 down:
 	docker-compose down
 ps:

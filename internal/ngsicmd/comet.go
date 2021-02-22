@@ -159,7 +159,7 @@ func cometEntitiesDeleteMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib
 
 	client.SetPath("/STH/v1/contextEntities")
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
@@ -208,7 +208,7 @@ func cometEntityDeleteMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	client.SetPath(path)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
@@ -257,7 +257,7 @@ func cometAttrDeleteMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 
 	client.SetPath(path)
 
-	res, body, err := client.HTTPDelete()
+	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}

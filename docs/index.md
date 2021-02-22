@@ -19,13 +19,14 @@ The NGSI Go is a command-line interface supporting FIWARE Open APIs, which simpl
 It's a powerful tool and easy to use. It has various features as shown:
 
 -   Supported FIWARE Open APIs
-    - FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) APIs
-    - [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) APIs
-    - [STH-Comet APIs](https://github.com/telefonicaid/fiware-sth-comet)
-    - [QuantumLeap APIs](https://github.com/orchestracities/ngsi-timeseries-api)
-    - [IoT Agent](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib)
-    - [Perseo](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md)
-    - [Keyrock](https://github.com/ging/fiware-idm/blob/master/apiary.apib)
+    -   FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) API
+    -   [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) API
+    -   [STH-Comet](https://github.com/telefonicaid/fiware-sth-comet) API
+    -   [QuantumLeap](https://github.com/orchestracities/ngsi-timeseries-api) API
+    -   [Cygnus](https://github.com/telefonicaid/fiware-cygnus/blob/master/doc/cygnus-common/installation_and_administration_guide/management_interface_v1.md) API
+    -   [IoT Agent](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib) Provision API
+    -   [Perseo](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md) API
+    -   [Keyrock](https://github.com/ging/fiware-idm/blob/master/apiary.apib) API
 -   Various convenience commands
     -   NGSI commands to manage NGSI Entity, subscription, registration and so on
     -   Time series commands to manage historical data
@@ -95,6 +96,11 @@ It's a powerful tool and easy to use. It has various features as shown:
 -   [hdelete](time_series/hdelete.md): delete historical data
 -   [hget](time_series/hget.md): get historical data
 
+### Persisting context data
+
+-   [namemappings](cygnus/namemappings.md): manage namemappings for Cygnus
+-   [groupingrules](cygnus/groupingrules.md): manage groupingrules for Cygnus
+
 ## IoT Agent
 
 -   [services](iot_agent/services.md): services command for IoT Agent
@@ -141,4 +147,4 @@ It's a powerful tool and easy to use. It has various features as shown:
 ## Copyright and License
 
 Copyright (c) 2020-2021 Kazuhito Suda<br>
-Licensed under the [MIT license](https://raw.githubusercontent.com/lets-fiware/ngsi-go/main/LICENSE).
+Licensed under the [MIT License](https://raw.githubusercontent.com/lets-fiware/ngsi-go/main/LICENSE).

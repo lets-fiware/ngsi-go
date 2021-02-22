@@ -42,7 +42,7 @@ VERSION:
 COMMANDS:
    help, h  Shows a list of commands or help for one command
    CONVENIENCE:
-     admin     admin command for FIWARE Orion
+     admin     admin command for FIWARE Orion, Cygnus, Perseo
      apis      print endpoints of API
      cp        copy entities
      wc        print number of entities, subscriptions, registrations or types
@@ -78,6 +78,9 @@ COMMANDS:
      replace  replace entities or attributes
      update   update entities, attribute(s) or subscription
      upsert   upsert entity or entities
+   PERSISTING CONTEXT DATA:
+     namemappings   manage namemappings for Cygnus
+     groupingrules  manage groupingrules for Cygnus
    TIME SERIES:
      hdelete  delete historical raw and aggregated time series context information
      hget     get historical raw and aggregated time series context information

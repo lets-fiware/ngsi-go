@@ -1026,3 +1026,68 @@ var (
 		Usage:   "trusted application id",
 	}
 )
+
+// Cygnus namemappings
+
+var (
+	cygnusNamemappingsDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "name mapping data",
+	}
+)
+
+// Cygnus groupingrules
+
+var (
+	cygnusGroupingrulesIDFlag = &cli.StringFlag{
+		Name:    "id",
+		Aliases: []string{"i"},
+		Usage:   "grouping rule id",
+	}
+	cygnusGroupingrulesDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "grouping rule data",
+	}
+)
+
+// Cygnus loggers
+var (
+	cygnusLoggersNameFlag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "logger name",
+	}
+	cygnusLoggersDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "logger information",
+	}
+	cygnusLoggersTransientFlag = &cli.BoolFlag{
+		Name:    "transient",
+		Aliases: []string{"t"},
+		Usage:   "true, retrieving from memory, or false, retrieving from file",
+		Value:   false,
+	}
+)
+
+// Cygnus appenders
+var (
+	cygnusAppendersNamelag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "appender name",
+	}
+	cygnusAppendersDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "appender information",
+	}
+	cygnusAppendersTransientFlag = &cli.BoolFlag{
+		Name:    "transient",
+		Aliases: []string{"t"},
+		Usage:   "true, retrieving from memory, or false, retrieving from file",
+		Value:   false,
+	}
+)

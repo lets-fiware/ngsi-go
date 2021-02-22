@@ -132,6 +132,8 @@ services:
         - "CYGNUS_MONGO_SERVICE_PORT=5051"
         - "CYGNUS_API_PORT=5080"
         - "CYGNUS_SERVICE_PORT=5051"
+    volumes:
+        - ./config/cygnus-name_mappings.conf:/opt/apache-flume/conf/name_mappings.conf
 
   wirecloud:
     image: fiware/wirecloud:1.3.1

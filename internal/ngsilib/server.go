@@ -96,7 +96,7 @@ const (
 
 const (
 	cComet         = "comet"
-	cCygnus        = "cCygnus"
+	cCygnus        = "cygnus"
 	cQuantumLeap   = "quantumleap"
 	cIota          = "iota"
 	cfiwareKeyrock = "keyrock"

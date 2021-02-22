@@ -1,0 +1,475 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi namemappings
+#
+ngsi namemappings
+
+```
+NAME:
+   ngsi namemappings - manage namemappings for Cygnus
+
+USAGE:
+   ngsi namemappings command [command options] [arguments...]
+
+COMMANDS:
+   list     list namemappings
+   create   create namemapping
+   delete   delete namemapping
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --host value, -h value  host or alias
+   --token value           oauth token
+   --help                  show help (default: false)
+   --version, -v           print the version (default: false)
+   
+```
+
+#
+# 0002 namemappings list
+#
+ngsi namemappings list --help
+
+```
+NAME:
+   ngsi namemappings list - list namemappings
+
+USAGE:
+   ngsi namemappings list [command options] [arguments...]
+
+OPTIONS:
+   --pretty, -P  pretty format (default: false)
+   --help        show help (default: false)
+   
+```
+
+#
+# 0003 namemappings create
+#
+ngsi namemappings create --help
+
+```
+NAME:
+   ngsi namemappings create - create namemapping
+
+USAGE:
+   ngsi namemappings create [command options] [arguments...]
+
+OPTIONS:
+   --data value, -d value  name mapping data
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0004 namemappings create
+#
+ngsi namemappings delete --help
+
+```
+NAME:
+   ngsi namemappings delete - delete namemapping
+
+USAGE:
+   ngsi namemappings delete [command options] [arguments...]
+
+OPTIONS:
+   --data value, -d value  name mapping data
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0011 ngsi groupingrules
+#
+ngsi groupingrules
+
+```
+NAME:
+   ngsi groupingrules - manage groupingrules for Cygnus
+
+USAGE:
+   ngsi groupingrules command [command options] [arguments...]
+
+COMMANDS:
+   list     list groupingrules
+   create   create groupingrule
+   update   update groupingrule
+   delete   delete groupingrule
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --host value, -h value  host or alias
+   --token value           oauth token
+   --help                  show help (default: false)
+   --version, -v           print the version (default: false)
+   
+```
+
+#
+# 0012 groupingrules list
+#
+ngsi groupingrules list --help
+
+```
+NAME:
+   ngsi groupingrules list - list groupingrules
+
+USAGE:
+   ngsi groupingrules list [command options] [arguments...]
+
+OPTIONS:
+   --pretty, -P  pretty format (default: false)
+   --help        show help (default: false)
+   
+```
+
+#
+# 0013 groupingrules create
+#
+ngsi groupingrules create --help
+
+```
+NAME:
+   ngsi groupingrules create - create groupingrule
+
+USAGE:
+   ngsi groupingrules create [command options] [arguments...]
+
+OPTIONS:
+   --data value, -d value  grouping rule data
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0014 groupingrules update
+#
+ngsi groupingrules update --help
+
+```
+NAME:
+   ngsi groupingrules update - update groupingrule
+
+USAGE:
+   ngsi groupingrules update [command options] [arguments...]
+
+OPTIONS:
+   --id value, -i value    grouping rule id
+   --data value, -d value  grouping rule data
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0015 groupingrules delete
+#
+ngsi groupingrules delete --help
+
+```
+NAME:
+   ngsi groupingrules delete - delete groupingrule
+
+USAGE:
+   ngsi groupingrules delete [command options] [arguments...]
+
+OPTIONS:
+   --id value, -i value  grouping rule id
+   --pretty, -P          pretty format (default: false)
+   --help                show help (default: false)
+   
+```
+
+#
+# 0021 admin
+#
+ngsi admin --help
+
+```
+NAME:
+   ngsi admin - admin command for FIWARE Orion, Cygnus, Perseo
+
+USAGE:
+   ngsi admin command [command options] [arguments...]
+
+COMMANDS:
+   log              admin log
+   trace            admin trace
+   semaphore        print semaphore
+   metrics          manage metrics
+   statistics       print statistics
+   cacheStatistics  print cache statistics
+   help, h          Shows a list of commands or help for one command
+   sub-command:
+     loggers    manage loggers for Cygnus
+     appenders  manage appenders for Cygnus
+
+OPTIONS:
+   --host value, -h value  host or alias
+   --token value           oauth token
+   --help                  show help (default: false)
+   --version, -v           print the version (default: false)
+   
+```
+
+#
+# 0041 admin loggers
+#
+ngsi admin loggers --help
+
+```
+NAME:
+   ngsi admin loggers - manage loggers for Cygnus
+
+USAGE:
+   ngsi admin loggers command [command options] [arguments...]
+
+COMMANDS:
+   list     list loggers
+   get      get logger
+   create   create logger
+   update   update logger
+   delete   delete logger
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --help         show help (default: false)
+   --version, -v  print the version (default: false)
+   
+```
+
+#
+# 0042 admin loggers list
+#
+ngsi admin loggers list --help
+
+```
+NAME:
+   ngsi admin loggers list - list loggers
+
+USAGE:
+   ngsi admin loggers list [command options] [arguments...]
+
+OPTIONS:
+   --transient, -t  true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P     pretty format (default: false)
+   --help           show help (default: false)
+   
+```
+
+#
+# 0043 admin loggers get
+#
+ngsi admin loggers get --help
+
+```
+NAME:
+   ngsi admin loggers get - get logger
+
+USAGE:
+   ngsi admin loggers get [command options] [arguments...]
+
+OPTIONS:
+   --name value, -n value  logger name
+   --transient, -t         true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0044 admin loggers create
+#
+ngsi admin loggers create --help
+
+```
+NAME:
+   ngsi admin loggers create - create logger
+
+USAGE:
+   ngsi admin loggers create [command options] [arguments...]
+
+OPTIONS:
+   --name value, -n value  logger name
+   --data value, -d value  logger information
+   --transient, -t         true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0045 admin loggers update
+#
+ngsi admin loggers update --help
+
+```
+NAME:
+   ngsi admin loggers update - update logger
+
+USAGE:
+   ngsi admin loggers update [command options] [arguments...]
+
+OPTIONS:
+   --name value, -n value  logger name
+   --data value, -d value  logger information
+   --transient, -t         true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0046 admin loggers delete
+#
+ngsi admin loggers delete --help
+
+```
+NAME:
+   ngsi admin loggers delete - delete logger
+
+USAGE:
+   ngsi admin loggers delete [command options] [arguments...]
+
+OPTIONS:
+   --name value, -n value  logger name
+   --transient, -t         true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0051 admin appenders
+#
+ngsi admin appenders --help
+
+```
+NAME:
+   ngsi admin appenders - manage appenders for Cygnus
+
+USAGE:
+   ngsi admin appenders command [command options] [arguments...]
+
+COMMANDS:
+   list     list appenders
+   get      get appender
+   create   create appender
+   update   update appender
+   delete   delete appender
+   help, h  Shows a list of commands or help for one command
+
+OPTIONS:
+   --help         show help (default: false)
+   --version, -v  print the version (default: false)
+   
+```
+
+#
+# 0052 admin appenders list
+#
+ngsi admin appenders list --help
+
+```
+NAME:
+   ngsi admin appenders list - list appenders
+
+USAGE:
+   ngsi admin appenders list [command options] [arguments...]
+
+OPTIONS:
+   --transient, -t  true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P     pretty format (default: false)
+   --help           show help (default: false)
+   
+```
+
+#
+# 0053 admin appenders get
+#
+ngsi admin appenders get --help
+
+```
+NAME:
+   ngsi admin appenders get - get appender
+
+USAGE:
+   ngsi admin appenders get [command options] [arguments...]
+
+OPTIONS:
+   --name value, -n value  appender name
+   --transient, -t         true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0054 admin appenders update
+#
+ngsi admin appenders update --help
+
+```
+NAME:
+   ngsi admin appenders update - update appender
+
+USAGE:
+   ngsi admin appenders update [command options] [arguments...]
+
+OPTIONS:
+   --name value, -n value  appender name
+   --data value, -d value  appender information
+   --transient, -t         true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0055 admin appenders delete
+#
+ngsi admin appenders delete --help
+
+```
+NAME:
+   ngsi admin appenders delete - delete appender
+
+USAGE:
+   ngsi admin appenders delete [command options] [arguments...]
+
+OPTIONS:
+   --name value, -n value  appender name
+   --transient, -t         true, retrieving from memory, or false, retrieving from file (default: false)
+   --pretty, -P            pretty format (default: false)
+   --help                  show help (default: false)
+   
+```
