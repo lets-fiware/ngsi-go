@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2020-2021 Kazuhito Suda
+Copyright (c, "") 2020-2021 Kazuhito Suda
 
 This file is part of NGSI Go
 
@@ -38,33 +38,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestHealthCheckV2(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{\n"status": "pass"\n}\n`)
-	reqRes.Path = "/health"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql"})
-
-	err := healthCheck(c)
-
-	if assert.NoError(t, err) {
-		actual := buf.String()
-		expected := `{\n"status": "pass"\n}\n`
-		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestHealthCheckScorpio(t *testing.T) {
+func TestScorpioCheck(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -79,11 +53,11 @@ func TestHealthCheckScorpio(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=scorpio"})
 
-	err := healthCheck(c)
+	err := scorpioCommand(c, "health")
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{ \"Status of Registrymanager\": \"Up and running\", \"Status of Entitymanager\": \"Up and running\", \"Status of Subscriptionmanager\": \"Not running\", \"Status of Storagemanager\": \"Up and running\", \"Status of Querymanager\": \"Up and running\", \"Status of Historymanager\": \"Up and running\"}"
+		expected := "{ \"Status of Registrymanager\": \"Up and running\", \"Status of Entitymanager\": \"Up and running\", \"Status of Subscriptionmanager\": \"Not running\", \"Status of Storagemanager\": \"Up and running\", \"Status of Querymanager\": \"Up and running\", \"Status of Historymanager\": \"Up and running\"}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -91,11 +65,11 @@ func TestHealthCheckScorpio(t *testing.T) {
 }
 
 // initCmd() Error: no host
-func TestHealthCheckErrorInitCmd(t *testing.T) {
+func TestScorpioCheckErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
-	err := healthCheck(c)
+	err := scorpioCommand(c, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -106,7 +80,7 @@ func TestHealthCheckErrorInitCmd(t *testing.T) {
 	}
 }
 
-func TestHealthCheckErrorNewClient(t *testing.T) {
+func TestScorpioCheckErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -120,7 +94,7 @@ func TestHealthCheckErrorNewClient(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=keyrock"})
 
-	err := healthCheck(c)
+	err := scorpioCommand(c, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -131,7 +105,7 @@ func TestHealthCheckErrorNewClient(t *testing.T) {
 	}
 }
 
-func TestHealthCheckErrorBrokerType(t *testing.T) {
+func TestScorpioCheckErrorBroekrType(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -145,7 +119,7 @@ func TestHealthCheckErrorBrokerType(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
 
-	err := healthCheck(c)
+	err := scorpioCommand(c, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -156,12 +130,12 @@ func TestHealthCheckErrorBrokerType(t *testing.T) {
 	}
 }
 
-func TestHealthCheckErrorHTTP(t *testing.T) {
+func TestScorpioCheckErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/health"
+	reqRes.Path = "/scorpio/v1/info/"
 	reqRes.Err = errors.New("error")
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -169,8 +143,8 @@ func TestHealthCheckErrorHTTP(t *testing.T) {
 	setupFlagString(set, "host")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql"})
-	err := healthCheck(c)
+	_ = set.Parse([]string{"--host=scorpio"})
+	err := scorpioCommand(c, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -181,21 +155,21 @@ func TestHealthCheckErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestHealthCheckErrorStatusCode(t *testing.T) {
+func TestScorpioCheckErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/health"
+	reqRes.Path = "/scorpio/v1/info/"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
 	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql"})
+	_ = set.Parse([]string{"--host=scorpio"})
 
-	err := healthCheck(c)
+	err := scorpioCommand(c, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)

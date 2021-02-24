@@ -185,3 +185,13 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 | GET /v1/service_providers/configs                                                                                                  | providers                                                                                                                        |
 
 -   [Keyrock API - GitHub](https://github.com/ging/fiware-idm/blob/master/apiary.apib)
+
+## Scorpio API 
+
+| Scorpio API                     | NGSI Go commands         |
+| ------------------------------- | ------------------------ |
+| GET /scorpio/v1/info/           | admin scorpio list       |
+| GET /scorpio/v1/info/types      | admin scorpio types      |
+| GET /scorpio/v1/info/localtypes | admin scorpio localtypes |
+| GET /scorpio/v1/info/stats      | admin scorpio stats      |
+| GET /scorpio/v1/info/health     | admin scorpio health     |

@@ -97,6 +97,12 @@ var configData = `{
 	  "wirecloud": {
 		"serverHost": "https://wirecloud",
 		"serverType": "wirecloud"
+	  },
+	  "scorpio": {
+		"serverHost": "https://scorpio:9090",
+		"ngsiType": "ld",
+		"serverType": "broker",
+		"brokerType": "scorpio"
 	  }
 	},
 	"contexts": {

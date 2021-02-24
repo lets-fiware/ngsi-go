@@ -36,7 +36,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func healthCheck(c *cli.Context) error {
+func scorpioCommand(c *cli.Context, cmd string) error {
 	const funcName = "healthCheck"
 
 	ngsi, err := initCmd(c, funcName, true)
@@ -44,21 +44,16 @@ func healthCheck(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"quantumleap", "broker"})
+	client, err := newClient(ngsi, c, false, []string{"broker"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	path := "/health"
-	if client.Server.ServerType == "broker" {
-		if client.Server.NgsiType == "ld" && client.Server.BrokerType == "scorpio" {
-			path = "/scorpio/v1/info/health"
-		} else {
-			return &ngsiCmdError{funcName, 3, "brokerType error", err}
-		}
-
+	if !(client.Server.NgsiType == "ld" && client.Server.BrokerType == "scorpio") {
+		return &ngsiCmdError{funcName, 3, "brokerType error", err}
 	}
-	client.SetPath(path)
+
+	client.SetPath("/scorpio/v1/info/" + cmd)
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
@@ -68,7 +63,7 @@ func healthCheck(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	fmt.Fprint(ngsi.StdWriter, string(body))
+	fmt.Fprintln(ngsi.StdWriter, string(body))
 
 	return nil
 }

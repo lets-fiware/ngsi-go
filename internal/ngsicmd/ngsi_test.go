@@ -206,6 +206,11 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"groupingrules", "create"}, rc: 1},
 		{args: []string{"groupingrules", "update"}, rc: 1},
 		{args: []string{"groupingrules", "delete"}, rc: 1},
+		{args: []string{"admin", "scorpio", "list"}, rc: 1},
+		{args: []string{"admin", "scorpio", "types"}, rc: 1},
+		{args: []string{"admin", "scorpio", "localtypes"}, rc: 1},
+		{args: []string{"admin", "scorpio", "stats"}, rc: 1},
+		{args: []string{"admin", "scorpio", "health"}, rc: 1},
 	}
 
 	for _, c := range cases {

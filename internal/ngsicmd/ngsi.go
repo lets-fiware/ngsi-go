@@ -466,6 +466,7 @@ var brokersCmd = cli.Command{
 				hostFlag,
 				brokerHostFlag,
 				ngsiTypeFlag,
+				brokerTypeFlag,
 				idmTypeFlag,
 				idmHostFlag,
 				apiPathFlag,
@@ -490,6 +491,7 @@ var brokersCmd = cli.Command{
 				hostFlag,
 				brokerHostFlag,
 				ngsiTypeFlag,
+				brokerTypeFlag,
 				idmTypeFlag,
 				idmHostFlag,
 				apiPathFlag,
@@ -1352,7 +1354,7 @@ var upsertCmd = cli.Command{
 
 var adminCmd = cli.Command{
 	Name:     "admin",
-	Usage:    "admin command for FIWARE Orion, Cygnus, Perseo",
+	Usage:    "admin command for FIWARE Orion, Cygnus, Perseo, Scorpio",
 	Category: "CONVENIENCE",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1434,6 +1436,7 @@ var adminCmd = cli.Command{
 		},
 		&cygnusLoggersCmd,
 		&cygnusAppendersCmd,
+		&scorpioCmd,
 	},
 }
 
@@ -2821,6 +2824,53 @@ var cygnusGroupingrulesCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return groupingrulesDelete(c)
+			},
+		},
+	},
+}
+
+var scorpioCmd = cli.Command{
+	Name:     "scorpio",
+	Usage:    "information command for Scorpio broker",
+	Category: "sub-command",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "List of information paths",
+			Action: func(c *cli.Context) error {
+				return scorpioCommand(c, "")
+			},
+		},
+		{
+			Name:  "types",
+			Usage: "print types",
+			Action: func(c *cli.Context) error {
+				return scorpioCommand(c, "types")
+			},
+		},
+		{
+			Name:  "localtypes",
+			Usage: "print local types",
+			Action: func(c *cli.Context) error {
+				return scorpioCommand(c, "localtypes")
+			},
+		},
+		{
+			Name:  "stats",
+			Usage: "print stats",
+			Action: func(c *cli.Context) error {
+				return scorpioCommand(c, "stats")
+			},
+		},
+		{
+			Name:  "health",
+			Usage: "print health",
+			Action: func(c *cli.Context) error {
+				return scorpioCommand(c, "health")
 			},
 		},
 	},

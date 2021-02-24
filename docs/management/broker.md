@@ -108,6 +108,7 @@ ngsi broker add [options]
 | --host value, -h value         | specify host or alias          |
 | --brokerHost value, -b value   | specify context broker host    |
 | --ngsiType value               | specify NGSI type: v2 or ld    |
+| --brokerType value             | orion-ld, scorpio, stellio     |
 | --idmType value, -t value      | specify token type             |
 | --idmHost value, -m value      | specify identity manager host  |
 | --apiPath value, -a value      | specify API path               |
@@ -253,6 +254,7 @@ ngsi broker upadte [options]
 | --host value, -h value         | specify host or alias (Required) |
 | --brokerHost value, -b value   | specify context broker host      |
 | --ngsiType value               | specify NGSI type: v2 or ld      |
+| --brokerType value             | orion-ld, scorpio, stellio     |
 | --idmType value, -t value      | specify token type               |
 | --idmHost value, -m value      | specify identity manager host    |
 | --apiPath value, -a value      | specify API path                 |

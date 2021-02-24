@@ -270,6 +270,9 @@ func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 			fmt.Fprintln(ngsi.StdWriter, "FIWARE-SerivcePath "+info.Scope)
 		}
 	} else {
+		if info.BrokerType != "" {
+			fmt.Fprintln(ngsi.StdWriter, "brokerType "+info.BrokerType)
+		}
 		if info.Tenant != "" {
 			fmt.Fprintln(ngsi.StdWriter, "Tenant "+info.Tenant)
 		}
@@ -277,40 +280,27 @@ func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 			fmt.Fprintln(ngsi.StdWriter, "Scope "+info.Scope)
 		}
 	}
-	if info.Context != "" {
-		fmt.Fprintln(ngsi.StdWriter, "Context "+info.Context)
-	}
-	if info.SafeString != "" {
-		fmt.Fprintln(ngsi.StdWriter, "SafeString "+info.SafeString)
+
+	items := []struct {
+		key   string
+		value string
+	}{
+		{"Context", info.Context},
+		{"SafeString", info.SafeString},
+		{"IdmType", info.IdmType},
+		{"IdmHost", info.IdmHost},
+		{"Username", info.Username},
+		{"Password", info.Password},
+		{"ClientID", info.ClientID},
+		{"ClientSecret", info.ClientSecret},
+		{"XAuthToken", info.XAuthToken},
+		{"Token", info.Token},
+		{"APIPath", info.APIPath},
 	}
 
-	if info.IdmType != "" {
-		fmt.Fprintln(ngsi.StdWriter, "IdmType "+info.IdmType)
-	}
-	if info.IdmHost != "" {
-		fmt.Fprintln(ngsi.StdWriter, "IdmHost "+info.IdmHost)
-	}
-	if info.Username != "" {
-		fmt.Fprintln(ngsi.StdWriter, "Username "+info.Username)
-	}
-	if info.Password != "" {
-		fmt.Fprintln(ngsi.StdWriter, "Password "+info.Password)
-	}
-	if info.ClientID != "" {
-		fmt.Fprintln(ngsi.StdWriter, "ClientID "+info.ClientID)
-	}
-	if info.ClientSecret != "" {
-		fmt.Fprintln(ngsi.StdWriter, "ClientSecret "+info.ClientSecret)
-	}
-
-	if info.XAuthToken != "" {
-		fmt.Fprintln(ngsi.StdWriter, "XAuthToken "+info.XAuthToken)
-	}
-	if info.Token != "" {
-		fmt.Fprintln(ngsi.StdWriter, "Token "+info.Token)
-	}
-
-	if info.APIPath != "" {
-		fmt.Fprintln(ngsi.StdWriter, "APIPath "+info.APIPath)
+	for _, item := range items {
+		if item.value != "" {
+			fmt.Fprintf(ngsi.StdWriter, "%s %s\n", item.key, item.value)
+		}
 	}
 }
