@@ -39,6 +39,7 @@ type Server struct {
 	ServerType           string `json:"serverType,omitempty"`
 	DeprecatedBrokerHost string `json:"brokerHost,omitempty"`
 	ServerHost           string `json:"serverHost,omitempty"`
+	BrokerType           string `json:"brokerType,omitempty"`
 	NgsiType             string `json:"ngsiType,omitempty"`
 	APIPath              string `json:"apiPath,omitempty"`
 	IdmType              string `json:"idmType,omitempty"`
@@ -59,6 +60,7 @@ const (
 	cServerType        = "serverType"
 	cServerHost        = "serverHost"
 	cBrokerHost        = "brokerHost"
+	cBrokerType        = "brokerType"
 	cNgsiType          = "ngsiType"
 	cAPIPath           = "apiPath"
 	cIdmType           = "idmType"
@@ -103,12 +105,16 @@ const (
 	cPerseo        = "perseo"
 	cPerseoCore    = "perseo-core"
 	cWireCloud     = "wirecloud"
+	cOrionLD       = "orion-ld"
+	cScorpio       = "scorpio"
+	cStellio       = "stellio"
 )
 
 var (
-	brokerArgs = []string{cServerType, cServerHost, cBrokerHost, cNgsiType, cAPIPath,
+	brokerArgs = []string{cServerType, cServerHost, cBrokerHost, cBrokerType, cNgsiType, cAPIPath,
 		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret,
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
+	brokerTypeArgs = []string{cOrionLD, cScorpio, cStellio}
 	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud}
 	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM}
 	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
@@ -138,37 +144,54 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 		if !(Contains(ngsiV2Types, ngsiType) || Contains(ngsiLdTypes, ngsiType)) {
 			return &LibError{funcName, 3, fmt.Sprintf("%s not found", ngsiType), nil}
 		}
+		if Contains(ngsiV2Types, ngsiType) {
+			if host.BrokerType != "" {
+				return &LibError{funcName, 4, "can'n specify broker Type", nil}
+			}
+			host.NgsiType = cV2
+			host.BrokerType = ""
+		} else {
+			host.NgsiType = cLd
+			if host.BrokerType == "" {
+				host.BrokerType = cOrionLD
+			} else {
+				host.BrokerType = strings.ToLower(host.BrokerType)
+				if !Contains(brokerTypeArgs, host.BrokerType) {
+					return &LibError{funcName, 5, fmt.Sprintf("brokerType Error: %s", host.BrokerType), nil}
+				}
+			}
+		}
 	}
 
 	if apiPath := host.APIPath; apiPath != "" {
 		if _, _, err := getAPIPath(apiPath); err != nil {
-			return &LibError{funcName, 4, err.Error(), err}
+			return &LibError{funcName, 6, err.Error(), err}
 		}
 	}
 
 	err := checkIdmParams(host.IdmType, host.IdmHost, host.Username, host.Password,
 		host.ClientID, host.ClientSecret)
 	if err != nil {
-		return &LibError{funcName, 5, err.Error(), err}
+		return &LibError{funcName, 7, err.Error(), err}
 	}
 
 	var client *Client
 	if tenant := host.Tenant; tenant != "" {
 		err = client.CheckTenant(tenant)
 		if err != nil {
-			return &LibError{funcName, 6, err.Error(), err}
+			return &LibError{funcName, 8, err.Error(), err}
 		}
 	}
 
 	if scope := host.Scope; scope != "" {
 		err = client.CheckScope(scope)
 		if err != nil {
-			return &LibError{funcName, 7, err.Error(), err}
+			return &LibError{funcName, 9, err.Error(), err}
 		}
 	}
 
 	if _, err := host.safeString(); err != nil {
-		return &LibError{funcName, 8, err.Error(), err}
+		return &LibError{funcName, 10, err.Error(), err}
 	}
 
 	return nil
@@ -249,6 +272,11 @@ func (ngsi *NGSI) ServerTypeArgs() []string {
 	return serverTypeArgs
 }
 
+// BrokerTypeArgs is ...
+func (ngsi *NGSI) BrokerTypeArgs() []string {
+	return brokerTypeArgs
+}
+
 func copyServerInfo(from *Server, to *Server) {
 	if from.ServerType != "" {
 		to.ServerType = from.ServerType
@@ -258,6 +286,9 @@ func copyServerInfo(from *Server, to *Server) {
 	}
 	if from.NgsiType != "" && to.NgsiType == "" {
 		to.NgsiType = from.NgsiType
+	}
+	if from.BrokerType != "" {
+		to.BrokerType = from.BrokerType
 	}
 	if from.APIPath != "" && to.APIPath == "" {
 		to.APIPath = from.APIPath
@@ -314,6 +345,8 @@ func setServerParam(broker *Server, param map[string]string) error {
 			broker.ServerHost = value
 		case cNgsiType:
 			broker.NgsiType = value
+		case cBrokerType:
+			broker.BrokerType = value
 		case cAPIPath:
 			broker.APIPath = value
 		case cIdmType:

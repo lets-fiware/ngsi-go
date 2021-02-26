@@ -11,6 +11,7 @@ This command gives you various system information for FIWARE Orion, Cygnus, Pers
 -   Sub commnads
     -   [appenders](appenders.md)
     -   [loggers](loggers.md)
+    -   [scorpio](scorpio.md)
 
 ## Common Options
 

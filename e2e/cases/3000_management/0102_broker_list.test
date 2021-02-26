@@ -68,7 +68,7 @@ orion orion-ld
 ngsi broker list --json
 
 ```
-{"orion":{"serverType":"broker","serverHost":"http://orion:1026","ngsiType":"v2"},"orion-ld":{"serverType":"broker","serverHost":"http://orion-ld:1026","ngsiType":"ld"}}
+{"orion":{"serverType":"broker","serverHost":"http://orion:1026","ngsiType":"v2"},"orion-ld":{"serverType":"broker","serverHost":"http://orion-ld:1026","brokerType":"orion-ld","ngsiType":"ld"}}
 ```
 
 #
@@ -86,6 +86,7 @@ ngsi broker list --json --pretty
   "orion-ld": {
     "serverType": "broker",
     "serverHost": "http://orion-ld:1026",
+    "brokerType": "orion-ld",
     "ngsiType": "ld"
   }
 }
@@ -109,13 +110,60 @@ ngsi broker list --host orion-ld
 ```
 brokerHost http://orion-ld:1026
 ngsiType ld
+brokerType orion-ld
 ```
 
 #
-# 0100 brokersList002 fiware not found
+# 0011 Add --host scorpiobroker
+#
+ngsi broker add --host scorpiobroker --brokerHost http://scorpio:9090/ --ngsiType ld --brokerType scorpio
+
+```
+```
+
+#
+# 0012 List --host scorpiobroker
+#
+ngsi broker list --host scorpiobroker
+
+```
+brokerHost http://scorpio:9090/
+ngsiType ld
+brokerType scorpio
+```
+
+#
+# 0013 Delete --host scorpiobroker
+#
+ngsi broker delete --host scorpiobroker
+
+```
+```
+
+
+#
+# 0101 brokersList002 fiware not found
 #
 ngsi broker list --host fiware
 
 ```1
 brokersList002 fiware not found
+```
+
+#
+# 0102 brokersAdd008 can'n specify broker Type
+#
+ngsi broker add --host scorpiobroker --brokerHost http://scorpio:9090/ --ngsiType v2 --brokerType scorpio
+
+```1
+brokersAdd008 can'n specify broker Type
+```
+
+#
+# 0103 brokersAdd008 brokerType Error: orion
+#
+ngsi broker add --host scorpiobroker --brokerHost http://scorpio:9090/ --ngsiType ld --brokerType orion
+
+```1
+brokersAdd008 brokerType Error: orion
 ```

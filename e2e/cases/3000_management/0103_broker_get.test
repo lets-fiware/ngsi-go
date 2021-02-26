@@ -74,6 +74,7 @@ ngsi broker get --host orion-ld
 ```
 brokerHost http://orion-ld:1026
 ngsiType ld
+brokerType orion-ld
 ```
 
 #

@@ -216,7 +216,7 @@ ngsi admin --help
 
 ```
 NAME:
-   ngsi admin - admin command for FIWARE Orion, Cygnus, Perseo
+   ngsi admin - admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
 
 USAGE:
    ngsi admin command [command options] [arguments...]
@@ -232,6 +232,7 @@ COMMANDS:
    sub-command:
      loggers    manage loggers for Cygnus
      appenders  manage appenders for Cygnus
+     scorpio    information command for Scorpio broker
 
 OPTIONS:
    --host value, -h value  host or alias

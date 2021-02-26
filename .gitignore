@@ -7,3 +7,4 @@ build/
 .vscode/
 super-linter.log
 __debug_bin
+cygnus-name_mappings.conf

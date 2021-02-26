@@ -53,6 +53,25 @@ func TestCheckAllParams(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestCheckAllParamsOrionLD(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	InitServerList()
+
+	param := make(map[string]string)
+	param["brokerHost"] = "http://orion-ld"
+	param["ngsiType"] = "ld"
+	err := ngsi.CreateServer("orion", param)
+	assert.NoError(t, err)
+
+	host := ngsi.serverList["orion"]
+	err = ngsi.checkAllParams(host)
+
+	assert.NoError(t, err)
+}
+
 func TestCheckAllParamsErrorBrokerHost(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
@@ -122,6 +141,57 @@ func TestCheckAllParamsErrorNgsiType(t *testing.T) {
 	}
 }
 
+func TestCheckAllParamsErrorV2BrokerType(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	InitServerList()
+
+	param := make(map[string]string)
+	param["brokerHost"] = "http://orion"
+	param["ngsiType"] = "v2"
+	err := ngsi.CreateServer("orion", param)
+	assert.NoError(t, err)
+
+	host := ngsi.serverList["orion"]
+	host.BrokerType = "orion"
+
+	err = ngsi.checkAllParams(host)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "can'n specify broker Type", ngsiErr.Message)
+	}
+}
+
+func TestCheckAllParamsErrorBrokerType(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	InitServerList()
+
+	param := make(map[string]string)
+	param["brokerHost"] = "http://orion"
+	param["ngsiType"] = "ld"
+	param["brokerType"] = "orion-ld"
+	err := ngsi.CreateServer("orion", param)
+	assert.NoError(t, err)
+
+	host := ngsi.serverList["orion"]
+	host.BrokerType = "orion"
+
+	err = ngsi.checkAllParams(host)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "brokerType Error: orion", ngsiErr.Message)
+	}
+}
+
 func TestCheckAllParamsErrorAPIPath(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := ""
@@ -140,7 +210,7 @@ func TestCheckAllParamsErrorAPIPath(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: /", ngsiErr.Message)
 	}
 }
@@ -163,7 +233,7 @@ func TestCheckAllParamsErrorIdmParams(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "idmType error: unknown", ngsiErr.Message)
 	}
 }
@@ -186,7 +256,7 @@ func TestCheckAllParamsErrorTenant(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
 }
@@ -209,7 +279,7 @@ func TestCheckAllParamsErrorScope(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE ServicePath: Scope", ngsiErr.Message)
 	}
 }
@@ -232,7 +302,7 @@ func TestCheckAllParamsErrorSafeString(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: none", ngsiErr.Message)
 	}
 }
@@ -397,6 +467,13 @@ func TestServerInfoArgs(t *testing.T) {
 	assert.Equal(t, brokerArgs, args)
 }
 
+func TestBrokerTypesArgs(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	args := ngsi.BrokerTypeArgs()
+
+	assert.Equal(t, brokerTypeArgs, args)
+}
+
 func TestServerTypeArgs(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	actual := ngsi.ServerTypeArgs()
@@ -411,6 +488,7 @@ func TestCopyBrokerInfo(t *testing.T) {
 	param[cServerType] = "broker"
 	param[cBrokerHost] = "orion"
 	param[cNgsiType] = "v2"
+	param[cBrokerType] = "orion-ld"
 	param[cAPIPath] = "/,/orion"
 	param[cIdmType] = cKeyrock
 	param[cIdmHost] = "https://keyrock"

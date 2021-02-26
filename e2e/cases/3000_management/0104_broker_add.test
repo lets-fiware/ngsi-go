@@ -40,6 +40,7 @@ OPTIONS:
    --host value, -h value          host or alias
    --brokerHost value, -b value    specify context broker host
    --ngsiType value                specify NGSI type: v2 or ld
+   --brokerType value              orion-ld, scorpio, stellio
    --idmType value, -t value       specify token type
    --idmHost value, -m value       specify identity manager host
    --apiPath value, -a value       specify API path
@@ -103,6 +104,7 @@ ngsi broker get --host orion-ld2
 ```
 brokerHost http://orion-ld
 ngsiType ld
+brokerType orion-ld
 ```
 
 #
@@ -138,6 +140,7 @@ ngsi broker get --host idm
 ```
 brokerHost https://orion-ld
 ngsiType ld
+brokerType orion-ld
 IdmType keyrock
 IdmHost https://keyrock
 Username keyrock001@letsfiware.jp
@@ -179,6 +182,7 @@ ngsi broker get --host password
 ```
 brokerHost https://orion-ld
 ngsiType ld
+brokerType orion-ld
 IdmType password
 IdmHost https://wso2
 Username keyrock001@letsfiware.jp
@@ -218,6 +222,7 @@ ngsi broker get --host KeyrockTokenProvider
 ```
 brokerHost https://orion-ld
 ngsiType ld
+brokerType orion-ld
 IdmType keyrocktokenprovider
 IdmHost https://keyrock
 Username keyrock001@letsfiware.jp
@@ -255,6 +260,7 @@ ngsi broker get --host tokenproxy
 ```
 brokerHost https://orion-ld
 ngsiType ld
+brokerType orion-ld
 IdmType tokenproxy
 IdmHost https://keyrock
 Username keyrock001@letsfiware.jp
