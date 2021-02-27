@@ -90,6 +90,32 @@ func TestTypesListLD(t *testing.T) {
 	}
 }
 
+func TestTypesListLDEmpty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte(`[]`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--link=etsi"})
+
+	err := typesList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestTypesListErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
