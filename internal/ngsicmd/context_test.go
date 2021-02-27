@@ -439,7 +439,7 @@ func TestGetAtContext(t *testing.T) {
 func TestGetAtContextHTTP(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
-	actual, err := getAtContext(ngsi, "etsi")
+	actual, err := getAtContext(ngsi, "etsi1.3")
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld", actual)
@@ -506,7 +506,7 @@ func TestInsertAtContext(t *testing.T) {
 			expected: "{\"@context\":{\"parking\":\"http://example.org/ngsi-ld/latest/parking.jsonld\"},\"id\":\"I\"}",
 		},
 		{
-			context:  "etsi",
+			context:  "etsi1.3",
 			expected: "{\"@context\":\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld\",\"id\":\"I\"}",
 		},
 	}

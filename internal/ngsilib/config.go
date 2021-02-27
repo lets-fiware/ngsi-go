@@ -126,7 +126,9 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	}
 	if ngsi.contextList == nil {
 		ngsi.contextList = make(ContextsInfo)
-		ngsi.contextList["etsi"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+		ngsi.contextList["etsi1.0"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+		ngsi.contextList["etsi1.3"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+		ngsi.contextList["etsi1.4"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.4.jsonld"
 		ngsi.contextList["ld"] = "https://schema.lab.fiware.org/ld/context"
 	}
 

@@ -101,7 +101,9 @@ func NewNGSI() *NGSI {
 		gNGSI.TimeLib = &timeLib{}
 		gNGSI.serverList = make(ServerList)
 		gNGSI.contextList = make(ContextsInfo)
-		gNGSI.contextList["etsi"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+                gNGSI.contextList["etsi1.0"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+                gNGSI.contextList["etsi1.3"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+                gNGSI.contextList["etsi1.4"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.4.jsonld"
 		gNGSI.contextList["ld"] = "https://schema.lab.fiware.org/ld/context"
 	}
 	return gNGSI
