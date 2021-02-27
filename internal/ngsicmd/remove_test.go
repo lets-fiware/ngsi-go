@@ -62,10 +62,10 @@ func TestRemoveV2(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
+	setupFlagString(set, "host,type")
 	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--run"})
+	_ = set.Parse([]string{"--host=orion", "--type=Thing", "--run"})
 
 	err := remove(c)
 
@@ -132,10 +132,10 @@ func TestRemoveLD(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes3)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
+	setupFlagString(set, "host,type")
 	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--run"})
+	_ = set.Parse([]string{"--host=orion-ld", "--type=Thing", "--run"})
 
 	err := remove(c)
 
@@ -175,7 +175,7 @@ func TestRemoveErrorNewClient(t *testing.T) {
 		t.FailNow()
 	}
 }
-func TestRemoveErrorV2Link(t *testing.T) {
+func TestRemoveErrorType(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,link")
@@ -187,7 +187,71 @@ func TestRemoveErrorV2Link(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "specify entity type", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveErrorTypeEmpty(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,link,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--link=ld", "--type=", "--host=orion"})
+
+	err := remove(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "no entity type", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveErrorV2Link(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,link,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--link=ld", "--type=Thing", "--host=orion"})
+
+	err := remove(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "can't specify --link option on NGSIv2", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveErrorRemove(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusBadRequest
+	reqRes1.ResBody = []byte("[{\"id\":\"9f6c254ac4a6068bb276774e\",\"description\":\"ngsi source subscription\",\"subject\":{\"entities\":[{\"idPattern\":\".*\"}],\"condition\":{\"attrs\":[\"dateObserved\"]}},\"notification\":{\"timesSent\":28,\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:13.00Z\",\"status\":\"inactive\"}]\n")
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--type=Thing", "--host=orion"})
+
+	err := remove(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -216,7 +280,7 @@ func TestRemoveV2TestRun(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -259,7 +323,7 @@ func TestRemoveV2Page(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	assert.NoError(t, err)
 }
@@ -286,7 +350,7 @@ func TestRemoveV2CountZero(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	assert.NoError(t, err)
 }
@@ -312,7 +376,7 @@ func TestRemoveV2ErrorHTTP(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -344,7 +408,7 @@ func TestRemoveV2ErrorHTTPStatus(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -375,7 +439,7 @@ func TestRemoveV2ErrorResultCount(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -423,7 +487,7 @@ func TestRemoveV2ErrorUnmarshal(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -469,7 +533,7 @@ func TestRemoveV2ErrorOpUpdate(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeV2(c, ngsi, client)
+	err = removeV2(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -503,7 +567,7 @@ func TestRemoveLDTestRun(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -546,7 +610,7 @@ func TestRemoveLDPage(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	assert.NoError(t, err)
 }
@@ -573,7 +637,7 @@ func TestRemoveLDCountZero(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	assert.NoError(t, err)
 }
@@ -599,7 +663,7 @@ func TestRemoveLDErrorHTTP(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -631,7 +695,7 @@ func TestRemoveLDErrorHTTPStatus(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -662,7 +726,7 @@ func TestRemoveLDErrorResultCount(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -704,7 +768,7 @@ func TestRemoveLDErrorUnmarshal(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -746,7 +810,7 @@ func TestRemoveLDErrorMarshal(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -786,7 +850,7 @@ func TestRemoveLDErrorHTTP2(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -825,7 +889,7 @@ func TestRemoveLDErrorStatus2(t *testing.T) {
 	client, err := newClient(ngsi, c, false, []string{"broker"})
 	assert.NoError(t, err)
 
-	err = removeLD(c, ngsi, client)
+	err = removeLD(c, ngsi, client, "Thing")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)

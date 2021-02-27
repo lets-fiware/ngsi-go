@@ -50,3 +50,40 @@ OPTIONS:
    --help                     show help (default: false)
    
 ```
+
+#
+# 0010 Create entities
+#
+ngsi create --host orion entity --data '{"id":"thing001","type":"Thing"}'
+ngsi create --host orion entity --data '{"id":"event001","type":"Event"}'
+ngsi create --host orion entity --data '{"id":"device001","type":"Device"}'
+
+#
+# 0011 List types
+#
+ngsi list types
+
+```
+Device
+Event
+Thing
+```
+
+#
+# 0012 rm --type Device,Event,Thing
+#
+ngsi rm --run --type Device,Event,Thing
+
+```
+1
+1
+1
+```
+
+#
+# 0011 List types
+#
+ngsi list types
+
+```
+```

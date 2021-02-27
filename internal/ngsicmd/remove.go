@@ -33,6 +33,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
@@ -51,19 +52,40 @@ func remove(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if client.IsNgsiV2() {
-		if c.IsSet("link") {
-			return &ngsiCmdError{funcName, 3, "can't specify --link option on NGSIv2", nil}
-		}
-		return removeV2(c, ngsi, client)
+	if !c.IsSet("type") {
+		return &ngsiCmdError{funcName, 3, "specify entity type", nil}
 	}
-	return removeLD(c, ngsi, client)
-}
-
-func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
-	const funcName = "removeV2"
 
 	entityType := c.String("type")
+	if entityType == "" {
+		return &ngsiCmdError{funcName, 4, "no entity type", nil}
+	}
+
+	var f func(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entityType string) error
+
+	if client.IsNgsiV2() {
+		if c.IsSet("link") {
+			return &ngsiCmdError{funcName, 5, "can't specify --link option on NGSIv2", nil}
+		}
+		f = removeV2
+	} else {
+		f = removeLD
+	}
+
+	entities := strings.Split(entityType, ",")
+
+	for _, e := range entities {
+		err = f(c, ngsi, client, e)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+	}
+
+	return nil
+}
+
+func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entityType string) error {
+	const funcName = "removeV2"
 
 	limit := 100
 	total := 0
@@ -122,10 +144,8 @@ func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error 
 	return nil
 }
 
-func removeLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func removeLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entityType string) error {
 	const funcName = "removeLD"
-
-	entityType := c.String("type")
 
 	limit := 100
 	total := 0
