@@ -24,3 +24,7 @@ ngsi rm [options]
 ```console
 ngsi rm --host orion --type EvacuationSpace --run
 ```
+
+```console
+ngsi rm --type Device,Event,Thing --run 
+```

@@ -303,7 +303,7 @@ var removeCmd = cli.Command{
 		tokenFlag,
 		tenantFlag,
 		scopeFlag,
-		typeRFlag,
+		typeFlag,
 		runFlag,
 		linkFlag,
 	},
