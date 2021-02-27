@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"io"
@@ -140,24 +141,29 @@ type FileLib interface {
 	ReadAll(r io.Reader) ([]byte, error)
 	ReadFile(filename string) ([]byte, error)
 	SetReader(r io.Reader)
-	File() io.Reader
+	File() bufio.Reader
 }
 
 type fileLib struct {
-	file io.Reader
+	file   *bufio.Reader
+	osFile *os.File
 }
 
-func (f *fileLib) Open(path string) (err error) {
-	f.file, err = os.Open(path)
-	return
+func (f *fileLib) Open(path string) error {
+	osFile, err := os.Open(path)
+	if err != nil {
+		f.file = nil
+		return err
+	}
+	f.file = bufio.NewReader(osFile)
+	return nil
 }
 
 func (f *fileLib) Close() error {
 	if f.file == nil {
 		return nil
 	}
-	file, _ := f.file.(*os.File)
-	err := file.Close()
+	err := f.osFile.Close()
 	f.file = nil
 	return err
 }
@@ -175,11 +181,11 @@ func (f *fileLib) ReadFile(filename string) ([]byte, error) {
 }
 
 func (f *fileLib) SetReader(r io.Reader) {
-	f.file = r
+	f.file = bufio.NewReader(r)
 }
 
-func (f *fileLib) File() io.Reader {
-	return f.file
+func (f *fileLib) File() bufio.Reader {
+	return *f.file
 }
 
 // JSONLib is

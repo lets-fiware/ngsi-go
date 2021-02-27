@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -330,9 +331,9 @@ type MockFileLib struct {
 	ReadFileData      []byte
 	ReadFileError     [5]error
 	rf                int
-	FileError         io.Reader
-	FileError2        io.Reader
-	IoReader          io.Reader
+	FileError         *bufio.Reader
+	FileError2        *bufio.Reader
+	IoReader          *bufio.Reader
 }
 
 func (f *MockFileLib) Open(path string) (err error) {
@@ -381,16 +382,16 @@ func setReadFileError(ngsi *ngsilib.NGSI, p int) {
 }
 
 func (f *MockFileLib) SetReader(r io.Reader) {
-	f.IoReader = r
+	f.IoReader = bufio.NewReader(r)
 }
 
-func (f *MockFileLib) File() io.Reader {
+func (f *MockFileLib) File() bufio.Reader {
 	err := f.FileError
 	f.FileError = f.FileError2
 	if err == nil {
-		return f.IoReader
+		return *f.IoReader
 	}
-	return err
+	return *err
 }
 
 //

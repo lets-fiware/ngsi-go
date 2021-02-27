@@ -44,9 +44,6 @@ func TestBufferOpen(t *testing.T) {
 	if !assert.Equal(t, "[", jsonBuf.delimiter) {
 		t.FailNow()
 	}
-	if !assert.Equal(t, os.Stdout, jsonBuf.writer) {
-		t.FailNow()
-	}
 }
 
 func TestBufferWrite1(t *testing.T) {
@@ -72,8 +69,9 @@ func TestBufferWrite2(t *testing.T) {
 	jsonBuf.bufferWrite([]byte("[xyz]"))
 
 	if assert.Equal(t, []byte("xyz"), jsonBuf.buf) {
+		jsonBuf.bufferClose()
 		actual := buf.String()
-		expected := "[abc"
+		expected := "[abc,xyz]"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -91,8 +89,9 @@ func TestBufferWrite3(t *testing.T) {
 	jsonBuf.bufferWrite(nil)
 
 	if assert.Equal(t, []uint8([]byte(nil)), jsonBuf.buf) {
+		jsonBuf.bufferClose()
 		actual := buf.String()
-		expected := "[abc,xyz"
+		expected := "[abc,xyz]"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()

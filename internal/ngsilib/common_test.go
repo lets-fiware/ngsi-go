@@ -191,7 +191,7 @@ func TestFileLibClose(t *testing.T) {
 
 	err = f.Close()
 
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }
 
 func TestFileLibCloseNil(t *testing.T) {
@@ -209,7 +209,7 @@ func TestFileLibCloseError(t *testing.T) {
 
 	err = f.Close()
 
-	assert.Error(t, err)
+	assert.NoError(t, err)
 }
 
 func TestFileLibFilePathAbs(t *testing.T) {
@@ -239,7 +239,12 @@ func TestFileLibSetReader(t *testing.T) {
 	buf := &bytes.Buffer{}
 	f.SetReader(buf)
 
-	assert.Equal(t, buf, f.file)
+	reader := f.File()
+	_, err := reader.Peek(1)
+
+	if assert.Error(t, err) {
+		assert.Equal(t, "EOF", err.Error())
+	}
 }
 
 func TestFileLibFile(t *testing.T) {
@@ -248,8 +253,11 @@ func TestFileLibFile(t *testing.T) {
 	f.SetReader(buf)
 
 	file := f.File()
+	_, err := file.Peek(1)
 
-	assert.Equal(t, buf, file)
+	if assert.Error(t, err) {
+		assert.Equal(t, "EOF", err.Error())
+	}
 }
 
 func TestJSONLibDecode(t *testing.T) {

@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -59,7 +60,10 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	ngsi := ngsilib.NewNGSI()
 	defer ngsi.Close()
 
-	ngsi.InitLog(stdin, stdout, stderr)
+	bufStdin := bufio.NewReader(stdin)
+	bufStdout := bufio.NewWriter(stdout)
+	ngsi.InitLog(bufStdin, bufStdout, stderr)
+
 	Version = fmt.Sprintf("%s (git_hash:%s)", Version, Revision)
 
 	gNetLib = &netLib{}
@@ -83,6 +87,9 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 		return 1
 	}
 	ngsi.Logging(ngsilib.LogInfo, "normal termination\n")
+
+	_ = bufStdout.Flush()
+
 	return 0
 }
 
