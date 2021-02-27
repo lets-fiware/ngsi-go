@@ -337,6 +337,7 @@ func TestIsNameString(t *testing.T) {
 		{name: "a-________---0", rc: true},
 		{name: "0123", rc: false},
 		{name: "user@fware", rc: true},
+		{name: "user@fware.org", rc: true},
 		{name: "", rc: false},
 		{name: "0_", rc: false},
 		{name: "_", rc: false},
