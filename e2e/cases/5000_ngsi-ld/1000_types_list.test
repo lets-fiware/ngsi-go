@@ -1,0 +1,139 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-LD
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0000 Clean up
+#
+ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
+
+```
+REGEX(.*)
+```
+
+#
+# 0001 list types
+#
+ngsi list types
+
+```
+```
+
+#
+# 0002 list types
+#
+#  Related issues:
+#    https://github.com/FIWARE/context.Orion-LD/issues/732
+#    https://github.com/FIWARE/context.Orion-LD/pull/733
+#
+ngsi list types --pretty
+
+```
+{
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "id": "urn:ngsi-ld:EntityTypeList:REGEX(.*)",
+  "type": "EntityTypeList",
+  "typeList": []
+}
+```
+
+#
+# 0011 Create entity
+#
+ngsi create --host orion-ld entity --link ctx \
+--data '{
+      "id": "urn:ngsi-ld:TemperatureSensor:001",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 25,
+            "unitCode": "CEL"
+      }
+}'
+
+```
+```
+#
+# 0012 Get Entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
+
+```
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "category": {
+    "type": "Property",
+    "value": "sensor"
+  },
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  }
+}
+```
+
+#
+# 0013 list types
+#
+ngsi list types
+
+```
+https://uri.fiware.org/ns/data-models#TemperatureSensor
+```
+
+#
+# 0014 list types --pretty
+#
+ngsi list types --pretty
+
+```
+{
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "id": "urn:ngsi-ld:EntityTypeList:REGEX(.*)",
+  "type": "EntityTypeList",
+  "typeList": [
+    "https://uri.fiware.org/ns/data-models#TemperatureSensor"
+  ]
+}
+```
+
+#
+# 9999 Clean up
+#
+ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
+
+```
+REGEX(.*)
+```
+

@@ -160,11 +160,6 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	} else if c.IsSet("json") {
 		fmt.Fprintln(ngsi.StdWriter, string(body))
 	} else {
-		// https://github.com/FIWARE/context.Orion-LD/issues/732
-		if len(body) == 2 && string(body) == "[]" { // tentatively
-			fmt.Fprintln(ngsi.StdWriter, "{}")
-			return nil
-		}
 		var list entityTypeList
 		err := ngsilib.JSONUnmarshal(body, &list)
 		if err != nil {
