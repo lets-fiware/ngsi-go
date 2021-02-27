@@ -2,6 +2,9 @@
   "version": "1",
   "contexts": {
     "etsi": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld",
+    "etsi1.0":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "etsi1.3":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld",
+    "etsi1.4":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.4.jsonld",
     "ld": "https://schema.lab.fiware.org/ld/context"
   },
   "servers": {
