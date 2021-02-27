@@ -30,18 +30,19 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 )
 
 type jsonBuffer struct {
-	writer    io.Writer
+	writer    *bufio.Writer
 	buf       []byte
 	delimiter string
 }
 
 func (j *jsonBuffer) bufferOpen(w io.Writer) {
-	j.writer = w
+	j.writer = bufio.NewWriter(w)
 	j.delimiter = "["
 }
 
@@ -65,4 +66,5 @@ func (j *jsonBuffer) bufferClose() {
 	if j.delimiter != "[" {
 		fmt.Fprint(j.writer, "]")
 	}
+	_ = j.writer.Flush()
 }

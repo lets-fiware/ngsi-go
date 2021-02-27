@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"bufio"
 	"bytes"
 	"io"
 	"net/http"
@@ -249,8 +250,8 @@ type MockFileLib struct {
 	filePathAbsError error
 	readFile         []byte
 	readFileError    error
-	fileError        io.Reader
-	fileError2       io.Reader
+	fileError        bufio.Reader
+	fileError2       bufio.Reader
 }
 
 func (f *MockFileLib) Open(path string) (err error) {
@@ -285,7 +286,7 @@ func (f *MockFileLib) ReadFile(filename string) ([]byte, error) {
 func (f *MockFileLib) SetReader(r io.Reader) {
 }
 
-func (f *MockFileLib) File() io.Reader {
+func (f *MockFileLib) File() bufio.Reader {
 	r := f.fileError
 	f.fileError = f.fileError2
 	return r
