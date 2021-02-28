@@ -112,17 +112,17 @@ It's a powerful tool and easy to use. It has various features as shown:
 
 ## Keyrock
 
--   [users](users.md): manage users
--   [organizations](organizations.md): manage organizations for Keyrock
-    -   [users](organizations-users.md): manage users of an organization for Keyrock
--   [applications](applications.md): manage applications for Keyrock
-    -   [roles](applications-roles.md): manage roles
-    -   [permissions](applications-permissions.md): manage permissions
-    -   [organizations](applications-organizations.md): mange organizations in an application
-    -   [pep-proxies](applications-pep-proxies.md): mange PEP Proxies
-    -   [iot-agent](applications-iot-agent.md): maage IoT Agents
-    -   [trusted-applications.md](applications-trusted-applications.md): manage trusted applications
--   [providers](providers.md): print service providers for Keyrock
+-   [users](keyrock/users.md): manage users
+-   [organizations](keyrock/organizations.md): manage organizations for Keyrock
+    -   [users](keyrock/organizations-users.md): manage users of an organization for Keyrock
+-   [applications](keyrock/applications.md): manage applications for Keyrock
+    -   [roles](keyrock/applications-roles.md): manage roles
+    -   [permissions](keyrock/applications-permissions.md): manage permissions
+    -   [organizations](keyrock/applications-organizations.md): mange organizations in an application
+    -   [pep-proxies](keyrock/applications-pep-proxies.md): mange PEP Proxies
+    -   [iot-agent](keyrock/applications-iot-agent.md): maage IoT Agents
+    -   [trusted-applications.md](keyrock/applications-trusted-applications.md): manage trusted applications
+-   [providers](keyrock/providers.md): print service providers for Keyrock
 
 ### Management
 
