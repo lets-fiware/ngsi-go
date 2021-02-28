@@ -375,6 +375,84 @@ func TestEntitiesListErrorNewClient(t *testing.T) {
 	}
 }
 
+func TestEntitiesListErrorLDTypePattern(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type,typePattern")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--typePattern=Device"})
+
+	err := entitiesList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "cannot specfiy typePattern, mq or metadata", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListErrorLDTypeMq(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type,mq")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--mq=Device"})
+
+	err := entitiesList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "cannot specfiy typePattern, mq or metadata", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListErrorLDTypeMetaData(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type,metadata")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--metadata=Device"})
+
+	err := entitiesList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "cannot specfiy typePattern, mq or metadata", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntitiesListErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -393,7 +471,7 @@ func TestEntitiesListErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -418,7 +496,7 @@ func TestEntitiesListErrorHTTPStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
@@ -442,7 +520,7 @@ func TestEntitiesListErrorResultsCount1(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -466,7 +544,7 @@ func TestEntitiesListErrorResultsCount2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -493,7 +571,7 @@ func TestEntitiesListErrorVerboseSafeString(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character ':' after array element (5) [\"id\":\"airqualityobs", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -521,7 +599,7 @@ func TestEntitiesListErrorVerboseLinesValues(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -549,7 +627,7 @@ func TestEntitiesListErrorVerboseLinesValues2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -577,7 +655,7 @@ func TestEntitiesListErrorVerboseLines(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 10, ngsiErr.ErrNo)
+		assert.Equal(t, 11, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -605,7 +683,7 @@ func TestEntitiesListErrorVerboseLines2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 11, ngsiErr.ErrNo)
+		assert.Equal(t, 12, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()

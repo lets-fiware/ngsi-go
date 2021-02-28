@@ -52,7 +52,14 @@ func entitiesList(c *cli.Context) error {
 	}
 
 	attrs := "__NONE"
+	idPattern := ""
 	if client.IsNgsiLd() {
+		if isSetOR(c, []string{"typePattern", "mq", "metadata"}) {
+			return &ngsiCmdError{funcName, 3, "cannot specfiy typePattern, mq or metadata", nil}
+		}
+		if !isSetOR(c, []string{"type", "idPattern", "query", "attrs", "georel"}) {
+			idPattern = ".*"
+		}
 		attrs = ""
 	}
 	if c.IsSet("attrs") {
@@ -90,6 +97,9 @@ func entitiesList(c *cli.Context) error {
 		if attrs != "" {
 			v.Set("attrs", attrs)
 		}
+		if idPattern != "" {
+			v.Set("idPattern", idPattern)
+		}
 		if c.IsSet("count") {
 			if client.IsNgsiLd() {
 				v.Set("limit", "0")
@@ -117,16 +127,16 @@ func entitiesList(c *cli.Context) error {
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return &ngsiCmdError{funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 		}
 
 		if c.IsSet("count") {
 			count, err := client.ResultsCount(res)
 			if err != nil {
-				return &ngsiCmdError{funcName, 5, "ResultsCount error", nil}
+				return &ngsiCmdError{funcName, 6, "ResultsCount error", nil}
 			}
 			fmt.Fprintln(ngsi.StdWriter, count)
 			break
@@ -134,7 +144,7 @@ func entitiesList(c *cli.Context) error {
 
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, "ResultsCount error", err}
+			return &ngsiCmdError{funcName, 7, "ResultsCount error", err}
 		}
 		if count == 0 {
 			break
@@ -143,7 +153,7 @@ func entitiesList(c *cli.Context) error {
 		if client.IsSafeString() {
 			body, err = ngsilib.JSONSafeStringDecode(body)
 			if err != nil {
-				return &ngsiCmdError{funcName, 7, err.Error(), err}
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
 			}
 		}
 
@@ -152,12 +162,12 @@ func entitiesList(c *cli.Context) error {
 				var values [][]interface{}
 				err = ngsilib.JSONUnmarshal(body, &values)
 				if err != nil {
-					return &ngsiCmdError{funcName, 8, err.Error(), err}
+					return &ngsiCmdError{funcName, 9, err.Error(), err}
 				}
 				for _, e := range values {
 					b, err := ngsilib.JSONMarshal(&e)
 					if err != nil {
-						return &ngsiCmdError{funcName, 9, err.Error(), err}
+						return &ngsiCmdError{funcName, 10, err.Error(), err}
 					}
 					fmt.Fprintln(ngsi.StdWriter, string(b))
 				}
@@ -165,12 +175,12 @@ func entitiesList(c *cli.Context) error {
 				var entities entitiesRespose
 				err = ngsilib.JSONUnmarshal(body, &entities)
 				if err != nil {
-					return &ngsiCmdError{funcName, 10, err.Error(), err}
+					return &ngsiCmdError{funcName, 11, err.Error(), err}
 				}
 				for _, e := range entities {
 					b, err := ngsilib.JSONMarshal(&e)
 					if err != nil {
-						return &ngsiCmdError{funcName, 11, err.Error(), err}
+						return &ngsiCmdError{funcName, 12, err.Error(), err}
 					}
 					fmt.Fprintln(ngsi.StdWriter, string(b))
 				}
