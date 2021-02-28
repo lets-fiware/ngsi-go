@@ -43,13 +43,19 @@ The NGSI Go is a command-line interface supporting FIWARE Open APIs, which simpl
 It's a powerful tool and easy to use. It has various features as shown:
 
 -   Supported FIWARE Open APIs
-    - FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) APIs
-    - [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) APIs
-    - [STH-Comet APIs](https://github.com/telefonicaid/fiware-sth-comet)
-    - [QuantumLeap APIs](https://github.com/orchestracities/ngsi-timeseries-api)
+    -   FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) API
+    -   [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) API
+    -   [STH-Comet](https://github.com/telefonicaid/fiware-sth-comet) API
+    -   [QuantumLeap](https://github.com/orchestracities/ngsi-timeseries-api) API
+    -   [Cygnus](https://github.com/telefonicaid/fiware-cygnus/blob/master/doc/cygnus-common/installation_and_administration_guide/management_interface_v1.md) API
+    -   [IoT Agent](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib) Provision API
+    -   [Perseo](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md) API
+    -   [Keyrock](https://github.com/ging/fiware-idm/blob/master/apiary.apib) API
 -   Various convenience commands
     -   NGSI commands to manage NGSI Entity, subscription, registration and so on
     -   Time series commands to manage historical data
+    -   IoT Agent commands to manage IoT Agent Provision APIs
+    -   Rules commands to manage Context-Aware CEP
     -   Convenience commands
         -   Print version, health-check status and API lists of FIWARE GEs
         -   Admin command for FIWARE Orion
@@ -122,12 +128,12 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.6.0 (git_hash:7478e2622d5cb8a6075e2d8700b2de719996c86d)
+   0.7.0 (git_hash:a5885d223bdac4c5b3aba9c430eaa10c8584e161)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
    CONVENIENCE:
-     admin     admin command for FIWARE Orion
+     admin     admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
      apis      print endpoints of API
      cp        copy entities
      wc        print number of entities, subscriptions, registrations or types
@@ -138,6 +144,16 @@ COMMANDS:
      receiver  notification receiver
      template  create template of subscription or registration
      version   print the version
+   Context-Aware CEP:
+     rules  rules command for PERSEO
+   IoT Agent:
+     devices   manage devices for IoT Agent
+     services  manage services for IoT Agent
+   Keyrock:
+     applications   manage applications for Keyrock
+     users          manage users for Keyrock
+     organizations  manage organizations for Keyrock
+     providers      print service providers for Keyrock
    MANAGEMENT:
      broker    manage config for broker
      context   manage @context
@@ -153,6 +169,9 @@ COMMANDS:
      replace  replace entities or attributes
      update   update entities, attribute(s) or subscription
      upsert   upsert entity or entities
+   PERSISTING CONTEXT DATA:
+     namemappings   manage namemappings for Cygnus
+     groupingrules  manage groupingrules for Cygnus
    TIME SERIES:
      hdelete  delete historical raw and aggregated time series context information
      hget     get historical raw and aggregated time series context information
@@ -184,18 +203,20 @@ The NGSI Go binary is installed in `/usr/local/bin`.
 #### Installation on Linux
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.6.0/ngsi-v0.6.0-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.6.0-linux-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.7.0/ngsi-v0.7.0-linux-amd64.tar.gz
+sudo tar zxvf ngsi-v0.7.0-linux-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.6.0-linux-arm.tar.gz` and `ngsi-v0.6.0-linux-arm64.tar.gz` binaries are also available.
+`ngsi-v0.7.0-linux-arm.tar.gz` and `ngsi-v0.7.0-linux-arm64.tar.gz` binaries are also available.
 
 #### Installation on Mac
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.6.0/ngsi-v0.6.0-darwin-amd64.tar.gz
-sudo tar zxvf ngsi-v0.6.0-darwin-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.7.0/ngsi-v0.7.0-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.7.0-darwin-amd64.tar.gz -C /usr/local/bin
 ```
+
+`ngsi-v0.7.0-darwin-arm64.tar.gz` binary is also available.
 
 ### Install bash autocomplete file for NGSI Go
 

@@ -42,12 +42,12 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.6.0 (git_hash:7478e2622d5cb8a6075e2d8700b2de719996c86d)
+   0.7.0 (git_hash:a5885d223bdac4c5b3aba9c430eaa10c8584e161)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
    CONVENIENCE:
-     admin     admin command for FIWARE Orion
+     admin     admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
      apis      print endpoints of API
      cp        copy entities
      wc        print number of entities, subscriptions, registrations or types
@@ -58,6 +58,16 @@ COMMANDS:
      receiver  notification receiver
      template  create template of subscription or registration
      version   print the version
+   Context-Aware CEP:
+     rules  rules command for PERSEO
+   IoT Agent:
+     devices   manage devices for IoT Agent
+     services  manage services for IoT Agent
+   Keyrock:
+     applications   manage applications for Keyrock
+     users          manage users for Keyrock
+     organizations  manage organizations for Keyrock
+     providers      print service providers for Keyrock
    MANAGEMENT:
      broker    manage config for broker
      context   manage @context
@@ -73,6 +83,9 @@ COMMANDS:
      replace  replace entities or attributes
      update   update entities, attribute(s) or subscription
      upsert   upsert entity or entities
+   PERSISTING CONTEXT DATA:
+     namemappings   manage namemappings for Cygnus
+     groupingrules  manage groupingrules for Cygnus
    TIME SERIES:
      hdelete  delete historical raw and aggregated time series context information
      hget     get historical raw and aggregated time series context information
@@ -99,5 +112,5 @@ ngsi --version
 ```
 
 ```text
-ngsi version 0.6.0 (git_hash:7478e2622d5cb8a6075e2d8700b2de719996c86d)
+ngsi version 0.7.0 (git_hash:a5885d223bdac4c5b3aba9c430eaa10c8584e161)
 ```
