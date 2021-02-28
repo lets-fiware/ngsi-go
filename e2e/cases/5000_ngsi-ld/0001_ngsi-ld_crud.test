@@ -257,6 +257,8 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --sysAttrs -P
 #
 # 0008 Read an Attribute from a Data Entity
 #
+#  Related issue: https://github.com/FIWARE/context.Orion-LD/issues/735
+#
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 --attrs temperature -P
 
 ```

@@ -96,7 +96,7 @@ func TestTypesListLDEmpty(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/types"
-	reqRes.ResBody = []byte(`[]`)
+	reqRes.ResBody = []byte("{\n\"@context\": \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\",\n\"id\": \"urn:ngsi-ld:EntityTypeList:b6c79274-78c4-11eb-a948-0242ac12000f\",\n\"type\": \"EntityTypeList\",\n\"typeList\": []\n}")
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -109,7 +109,34 @@ func TestTypesListLDEmpty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{}\n"
+		expected := ""
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestTypesListLDEmptyPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/types"
+	reqRes.ResBody = []byte("{\n\"@context\": \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\",\n\"id\": \"urn:ngsi-ld:EntityTypeList:b6c79274-78c4-11eb-a948-0242ac12000f\",\n\"type\": \"EntityTypeList\",\n\"typeList\": []\n}")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,link")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--link=etsi", "--pretty"})
+
+	err := typesList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"@context\": \"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\",\n  \"id\": \"urn:ngsi-ld:EntityTypeList:b6c79274-78c4-11eb-a948-0242ac12000f\",\n  \"type\": \"EntityTypeList\",\n  \"typeList\": []\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
