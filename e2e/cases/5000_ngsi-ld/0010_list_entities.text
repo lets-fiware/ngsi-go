@@ -310,7 +310,7 @@ ngsi list entities --idPattern "urn:ngsi-ld:TemperatureSensor:.*3" --link ctx --
 ngsi list --host orion-ld entities --typePattern TemperatureSensor
 
 ```1
-entitiesList003 cannot specfiy typePattern, mq or metadata
+entitiesList003 cannot specfiy typePattern, mq, metadata, value or uniq
 ```
 
 #
@@ -319,7 +319,7 @@ entitiesList003 cannot specfiy typePattern, mq or metadata
 ngsi list --host orion-ld entities --mq unit 
 
 ```1
-entitiesList003 cannot specfiy typePattern, mq or metadata
+entitiesList003 cannot specfiy typePattern, mq, metadata, value or uniq
 ```
 
 
@@ -329,7 +329,7 @@ entitiesList003 cannot specfiy typePattern, mq or metadata
 ngsi list --host orion-ld entities --metadata unit
 
 ```1
-entitiesList003 cannot specfiy typePattern, mq or metadata
+entitiesList003 cannot specfiy typePattern, mq, metadata, value or uniq
 ```
 
 #

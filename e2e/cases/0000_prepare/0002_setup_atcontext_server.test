@@ -728,3 +728,74 @@ ngsi context list --name japanese
 ```
 http://atcontext:8000/japanese.json
 ```
+
+#
+# 0031 http post ${atcontext}/test-context.jsonld
+#
+# Porting of https://context.lab.letsfiware.jp/test-context.jsonld
+
+http post ${atcontext}/test-context.jsonld \
+--data '{
+  "@context": {
+
+    "type": "@type",
+    "id": "@id",
+    "ngsi-ld": "https://uri.etsi.org/ngsi-ld/",
+    "letsfiware": "https://context.lab.letsfiware.jp/dataset#",
+    "fiware": "https://uri.fiware.org/ns/data-models#",
+    "schema": "https://schema.org/",
+    "Building": "fiware:Building",
+    "Sensor": "https://w3id.org/saref#Sensor",
+    "temperature": "https://w3id.org/saref#temperature",
+    "name": "letsfiware:name",
+    "名前": "letsfiware:名前",
+    "ｎａｍｅ": "letsfiware:ｎａｍｅ",
+
+    "@vocab": "https://uri.etsi.org/ngsi-ld/default-context/"
+  }
+}'
+
+#
+# 0032 http get ${atcontext}/test-context.jsonld
+#
+
+http get ${atcontext}/test-context.jsonld
+
+```
+{
+  "@context": {
+
+    "type": "@type",
+    "id": "@id",
+    "ngsi-ld": "https://uri.etsi.org/ngsi-ld/",
+    "letsfiware": "https://context.lab.letsfiware.jp/dataset#",
+    "fiware": "https://uri.fiware.org/ns/data-models#",
+    "schema": "https://schema.org/",
+    "Building": "fiware:Building",
+    "Sensor": "https://w3id.org/saref#Sensor",
+    "temperature": "https://w3id.org/saref#temperature",
+    "name": "letsfiware:name",
+    "名前": "letsfiware:名前",
+    "ｎａｍｅ": "letsfiware:ｎａｍｅ",
+
+    "@vocab": "https://uri.etsi.org/ngsi-ld/default-context/"
+  }
+}
+```
+
+#
+# 0033 ngsi context add --name test
+#
+ngsi context add --name test --url ${atcontext}/test-context.jsonld
+
+```
+```
+
+#
+# 0034 ngsi context list --name test 
+#
+ngsi context list --name test 
+
+```
+http://atcontext:8000/test-context.jsonld
+```
