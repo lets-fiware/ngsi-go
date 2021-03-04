@@ -37,6 +37,131 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func TestEntitiesListLDMain(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--count"})
+
+	err := entitiesList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "8\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListV2Main(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entities"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--count"})
+
+	err := entitiesList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "9\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListErrorInitCmd(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	c := cli.NewContext(app, set, nil)
+
+	err := entitiesList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListErrorNewClient(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--link=abc"})
+
+	err := entitiesList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "abc not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListErrorLDParam(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,typePattern")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--typePattern=Thing.*"})
+
+	err := entitiesList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "cannot specfiy typePattern, mq, metadata, value or uniq", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListErrorV2Param(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "acceptJson")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--acceptJson"})
+
+	err := entitiesList(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "cannot specfiy link or acceptJson", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntitiesListCountV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -47,12 +172,18 @@ func TestEntitiesListCountV2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "count")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--count"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -75,13 +206,18 @@ func TestEntitiesListCountV2AttrNone(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "count")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--count"})
 
-	err := entitiesList(c)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -92,33 +228,7 @@ func TestEntitiesListCountV2AttrNone(t *testing.T) {
 	}
 }
 
-func TestEntitiesListCountLD(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/ngsi-ld/v1/entities"
-	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"8"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
-	setupFlagBool(set, "count")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--count"})
-	err := entitiesList(c)
-
-	if assert.NoError(t, err) {
-		actual := buf.String()
-		expected := "8\n"
-		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestEntitiesList(t *testing.T) {
+func TestEntitiesListV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -129,12 +239,18 @@ func TestEntitiesList(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "acceptJson")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--acceptJson"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -145,7 +261,7 @@ func TestEntitiesList(t *testing.T) {
 	}
 }
 
-func TestEntitiesListAttrNone(t *testing.T) {
+func TestEntitiesListV2AttrNone(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -158,13 +274,18 @@ func TestEntitiesListAttrNone(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "acceptJson")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--acceptJson"})
 
-	err := entitiesList(c)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -175,7 +296,7 @@ func TestEntitiesListAttrNone(t *testing.T) {
 	}
 }
 
-func TestEntitiesListPage(t *testing.T) {
+func TestEntitiesListV2Page(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes1 := MockHTTPReqRes{}
@@ -192,11 +313,17 @@ func TestEntitiesListPage(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	mock.ReqRes = append(mock.ReqRes, reqRes2)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
+	setupFlagString(set, "host,type")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -207,7 +334,7 @@ func TestEntitiesListPage(t *testing.T) {
 	}
 }
 
-func TestEntitiesListVerbose(t *testing.T) {
+func TestEntitiesListV2Verbose(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -218,12 +345,18 @@ func TestEntitiesListVerbose(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs")
 	setupFlagBool(set, "verbose")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--verbose", "--attrs=temperature"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -234,7 +367,7 @@ func TestEntitiesListVerbose(t *testing.T) {
 	}
 }
 
-func TestEntitiesListVerbosePretty(t *testing.T) {
+func TestEntitiesListV2VerbosePretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -245,12 +378,18 @@ func TestEntitiesListVerbosePretty(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs")
 	setupFlagBool(set, "verbose,pretty")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--verbose", "--attrs=temperature", "--pretty"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -261,7 +400,7 @@ func TestEntitiesListVerbosePretty(t *testing.T) {
 	}
 }
 
-func TestEntitiesListVerboseLines(t *testing.T) {
+func TestEntitiesListV2VerboseLines(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -272,12 +411,18 @@ func TestEntitiesListVerboseLines(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs")
 	setupFlagBool(set, "verbose,lines")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--verbose", "--lines", "--attrs=temperature"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -288,7 +433,7 @@ func TestEntitiesListVerboseLines(t *testing.T) {
 	}
 }
 
-func TestEntitiesListValues(t *testing.T) {
+func TestEntitiesListV2Values(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -299,12 +444,18 @@ func TestEntitiesListValues(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs")
 	setupFlagBool(set, "verbose,values")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--values", "--attrs=temperature"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -315,7 +466,7 @@ func TestEntitiesListValues(t *testing.T) {
 	}
 }
 
-func TestEntitiesListValuesLines(t *testing.T) {
+func TestEntitiesListV2ValuesLines(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -326,12 +477,18 @@ func TestEntitiesListValuesLines(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs")
 	setupFlagBool(set, "verbose,values,lines")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--values", "--lines", "--attrs=temperature"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
@@ -342,143 +499,38 @@ func TestEntitiesListValuesLines(t *testing.T) {
 	}
 }
 
-func TestEntitiesListErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
+func TestEntitiesListV2ErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
 
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
 	c := cli.NewContext(app, set, nil)
-	err := entitiesList(c)
+	_ = set.Parse([]string{"--host=orion", "--type=Device"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestEntitiesListErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--link=abc"})
-	err := entitiesList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestEntitiesListErrorLDTypePattern(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/ngsi-ld/v1/entities"
-	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,type,typePattern")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--typePattern=Device"})
-
-	err := entitiesList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "cannot specfiy typePattern, mq or metadata", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestEntitiesListErrorLDTypeMq(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/ngsi-ld/v1/entities"
-	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,type,mq")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--mq=Device"})
-
-	err := entitiesList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "cannot specfiy typePattern, mq or metadata", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestEntitiesListErrorLDTypeMetaData(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/ngsi-ld/v1/entities"
-	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,type,metadata")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--metadata=Device"})
-
-	err := entitiesList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "cannot specfiy typePattern, mq or metadata", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestEntitiesListErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/ngsi-ld/v1/entities"
-	reqRes.ResHeader = http.Header{"Ngsild-Results-List": []string{"8"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=Device"})
-	err := entitiesList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorHTTPStatus(t *testing.T) {
+func TestEntitiesListV2ErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -488,21 +540,27 @@ func TestEntitiesListErrorHTTPStatus(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
+	setupFlagString(set, "host,type")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=Device"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorResultsCount1(t *testing.T) {
+func TestEntitiesListV2ErrorResultsCount1(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -511,23 +569,29 @@ func TestEntitiesListErrorResultsCount1(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type")
 	setupFlagBool(set, "count")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=Device", "--count"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorResultsCount2(t *testing.T) {
+func TestEntitiesListV2ErrorResultsCount2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -536,22 +600,53 @@ func TestEntitiesListErrorResultsCount2(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
+	setupFlagString(set, "host,type")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--type=Device"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorVerboseSafeString(t *testing.T) {
+func TestEntitiesListV2ResultsCount3(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entities"
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--type=Device"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
+
+	assert.NoError(t, err)
+}
+
+func TestEntitiesListV2ErrorVerboseSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -562,23 +657,29 @@ func TestEntitiesListErrorVerboseSafeString(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs,safeString")
 	setupFlagBool(set, "verbose")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--verbose", "--attrs=temperature"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character ':' after array element (5) [\"id\":\"airqualityobs", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorVerboseLinesValues(t *testing.T) {
+func TestEntitiesListV2ErrorVerboseLinesValues(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setJSONDecodeErr(ngsi, 1)
@@ -590,114 +691,172 @@ func TestEntitiesListErrorVerboseLinesValues(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs")
 	setupFlagBool(set, "verbose,lines,values")
-
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--values", "--verbose", "--lines", "--attrs=temperature"})
-	err := entitiesList(c)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListV2(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorVerboseLinesValues2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+func TestEntitiesListCountLD(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
 
-	setJSONEncodeErr(ngsi, 2)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
-	reqRes.ResBody = []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"8"}}
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type,attrs")
-	setupFlagBool(set, "verbose,lines,values")
 
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--values", "--verbose", "--lines", "--attrs=temperature"})
-	err := entitiesList(c)
+	_ = set.Parse([]string{"--host=orion-ld", "--count"})
 
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 10, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "8\n"
+		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorVerboseLines(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+func TestEntitiesListLD(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
 
-	setJSONDecodeErr(ngsi, 1)
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
-	reqRes.ResBody = []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"9"}}
+	reqRes.ResBody = []byte(`[{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type,attrs")
-	setupFlagBool(set, "verbose,lines")
 
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "acceptJson")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--verbose", "--lines", "--attrs=temperature"})
-	err := entitiesList(c)
+	_ = set.Parse([]string{"--host=orion-ld", "--acceptJson"})
 
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 11, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "urn:ngsi-ld:TemperatureSensor:001\nurn:ngsi-ld:TemperatureSensor:002\nurn:ngsi-ld:TemperatureSensor:003\n"
+		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorVerboseLines2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+func TestEntitiesListLDPage(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
 
-	setJSONEncodeErr(ngsi, 2)
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.Path = "/ngsi-ld/v1/entities"
+	reqRes1.ResHeader = http.Header{"Ngsild-Results-Count": []string{"102"}}
+	reqRes1.ResBody = []byte(`[{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.Path = "/ngsi-ld/v1/entities"
+	reqRes2.ResHeader = http.Header{"Ngsild-Results-Count": []string{"102"}}
+	reqRes2.ResBody = []byte(`[{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"https://uri.fiware.org/ns/data-models#TemperatureSensor","https://uri.fiware.org/ns/data-models#category":{"type":"Property","value":"sensor"},"https://w3id.org/saref#temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "urn:ngsi-ld:TemperatureSensor:001\nurn:ngsi-ld:TemperatureSensor:002\nurn:ngsi-ld:TemperatureSensor:003\nurn:ngsi-ld:TemperatureSensor:001\nurn:ngsi-ld:TemperatureSensor:002\nurn:ngsi-ld:TemperatureSensor:003\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDVerbose(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
-	reqRes.ResBody = []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
+	reqRes.ResBody = []byte(`[{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"TemperatureSensor","temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
+
 	setupFlagString(set, "host,type,attrs")
-	setupFlagBool(set, "verbose,lines")
-
+	setupFlagBool(set, "verbose")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--verbose", "--lines", "--attrs=temperature"})
-	err := entitiesList(c)
+	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--attrs=temperature"})
 
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 12, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "[{\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"}},{\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"id\":\"urn:ngsi-ld:TemperatureSensor:002\",\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":26,\"unitCode\":\"CEL\"}},{\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"id\":\"urn:ngsi-ld:TemperatureSensor:003\",\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":27,\"unitCode\":\"CEL\"}}]"
+		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorVerbosePretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+func TestEntitiesListLDVerbosePretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
-	reqRes.ResBody = []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
+	reqRes.ResBody = []byte(`[{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"TemperatureSensor","temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -705,65 +864,526 @@ func TestEntitiesListErrorVerbosePretty(t *testing.T) {
 	setupFlagString(set, "host,type,attrs")
 	setupFlagBool(set, "verbose,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--verbose", "--attrs=temperature", "--pretty"})
+	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--attrs=temperature", "--pretty"})
 
-	setJSONIndentError(ngsi)
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
 
-	err := entitiesList(c)
+	err = entitiesListLD(c, ngsi, client)
 
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 12, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "[\n  {\n    \"@context\": \"http://atcontext:8000/ngsi-context.jsonld\",\n    \"id\": \"urn:ngsi-ld:TemperatureSensor:001\",\n    \"type\": \"TemperatureSensor\",\n    \"temperature\": {\n      \"type\": \"Property\",\n      \"value\": 25,\n      \"unitCode\": \"CEL\"\n    }\n  },\n  {\n    \"@context\": \"http://atcontext:8000/ngsi-context.jsonld\",\n    \"id\": \"urn:ngsi-ld:TemperatureSensor:002\",\n    \"type\": \"TemperatureSensor\",\n    \"temperature\": {\n      \"type\": \"Property\",\n      \"value\": 26,\n      \"unitCode\": \"CEL\"\n    }\n  },\n  {\n    \"@context\": \"http://atcontext:8000/ngsi-context.jsonld\",\n    \"id\": \"urn:ngsi-ld:TemperatureSensor:003\",\n    \"type\": \"TemperatureSensor\",\n    \"temperature\": {\n      \"type\": \"Property\",\n      \"value\": 27,\n      \"unitCode\": \"CEL\"\n    }\n  }\n]"
+		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorUnmarshal(t *testing.T) {
+func TestEntitiesListLDVerboseLines(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
+	reqRes.ResBody = []byte(`[{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"TemperatureSensor","temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type,attrs")
+	setupFlagBool(set, "verbose,lines,keyValues")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--lines", "--attrs=temperature", "--keyValues"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"temperature\":{\"type\":\"Property\",\"unitCode\":\"CEL\",\"value\":25},\"type\":\"TemperatureSensor\"}\n{\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"id\":\"urn:ngsi-ld:TemperatureSensor:002\",\"temperature\":{\"type\":\"Property\",\"unitCode\":\"CEL\",\"value\":26},\"type\":\"TemperatureSensor\"}\n{\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"id\":\"urn:ngsi-ld:TemperatureSensor:003\",\"temperature\":{\"type\":\"Property\",\"unitCode\":\"CEL\",\"value\":27},\"type\":\"TemperatureSensor\"}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--type=Device"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDErrorHTTPStatus(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"8"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--type=Device"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDErrorResultsCount1(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--type=Device", "--count"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDErrorResultsCount2(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--type=Device"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDResultsCount3(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"0"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--type=Device"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	assert.NoError(t, err)
+}
+
+func TestEntitiesListLDErrorVerboseSafeString(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
+	reqRes.ResBody = []byte(`[{@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"TemperatureSensor","temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type,attrs,safeString")
+	setupFlagBool(set, "verbose")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--verbose", "--attrs=temperature"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "invalid character '@' (2) [{@context\":\"http", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDErrorEntitiesPrint(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setJSONDecodeErr(ngsi, 1)
+
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
-	reqRes.ResBody = []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
+	reqRes.ResBody = []byte(`[{@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","temperature":{"type":"Property","value":26,"unitCode":"CEL"}},{"@context":"http://atcontext:8000/ngsi-context.jsonld","id":"urn:ngsi-ld:TemperatureSensor:003","type":"TemperatureSensor","temperature":{"type":"Property","value":27,"unitCode":"CEL"}}]`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
+	setupFlagString(set, "host,type,attrs")
+	setupFlagBool(set, "verbose,lines")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := entitiesList(c)
+	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--lines", "--attrs=temperature"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 13, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
 }
 
-func TestEntitiesListErrorResultsCount3(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+func TestEntitiesPrint(t *testing.T) {
+	ngsi, _, _, buffer := setupTest()
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
+	pretty := false
+	lines := false
+	values := false
+	verbose := false
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=Device"})
-	err := entitiesList(c)
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
 
-	assert.NoError(t, err)
+	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.NoError(t, err) {
+		actual := buffer.String()
+		expected := "airqualityobserved_0\nairqualityobserved_1\nairqualityobserved_2\nairqualityobserved_3\nairqualityobserved_4\nairqualityobserved_5\nairqualityobserved_6\nairqualityobserved_7\nairqualityobserved_8\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintLinesValues(t *testing.T) {
+	ngsi, _, _, buffer := setupTest()
+
+	pretty := false
+	lines := true
+	values := true
+	verbose := false
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.NoError(t, err) {
+		actual := buffer.String()
+		expected := "[10.148599472]\n[14.627960669]\n[-2.461631059]\n[-15.999248065]\n[-4.553473866]\n[1.147149609]\n[1.003624237]\n[11.747977585]\n[-4.264932072]\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintVerbosePretty(t *testing.T) {
+	ngsi, _, _, buffer := setupTest()
+
+	pretty := true
+	lines := false
+	values := false
+	verbose := true
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	buf.bufferClose()
+
+	if assert.NoError(t, err) {
+		actual := buffer.String()
+		expected := "[\n  {\n    \"id\": \"airqualityobserved_0\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": 6.727447926,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_1\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": 19.012560208,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_2\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": -3.196384014,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_3\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": 7.992932652,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_4\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": -6.620346091,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_5\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": -16.634766746,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_6\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": 20.263618173,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_7\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": 14.285382467,\n      \"metadata\": {}\n    }\n  },\n  {\n    \"id\": \"airqualityobserved_8\",\n    \"type\": \"AirQualityObserved\",\n    \"temperature\": {\n      \"type\": \"Number\",\n      \"value\": 6.998595286,\n      \"metadata\": {}\n    }\n  }\n]"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintVerbose(t *testing.T) {
+	ngsi, _, _, buffer := setupTest()
+
+	pretty := false
+	lines := false
+	values := false
+	verbose := true
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	buf.bufferClose()
+
+	if assert.NoError(t, err) {
+		actual := buffer.String()
+		expected := "[{\"id\":\"airqualityobserved_0\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":6.727447926,\"metadata\":{}}},{\"id\":\"airqualityobserved_1\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":19.012560208,\"metadata\":{}}},{\"id\":\"airqualityobserved_2\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":-3.196384014,\"metadata\":{}}},{\"id\":\"airqualityobserved_3\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":7.992932652,\"metadata\":{}}},{\"id\":\"airqualityobserved_4\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":-6.620346091,\"metadata\":{}}},{\"id\":\"airqualityobserved_5\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":-16.634766746,\"metadata\":{}}},{\"id\":\"airqualityobserved_6\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":20.263618173,\"metadata\":{}}},{\"id\":\"airqualityobserved_7\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":14.285382467,\"metadata\":{}}},{\"id\":\"airqualityobserved_8\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":6.998595286,\"metadata\":{}}}]"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintErrorVerboseLinesValuesDecode(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	pretty := false
+	lines := true
+	values := true
+	verbose := false
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
+
+	setJSONDecodeErr(ngsi, 0)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintErrorVerboseLinesValuesEncode(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	pretty := false
+	lines := true
+	values := true
+	verbose := false
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
+
+	setJSONEncodeErr(ngsi, 0)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintErrorVerboseLinesDecode(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	pretty := false
+	lines := true
+	values := false
+	verbose := false
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+
+	setJSONDecodeErr(ngsi, 0)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintErrorVerboseLinesEncode(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	pretty := false
+	lines := true
+	values := false
+	verbose := false
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+
+	setJSONEncodeErr(ngsi, 0)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintErrorVerbosePretty(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	pretty := true
+	lines := false
+	values := false
+	verbose := true
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+
+	setJSONIndentError(ngsi)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintErrorUnmarshal(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	pretty := false
+	lines := false
+	values := false
+	verbose := false
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter)
+
+	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
+
+	setJSONDecodeErr(ngsi, 0)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
 }
 
 func TestEntitiesCountV2(t *testing.T) {

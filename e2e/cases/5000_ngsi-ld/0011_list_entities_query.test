@@ -1,0 +1,126 @@
+
+
+
+#
+# 0000 Clean up
+#
+ngsi rm --run -type Sensor --link test
+
+```
+REGEX(.*)
+```
+
+#
+# 0001 Create entities
+#
+ngsi create --host orion-ld entities --link test \
+--data '[
+  {"id":"urn:ngsi-ld:sensor001","type":"Sensor","ｎａｍｅ":{"type":"Property","value":"１２３４"},"temperature":{"type":"Property","value":25}},
+  {"id":"urn:ngsi-ld:sensor002","type":"Sensor","ｎａｍｅ":{"type":"Property","value":1},"temperature":{"type":"Property","value":30}}
+]'
+
+```
+{"@context":"http://atcontext:8000/test-context.jsonld","success":["urn:ngsi-ld:sensor001","urn:ngsi-ld:sensor002"],"errors":[]}
+```
+
+#
+# 0002 List entities
+#
+ngsi list entities --pretty
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:sensor001",
+    "type": "https://w3id.org/saref#Sensor",
+    "https://context.lab.letsfiware.jp/dataset#ｎａｍｅ": {
+      "type": "Property",
+      "value": "１２３４"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 25
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:sensor002",
+    "type": "https://w3id.org/saref#Sensor",
+    "https://context.lab.letsfiware.jp/dataset#ｎａｍｅ": {
+      "type": "Property",
+      "value": 1
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 30
+    }
+  }
+]
+```
+
+#
+# 0003 List entities --link test
+#
+#   Related issue: https://github.com/FIWARE/context.Orion-LD/issues/737
+#
+ngsi list entities --pretty --link test
+
+```
+[
+  {
+    "@context": "http://atcontext:8000/test-context.jsonld",
+    "id": "urn:ngsi-ld:sensor001",
+    "type": "Sensor",
+    "ｎａｍｅ": {
+      "type": "Property",
+      "value": "１２３４"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 25
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/test-context.jsonld",
+    "id": "urn:ngsi-ld:sensor002",
+    "type": "Sensor",
+    "ｎａｍｅ": {
+      "type": "Property",
+      "value": 1
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 30
+    }
+  }
+]
+```
+
+
+#
+# 0011 query "ｎａｍｅ==\"１２３４\""
+#
+ngsi list entities --query "ｎａｍｅ==\"１２３４\"" --link test
+
+```
+urn:ngsi-ld:sensor001
+```
+
+#
+# 0012 query "ｎａｍｅ==1"
+#
+ngsi list entities --query "ｎａｍｅ==1" --link test
+
+```
+urn:ngsi-ld:sensor002
+```
+
+#
+# 9999 Clean up
+#
+ngsi rm --run -type Sensor --link test
+
+```
+REGEX(.*)
+```

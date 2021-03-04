@@ -51,17 +51,23 @@ func entitiesList(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	attrs := "__NONE"
-	idPattern := ""
 	if client.IsNgsiLd() {
-		if isSetOR(c, []string{"typePattern", "mq", "metadata"}) {
-			return &ngsiCmdError{funcName, 3, "cannot specfiy typePattern, mq or metadata", nil}
+		if isSetOR(c, []string{"typePattern", "mq", "metadata", "value", "uniq"}) {
+			return &ngsiCmdError{funcName, 3, "cannot specfiy typePattern, mq, metadata, value or uniq", nil}
 		}
-		if !isSetOR(c, []string{"type", "idPattern", "query", "attrs", "georel"}) {
-			idPattern = ".*"
-		}
-		attrs = ""
+		return entitiesListLD(c, ngsi, client)
 	}
+	if isSetOR(c, []string{"link", "acceptJson"}) {
+		return &ngsiCmdError{funcName, 4, "cannot specfiy link or acceptJson", nil}
+	}
+	return entitiesListV2(c, ngsi, client)
+}
+
+func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+	const funcName = "entitiesList"
+
+	attrs := "__NONE"
+
 	if c.IsSet("attrs") {
 		attrs = c.String("attrs")
 	}
@@ -89,25 +95,114 @@ func entitiesList(c *cli.Context) error {
 	for {
 		client.SetPath("/entities")
 
-		args := []string{"id", "type", "idPattern", "typePattern", "query", "mq", "georel",
-			"geometry", "coords", "attrs", "metadata", "orderBy"}
+		args := []string{"id", "type", "idPattern", "typePattern", "query", "mq", "georel", "geometry", "coords", "attrs", "metadata", "orderBy"}
 		opts := []string{"keyValues", "values", "unique"}
 		v := parseOptions(c, args, opts)
 
 		if attrs != "" {
 			v.Set("attrs", attrs)
 		}
+		if c.IsSet("count") {
+			v.Set("limit", "1")
+			v.Set("options", "count")
+		} else {
+			options := v.Get("options")
+			if options == "" {
+				options = "count"
+			} else {
+				options = options + ",count"
+			}
+			v.Set("options", options)
+			v.Set("limit", fmt.Sprintf("%d", limit))
+			v.Set("offset", fmt.Sprintf("%d", page*limit))
+		}
+		client.SetQuery(v)
+
+		res, body, err := client.HTTPGet()
+		if err != nil {
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
+		}
+		if res.StatusCode != http.StatusOK {
+			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		}
+
+		if c.IsSet("count") {
+			count, err := client.ResultsCount(res)
+			if err != nil {
+				return &ngsiCmdError{funcName, 3, "ResultsCount error", nil}
+			}
+			fmt.Fprintln(ngsi.StdWriter, count)
+			break
+		}
+
+		count, err = client.ResultsCount(res)
+		if err != nil {
+			return &ngsiCmdError{funcName, 4, "ResultsCount error", err}
+		}
+		if count == 0 {
+			break
+		}
+
+		if client.IsSafeString() {
+			body, err = ngsilib.JSONSafeStringDecode(body)
+			if err != nil {
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
+			}
+		}
+
+		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, values, verbose)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+
+		if (page+1)*limit < count {
+			page = page + 1
+		} else {
+			break
+		}
+	}
+	if verbose {
+		buf.bufferClose()
+	}
+	return nil
+}
+
+func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+	const funcName = "entitiesListLD"
+
+	idPattern := ""
+	if !isSetOR(c, []string{"type", "idPattern", "query", "attrs", "georel"}) {
+		idPattern = ".*"
+	}
+
+	page := 0
+	count := 0
+	limit := 100
+
+	verbose := c.IsSet("verbose")
+	if c.Bool("pretty") || c.Bool("keyValues") || isSetOR(c, []string{"attrs", "orderBy"}) {
+		verbose = true
+	}
+	lines := c.Bool("lines")
+
+	buf := jsonBuffer{}
+	if verbose {
+		buf.bufferOpen(ngsi.StdWriter)
+	}
+
+	for {
+		client.SetPath("/entities")
+
+		args := []string{"id", "type", "idPattern", "query", "georel", "geometry", "coords", "attrs", "orderBy"}
+		opts := []string{"keyValues"}
+		v := parseOptions(c, args, opts)
+
 		if idPattern != "" {
 			v.Set("idPattern", idPattern)
 		}
 		if c.IsSet("count") {
-			if client.IsNgsiLd() {
-				v.Set("limit", "0")
-				v.Set("count", "true")
-			} else {
-				v.Set("limit", "1")
-				v.Set("options", "count")
-			}
+			v.Set("limit", "0")
+			v.Set("count", "true")
 		} else {
 			options := v.Get("options")
 			if options == "" {
@@ -127,16 +222,16 @@ func entitiesList(c *cli.Context) error {
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 		}
 
 		if c.IsSet("count") {
 			count, err := client.ResultsCount(res)
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, "ResultsCount error", nil}
+				return &ngsiCmdError{funcName, 3, "ResultsCount error", nil}
 			}
 			fmt.Fprintln(ngsi.StdWriter, count)
 			break
@@ -144,7 +239,7 @@ func entitiesList(c *cli.Context) error {
 
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, "ResultsCount error", err}
+			return &ngsiCmdError{funcName, 4, "ResultsCount error", err}
 		}
 		if count == 0 {
 			break
@@ -153,58 +248,13 @@ func entitiesList(c *cli.Context) error {
 		if client.IsSafeString() {
 			body, err = ngsilib.JSONSafeStringDecode(body)
 			if err != nil {
-				return &ngsiCmdError{funcName, 8, err.Error(), err}
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
 			}
 		}
 
-		if lines {
-			if values {
-				var values [][]interface{}
-				err = ngsilib.JSONUnmarshal(body, &values)
-				if err != nil {
-					return &ngsiCmdError{funcName, 9, err.Error(), err}
-				}
-				for _, e := range values {
-					b, err := ngsilib.JSONMarshal(&e)
-					if err != nil {
-						return &ngsiCmdError{funcName, 10, err.Error(), err}
-					}
-					fmt.Fprintln(ngsi.StdWriter, string(b))
-				}
-			} else {
-				var entities entitiesRespose
-				err = ngsilib.JSONUnmarshal(body, &entities)
-				if err != nil {
-					return &ngsiCmdError{funcName, 11, err.Error(), err}
-				}
-				for _, e := range entities {
-					b, err := ngsilib.JSONMarshal(&e)
-					if err != nil {
-						return &ngsiCmdError{funcName, 12, err.Error(), err}
-					}
-					fmt.Fprintln(ngsi.StdWriter, string(b))
-				}
-			}
-		} else if verbose {
-			if c.Bool("pretty") {
-				newBuf := new(bytes.Buffer)
-				err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
-				if err != nil {
-					return &ngsiCmdError{funcName, 12, err.Error(), err}
-				}
-				buf.bufferWrite(newBuf.Bytes())
-			} else {
-				buf.bufferWrite(body)
-			}
-		} else {
-			var entities entitiesRespose
-			err = ngsilib.JSONUnmarshal(body, &entities)
-			if err != nil {
-				return &ngsiCmdError{funcName, 13, err.Error(), err}
-			}
-			for _, e := range entities {
-				fmt.Fprintln(ngsi.StdWriter, e["id"])
-			}
+		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, false, verbose)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
 
 		if (page+1)*limit < count {
@@ -215,6 +265,62 @@ func entitiesList(c *cli.Context) error {
 	}
 	if verbose {
 		buf.bufferClose()
+	}
+	return nil
+}
+
+func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lines, values, verbose bool) error {
+	const funcName = "entitiesPrint"
+	var err error
+
+	if lines {
+		if values {
+			var values [][]interface{}
+			err = ngsilib.JSONUnmarshal(body, &values)
+			if err != nil {
+				return &ngsiCmdError{funcName, 1, err.Error(), err}
+			}
+			for _, e := range values {
+				b, err := ngsilib.JSONMarshal(&e)
+				if err != nil {
+					return &ngsiCmdError{funcName, 2, err.Error(), err}
+				}
+				fmt.Fprintln(ngsi.StdWriter, string(b))
+			}
+		} else {
+			var entities entitiesRespose
+			err = ngsilib.JSONUnmarshal(body, &entities)
+			if err != nil {
+				return &ngsiCmdError{funcName, 3, err.Error(), err}
+			}
+			for _, e := range entities {
+				b, err := ngsilib.JSONMarshal(&e)
+				if err != nil {
+					return &ngsiCmdError{funcName, 4, err.Error(), err}
+				}
+				fmt.Fprintln(ngsi.StdWriter, string(b))
+			}
+		}
+	} else if verbose {
+		if pretty {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
+			}
+			buf.bufferWrite(newBuf.Bytes())
+		} else {
+			buf.bufferWrite(body)
+		}
+	} else {
+		var entities entitiesRespose
+		err = ngsilib.JSONUnmarshal(body, &entities)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+		for _, e := range entities {
+			fmt.Fprintln(ngsi.StdWriter, e["id"])
+		}
 	}
 	return nil
 }
