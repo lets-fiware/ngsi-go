@@ -259,7 +259,7 @@ func (l *lexer) readSingleQuotedWord() error {
 				l.s += "'"
 			} else if c == '\\' {
 				l.s = l.s[:len(l.s)-1]
-                        }
+			}
 		} else {
 			if c == '\\' {
 				escaped = true

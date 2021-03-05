@@ -951,7 +951,7 @@ func TestAppendersDelete(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v1/admin/log/appenders"
-	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed succesfully"}`)
+	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed successfully"}`)
 	name := "name=test&transient=false"
 	reqRes.RawQuery = &name
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -965,7 +965,7 @@ func TestAppendersDelete(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"success\":\"true\",\"result\":\" Appender 'test' removed succesfully\"}"
+		expected := "{\"success\":\"true\",\"result\":\" Appender 'test' removed successfully\"}"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -979,7 +979,7 @@ func TestAppendersDeleteTransient(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v1/admin/log/appenders"
-	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed succesfully"}`)
+	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed successfully"}`)
 	name := "name=test&transient=true"
 	reqRes.RawQuery = &name
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -994,7 +994,7 @@ func TestAppendersDeleteTransient(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"success\":\"true\",\"result\":\" Appender 'test' removed succesfully\"}"
+		expected := "{\"success\":\"true\",\"result\":\" Appender 'test' removed successfully\"}"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -1008,7 +1008,7 @@ func TestAppendersDeletePretty(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v1/admin/log/appenders"
-	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed succesfully"}`)
+	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed successfully"}`)
 	name := "name=test&transient=false"
 	reqRes.RawQuery = &name
 	mock.ReqRes = append(mock.ReqRes, reqRes)
@@ -1023,7 +1023,7 @@ func TestAppendersDeletePretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"success\": \"true\",\n  \"result\": \" Appender 'test' removed succesfully\"\n}"
+		expected := "{\n  \"success\": \"true\",\n  \"result\": \" Appender 'test' removed successfully\"\n}"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -1077,7 +1077,7 @@ func TestAppendersDeleteErrorName(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v1/admin/log/appenders"
-	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed succesfully"}`)
+	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed successfully"}`)
 	name := "name=test&transient=false"
 	reqRes.RawQuery = &name
 	mock := NewMockHTTP()
@@ -1105,7 +1105,7 @@ func TestAppendersDeleteErrorHTTP(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v1/admin/log/appenders"
-	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed succesfully"}`)
+	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed successfully"}`)
 	name := "name=test&transient=false"
 	reqRes.RawQuery = &name
 	reqRes.Err = errors.New("error")
@@ -1163,7 +1163,7 @@ func TestAppendersDeleteErrorPretty(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v1/admin/log/appenders"
-	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed succesfully"}`)
+	reqRes.ResBody = []byte(`{"success":"true","result":" Appender 'test' removed successfully"}`)
 	name := "name=test&transient=false"
 	reqRes.RawQuery = &name
 	mock.ReqRes = append(mock.ReqRes, reqRes)

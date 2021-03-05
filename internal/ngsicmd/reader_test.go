@@ -40,7 +40,6 @@ import (
 func TestReadAll(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{`--data={"id":test"}`})
@@ -56,7 +55,6 @@ func TestReadAll(t *testing.T) {
 
 func TestReadAllStdReader(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -75,7 +73,6 @@ func TestReadAllStdReader(t *testing.T) {
 func TestReadAllAt(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
@@ -93,7 +90,6 @@ func TestReadAllAt(t *testing.T) {
 func TestReadAllErrorEmpty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	c := cli.NewContext(app, set, nil)
 
 	_, err := readAll(c, ngsi)
@@ -109,7 +105,6 @@ func TestReadAllErrorEmpty(t *testing.T) {
 
 func TestReadAllErrorStdReader(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -149,7 +144,6 @@ func TestReadAllAt3(t *testing.T) {
 func TestReadAllAt4(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
@@ -169,7 +163,6 @@ func TestReadAllAt4(t *testing.T) {
 func TestReadAllErrorAt5(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@"})
@@ -188,7 +181,6 @@ func TestReadAllErrorAt5(t *testing.T) {
 func TestGetReader(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data={abc}"})
@@ -200,7 +192,6 @@ func TestGetReader(t *testing.T) {
 
 func TestGetReaderFIle(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -214,7 +205,6 @@ func TestGetReaderFIle(t *testing.T) {
 
 func TestGetReaderStdin(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -234,7 +224,6 @@ func TestGetReaderStdin(t *testing.T) {
 func TestGetReaderErrorEmpty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	c := cli.NewContext(app, set, nil)
 
 	_, err := getReader(c, ngsi)
@@ -250,7 +239,6 @@ func TestGetReaderErrorEmpty(t *testing.T) {
 
 func TestGetReaderAt3(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
@@ -271,7 +259,6 @@ func TestGetReaderAt3(t *testing.T) {
 func TestGetReaderAt4(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--data=@file"})
@@ -290,7 +277,6 @@ func TestGetReaderAt4(t *testing.T) {
 
 func TestGetReaderErrorAt5(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
-
 
 	setupFlagString(set, "data")
 	c := cli.NewContext(app, set, nil)
