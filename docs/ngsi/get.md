@@ -31,20 +31,22 @@ ngsi get [command options] entity [options]
 
 ### Options
 
-| Options                | Description                                 |
-| ---------------------- | ------------------------------------------- |
-| --id value, -i value   | specify id                                  |
-| --type value, -t value | specify entity type                         |
-| --attrs value          | specify attributes                          |
-| --keyValues, -k        | specify keyValues (default: false)          |
-| --values, -V           | specify values (default: false)             |
-| --unique, -u           | specify unique (default: false)             |
-| --sysAttrs, -s         | specify sysAttrs (default: false)           |
-| --link value, -L value | specify @context                            |
-| --acceptJson           | set accecpt header to application/json (LD) |
-| --pretty, -P           | pretty format (default: false)              |
-| --safeString value     | use safe string (value: on/off)             |
-| --help                 | show help (default: false)                  |
+| Options                | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| --id value, -i value   | specify id                                                       |
+| --type value, -t value | specify entity type                                              |
+| --attrs value          | specify attributes                                               |
+| --keyValues, -k        | specify keyValues (default: false)                               |
+| --values, -V           | specify values (default: false)                                  |
+| --unique, -u           | specify unique (default: false)                                  |
+| --sysAttrs, -s         | specify sysAttrs (default: false)                                |
+| --link value, -L value | specify @context                                                 |
+| --acceptJson           | set accecpt header to application/json (LD) (default: false)     |
+| --acceptGeoJson        | set accecpt header to application/geo+json (LD) (default: false) |
+| --acceptJson           | set accecpt header to application/json (LD)                      |
+| --pretty, -P           | pretty format (default: false)                                   |
+| --safeString value     | use safe string (value: on/off)                                  |
+| --help                 | show help (default: false)                                       |
 
 ### Examples
 

@@ -67,7 +67,7 @@ func opQuery(c *cli.Context) error {
 
 	buf := jsonBuffer{}
 	if verbose {
-		buf.bufferOpen(ngsi.StdWriter)
+		buf.bufferOpen(ngsi.StdWriter, false, false)
 	}
 
 	for {

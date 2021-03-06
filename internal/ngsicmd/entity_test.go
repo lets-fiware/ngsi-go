@@ -420,6 +420,32 @@ func TestEntityReadLd(t *testing.T) {
 	}
 }
 
+func TestEntityReadLdGeoJSON(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}},"@context":"http://atcontext:8000/ngsi-context.jsonld","geometry":{"type":"Point","coordinates":[139.76,35.68]}}`)
+	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host,id")
+	setupFlagBool(set, "acceptGeoJson")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--acceptGeoJson"})
+	err := entityRead(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}},\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntityReadErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 

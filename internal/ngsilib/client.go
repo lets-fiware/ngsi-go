@@ -142,6 +142,11 @@ func (client *Client) SetAcceptJSON() {
 	client.Headers["Accept"] = "application/json"
 }
 
+// SetAcceptGeoJSON is ...
+func (client *Client) SetAcceptGeoJSON() {
+	client.Headers["Accept"] = "application/geo+json"
+}
+
 // SetPath is ...
 func (client *Client) SetPath(path string) {
 	if client.Server.ServerType == "broker" {

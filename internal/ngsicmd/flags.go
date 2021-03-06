@@ -128,6 +128,11 @@ var (
 		Usage: "set accecpt header to application/json (LD)",
 		Value: false,
 	}
+	acceptGeoJSONFlag = &cli.BoolFlag{
+		Name:  "acceptGeoJson",
+		Usage: "set accecpt header to application/geo+json (LD)",
+		Value: false,
+	}
 	xAuthTokenFlag = &cli.BoolFlag{
 		Name:   "x-auth-token",
 		Usage:  "use X-Auth-Token",

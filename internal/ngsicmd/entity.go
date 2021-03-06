@@ -122,6 +122,8 @@ func entityRead(c *cli.Context) error {
 
 	if c.Bool("acceptJson") {
 		client.SetAcceptJSON()
+	} else if c.Bool("acceptGeoJson") {
+		client.SetAcceptGeoJSON()
 	}
 
 	res, body, err := client.HTTPGet()
