@@ -4,6 +4,7 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 
 -   [Get an entity](#get-an-entity)
 -   [Get an entities](#get-an-entities)
+-   [Get temporal entity](#get-temporal-entity)
 -   [Get an attribute](#get-an-attribute)
 -   [Get multiple attributes](#get-multiple-attributes)
 -   [Get a subscription](#get-a-subscription)
@@ -113,6 +114,35 @@ ngsi get [command options] entities [options]
 ```console
 ngsi get entities --data '{"entities": [{"type": "Device", "idPattern": ".*"}],"attrs":["name"]}'
 ```
+
+<a name="Get temporal entity"></a>
+
+## Get temporal entity
+
+This command gets a temporal entity.
+
+```console
+ngsi get [common options] tentity [options]
+```
+
+### Options
+
+| Options                | Description                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| --id value, -i value   | id                                                                             |
+| --attrs value          | attributes                                                                     |
+| --timeProperty value   | timeProperty (LD)                                                              |
+| --fromDate value       | starting date from which data should be retrieved                              |
+| --toDate value         | final date until which data should be retrieved                                |
+| --lastN value          | number of data entries to retrieve since the final date backwards (default: 0) |
+| --link value, -L value | @context (LD)                                                                  |
+| --temporalValues       | temporal simplified representation of entity (default: false)                  |
+| --sysAttrs, -S         | sysAttrs (default: false)                                                      |
+| --acceptJson           | set accecpt header to application/json (LD) (default: false)                   |
+| --pretty, -P           | pretty format (default: false)                                                 |
+| --safeString value     | use safe string (value: on/off)                                                |
+| --etsi10               | ETSI CIM 009 V1.0 (default: false)                                             |
+| --help                 | show help (default: false)                                                     |
 
 <a name="get-an-attribute"></a>
 

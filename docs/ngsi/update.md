@@ -4,6 +4,7 @@ This command will update entities, attribute(s), or subscription.
 
 -   [Update multiple entities](#update-multiple-entities)
 -   [Update an attribute](#update-an-attribute)
+-   [Update an attribute instance of temporal entity](#update-an-attribute-instance-of-temporal-entity)
 -   [Update multiple attributes](#update-multiple-attributes)
 -   [Update a subscription](#update-a-subscription)
 
@@ -71,6 +72,31 @@ ngsi update [common options] attr [options]
 ```console
 ngsi update attr
 ```
+
+[Update attribute instance of temporal entity](#update-attribute-instance-of-temporal-entity)
+
+<a name="update-an-attribute-instance-of-temporal-entity"></a>
+
+## Update an attribute instance of temporal entity
+
+This command updates an attribute instance of temporal entity.
+
+```console
+ngsi update [common options] tattr [options]
+```
+
+### Options
+
+| Options                   | Description                        |
+| ------------------------- | ---------------------------------- |
+| --id value, -i value      | specify id                         |
+| --data value, -d value    | data                               |
+| --attrName value          | attrName                           |
+| --instanceId value        | attribute instance id (LD)         |
+| --link value, -L value    | @context (LD)                      |
+| --context value, -C value | @context (LD)                      |
+| --safeString value        | use safe string (value: on/off)    |
+| --help                    | show help (default: false)         |
 
 <a name="update-multiple-attributes"></a>
 

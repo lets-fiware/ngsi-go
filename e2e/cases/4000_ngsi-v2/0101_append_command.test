@@ -37,6 +37,7 @@ USAGE:
 
 COMMANDS:
    attrs    append attrs
+   tattrs   append attribute instance of temporal entity
    help, h  Shows a list of commands or help for one command
 
 OPTIONS:

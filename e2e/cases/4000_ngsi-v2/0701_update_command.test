@@ -39,6 +39,7 @@ USAGE:
 
 COMMANDS:
    attr          update attr
+   tattr         update attr instance of temporal entity
    attrs         update attrs
    subscription  update subscription
    entities      update entities

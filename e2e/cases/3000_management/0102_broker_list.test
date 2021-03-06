@@ -39,6 +39,7 @@ USAGE:
 COMMANDS:
    types          list types
    entities       list entities
+   tentities      list temporal entities
    subscriptions  list subscriptions
    registrations  list registrations
    help, h        Shows a list of commands or help for one command

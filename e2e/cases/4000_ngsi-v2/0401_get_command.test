@@ -40,6 +40,7 @@ USAGE:
 COMMANDS:
    entities      get entities
    entity        get entity
+   tentity       get temporal entity
    attr          get attr
    attrs         get attrs
    subscription  get subscription

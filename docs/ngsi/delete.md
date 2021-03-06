@@ -2,7 +2,9 @@
 
 -   [Delete an entity](#delete-an-entity)
 -   [Delete multiple entities](#delete-multiple-entities)
--   [Delete an attribute from an Entity](#delete-an-attribute)
+-   [Delete temporal entity](#delete-temporal-entity)
+-   [Delete an attribute from an entity](#delete-an-attribute-from-an-entity)
+-   [Delete an attribute from a temporal entity](#delete-an-attribute-from-a-temporal-entity)
 -   [Delete a subscription](#delete-a-subscription)
 -   [Delete a registration](#delete-a-registration)
 
@@ -96,7 +98,25 @@ ngsi delete entities \
 ]'
 ```
 
-<a name="delete-an-attribute"></a>
+<a name="delete-temporal-entity"></a>
+
+## Delete a temporal entity
+
+This commnad will delete a temporal entity.
+
+```console
+ngsi delete [common options] tentity [options]
+```
+
+### Options
+
+| Options                | Description                |
+| ---------------------- | -------------------------- |
+| --id value, -i value   | specify entity id          |
+| --link value, -L value | @context (LD)              |
+| --help                 | show help (default: false) |
+
+<a name="delete-an-attribute-from-an-entity"></a>
 
 ## Delete an Attribute from an Entity
 
@@ -123,6 +143,28 @@ ngsi delete [common options] attr [options]
 ```console
 ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
 ```
+
+<a name="delete-an-attribute-from-a-temporal-entity"></a>
+
+## Delete an attribute from a temporal entity
+
+This commnad will delete an attribute from a temporal entity.
+
+```console
+ngsi delete [common options] tattr [options]
+```
+
+### Options
+
+| Options                | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| --id value, -i value   | specify entity id                                   |
+| --attrName value       | attrName                                            |
+| --deleteAll            | all atribute instances are deleted (default: false) |
+| --datasetId value      | datasetId of the dataset to be deleted              |
+| --instanceId value     | attribute instance id (LD)                          |
+| --link value, -L value | @context (LD)                                       |
+| --help                 | show help (default: false)                          |
 
 <a name="delete-a-subscription"></a>
 

@@ -4,6 +4,7 @@ This command lists types, entities, subscriptions or registrations.
 
 -   [List multiple types](#list-multiple-types)
 -   [List multiple entities](#list-multiple-entities)
+-   [List multipletemporal entities](#list-multiple-temporal-entities)
 -   [List multiple subscriptions](#list-multiple-subscriptions)
 -   [List multiple registrations](#list-multiple-registrations)
 
@@ -308,7 +309,46 @@ ngsi list entities --type Product --idPattern '1{2}' --count
 ngsi list entities -q "refProduct%==urn:ngsi-ld:Product:001" --attrs type
 ```
 
+<a name="list-temporal-entities"></a>
+
+# List temporal entities
+
+This commnad lists multiple tempral entities.
+
 <a name="list-multiple-subscriptions"></a>
+
+```console
+ngsi list [common options] tentities [options]
+```
+
+### Options
+
+| Options                 | Description                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| --id value, -i value    | id                                                                             |
+| --type value, -t value  | Entity Type                                                                    |
+| --idPattern value       | idPattern                                                                      |
+| --attrs value           | attributes                                                                     |
+| --query value, -q value | filtering by attribute value                                                   |
+| --csf value             | context source filter (LD)                                                     |
+| --georel value          | georel                                                                         |
+| --geometry value        | geometry                                                                       |
+| --coords value          | coords                                                                         |
+| --geoProperty value     | geo property (LD)                                                              |
+| --timeProperty value    | timeProperty (LD)                                                              |
+| --fromDate value        | starting date from which data should be retrieved                              |
+| --toDate value          | final date until which data should be retrieved                                |
+| --lastN value           | number of data entries to retrieve since the final date backwards (default: 0) |
+| --temporalValues        | temporal simplified representation of entity (default: false)                  |
+| --sysAttrs, -S          | sysAttrs (default: false)                                                      |
+| --link value, -L value  | @context (LD)                                                                  |
+| --acceptJson            | set accecpt header to application/json (LD) (default: false)                   |
+| --verbose, -v           | verbose (default: false)                                                       |
+| --lines, -1             | lines (default: false)                                                         |
+| --pretty, -P            | pretty format (default: false)                                                 |
+| --safeString value      | use safe string (value: on/off)                                                |
+| --etsi10                | ETSI CIM 009 V1.0 (default: false)                                             |
+|  --help                 | show help (default: false)                                                     |
 
 ## List multiple subscriptions
 
