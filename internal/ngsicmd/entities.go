@@ -57,8 +57,8 @@ func entitiesList(c *cli.Context) error {
 		}
 		return entitiesListLD(c, ngsi, client)
 	}
-	if isSetOR(c, []string{"link", "acceptJson"}) {
-		return &ngsiCmdError{funcName, 4, "cannot specfiy link or acceptJson", nil}
+	if isSetOR(c, []string{"link", "acceptJson", "acceptGeoJson"}) {
+		return &ngsiCmdError{funcName, 4, "cannot specfiy link acceptJson or acceptGeoJson", nil}
 	}
 	return entitiesListV2(c, ngsi, client)
 }
@@ -88,7 +88,7 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 	buf := jsonBuffer{}
 	if verbose {
-		buf.bufferOpen(ngsi.StdWriter)
+		buf.bufferOpen(ngsi.StdWriter, false, false)
 		attrs = ""
 	}
 
@@ -150,7 +150,7 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 			}
 		}
 
-		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, values, verbose)
+		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, values, verbose, false)
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
@@ -180,14 +180,14 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 	limit := 100
 
 	verbose := c.IsSet("verbose")
-	if c.Bool("pretty") || c.Bool("keyValues") || isSetOR(c, []string{"attrs", "orderBy"}) {
+	if isSetOR(c, []string{"pretty", "keyValues", "acceptGeoJson", "attrs", "orderBy"}) {
 		verbose = true
 	}
 	lines := c.Bool("lines")
 
 	buf := jsonBuffer{}
 	if verbose {
-		buf.bufferOpen(ngsi.StdWriter)
+		buf.bufferOpen(ngsi.StdWriter, c.Bool("acceptGeoJson"), c.Bool("pretty"))
 	}
 
 	for {
@@ -218,6 +218,8 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 		if c.Bool("acceptJson") {
 			client.SetAcceptJSON()
+		} else if c.Bool("acceptGeoJson") {
+			client.SetAcceptGeoJSON()
 		}
 
 		res, body, err := client.HTTPGet()
@@ -252,7 +254,7 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 			}
 		}
 
-		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, false, verbose)
+		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, false, verbose, c.Bool("acceptGeoJson"))
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
@@ -269,21 +271,30 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 	return nil
 }
 
-func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lines, values, verbose bool) error {
+func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lines, values, verbose, geoJSON bool) error {
 	const funcName = "entitiesPrint"
+	const geoJSONFeatures = `{"type":"FeatureCollection","features":`
 	var err error
+
+	if geoJSON {
+		if bytes.HasPrefix(body, []byte(geoJSONFeatures)) && bytes.HasSuffix(body, []byte(`}`)) {
+			body = body[len(geoJSONFeatures) : len(body)-1]
+		} else {
+			return &ngsiCmdError{funcName, 1, "geojson error: " + string(body), err}
+		}
+	}
 
 	if lines {
 		if values {
 			var values [][]interface{}
 			err = ngsilib.JSONUnmarshal(body, &values)
 			if err != nil {
-				return &ngsiCmdError{funcName, 1, err.Error(), err}
+				return &ngsiCmdError{funcName, 2, err.Error(), err}
 			}
 			for _, e := range values {
 				b, err := ngsilib.JSONMarshal(&e)
 				if err != nil {
-					return &ngsiCmdError{funcName, 2, err.Error(), err}
+					return &ngsiCmdError{funcName, 3, err.Error(), err}
 				}
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
@@ -291,12 +302,12 @@ func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lin
 			var entities entitiesRespose
 			err = ngsilib.JSONUnmarshal(body, &entities)
 			if err != nil {
-				return &ngsiCmdError{funcName, 3, err.Error(), err}
+				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
 			for _, e := range entities {
 				b, err := ngsilib.JSONMarshal(&e)
 				if err != nil {
-					return &ngsiCmdError{funcName, 4, err.Error(), err}
+					return &ngsiCmdError{funcName, 5, err.Error(), err}
 				}
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
@@ -304,9 +315,13 @@ func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lin
 	} else if verbose {
 		if pretty {
 			newBuf := new(bytes.Buffer)
-			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			indent := ""
+			if geoJSON {
+				indent = "  "
+			}
+			err := ngsi.JSONConverter.Indent(newBuf, body, indent, "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 5, err.Error(), err}
+				return &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
 			buf.bufferWrite(newBuf.Bytes())
 		} else {
@@ -316,7 +331,7 @@ func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lin
 		var entities entitiesRespose
 		err = ngsilib.JSONUnmarshal(body, &entities)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return &ngsiCmdError{funcName, 7, err.Error(), err}
 		}
 		for _, e := range entities {
 			fmt.Fprintln(ngsi.StdWriter, e["id"])

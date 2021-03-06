@@ -36,14 +36,25 @@ import (
 )
 
 type jsonBuffer struct {
-	writer    *bufio.Writer
-	buf       []byte
-	delimiter string
+	writer          *bufio.Writer
+	buf             []byte
+	delimiter       string
+	closeingBracket string
 }
 
-func (j *jsonBuffer) bufferOpen(w io.Writer) {
+func (j *jsonBuffer) bufferOpen(w io.Writer, geoJSON, pretty bool) {
 	j.writer = bufio.NewWriter(w)
-	j.delimiter = "["
+
+	if geoJSON && pretty {
+		j.delimiter = "{\n  \"type\": \"FeatureCollection\",\n  \"features\": ["
+		j.closeingBracket = "]\n}"
+	} else if geoJSON {
+		j.delimiter = `{"type":"FeatureCollection","features":[`
+		j.closeingBracket = "]}"
+	} else {
+		j.delimiter = "["
+		j.closeingBracket = "]"
+	}
 }
 
 func (j *jsonBuffer) bufferWrite(b []byte) {
@@ -63,8 +74,8 @@ func (j *jsonBuffer) bufferClose() {
 	if len(j.buf) > 0 {
 		j.bufferWrite(nil)
 	}
-	if j.delimiter != "[" {
-		fmt.Fprint(j.writer, "]")
+	if j.delimiter == "," {
+		fmt.Fprint(j.writer, j.closeingBracket)
 	}
 	_ = j.writer.Flush()
 }

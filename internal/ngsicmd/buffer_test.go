@@ -39,7 +39,7 @@ import (
 
 func TestBufferOpen(t *testing.T) {
 	jsonBuf := jsonBuffer{}
-	jsonBuf.bufferOpen(os.Stdout)
+	jsonBuf.bufferOpen(os.Stdout, false, false)
 
 	if !assert.Equal(t, "[", jsonBuf.delimiter) {
 		t.FailNow()
@@ -50,7 +50,7 @@ func TestBufferWrite1(t *testing.T) {
 	buffer := &bytes.Buffer{}
 
 	jsonBuf := jsonBuffer{}
-	jsonBuf.bufferOpen(buffer)
+	jsonBuf.bufferOpen(buffer, false, false)
 
 	jsonBuf.bufferWrite([]byte("[abc]"))
 
@@ -63,7 +63,7 @@ func TestBufferWrite2(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	jsonBuf := jsonBuffer{}
-	jsonBuf.bufferOpen(buf)
+	jsonBuf.bufferOpen(buf, false, false)
 
 	jsonBuf.bufferWrite([]byte("[abc]"))
 	jsonBuf.bufferWrite([]byte("[xyz]"))
@@ -82,7 +82,7 @@ func TestBufferWrite3(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	jsonBuf := jsonBuffer{}
-	jsonBuf.bufferOpen(buf)
+	jsonBuf.bufferOpen(buf, false, false)
 
 	jsonBuf.bufferWrite([]byte("[abc]"))
 	jsonBuf.bufferWrite([]byte("[xyz]"))
@@ -98,11 +98,101 @@ func TestBufferWrite3(t *testing.T) {
 	}
 }
 
+func TestBufferGeoJSON1(t *testing.T) {
+	buf := &bytes.Buffer{}
+
+	geoJSON := true
+	pretty := false
+
+	jsonBuf := jsonBuffer{}
+	jsonBuf.bufferOpen(buf, geoJSON, pretty)
+
+	jsonBuf.bufferWrite([]byte(`[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}}}]`))
+	jsonBuf.bufferWrite(nil)
+
+	if assert.Equal(t, []uint8([]byte(nil)), jsonBuf.buf) {
+		jsonBuf.bufferClose()
+		actual := buf.String()
+		expected := "{\"type\":\"FeatureCollection\",\"features\":[{\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}}}]}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestBufferGeoJSON2(t *testing.T) {
+	buf := &bytes.Buffer{}
+
+	geoJSON := true
+	pretty := false
+
+	jsonBuf := jsonBuffer{}
+	jsonBuf.bufferOpen(buf, geoJSON, pretty)
+
+	jsonBuf.bufferWrite([]byte(`[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}}}]`))
+	jsonBuf.bufferWrite([]byte(`[{"id":"urn:ngsi-ld:TemperatureSensor:002","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}}}]`))
+	jsonBuf.bufferWrite(nil)
+
+	if assert.Equal(t, []uint8([]byte(nil)), jsonBuf.buf) {
+		jsonBuf.bufferClose()
+		actual := buf.String()
+		expected := "{\"type\":\"FeatureCollection\",\"features\":[{\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}}},{\"id\":\"urn:ngsi-ld:TemperatureSensor:002\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}}}]}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestBufferGeoJSON1Pretty(t *testing.T) {
+	buf := &bytes.Buffer{}
+
+	geoJSON := true
+	pretty := true
+
+	jsonBuf := jsonBuffer{}
+	jsonBuf.bufferOpen(buf, geoJSON, pretty)
+
+	jsonBuf.bufferWrite([]byte(`[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}}}]`))
+	jsonBuf.bufferWrite(nil)
+
+	if assert.Equal(t, []uint8([]byte(nil)), jsonBuf.buf) {
+		jsonBuf.bufferClose()
+		actual := buf.String()
+		expected := "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [{\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}}}]\n}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestBufferGeoJSON2Pretty(t *testing.T) {
+	buf := &bytes.Buffer{}
+
+	geoJSON := true
+	pretty := true
+
+	jsonBuf := jsonBuffer{}
+	jsonBuf.bufferOpen(buf, geoJSON, pretty)
+
+	jsonBuf.bufferWrite([]byte(`[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}}}]`))
+	jsonBuf.bufferWrite([]byte(`[{"id":"urn:ngsi-ld:TemperatureSensor:002","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}}}]`))
+	jsonBuf.bufferWrite(nil)
+
+	if assert.Equal(t, []uint8([]byte(nil)), jsonBuf.buf) {
+		jsonBuf.bufferClose()
+		actual := buf.String()
+		expected := "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [{\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}}},{\"id\":\"urn:ngsi-ld:TemperatureSensor:002\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}}}]\n}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestBufferClose(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	jsonBuf := jsonBuffer{}
-	jsonBuf.bufferOpen(buf)
+	jsonBuf.bufferOpen(buf, false, false)
 
 	jsonBuf.bufferWrite([]byte("[abc]"))
 	jsonBuf.bufferWrite([]byte("[xyz]"))

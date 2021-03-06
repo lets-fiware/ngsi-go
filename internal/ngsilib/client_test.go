@@ -286,6 +286,17 @@ func TestSetAcceptJSON(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestSetAcceptGeoJSON(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
+
+	client.SetAcceptGeoJSON()
+
+	actual := client.Headers["Accept"]
+	expected := "application/geo+json"
+	assert.Equal(t, expected, actual)
+}
+
 func TestSetPath(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 	client.Server = &Server{ServerType: "broker"}

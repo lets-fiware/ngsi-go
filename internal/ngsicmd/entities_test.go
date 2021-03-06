@@ -156,7 +156,7 @@ func TestEntitiesListErrorV2Param(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "cannot specfiy link or acceptJson", ngsiErr.Message)
+		assert.Equal(t, "cannot specfiy link acceptJson or acceptGeoJson", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -778,6 +778,72 @@ func TestEntitiesListLD(t *testing.T) {
 	}
 }
 
+func TestEntitiesListLDGeoJSON(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
+	reqRes.ResBody = []byte(`{"type":"FeatureCollection","features":[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}},"@context":"http://atcontext:8000/ngsi-context.jsonld","geometry":{"type":"Point","coordinates":[139.76,35.68]}},{"id":"urn:ngsi-ld:TemperatureSensor:002","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":26,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[135.75,34.98]}}},"@context":"http://atcontext:8000/ngsi-context.jsonld","geometry":{"type":"Point","coordinates":[135.75,34.98]}},{"id":"urn:ngsi-ld:TemperatureSensor:003","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":27,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[135.49,34.7]}}},"@context":"http://atcontext:8000/ngsi-context.jsonld","geometry":{"type":"Point","coordinates":[135.49,34.7]}}]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "acceptGeoJson")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--acceptGeoJson"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"type\":\"FeatureCollection\",\"features\":[{\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}},\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}},{\"id\":\"urn:ngsi-ld:TemperatureSensor:002\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":26,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[135.75,34.98]}}},\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[135.75,34.98]}},{\"id\":\"urn:ngsi-ld:TemperatureSensor:003\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":27,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[135.49,34.7]}}},\"@context\":\"http://atcontext:8000/ngsi-context.jsonld\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[135.49,34.7]}}]}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesListLDGeoJSONPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/ngsi-ld/v1/entities"
+	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
+	reqRes.ResBody = []byte(`{"type":"FeatureCollection","features":[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}},"@context":"http://atcontext:8000/ngsi-context.jsonld","geometry":{"type":"Point","coordinates":[139.76,35.68]}},{"id":"urn:ngsi-ld:TemperatureSensor:002","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":26,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[135.75,34.98]}}},"@context":"http://atcontext:8000/ngsi-context.jsonld","geometry":{"type":"Point","coordinates":[135.75,34.98]}},{"id":"urn:ngsi-ld:TemperatureSensor:003","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":27,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[135.49,34.7]}}},"@context":"http://atcontext:8000/ngsi-context.jsonld","geometry":{"type":"Point","coordinates":[135.49,34.7]}}]}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "acceptGeoJson,pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--acceptGeoJson", "--pretty"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = entitiesListLD(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"id\": \"urn:ngsi-ld:TemperatureSensor:001\",\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"type\": \"TemperatureSensor\",\n        \"temperature\": {\n          \"type\": \"Property\",\n          \"value\": 25,\n          \"unitCode\": \"CEL\"\n        },\n        \"location\": {\n          \"type\": \"GeoProperty\",\n          \"value\": {\n            \"type\": \"Point\",\n            \"coordinates\": [\n              139.76,\n              35.68\n            ]\n          }\n        }\n      },\n      \"@context\": \"http://atcontext:8000/ngsi-context.jsonld\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          139.76,\n          35.68\n        ]\n      }\n    },\n    {\n      \"id\": \"urn:ngsi-ld:TemperatureSensor:002\",\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"type\": \"TemperatureSensor\",\n        \"temperature\": {\n          \"type\": \"Property\",\n          \"value\": 26,\n          \"unitCode\": \"CEL\"\n        },\n        \"location\": {\n          \"type\": \"GeoProperty\",\n          \"value\": {\n            \"type\": \"Point\",\n            \"coordinates\": [\n              135.75,\n              34.98\n            ]\n          }\n        }\n      },\n      \"@context\": \"http://atcontext:8000/ngsi-context.jsonld\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          135.75,\n          34.98\n        ]\n      }\n    },\n    {\n      \"id\": \"urn:ngsi-ld:TemperatureSensor:003\",\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"type\": \"TemperatureSensor\",\n        \"temperature\": {\n          \"type\": \"Property\",\n          \"value\": 27,\n          \"unitCode\": \"CEL\"\n        },\n        \"location\": {\n          \"type\": \"GeoProperty\",\n          \"value\": {\n            \"type\": \"Point\",\n            \"coordinates\": [\n              135.49,\n              34.7\n            ]\n          }\n        }\n      },\n      \"@context\": \"http://atcontext:8000/ngsi-context.jsonld\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          135.49,\n          34.7\n        ]\n      }\n    }\n  ]\n}"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntitiesListLDPage(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -1139,11 +1205,11 @@ func TestEntitiesPrint(t *testing.T) {
 	verbose := false
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.NoError(t, err) {
 		actual := buffer.String()
@@ -1163,11 +1229,11 @@ func TestEntitiesPrintLinesValues(t *testing.T) {
 	verbose := false
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.NoError(t, err) {
 		actual := buffer.String()
@@ -1187,11 +1253,11 @@ func TestEntitiesPrintVerbosePretty(t *testing.T) {
 	verbose := true
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	buf.bufferClose()
 
@@ -1213,11 +1279,11 @@ func TestEntitiesPrintVerbose(t *testing.T) {
 	verbose := true
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	buf.bufferClose()
 
@@ -1225,6 +1291,59 @@ func TestEntitiesPrintVerbose(t *testing.T) {
 		actual := buffer.String()
 		expected := "[{\"id\":\"airqualityobserved_0\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":6.727447926,\"metadata\":{}}},{\"id\":\"airqualityobserved_1\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":19.012560208,\"metadata\":{}}},{\"id\":\"airqualityobserved_2\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":-3.196384014,\"metadata\":{}}},{\"id\":\"airqualityobserved_3\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":7.992932652,\"metadata\":{}}},{\"id\":\"airqualityobserved_4\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":-6.620346091,\"metadata\":{}}},{\"id\":\"airqualityobserved_5\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":-16.634766746,\"metadata\":{}}},{\"id\":\"airqualityobserved_6\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":20.263618173,\"metadata\":{}}},{\"id\":\"airqualityobserved_7\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":14.285382467,\"metadata\":{}}},{\"id\":\"airqualityobserved_8\",\"type\":\"AirQualityObserved\",\"temperature\":{\"type\":\"Number\",\"value\":6.998595286,\"metadata\":{}}}]"
 		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintGeoJSON(t *testing.T) {
+	ngsi, _, _, buffer := setupTest()
+
+	pretty := false
+	lines := false
+	values := false
+	verbose := true
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter, false, false)
+
+	body := []byte(`{"type":"FeatureCollection","features":[{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"Feature","properties":{"type":"TemperatureSensor","temperature":{"type":"Property","value":25,"unitCode":"CEL"},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[139.76,35.68]}}}]}`)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
+
+	buf.bufferClose()
+
+	if assert.NoError(t, err) {
+		actual := buffer.String()
+		expected := "[\"type\":\"FeatureCollection\",\"features\":[{\"id\":\"urn:ngsi-ld:TemperatureSensor:001\",\"type\":\"Feature\",\"properties\":{\"type\":\"TemperatureSensor\",\"temperature\":{\"type\":\"Property\",\"value\":25,\"unitCode\":\"CEL\"},\"location\":{\"type\":\"GeoProperty\",\"value\":{\"type\":\"Point\",\"coordinates\":[139.76,35.68]}}}]]"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesPrintErrorGeoJSON(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	pretty := false
+	lines := true
+	values := true
+	verbose := false
+	geoJSON := true
+
+	buf := jsonBuffer{}
+	buf.bufferOpen(ngsi.StdWriter, false, false)
+
+	body := []byte(`{}`)
+
+	setJSONDecodeErr(ngsi, 0)
+
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, geoJSON)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "geojson error: {}", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
@@ -1239,17 +1358,17 @@ func TestEntitiesPrintErrorVerboseLinesValuesDecode(t *testing.T) {
 	verbose := false
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
 
 	setJSONDecodeErr(ngsi, 0)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -1265,17 +1384,17 @@ func TestEntitiesPrintErrorVerboseLinesValuesEncode(t *testing.T) {
 	verbose := false
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
 
 	setJSONEncodeErr(ngsi, 0)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -1291,17 +1410,17 @@ func TestEntitiesPrintErrorVerboseLinesDecode(t *testing.T) {
 	verbose := false
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
 
 	setJSONDecodeErr(ngsi, 0)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -1317,17 +1436,17 @@ func TestEntitiesPrintErrorVerboseLinesEncode(t *testing.T) {
 	verbose := false
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
 
 	setJSONEncodeErr(ngsi, 0)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -1343,17 +1462,17 @@ func TestEntitiesPrintErrorVerbosePretty(t *testing.T) {
 	verbose := true
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
 
 	setJSONIndentError(ngsi)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
@@ -1369,17 +1488,17 @@ func TestEntitiesPrintErrorUnmarshal(t *testing.T) {
 	verbose := false
 
 	buf := jsonBuffer{}
-	buf.bufferOpen(ngsi.StdWriter)
+	buf.bufferOpen(ngsi.StdWriter, false, false)
 
 	body := []byte(`[{"id":"airqualityobserved_0","type":"AirQualityObserved","temperature":{"type":"Number","value":6.727447926,"metadata":{}}},{"id":"airqualityobserved_1","type":"AirQualityObserved","temperature":{"type":"Number","value":19.012560208,"metadata":{}}},{"id":"airqualityobserved_2","type":"AirQualityObserved","temperature":{"type":"Number","value":-3.196384014,"metadata":{}}},{"id":"airqualityobserved_3","type":"AirQualityObserved","temperature":{"type":"Number","value":7.992932652,"metadata":{}}},{"id":"airqualityobserved_4","type":"AirQualityObserved","temperature":{"type":"Number","value":-6.620346091,"metadata":{}}},{"id":"airqualityobserved_5","type":"AirQualityObserved","temperature":{"type":"Number","value":-16.634766746,"metadata":{}}},{"id":"airqualityobserved_6","type":"AirQualityObserved","temperature":{"type":"Number","value":20.263618173,"metadata":{}}},{"id":"airqualityobserved_7","type":"AirQualityObserved","temperature":{"type":"Number","value":14.285382467,"metadata":{}}},{"id":"airqualityobserved_8","type":"AirQualityObserved","temperature":{"type":"Number","value":6.998595286,"metadata":{}}}]`)
 
 	setJSONDecodeErr(ngsi, 0)
 
-	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose)
+	err := entitiesPrint(ngsi, body, &buf, pretty, lines, values, verbose, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
