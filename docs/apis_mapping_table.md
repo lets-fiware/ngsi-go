@@ -2,6 +2,126 @@
 
 These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 
+## NGSI-LD API (ETSI GS CIM 009 V1.4.1 2021-02)
+
+| NGSI-LD API                                                                 | NGSI Go commands                                | 
+| --------------------------------------------------------------------------- | ----------------------------------------------- |
+| POST /ngsi-ld/v1/entities/                                                  | create entity                                   |
+| GET /ngsi-ld/v1/entities/                                                   | list entities                                   |
+| GET /ngsi-ld/v1/entities/{entityId}                                         | get entity --id {entityId}                      |
+| DELETE /ngsi-ld/v1/entities/{entityId}                                      | delete entity --id {entityId}                   |
+| POST /ngsi-ld/v1/entities/{entityId}/attrs/                                 | append attrs --id {entityId}                    |
+| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/                                | update attrs --id {entityId}                    |
+| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                        | update attr --id {entityId} --attrName {attrId} |
+| DELETE /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                       | delete attr --id {entityId} --attrName {attrId} |
+| POST /ngsi-ld/v1/subscriptions/                                             | create subscription                             |
+| GET /ngsi-ld/v1/subscriptions/                                              | list subscriptions                              |
+| GET /ngsi-ld/v1/subscriptions/{subscriptionId}                              | get subscription --id {subscriptionId}          |
+| PATCH /ngsi-ld/v1/subscriptions/{subscriptionId}                            | update subscription --id {subscriptionId}       |
+| DELETE /ngsi-ld/v1/subscriptions/{subscriptionId}                           | delete subscription --id {subscriptionId}       |
+| GET /ngsi-ld/v1/types/                                                      | list types                                      |
+| GET /ngsi-ld/v1/types/{type}                                                | (not yet implemented)                           |
+| GET /ngsi-ld/v1/attributes/                                                 | (not yet implemented)                           |
+| GET /ngsi-ld/v1/attributes/{attrId}                                         | (not yet implemented)                           |
+| POST /ngsi-ld/v1/csourceRegistrations/                                      | create registration                             |
+| GET /ngsi-ld/v1/csourceRegistrations/                                       | list registrations                              |
+| GET /ngsi-ld/v1/csourceRegistrations/{registrationId}                       | get registration --id {registrationId}          |
+| PATCH /ngsi-ld/v1/csourceRegistrations/{registrationId}                     | update registration --id {registrationId}       |
+| DELETE /ngsi-ld/v1/csourceRegistrations/{registrationId}                    | delete registration --id {registrationId}       |
+| POST /ngsi-ld/v1/csourceSubscriptions/                                      | (not yet implemented)                           |
+| GET /ngsi-ld/v1/csourceSubscriptions/                                       | (not yet implemented)                           |
+| GET /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                       | (not yet implemented)                           |
+| PATCH /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                     | (not yet implemented)                           |
+| DELETE /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                    | (not yet implemented)                           |
+| POST /ngsi-ld/v1/entityOperations/create                                    | create entities                                 |
+| POST /ngsi-ld/v1/entityOperations/upsert                                    | upsert entities                                 |
+| POST /ngsi-ld/v1/entityOperations/update                                    | update entities                                 |
+| POST /ngsi-ld/v1/entityOperations/delete                                    | delete entities                                 |
+| POST /ngsi-ld/v1/entityOperations/query                                     | (not yet implemented)                           |
+| POST /ngsi-ld/v1/temporal/entities/                                         | (not yet implemented)                           |
+| GET /ngsi-ld/v1/temporal/entities/                                          | (not yet implemented)                           |
+| GET /ngsi-ld/v1/temporal/entities/{entityId}                                | (not yet implemented)                           |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}                             | (not yet implemented)                           |
+| POST /ngsi-ld/v1/temporal/entities/{entityId}/attrs/                        | (not yet implemented)                           |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}              | (not yet implemented)                           |
+| PATCH /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}  | (not yet implemented)                           |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId} | (not yet implemented)                           |
+| POST /ngsi-ld/v1/temporal/entityOperations/query                            | (not yet implemented)                           |
+
+### Orion-LD API
+
+| Orion-LD API               | NGSI Go commands      |
+| -------------------------- | --------------------- |
+| GET /version               | version               |
+| GET /ngsi-ld/ex/v1/version | (not yet implemented) |
+
+### Scorpio broker API
+
+| Scorpio API                     | NGSI Go commands         |
+| ------------------------------- | ------------------------ |
+| GET /scorpio/v1/info/           | admin scorpio list       |
+| GET /scorpio/v1/info/types      | admin scorpio types      |
+| GET /scorpio/v1/info/localtypes | admin scorpio localtypes |
+| GET /scorpio/v1/info/stats      | admin scorpio stats      |
+| GET /scorpio/v1/info/health     | admin scorpio health     |
+
+## FIWARE NGSI v2
+
+| FIWARE NGSI v2                                     | NGSI Go commands                                  | 
+| -------------------------------------------------- | ------------------------------------------------- |
+| GET /v2                                            | apis                                              |
+| GET /v2/entities                                   | list entities                                     |
+| POST /v2/entities                                  | create entity                                     |
+| GET /v2/entities/{entityId}                        | get entity --id {entityId}                        |
+| DELETE /v2/entities/{entityId}                     | delete entity --id {entityId}                     |
+| GET /v2/entities/{entityId}/attrs                  | get attrs --id {entityId}                         |
+| POST /v2/entities/{entityId}/attrs                 | append attributes --id {entityId}                 |
+| PATCH /v2/entities/{entityId}/attrs                | update attributes --id {entityId}                 |
+| PUT /v2/entities/{entityId}/attrs                  | replace attributes --id {entityId}                |
+| GET /v2/entities/{entityId}/attrs/{attrName}       | get attr --id {entityId} --attrName {attrName}    |
+| PUT /v2/entities/{entityId}/attrs/{attrName}       | update attr --id {entityId} --attrName {attrName} |
+| DELETE /v2/entities/{entityId}/attrs/{attrName}    | delete attr --id {entityId} --attrName {attrName} |
+| GET /v2/entities/{entityId}/attrs/{attrName}/value | (not yet implemented)                             |
+| PUT /v2/entities/{entityId}/attrs/{attrName}/value | (not yet implemented)                             |
+| GET /v2/types/                                     | list types                                        |
+| GET /v2/types/{entityType}                         | get type --type {entityType}                      |
+| GET /v2/subscriptions                              | list subscriptions                                |
+| POST /v2/subscriptions                             | create subscription                               |
+| GET /v2/subscriptions/{subscriptionId}             | get subscription --id {subscriptionId}            |
+| PATCH /v2/subscriptions/{subscriptionId}           | update subscription --id {subscriptionId}         |
+| DELETE /v2/subscriptions/{subscriptionId}          | delete subscription --id {subscriptionId}         |
+| GET /v2/registrations                              | list registrations                                |
+| POST /v2/registrations                             | create registration                               |
+| GET /v2/registrations/{registrationId}             | get registration --id {registrationId}            |
+| PATCH /v2/registrations/{registrationId}           | (not yet implemented)                             |
+| DELETE /v2/registrations/{registrationId}          | delete registration --id {registrationId}         |
+| POST /v2/op/update actionType=append               | upsert entities                                   |
+| POST /v2/op/update actionType=appendStrict         | create entities                                   |
+| POST /v2/op/update actionType=update               | update entities                                   |
+| POST /v2/op/update actionType=delete               | delete entities                                   |
+| POST /v2/op/update actionType=replace              | replace entities                                  |
+| POST /v2/op/query                                  | get entities                                      |
+| POST /v2/op/notify                                 | (not yet implemented)                             |
+
+### Orion API
+
+| Orion-LD API                   | NGSI Go commands                          |
+| ------------------------------ | ----------------------------------------- |
+| GET /version                   | version                                   |
+| GET /admin/log                 | admin log                                 |
+| PUT /admin/log                 | admin log --level {logLevel}              |
+| GET /log/trace                 | admin trace                               |
+| PUT /log/trace/{traceLevel}    | admin trace --level {traceLevel}          |
+| DELETE /log/trace              | admin trace --delete                      |
+| DELETE /log/trace/{traceLevel} | admin trace --delete --level {traceLevel} |
+| GET /admin/sem                 | admin semaphore                           |
+| GET /admin/metrics             | admin metrics                             |
+| DELETE /admin/metrics          | admin metrics --reset                     |
+| GET /admin statistics          | amdin statistics                          |
+| DELETE /admin statistics       | admin statistics --delete                 |
+| GET /cache/statistics          | admin cacheStatistics                     |
+| DELETE /cache/statistics       | admin cacheStatistics --delete            |
+
 ## STH-Comet API 
 
 | STH-Comet API                                                                                             | NGSI Go commands                                                                                                |
@@ -185,13 +305,3 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 | GET /v1/service_providers/configs                                                                                                  | providers                                                                                                                        |
 
 -   [Keyrock API - GitHub](https://github.com/ging/fiware-idm/blob/master/apiary.apib)
-
-## Scorpio API 
-
-| Scorpio API                     | NGSI Go commands         |
-| ------------------------------- | ------------------------ |
-| GET /scorpio/v1/info/           | admin scorpio list       |
-| GET /scorpio/v1/info/types      | admin scorpio types      |
-| GET /scorpio/v1/info/localtypes | admin scorpio localtypes |
-| GET /scorpio/v1/info/stats      | admin scorpio stats      |
-| GET /scorpio/v1/info/health     | admin scorpio health     |
