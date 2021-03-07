@@ -4,49 +4,49 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 
 ## NGSI-LD API (ETSI GS CIM 009 V1.4.1 2021-02)
 
-| NGSI-LD API                                                                 | NGSI Go commands                                | 
-| --------------------------------------------------------------------------- | ----------------------------------------------- |
-| POST /ngsi-ld/v1/entities/                                                  | create entity                                   |
-| GET /ngsi-ld/v1/entities/                                                   | list entities                                   |
-| GET /ngsi-ld/v1/entities/{entityId}                                         | get entity --id {entityId}                      |
-| DELETE /ngsi-ld/v1/entities/{entityId}                                      | delete entity --id {entityId}                   |
-| POST /ngsi-ld/v1/entities/{entityId}/attrs/                                 | append attrs --id {entityId}                    |
-| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/                                | update attrs --id {entityId}                    |
-| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                        | update attr --id {entityId} --attrName {attrId} |
-| DELETE /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                       | delete attr --id {entityId} --attrName {attrId} |
-| POST /ngsi-ld/v1/subscriptions/                                             | create subscription                             |
-| GET /ngsi-ld/v1/subscriptions/                                              | list subscriptions                              |
-| GET /ngsi-ld/v1/subscriptions/{subscriptionId}                              | get subscription --id {subscriptionId}          |
-| PATCH /ngsi-ld/v1/subscriptions/{subscriptionId}                            | update subscription --id {subscriptionId}       |
-| DELETE /ngsi-ld/v1/subscriptions/{subscriptionId}                           | delete subscription --id {subscriptionId}       |
-| GET /ngsi-ld/v1/types/                                                      | list types                                      |
-| GET /ngsi-ld/v1/types/{type}                                                | (not yet implemented)                           |
-| GET /ngsi-ld/v1/attributes/                                                 | (not yet implemented)                           |
-| GET /ngsi-ld/v1/attributes/{attrId}                                         | (not yet implemented)                           |
-| POST /ngsi-ld/v1/csourceRegistrations/                                      | create registration                             |
-| GET /ngsi-ld/v1/csourceRegistrations/                                       | list registrations                              |
-| GET /ngsi-ld/v1/csourceRegistrations/{registrationId}                       | get registration --id {registrationId}          |
-| PATCH /ngsi-ld/v1/csourceRegistrations/{registrationId}                     | update registration --id {registrationId}       |
-| DELETE /ngsi-ld/v1/csourceRegistrations/{registrationId}                    | delete registration --id {registrationId}       |
-| POST /ngsi-ld/v1/csourceSubscriptions/                                      | (not yet implemented)                           |
-| GET /ngsi-ld/v1/csourceSubscriptions/                                       | (not yet implemented)                           |
-| GET /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                       | (not yet implemented)                           |
-| PATCH /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                     | (not yet implemented)                           |
-| DELETE /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                    | (not yet implemented)                           |
-| POST /ngsi-ld/v1/entityOperations/create                                    | create entities                                 |
-| POST /ngsi-ld/v1/entityOperations/upsert                                    | upsert entities                                 |
-| POST /ngsi-ld/v1/entityOperations/update                                    | update entities                                 |
-| POST /ngsi-ld/v1/entityOperations/delete                                    | delete entities                                 |
-| POST /ngsi-ld/v1/entityOperations/query                                     | (not yet implemented)                           |
-| POST /ngsi-ld/v1/temporal/entities/                                         | (not yet implemented)                           |
-| GET /ngsi-ld/v1/temporal/entities/                                          | (not yet implemented)                           |
-| GET /ngsi-ld/v1/temporal/entities/{entityId}                                | (not yet implemented)                           |
-| DELETE /ngsi-ld/v1/temporal/entities/{entityId}                             | (not yet implemented)                           |
-| POST /ngsi-ld/v1/temporal/entities/{entityId}/attrs/                        | (not yet implemented)                           |
-| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}              | (not yet implemented)                           |
-| PATCH /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}  | (not yet implemented)                           |
-| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId} | (not yet implemented)                           |
-| POST /ngsi-ld/v1/temporal/entityOperations/query                            | (not yet implemented)                           |
+| NGSI-LD API                                                                 | NGSI Go commands                                                           | 
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| POST /ngsi-ld/v1/entities/                                                  | create entity                                                              |
+| GET /ngsi-ld/v1/entities/                                                   | list entities                                                              |
+| GET /ngsi-ld/v1/entities/{entityId}                                         | get entity --id {entityId}                                                 |
+| DELETE /ngsi-ld/v1/entities/{entityId}                                      | delete entity --id {entityId}                                              |
+| POST /ngsi-ld/v1/entities/{entityId}/attrs/                                 | append attrs --id {entityId}                                               |
+| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/                                | update attrs --id {entityId}                                               |
+| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                        | update attr --id {entityId} --attrName {attrId}                            |
+| DELETE /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                       | delete attr --id {entityId} --attrName {attrId}                            |
+| POST /ngsi-ld/v1/subscriptions/                                             | create subscription                                                        |
+| GET /ngsi-ld/v1/subscriptions/                                              | list subscriptions                                                         |
+| GET /ngsi-ld/v1/subscriptions/{subscriptionId}                              | get subscription --id {subscriptionId}                                     |
+| PATCH /ngsi-ld/v1/subscriptions/{subscriptionId}                            | update subscription --id {subscriptionId}                                  |
+| DELETE /ngsi-ld/v1/subscriptions/{subscriptionId}                           | delete subscription --id {subscriptionId}                                  |
+| GET /ngsi-ld/v1/types/                                                      | list types                                                                 |
+| GET /ngsi-ld/v1/types/{type}                                                | (not yet implemented)                                                      |
+| GET /ngsi-ld/v1/attributes/                                                 | (not yet implemented)                                                      |
+| GET /ngsi-ld/v1/attributes/{attrId}                                         | (not yet implemented)                                                      |
+| POST /ngsi-ld/v1/csourceRegistrations/                                      | create registration                                                        |
+| GET /ngsi-ld/v1/csourceRegistrations/                                       | list registrations                                                         |
+| GET /ngsi-ld/v1/csourceRegistrations/{registrationId}                       | get registration --id {registrationId}                                     |
+| PATCH /ngsi-ld/v1/csourceRegistrations/{registrationId}                     | update registration --id {registrationId}                                  |
+| DELETE /ngsi-ld/v1/csourceRegistrations/{registrationId}                    | delete registration --id {registrationId}                                  |
+| POST /ngsi-ld/v1/csourceSubscriptions/                                      | (not yet implemented)                                                      |
+| GET /ngsi-ld/v1/csourceSubscriptions/                                       | (not yet implemented)                                                      |
+| GET /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                       | (not yet implemented)                                                      |
+| PATCH /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                     | (not yet implemented)                                                      |
+| DELETE /ngsi-ld/v1/csourceSubscriptions/{subscriptionId}                    | (not yet implemented)                                                      |
+| POST /ngsi-ld/v1/entityOperations/create                                    | create entities                                                            |
+| POST /ngsi-ld/v1/entityOperations/upsert                                    | upsert entities                                                            |
+| POST /ngsi-ld/v1/entityOperations/update                                    | update entities                                                            |
+| POST /ngsi-ld/v1/entityOperations/delete                                    | delete entities                                                            |
+| POST /ngsi-ld/v1/entityOperations/query                                     | (not yet implemented)                                                      |
+| POST /ngsi-ld/v1/temporal/entities/                                         | create tentity                                                             |
+| GET /ngsi-ld/v1/temporal/entities/                                          | list tentities                                                             |
+| GET /ngsi-ld/v1/temporal/entities/{entityId}                                | get tentity --id {entityId}                                                |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}                             | delete tentity --id {entityId}                                             |
+| POST /ngsi-ld/v1/temporal/entities/{entityId}/attrs/                        | appned tattrs --id {entityId}                                              |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}              | delete tattr --id {entityId} --attrName {attrId}                           |
+| PATCH /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}  | update tattr --id {entityId} --attrName {attrId} --instanceId {instanceId} |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId} | delete tattr --id {entityId} --attrName {attrId} --instanceId {instanceId} |
+| POST /ngsi-ld/v1/temporal/entityOperations/query                            | (not yet implemented)                                                      |
 
 ### Orion-LD API
 

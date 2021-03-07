@@ -2,6 +2,7 @@
 
 -   [Create an entity](#create-an-entity)
 -   [Create multiple entities](#create-multiple-entities)
+-   [create temporal entity](#create-temporal-entity)
 -   [Create a subscription](#create-a-subscription)
 -   [Create a registration](#create-a-registration)
 
@@ -159,6 +160,26 @@ ngsi create entities --keyValues \
   }
 ]'
 ```
+
+<a name="create-temporal-entity"></a>
+
+## Create a temporal entity
+
+This command creates a temporal entity.
+
+```
+ngsi create [command options] tentity [options]
+```
+
+### Options
+
+| Options                   | Description                     |
+| ------------------------- | ------------------------------- |
+| --data value, -d value    | specify data                    |
+| --link value, -L value    | @context (LD)                   |
+| --context value, -C value | @context (LD)                   |
+| --safeString value        | use safe string (value: on/off) |
+| --help                    | show help (default: false)      |
 
 <a name="create-a-subscription"></a>
 

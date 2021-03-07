@@ -68,49 +68,56 @@ ngsi [global options] command [common options] sub-command [options]
 
 ### NGSI command
 
-| command                      | sub-command  | Description         |
-| ---------------------------- | ------------ | ------------------- |
-| [append](./ngsi/append.md)   | attrs        | append attributes   |
-| [create](./ngsi/create.md)   | entity       | create entity       |
-|                              | entities     | create entities     |
-|                              | subscription | create subscription |
-|                              | registration | create registration |
-| [delete](./ngsi/delete.md)   | entity       | delete entity       |
-|                              | entities     | delete entities     |
-|                              | attr         | delete attribute    |
-|                              | subscription | delete subscription |
-|                              | registration | delete registration |
-| [get](./ngsi/get.md)         | entity       | get entity          |
-|                              | entities     | get entities        |
-|                              | attr         | get attribute       |
-|                              | attrs        | get attributes      |
-|                              | types        | get types           |
-|                              | subscription | get subscription    |
-|                              | registration | get registration    |
-| [list](./ngsi/list.md)       | entities     | list entties        |
-|                              | types        | list types          |
-|                              | subscription | list subscription   |
-|                              | registration | list registration   |
-| [replace](./ngsi/replace.md) | entities     | replace entities    |
-|                              | attrs        | replace attrs       |
-| [update](./ngsi/update.md)   | entities     | update entities     |
-|                              | attr         | update attribute    |
-|                              | attrs        | update attributes   |
-|                              | subscription | update subscription |
-| [upsert](./ngsi/upsert.md)   | entities     | upsert entities     |
+| command                      | sub-command                                                               | Description                                  |
+| ---------------------------- | ------------------------------------------------------------------------- | -------------------------------------------- |
+| [append](./ngsi/append.md)   | [attrs](./ngsi/append.md#append-multiple-attributes)                      | append attributes                            |
+|                              | [tattrs](./ngsi/append.md#append-attribute-instance-of-temporal-entity)   | append attribute instance of temporal entity |
+| [create](./ngsi/create.md)   | [entity](./ngsi/create.md#create-an-entity)                               | create entity                                |
+|                              | [entities](./ngsi/create.md#create-multiple-entities)                     | create entities                              |
+|                              | [tentity](./ngsi/create.md#create-temporal-entity)                        | create temporal entity                       |
+|                              | [subscription](./ngsi/create.md#create-a-subscription)                    | create subscription                          |
+|                              | [registration](./ngsi/create.md#create-a-registration)                    | create registration                          |
+| [delete](./ngsi/delete.md)   | [entity](./ngsi/delete.md#delete-an-entity)                               | delete entity                                |
+|                              | [entities](./ngsi/delete.md#delete-multiple-entities)                     | delete entities                              |
+|                              | [tentity](./ngsi/delete.md#delete-temporal-entity)                        | delete temporal entity                       |
+|                              | [attr](./ngsi/delete.md#delete-an-attribute-from-an-entity)               | delete attribute                             |
+|                              | [tattr](./ngsi/delete.md#delete-an-attribute-from-a-temporal-entity)      | delete attribute of temporal entity          |
+|                              | [subscription](./ngsi/delete.md#delete-a-subscription)                    | delete subscription                          |
+|                              | [registration](./ngsi/delete.md#delete-a-registration)                    | delete registration                          |
+| [get](./ngsi/get.md)         | [entity](./ngsi/get.md#get-an-entity)                                     | get entity                                   |
+|                              | [entities](./ngsi/get.md#get-an-entities)                                 | get entities                                 |
+|                              | [tentity](./ngsi/get.md#get-temporal-entity)                              | get temporal entity                          |
+|                              | [attr](./ngsi/get.md#get-an-attribute)                                    | get attribute                                |
+|                              | [attrs](./ngsi/get.md#get-multiple-attributes)                            | get attributes                               |
+|                              | [subscription](./ngsi/get.md#get-a-subscription)                          | get subscription                             |
+|                              | [registration](./ngsi/get.md#get-a-registration)                          | get registration                             |
+| [list](./ngsi/list.md)       | [types](./ngsi/list.md#list-multiple-types)                               | list types                                   |
+|                              | [entities](./ngsi/list.md#list-multiple-entities)                         | list entties                                 |
+|                              | [tentities](./ngsi/list.md#list-multiple-temporal-entities)               | List temporal entities                       |
+|                              | [subscription](./ngsi/list.md#list-multiple-subscriptions)                | list subscription                            |
+|                              | [registration](./ngsi/list.md#list-multiple-registrations)                | list registration                            |
+| [replace](./ngsi/replace.md) | [entities](./ngsi/replace.md#replace-multiple-entities)                   | replace entities                             |
+|                              | [attrs](./ngsi/replace.md#replace-multiple-attributes)                    | replace attrs                                |
+| [update](./ngsi/update.md)   | [entities](./ngsi/update.md#update-multiple-entities)                     | update entities                              |
+|                              | [attr](./ngsi/update.md#update-an-attribute)                              | update attribute                             |
+|                              | [tattr](./ngsi/update.md#update-an-attribute-instance-of-temporal-entity) | update attribute instance of temporal entity |
+|                              | [attrs](./ngsi/update.md#update-multiple-attributes)                      | update attributes                            |
+|                              | [subscription](./ngsi/update.md#update-a-subscription)                    | update subscription                          |
+| [upsert](./ngsi/upsert.md)   | [entity](./ngsi/upsert.md#upsert-an-entity)                               | upsert entity                                |
+|                              | [entities](./ngsi/upsert.md#upsert-multiple-entities)                     | upsert entities                              |
 
 <a name="time-series-command"></a>
 
 ### Time series command
 
-| command                             | sub-command | Description                                                           |
-| ----------------------------------- | ----------- | --------------------------------------------------------------------- |
-| [hdelete](./time_series/hdelete.md) | attr        | delete all the data associated to certain attribute of certain entity |
-|                                     | entity      | delete historical data of a certain entity                            |
-|                                     | entities    | delete historical data of all entities of a certain type              |
-| [hget](./time_series/hget.md)       | attr        | get hstory of an attribute                                            |
-|                                     | attrs       | get history of attributes                                             |
-|                                     | entities    | list of all the entity id                                             |
+| command                             | sub-command                                                                                            | Description                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| [hdelete](./time_series/hdelete.md) | [attr](./time_series/hdelete.md#delete-all-the-data-associated-to-certain-attribute-of-certain-entity) | delete all the data associated to certain attribute of certain entity |
+|                                     | [entity](./time_series/hdelete.md#delete-historical-data-of-a-certain-entity)                          | delete historical data of a certain entity                            |
+|                                     | [entities](./time_series/hdelete.md#delete-historical-data-of-all-entities-of-a-certain-type)          | delete historical data of all entities of a certain type              |
+| [hget](./time_series/hget.md)       | [attr](./time_series/hget.md#get-hstory-of-an-attribute)                                               | get hstory of an attribute                                            |
+|                                     | [attrs](./time_series/hget.md#get-history-of-attributes)                                               | get history of attributes                                             |
+|                                     | [entities](./time_series/hget.md#list-of-all-the-entity-id)                                            | list of all the entity id                                             |
 
 <a name="cygnus-command"></a>
 
@@ -208,25 +215,26 @@ ngsi [global options] command [common options] sub-command [options]
 
 ### Management commnad
 
-| command                              | sub-command  | Description     |
-| ------------------------------------ | ------------ | --------------- |
-| [broker](./management/broker.md)     | list         | list brokers    |
-|                                      | get          | get broker      |
-|                                      | add          | add broker      |
-|                                      | update       | update broker   |
-|                                      | delete       | delete broker   |
-| [context](./management/context.md)   | list         | list @context   |
-|                                      | add          | add @context    |
-|                                      | update       | udpate @context |
-|                                      | delete       | delete @context |
-| [settings](./management/settings.md) | list         | list settings   |
-|                                      | delete       | delete settings |
-|                                      | clear        | clear settings  |
-| [server](./management/server.md)     | list         | list servers    |
-|                                      | get          | get server      |
-|                                      | add          | add server      |
-|                                      | update       | update server   |
-|                                      | delete       | delete server   |
+| command                              | sub-command                                                | Description     |
+| ------------------------------------ | ---------------------------------------------------------- | --------------- |
+| [broker](./management/broker.md)     | [list](./management/broker.md#list-brokers)                | list brokers    |
+|                                      | [get](./management/broker.md#get-broker)                   | get broker      |
+|                                      | [add](./management/broker.md#add-broker)                   | add broker      |
+|                                      | [update](./management/broker.md#update-broker)             | update broker   |
+|                                      | [delete](./management/broker.md#delete-broker)             | delete broker   |
+| [context](./management/context.md)   | [list](./management/context.md#list-contexts)              | list @context   |
+|                                      | [add](./management/context.md#add-context)                 | add @context    |
+|                                      | [update](./management/context.md#update-context)           | udpate @context |
+|                                      | [delete](./management/context.md#delete-context)           | delete @context |
+|                                      | [server](./management/context.md#serve-context)            | Serve @context  |
+| [settings](./management/settings.md) | [list](./management/settings.md#list-current-settings)     | list settings   |
+|                                      | [delete](./management/settings.md#delete-currnet-settings) | delete settings |
+|                                      | [clear](./management/settings.md#clear-currnet-settings)   | clear settings  |
+| [server](./management/server.md)     | [list](./management/server.md#list-servers)                | list servers    |
+|                                      | [get](./management/server.md#get-server)                   | get server      |
+|                                      | [add](./management/server.md#add-server)                   | add server      |
+|                                      | [update](./management/server.md#update-server)             | update server   |
+|                                      | [delete](./management/server.md#delete-server)             | delete server   |
 | [token](./management/token.md)       | -            | manage token    |
 
 <a name="global-options"></a>

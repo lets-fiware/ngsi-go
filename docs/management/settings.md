@@ -4,6 +4,9 @@
 -   [Delete currnet settings](#delete-currnet-settings)
 -   [Clear currnet settings](#clear-currnet-settings)
 
+
+<a name="list-current-settings"></a>
+
 ## List current settings
 
 ```console
@@ -46,6 +49,8 @@ LogFile:
 LogLevel:
 ```
 
+<a name="delete-currnet-settings"></a>
+
 ## Delete currnet settings
 
 ```console
@@ -64,6 +69,8 @@ ngsi settings list [options]
 ```console
 ngsi settings delete --items service,syslog
 ```
+
+<a name="clear-currnet-settings"></a>
 
 ## Clear currnet settings
 

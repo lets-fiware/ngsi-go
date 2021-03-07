@@ -765,6 +765,19 @@ var appendCmd = cli.Command{
 				return attrsAppend(c)
 			},
 		},
+		{
+			Name:  "tattrs",
+			Usage: "append attribute instance of temporal entity",
+			Flags: []cli.Flag{
+				idFlag,
+				dataFlag,
+				linkFlag,
+				contextFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return troeAttrsAppend(c)
+			},
+		},
 	},
 }
 
@@ -806,6 +819,19 @@ var createCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return entityCreate(c)
+			},
+		},
+		{
+			Name:  "tentity",
+			Usage: "create temporal entity",
+			Flags: []cli.Flag{
+				dataFlag,
+				linkFlag,
+				contextFlag,
+				safeStringFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return troeCreate(c)
 			},
 		},
 		{
@@ -922,6 +948,17 @@ var deleteCmd = cli.Command{
 			},
 		},
 		{
+			Name:  "tentity",
+			Usage: "delete temporal entity",
+			Flags: []cli.Flag{
+				idFlag,
+				linkFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return troeDelete(c)
+			},
+		},
+		{
 			Name:  "attr",
 			Usage: "delete attr",
 			Flags: []cli.Flag{
@@ -932,6 +969,21 @@ var deleteCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return attrDelete(c)
+			},
+		},
+		{
+			Name:  "tattr",
+			Usage: "delete attr for temporal entity",
+			Flags: []cli.Flag{
+				idFlag,
+				attrNameFlag,
+				deleteAllFlag,
+				deleteDatasetID,
+				instanceIDFlag,
+				linkFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return troeAttrDelete(c)
 			},
 		},
 		{
@@ -1006,6 +1058,28 @@ var getCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return entityRead(c)
+			},
+		},
+		{
+			Name:  "tentity",
+			Usage: "get temporal entity",
+			Flags: []cli.Flag{
+				idFlag,
+				attrsFlag,
+				timePropertyFlag,
+				fromDateFlag,
+				toDateFlag,
+				lastNFlag,
+				linkFlag,
+				temporalValuesFlag,
+				sysAttrsFlag,
+				acceptJSONFlag,
+				prettyFlag,
+				safeStringFlag,
+				etsi10Flag,
+			},
+			Action: func(c *cli.Context) error {
+				return troeRead(c)
 			},
 		},
 		{
@@ -1136,6 +1210,38 @@ var listCmd = cli.Command{
 			},
 		},
 		{
+			Name:  "tentities",
+			Usage: "list temporal entities",
+			Flags: []cli.Flag{
+				idFlag,
+				typeFlag,
+				idPatternFlag,
+				attrsFlag,
+				queryFlag,
+				csfFlag,
+				georelFlag,
+				geometryFlag,
+				coordsFlag,
+				geoPropertyFlag,
+				timePropertyFlag,
+				fromDateFlag,
+				toDateFlag,
+				lastNFlag,
+				temporalValuesFlag,
+				sysAttrsFlag,
+				linkFlag,
+				acceptJSONFlag,
+				verboseFlag,
+				linesFlag,
+				prettyFlag,
+				safeStringFlag,
+				etsi10Flag,
+			},
+			Action: func(c *cli.Context) error {
+				return troeList(c)
+			},
+		},
+		{
 			Name:  "subscriptions",
 			Usage: "list subscriptions",
 			Flags: []cli.Flag{
@@ -1233,6 +1339,22 @@ var updateCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return attrUpdate(c)
+			},
+		},
+		{
+			Name:  "tattr",
+			Usage: "update attr instance of temporal entity",
+			Flags: []cli.Flag{
+				idFlag,
+				dataFlag,
+				attrNameFlag,
+				instanceIDFlag,
+				linkFlag,
+				contextFlag,
+				safeStringFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return troeAttrUpdate(c)
 			},
 		},
 		{

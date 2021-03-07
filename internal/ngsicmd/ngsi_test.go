@@ -211,6 +211,13 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"admin", "scorpio", "localtypes"}, rc: 1},
 		{args: []string{"admin", "scorpio", "stats"}, rc: 1},
 		{args: []string{"admin", "scorpio", "health"}, rc: 1},
+		{args: []string{"list", "tentities"}, rc: 1},
+		{args: []string{"create", "tentity"}, rc: 1},
+		{args: []string{"get", "tentity"}, rc: 1},
+		{args: []string{"delete", "tentity"}, rc: 1},
+		{args: []string{"append", "tattrs"}, rc: 1},
+		{args: []string{"update", "tattr"}, rc: 1},
+		{args: []string{"delete", "tattr"}, rc: 1},
 	}
 
 	for _, c := range cases {

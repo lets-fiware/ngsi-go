@@ -40,7 +40,9 @@ USAGE:
 COMMANDS:
    entities      delete entities
    entity        delete entity
+   tentity       delete temporal entity
    attr          delete attr
+   tattr         delete attr for temporal entity
    subscription  delete subscription
    registration  delete registration
    help, h       Shows a list of commands or help for one command

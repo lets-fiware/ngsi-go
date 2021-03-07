@@ -3,6 +3,7 @@
 This command appends multiple attributes.
 
 -   [Append multiple attributes](#append-multiple-attributes)
+-   [append attribute instance of temporal entity](#append-attribute-instance-of-temporal-entity)
 
 ## Common Options
 
@@ -54,3 +55,23 @@ ngsi append attrs --id urn:ngsi-ld:Product:001 \
 ngsi append attrs --id urn:ngsi-ld:Product:001 \
 --keyValues --data '{"specialOffer":false}'
 ```
+
+<a name="append-attribute-instance-of-temporal-entity"></a>
+
+## Append attribute instance of temporal entity
+
+This command appneds attribute instance of temporal entity.
+
+```console
+ngsi append [common options] tattrs [options]
+```
+
+### Options
+
+| Options                   | Description                        |
+| ------------------------- | ---------------------------------- |
+| --id value, -i value      | specify id                         |
+| --data value, -d value    | data                               |
+| --link value, -L value    | @context (LD)                      |
+| --context value, -C value | @context (LD)                      |
+| --help                    | show help (default: false)         |

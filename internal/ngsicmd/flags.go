@@ -319,6 +319,30 @@ var (
 		Name:  "timeProperty",
 		Usage: "timeProperty (LD)",
 	}
+	geoPropertyFlag = &cli.StringFlag{
+		Name:  "geoProperty",
+		Usage: "geo property (LD)",
+	}
+	instanceIDFlag = &cli.StringFlag{
+		Name:  "instanceId",
+		Usage: "attribute instance id (LD)",
+	}
+	temporalValuesFlag = &cli.BoolFlag{
+		Name:  "temporalValues",
+		Usage: "temporal simplified representation of entity",
+	}
+	etsi10Flag = &cli.BoolFlag{
+		Name:  "etsi10",
+		Usage: "ETSI CIM 009 V1.0",
+	}
+	deleteAllFlag = &cli.BoolFlag{
+		Name:  "deleteAll",
+		Usage: "all atribute instances are deleted",
+	}
+	deleteDatasetID = &cli.StringFlag{
+		Name:  "datasetId",
+		Usage: "datasetId of the dataset to be deleted",
+	}
 )
 
 // IoT Agent
