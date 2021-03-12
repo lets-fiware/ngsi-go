@@ -748,7 +748,6 @@ ngsi delete entities --link ctx \
 ]'
 
 ```
-{"success":["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"],"errors":[]}
 ```
 
 #

@@ -210,7 +210,7 @@ func removeLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entity
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
-		if res.StatusCode != http.StatusOK {
+		if res.StatusCode != http.StatusNoContent {
 			return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 		}
 

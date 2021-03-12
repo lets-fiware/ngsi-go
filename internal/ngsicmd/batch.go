@@ -170,11 +170,14 @@ func batchUpsert(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	if err != nil {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
-	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+	if res.StatusCode == http.StatusCreated {
+		fmt.Fprintln(ngsi.StdWriter, string(body))
+		return nil
+	} else if res.StatusCode == http.StatusNoContent {
+		return nil
 	}
 
-	return nil
+	return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 }
 
 func batchDelete(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
@@ -193,11 +196,9 @@ func batchDelete(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusNoContent {
 		return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
-
-	fmt.Fprintln(ngsi.StdWriter, string(body))
 
 	return nil
 }
