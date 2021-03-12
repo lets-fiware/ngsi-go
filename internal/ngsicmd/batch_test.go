@@ -596,7 +596,7 @@ func TestBatchUpdateErrorHTTPStatus(t *testing.T) {
 	}
 }
 
-func TestBatchUpsert(t *testing.T) {
+func TestBatchUpsertNoContent(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,data,link")
@@ -618,6 +618,35 @@ func TestBatchUpsert(t *testing.T) {
 	err = batchUpsert(c, ngsi, client)
 
 	assert.NoError(t, err)
+}
+
+func TestBatchUpsertCreateted(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	setupFlagString(set, "host,data,link")
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.ReqData = []byte(testData)
+	reqRes.ResBody = []byte(`["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"]`)
+	reqRes.Path = "/ngsi-ld/v1/entityOperations/upsert"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = batchUpsert(c, ngsi, client)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "[\"urn:ngsi-ld:TemperatureSensor:002\",\"urn:ngsi-ld:TemperatureSensor:003\"]\n"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestBatchUpsertContext(t *testing.T) {
@@ -759,7 +788,7 @@ func TestBatchDelete(t *testing.T) {
 
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ResBody = []byte(testData)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/delete"
 	mock := NewMockHTTP()

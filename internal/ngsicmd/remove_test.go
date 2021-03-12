@@ -117,7 +117,7 @@ func TestRemoveLD(t *testing.T) {
 	reqRes1.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
 	reqRes1.Path = "/ngsi-ld/v1/entities"
 	reqRes2 := MockHTTPReqRes{}
-	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.Res.StatusCode = http.StatusNoContent
 	reqRes2.ReqData = []byte(`["urn:ngsi-ld:TemperatureSensor:001","urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"]`)
 	reqRes2.Path = "/ngsi-ld/v1/entityOperations/delete"
 	reqRes3 := MockHTTPReqRes{}
@@ -585,7 +585,7 @@ func TestRemoveLDPage(t *testing.T) {
 	reqRes1.ResHeader = http.Header{"Ngsild-Results-Count": []string{"191"}}
 	reqRes1.Path = "/ngsi-ld/v1/entities"
 	reqRes2 := MockHTTPReqRes{}
-	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.Res.StatusCode = http.StatusNoContent
 	reqRes2.ReqData = []byte(`["urn:ngsi-ld:TemperatureSensor:001","urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"]`)
 	reqRes2.Path = "/ngsi-ld/v1/entityOperations/delete"
 	reqRes3 := MockHTTPReqRes{}
