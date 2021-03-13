@@ -306,6 +306,7 @@ var removeCmd = cli.Command{
 		typeFlag,
 		runFlag,
 		linkFlag,
+		ngsiV1Flag,
 	},
 	Action: func(c *cli.Context) error {
 		return remove(c)

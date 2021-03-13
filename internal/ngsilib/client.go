@@ -150,7 +150,7 @@ func (client *Client) SetAcceptGeoJSON() {
 // SetPath is ...
 func (client *Client) SetPath(path string) {
 	if client.Server.ServerType == "broker" {
-		if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/scorpio"}, path) {
+		if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/scorpio", "/v1"}, path) {
 			if client.NgsiType == ngsiLd {
 				path = "/ngsi-ld/v1" + path
 			} else {

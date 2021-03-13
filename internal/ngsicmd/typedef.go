@@ -32,3 +32,25 @@ package ngsicmd
 type entitiesRespose []map[string]interface{}
 type ngsiEntity map[string]interface{}
 type ngsiEntities []ngsiEntity
+
+type v1ContextElement map[string]interface{}
+
+type v1Response struct {
+	ContextResponses []struct {
+		ContextElement v1ContextElement `json:"contextElement"`
+		StatusCode     struct {
+			Code         string `json:"code"`
+			ReasonPhrase string `json:"reasonPhrase"`
+		} `json:"statusCode"`
+	} `json:"contextResponses"`
+	ErrorCode struct {
+		Code         string `json:"code"`
+		ReasonPhrase string `json:"reasonPhrase"`
+		Details      string `json:"details"`
+	} `json:"errorCode"`
+}
+
+type v1Request struct {
+	ContextElements []v1ContextElement `json:"contextElements"`
+	UpdateAction    string             `json:"updateAction"`
+}

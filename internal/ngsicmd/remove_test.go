@@ -72,6 +72,41 @@ func TestRemoveV2(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestRemoveV1(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"200","reasonPhrase":"OK"}}]}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--type=Thing", "--run", "--ngsiV1"})
+
+	err := remove(c)
+
+	assert.NoError(t, err)
+}
+
 func TestRemoveV2AttrNone(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -895,6 +930,528 @@ func TestRemoveLDErrorStatus2(t *testing.T) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, " ", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1TestRun(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
+	reqRes1.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "3 entities will be removed. run remove with --run option\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestRemoveV1Page(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"200","reasonPhrase":"OK"}}]}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	assert.NoError(t, err)
+}
+
+func TestRemoveV1CountZero(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	assert.NoError(t, err)
+}
+
+func TestRemoveV1ErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entitie"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorHTTPStatus(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorResultCount(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorUnmarshal(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"200","reasonPhrase":"OK"}}]}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setJSONDecodeErr(ngsi, 1)
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorMarshal(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"200","reasonPhrase":"OK"}}]}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setJSONEncodeErr(ngsi, 2)
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorHTTPV1(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"200","reasonPhrase":"OK"}}]}`)
+	reqRes2.Path = "/v2/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorHTTPStatusV1(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusBadRequest
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"code":"400","reasonPhrase":"Bad Request"}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, " {\"code\":\"400\",\"reasonPhrase\":\"Bad Request\"}", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorUnmarshalv1Res(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"200","reasonPhrase":"OK"}}]}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setJSONDecodeErr(ngsi, 2)
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorErrorCode(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"400","reasonPhrase":"Bad Request"}}], "errorCode":{"code":"400","reasonPhrase":"Bad Request"}}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, "error 400 Bad Request ", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRemoveV1ErrorContextResError(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"type":"AEDFacilities","id":"AEDFacilities.1"},{"type":"AEDFacilities","id":"AEDFacilities.2"},{"type":"AEDFacilities","id":"AEDFacilities.3"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"191"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ReqData = []byte(`{"contextElements":[{"id":"AEDFacilities.1","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.2","isPattern":"false","type":"AEDFacilities"},{"id":"AEDFacilities.3","isPattern":"false","type":"AEDFacilities"}],"updateAction":"DELETE"}`)
+	reqRes2.ResBody = []byte(`{"contextResponses":[{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.1"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.2"},"statusCode":{"code":"200","reasonPhrase":"OK"}},{"contextElement":{"type":"AEDFacilities","isPattern":"false","id":"AEDFacilities.3"},"statusCode":{"code":"400","reasonPhrase":"Bad Request"}}]}`)
+	reqRes2.Path = "/v1/updateContext"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte("[]")
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
+	reqRes3.Path = "/v2/entities"
+
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "run,ngsiV1")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--run", "--ngsiV1"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	err = removeV1(c, ngsi, client, "Thing")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 10, ngsiErr.ErrNo)
+		assert.Equal(t, "error 400 Bad Request", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

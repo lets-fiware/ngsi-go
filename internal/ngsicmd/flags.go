@@ -142,6 +142,10 @@ var (
 		Name:  "safeString",
 		Usage: "use safe string (value: on/off)",
 	}
+	ngsiV1Flag = &cli.BoolFlag{
+		Name:  "ngsiV1",
+		Usage: "NGSI v1 mode",
+	}
 )
 
 // Common flags for copy command
