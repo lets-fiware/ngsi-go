@@ -67,7 +67,11 @@ func remove(c *cli.Context) error {
 		if c.IsSet("link") {
 			return &ngsiCmdError{funcName, 5, "can't specify --link option on NGSIv2", nil}
 		}
-		f = removeV2
+		if c.Bool("ngsiV1") {
+			f = removeV1
+		} else {
+			f = removeV2
+		}
 	} else {
 		f = removeLD
 	}
@@ -212,6 +216,104 @@ func removeLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entity
 		}
 		if res.StatusCode != http.StatusNoContent {
 			return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		}
+
+		client.RemoveHeader("Content-Type")
+	}
+
+	fmt.Fprintf(ngsi.StdWriter, "%d\n", total)
+
+	return nil
+}
+
+func removeV1(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entityType string) error {
+	const funcName = "removeV1"
+
+	limit := 100
+	total := 0
+	for {
+		client.SetPath("/entities")
+
+		v := url.Values{}
+		v.Set("type", entityType)
+		v.Set("options", "count")
+		v.Set("limit", fmt.Sprintf("%d", limit))
+		v.Set("attrs", "__NONE")
+		client.SetQuery(&v)
+
+		res, body, err := client.HTTPGet()
+		if err != nil {
+			return &ngsiCmdError{funcName, 1, err.Error(), err}
+		}
+		if res.StatusCode != http.StatusOK {
+			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		}
+
+		count, err := client.ResultsCount(res)
+		if err != nil {
+			return &ngsiCmdError{funcName, 3, "ResultsCount error", nil}
+		}
+
+		if !c.IsSet("run") {
+			fmt.Fprintf(ngsi.StdWriter, "%d entities will be removed. run remove with --run option\n", count)
+			return nil
+		}
+
+		if count == 0 {
+			break
+		}
+		if count >= limit {
+			total += limit
+		} else {
+			total += count
+		}
+
+		var entities entitiesRespose
+		err = ngsilib.JSONUnmarshalDecode(body, &entities, false)
+		if err != nil {
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
+		}
+
+		var req v1Request
+		req.UpdateAction = "DELETE"
+		for _, e := range entities {
+			v1e := v1ContextElement{}
+			v1e["type"] = e["type"]
+			v1e["id"] = e["id"]
+			v1e["isPattern"] = "false"
+			req.ContextElements = append(req.ContextElements, v1e)
+		}
+
+		client.SetPath("/v1/updateContext")
+		client.SetContentJSON()
+
+		body, err = ngsilib.JSONMarshal(req)
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+
+		res, body, err = client.HTTPPost(body)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+		if res.StatusCode != http.StatusOK {
+			return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		}
+
+		var resBody v1Response
+		err = ngsilib.JSONUnmarshal(body, &resBody)
+		if err != nil {
+			return &ngsiCmdError{funcName, 8, err.Error(), err}
+		}
+
+		if resBody.ErrorCode.Code != "" {
+			return &ngsiCmdError{funcName, 9, fmt.Sprintf("error %s %s %s", resBody.ErrorCode.Code, resBody.ErrorCode.ReasonPhrase, resBody.ErrorCode.Details), err}
+		}
+
+		for _, e := range resBody.ContextResponses {
+			if e.StatusCode.Code != "200" {
+				return &ngsiCmdError{funcName, 10, fmt.Sprintf("error %s %s", e.StatusCode.Code, e.StatusCode.ReasonPhrase), err}
+			}
 		}
 
 		client.RemoveHeader("Content-Type")

@@ -16,6 +16,7 @@ ngsi rm [options]
 | --path value, -p value    | specify FIWARE ServicePath                     |
 | --type value, -t value    | specify Entity Type (Required)                 |
 | --link value, -L value    | specify @context (LD)                          |
+| --ngsiV1                  | NGSI v1 mode (default: false)                  |
 | --run                     | actually run to copy entities (default: false) |
 | --help                    | show help (default: false)                     |
 
@@ -27,4 +28,8 @@ ngsi rm --host orion --type EvacuationSpace --run
 
 ```console
 ngsi rm --type Device,Event,Thing --run 
+```
+
+```console
+ngsi rm --type AEDFacilities --ngsiV1 --run 
 ```
