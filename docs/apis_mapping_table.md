@@ -1,6 +1,6 @@
 # FIWARE Open APIs mapping table
 
-These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
+These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 
 ## NGSI-LD API (ETSI GS CIM 009 V1.4.1 2021-02)
 
@@ -42,7 +42,7 @@ These tables shows the mapping from FIWARE Open APIs to NGSI Go commands.
 | GET /ngsi-ld/v1/temporal/entities/                                          | list tentities                                                             |
 | GET /ngsi-ld/v1/temporal/entities/{entityId}                                | get tentity --id {entityId}                                                |
 | DELETE /ngsi-ld/v1/temporal/entities/{entityId}                             | delete tentity --id {entityId}                                             |
-| POST /ngsi-ld/v1/temporal/entities/{entityId}/attrs/                        | appned tattrs --id {entityId}                                              |
+| POST /ngsi-ld/v1/temporal/entities/{entityId}/attrs/                        | append tattrs --id {entityId}                                              |
 | DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}              | delete tattr --id {entityId} --attrName {attrId}                           |
 | PATCH /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}  | update tattr --id {entityId} --attrName {attrId} --instanceId {instanceId} |
 | DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId} | delete tattr --id {entityId} --attrName {attrId} --instanceId {instanceId} |

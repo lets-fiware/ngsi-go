@@ -1,7 +1,7 @@
 # Building from sources
 
 The building process of binaries are run in a Docker container.
-So that you don't need to prepare a Golang building environment.
+So that you do not need to prepare a Golang building environment.
 
 ```console
 git clone https://github.com/lets-fiware/ngsi-go.git

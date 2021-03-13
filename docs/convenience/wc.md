@@ -37,7 +37,7 @@ ngsi wc [common options] entities [options]
 | --link value, -L value | specify @context                   |
 | --help                 | specify show help (default: false) |
 
-### Exapmles
+### Examples
 
 #### Example 1
 
@@ -69,7 +69,7 @@ This command prints number of subscriptions.
 ngsi wc [common options] subscriptions
 ```
 
-### Exapmles
+### Examples
 
 #### Example 1
 
@@ -91,7 +91,7 @@ This command prints number of registrations.
 ngsi wc [common options] registrations
 ```
 
-### Exapmles
+### Examples
 
 #### Example 1
 
@@ -113,7 +113,7 @@ This command will print number of types.
 ngsi wc [common options] types
 ```
 
-### Exapmles
+### Examples
 
 #### Example 1
 

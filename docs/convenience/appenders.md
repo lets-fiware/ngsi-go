@@ -209,5 +209,5 @@ ngsi admin --host cygnus appenders delete --name test
 ```
 
 ```json
-{"success":"true","result":" Appender 'test' removed succesfully"}
+{"success":"true","result":" Appender 'test' removed successfully"}
 ```

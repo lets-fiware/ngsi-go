@@ -313,7 +313,7 @@ ngsi list entities -q "refProduct%==urn:ngsi-ld:Product:001" --attrs type
 
 # List temporal entities
 
-This commnad lists multiple tempral entities.
+This command lists multiple tempral entities.
 
 <a name="list-multiple-subscriptions"></a>
 

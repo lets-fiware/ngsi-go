@@ -485,5 +485,5 @@ ngsi admin loggers delete --name org.mongodb
 ```
 
 ```json
-{"success":"true","result":" Logger 'org.mongodb' removed succesfully"}
+{"success":"true","result":" Logger 'org.mongodb' removed successfully"}
 ```
