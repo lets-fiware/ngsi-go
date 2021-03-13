@@ -102,7 +102,7 @@ ngsi delete entities \
 
 ## Delete a temporal entity
 
-This commnad will delete a temporal entity.
+This command will delete a temporal entity.
 
 ```console
 ngsi delete [common options] tentity [options]
@@ -120,7 +120,7 @@ ngsi delete [common options] tentity [options]
 
 ## Delete an Attribute from an Entity
 
-This commnad will delete attribute.
+This command will delete attribute.
 
 ```console
 ngsi delete [common options] attr [options]
@@ -148,7 +148,7 @@ ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
 
 ## Delete an attribute from a temporal entity
 
-This commnad will delete an attribute from a temporal entity.
+This command will delete an attribute from a temporal entity.
 
 ```console
 ngsi delete [common options] tattr [options]
@@ -170,7 +170,7 @@ ngsi delete [common options] tattr [options]
 
 ## Delete a subscription
 
-This commnad deletes subscriptions.
+This command deletes subscriptions.
 
 ```console
 ngsi delete [common options] subscription [options]
@@ -195,7 +195,7 @@ ngsi delete subscription --id urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 
 ## Delete a registration
 
-This commnad deletes registrations.
+This command deletes registrations.
 
 ```console
 ngsi delete [common options] registration [options]

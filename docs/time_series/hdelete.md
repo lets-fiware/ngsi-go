@@ -18,7 +18,7 @@
 
 ## Delete all the data associated to certain attribute of certain entity
 
-This commnad deletes all the data associated to certain attribute of certain entity.
+This command deletes all the data associated to certain attribute of certain entity.
 
 ```console
 ngsi hdelete [common options] attr [options]

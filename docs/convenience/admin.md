@@ -8,7 +8,7 @@ This command gives you various system information for FIWARE Orion, Cygnus, Pers
 -   [Metrics](#metrics)
 -   [Statistics](#statistics)
 -   [Cache statistics](#cache-statistics)
--   Sub commnads
+-   Sub commands
     -   [appenders](appenders.md)
     -   [loggers](loggers.md)
     -   [scorpio](scorpio.md)

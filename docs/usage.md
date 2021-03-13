@@ -8,7 +8,7 @@
     -   [IoT Agent command](#iot-agent-command)
     -   [Perseo command](#context-aware-cep-command)
     -   [Keyrock](#keyrock-command)
-    -   [Management commnad](#management-commnad)
+    -   [Management command](#management-command)
     -   [Global Options](#global-options)
     -   [Common options](#common-options)
 -   [DateTime options](#datetime-options)
@@ -211,9 +211,9 @@ ngsi [global options] command [common options] sub-command [options]
 |                                           |                                                                         | [delete](keyrock/applications-trusted-applications.md#delete-a-trusted-application)                         | Delete a trusted application                                                                  |
 | [providers](keyrock/providers.md)         | -                                                                       | -                                                                                                           | Print service providers                                                                       |
 
-<a name="management-commnad"></a>
+<a name="management-command"></a>
 
-### Management commnad
+### Management command
 
 | command                              | sub-command                                                | Description     |
 | ------------------------------------ | ---------------------------------------------------------- | --------------- |
@@ -364,7 +364,7 @@ ngsi broker get -host orion
 {"brokerHost":"http://localhost:1026","ngsiType":"v2","safeString":"off"}
 ```
 
-The value of the `name` attribute has a forbidden characters.
+The value of the `name` attribute has forbidden characters.
 
 ```console
 ngsi create entity --keyValues \
