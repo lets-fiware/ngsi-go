@@ -92,13 +92,6 @@ var (
 		Aliases: []string{"h"},
 		Value:   "",
 	}
-	destinationFlag = &cli.StringFlag{
-		Name:     "destination",
-		Aliases:  []string{"d"},
-		Required: true,
-		Usage:    "host or alias",
-		Value:    "",
-	}
 	tokenFlag = &cli.StringFlag{
 		Name:  "token",
 		Usage: "oauth token",
@@ -150,6 +143,13 @@ var (
 
 // Common flags for copy command
 var (
+	destinationFlag = &cli.StringFlag{
+		Name:     "host2",
+		Aliases:  []string{"d"},
+		Required: true,
+		Usage:    "host or alias",
+		Value:    "",
+	}
 	token2Flag = &cli.StringFlag{
 		Name:  "token2",
 		Usage: "oauth token for destination",
@@ -161,6 +161,10 @@ var (
 	scope2Flag = &cli.StringFlag{
 		Name:  "path2",
 		Usage: "FIWARE ServicePath for destination",
+	}
+	context2Flag = &cli.StringFlag{
+		Name:  "context2",
+		Usage: "@context for destination",
 	}
 	runFlag = &cli.BoolFlag{
 		Name:  "run",

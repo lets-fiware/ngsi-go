@@ -25,43 +25,11 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi cp --help
+# 0001 ngsi cp from v2 to ld
 #
-ngsi cp --help
-
-```
-NAME:
-   ngsi cp - copy entities
-
-USAGE:
-   ngsi cp [command options] [arguments...]
-
-CATEGORY:
-   CONVENIENCE
-
-OPTIONS:
-   --host value, -h value     host or alias
-   --host2 value, -d value    host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --link value, -L value     @context (LD)
-   --type value, -t value     Entity Type
-   --token2 value             oauth token for destination
-   --service2 value           FIWARE Service for destination
-   --path2 value              FIWARE ServicePath for destination
-   --context2 value           @context for destination
-   --ngsiV1                   NGSI v1 mode (default: false)
-   --run                      run command (default: false)
-   --help                     show help (default: false)
-   
-```
-
-#
-# 1000 copy008 cannot copy entites from NGSI-LD to NGSI v2
-#
-ngsi cp --host orion-ld --host2 orion
+ngsi cp --host orion --host2 orion-ld --type Thing
 
 ```1
-copy008 cannot copy entites from NGSI-LD to NGSI v2
+copy010 not yet implemented
 ```
+

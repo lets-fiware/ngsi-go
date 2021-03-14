@@ -275,6 +275,17 @@ func TestSetContentJSON(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestSetContentLdJSON(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
+
+	client.SetContentLdJSON()
+
+	actual := client.Headers["Content-Type"]
+	expected := "application/ld+json"
+	assert.Equal(t, expected, actual)
+}
+
 func TestSetAcceptJSON(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
 	client.Server = &Server{ServerType: "broker"}

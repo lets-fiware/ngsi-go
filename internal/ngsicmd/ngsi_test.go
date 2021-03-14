@@ -53,7 +53,7 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"admin", "metrics"}, rc: 1},
 		{args: []string{"admin", "statistics"}, rc: 1},
 		{args: []string{"admin", "cacheStatistics"}, rc: 1},
-		{args: []string{"cp", "--type", "abc", "--destination", "abc"}, rc: 1},
+		{args: []string{"cp", "--type", "abc", "--host2", "abc"}, rc: 1},
 		{args: []string{"wc", "entities"}, rc: 1},
 		{args: []string{"wc", "subscriptions"}, rc: 1},
 		{args: []string{"wc", "registrations"}, rc: 1},

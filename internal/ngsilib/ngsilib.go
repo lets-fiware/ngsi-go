@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -140,6 +141,14 @@ func (ngsi *NGSI) BoolFlag(s string) (bool, error) {
 		return true, nil
 	}
 	return false, &LibError{funcName, 1, fmt.Sprintf("unknown parameter: %s", s), nil}
+}
+
+// StdoutFlush is ...
+func (ngsi *NGSI) StdoutFlush() {
+	out, ok := ngsi.StdWriter.(*bufio.Writer)
+	if ok {
+		_ = out.Flush()
+	}
 }
 
 func getConfigDir(io IoLib) (string, error) {
