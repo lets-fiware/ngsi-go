@@ -83,6 +83,7 @@ func remove(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
+		ngsi.StdoutFlush()
 	}
 
 	return nil
