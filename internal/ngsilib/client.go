@@ -137,6 +137,11 @@ func (client *Client) SetContentJSON() {
 	client.Headers["Content-Type"] = "application/json"
 }
 
+// SetContentLdJSON is ...
+func (client *Client) SetContentLdJSON() {
+	client.Headers["Content-Type"] = "application/ld+json"
+}
+
 // SetAcceptJSON is ...
 func (client *Client) SetAcceptJSON() {
 	client.Headers["Accept"] = "application/json"

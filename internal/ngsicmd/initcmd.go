@@ -141,7 +141,7 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 		ngsi.Updated = true
 	}
 
-	ngsi.Destination = c.String("destination")
+	ngsi.Destination = c.String("host2")
 
 	if requiredHost && ngsi.Host == "" {
 		return nil, &ngsiCmdError{funcName, 5, "required host not found", err}

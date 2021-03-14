@@ -1,0 +1,641 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 Remove entities
+#
+ngsi rm --run --host orion-ld --service "" --type TemperatureSensor,Building --link ctx
+
+```
+REGEX(.*)
+REGEX(.*)
+```
+
+#
+# 0011 Create entties
+#
+ngsi upsert entities --link ctx \
+--data '[
+ {"id": "urn:ngsi-ld:TemperatureSensor:001", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:002", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:003", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:004", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:005", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:006", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } }
+]'
+
+```
+```
+
+#
+# 0012 List entites
+#
+ngsi list --host orion-ld entities --type TemperatureSensor --link ctx
+
+```
+urn:ngsi-ld:TemperatureSensor:001
+urn:ngsi-ld:TemperatureSensor:002
+urn:ngsi-ld:TemperatureSensor:003
+urn:ngsi-ld:TemperatureSensor:004
+urn:ngsi-ld:TemperatureSensor:005
+urn:ngsi-ld:TemperatureSensor:006
+```
+
+#
+# 0013 Copy entities
+#
+ngsi cp --host orion-ld --host2 orion-ld --service2 openiot --type TemperatureSensor --link ctx
+
+```
+6 entities will be copied. run copy with --run option
+```
+
+#
+# 0014 Copy entities --run
+#
+ngsi cp --run --host orion-ld --host2 orion-ld --service2 openiot --type TemperatureSensor --link ctx
+
+```
+6
+```
+
+#
+# 0015 List entties (expantion)
+#
+ngsi list --host orion-ld --service openiot entities --pretty --type https://uri.fiware.org/ns/data-models#TemperatureSensor
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:005",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:006",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 0016 List entties (compaction)
+#
+ngsi list --host orion-ld --service openiot entities --pretty --link ctx --type TemperatureSensor
+
+```
+[
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:005",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:006",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 0017 Remove entities
+#
+ngsi rm --run --host orion-ld --service openiot --type TemperatureSensor --link ctx
+
+```
+6
+```
+
+#
+# 0018 Remove entities
+#
+ngsi rm --run --host orion-ld --service "" --type TemperatureSensor --link ctx
+
+```
+6
+```
+
+#
+# 0101 Remove entities
+#
+ngsi rm --run --host orion-ld --service openiot --type TemperatureSensor,Building --link ctx
+
+```
+REGEX(.*)
+REGEX(.*)
+```
+
+#
+# 0102 Remove entities
+#
+ngsi rm --run --host orion-ld --service "" --type TemperatureSensor,Building --link ctx
+
+```
+REGEX(.*)
+REGEX(.*)
+```
+
+#
+# 0103 Create entties TemperatureSensor
+#
+ngsi upsert entities --link ctx \
+--data '[
+ {"id": "urn:ngsi-ld:TemperatureSensor:001", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:002", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:003", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:004", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:005", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:TemperatureSensor:006", "type": "TemperatureSensor", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } }
+]'
+
+```
+```
+
+#
+# 0104 Create entties Building
+#
+ngsi upsert entities --link ctx \
+--data '[
+ {"id": "urn:ngsi-ld:Building:001", "type": "Building", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:Building:002", "type": "Building", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:Building:003", "type": "Building", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:Building:004", "type": "Building", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:Building:005", "type": "Building", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } },
+ {"id": "urn:ngsi-ld:Building:006", "type": "Building", "temperature": { "type": "Property", "value": 21, "unitCode": "CEL" } }
+]'
+
+```
+```
+
+#
+# 0105 List entites TemperatureSensor
+#
+ngsi list --host orion-ld entities --type TemperatureSensor --link ctx
+
+```
+urn:ngsi-ld:TemperatureSensor:001
+urn:ngsi-ld:TemperatureSensor:002
+urn:ngsi-ld:TemperatureSensor:003
+urn:ngsi-ld:TemperatureSensor:004
+urn:ngsi-ld:TemperatureSensor:005
+urn:ngsi-ld:TemperatureSensor:006
+```
+
+#
+# 0106 List entites Building
+#
+ngsi list --host orion-ld entities --type Building --link ctx
+
+```
+urn:ngsi-ld:Building:001
+urn:ngsi-ld:Building:002
+urn:ngsi-ld:Building:003
+urn:ngsi-ld:Building:004
+urn:ngsi-ld:Building:005
+urn:ngsi-ld:Building:006
+```
+
+#
+# 0107 Copy entities
+#
+ngsi cp --host orion-ld --host2 orion-ld --service2 openiot --type TemperatureSensor,Building --link ctx
+
+```
+6 entities will be copied. run copy with --run option
+6 entities will be copied. run copy with --run option
+```
+
+#
+# 0108 Copy entities --run
+#
+ngsi cp --run --host orion-ld --host2 orion-ld --service2 openiot --type TemperatureSensor,Building --link ctx
+
+```
+6
+6
+```
+
+#
+# 0109 List entties (expantion)
+#
+ngsi list --host orion-ld --service openiot entities --type https://uri.fiware.org/ns/data-models#TemperatureSensor --pretty
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:005",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:006",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 0110 List entties (compaction)
+#
+ngsi list --host orion-ld --service openiot entities --pretty --type TemperatureSensor --link ctx
+
+```
+[
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:005",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:006",
+    "type": "TemperatureSensor",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 0111 List entties (expantion) Building
+#
+ngsi list --host orion-ld --service openiot entities --type https://uri.fiware.org/ns/data-models#Building --pretty 
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:Building:001",
+    "type": "https://uri.fiware.org/ns/data-models#Building",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:Building:002",
+    "type": "https://uri.fiware.org/ns/data-models#Building",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:Building:003",
+    "type": "https://uri.fiware.org/ns/data-models#Building",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:Building:004",
+    "type": "https://uri.fiware.org/ns/data-models#Building",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:Building:005",
+    "type": "https://uri.fiware.org/ns/data-models#Building",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:Building:006",
+    "type": "https://uri.fiware.org/ns/data-models#Building",
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 0112 List entties (compaction) Building
+#
+ngsi list --host orion-ld --service openiot entities --pretty --type Building --link ctx
+
+```
+[
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:Building:001",
+    "type": "Building",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:Building:002",
+    "type": "Building",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:Building:003",
+    "type": "Building",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:Building:004",
+    "type": "Building",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:Building:005",
+    "type": "Building",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:Building:006",
+    "type": "Building",
+    "temperature": {
+      "type": "Property",
+      "value": 21,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 0113 Remove entities
+#
+ngsi rm --run --host orion-ld --service openiot --type TemperatureSensor,Building --link ctx
+
+```
+6
+6
+```
+
+#
+# 0114 Remove entities
+#
+ngsi rm --run --host orion-ld --service "" --type TemperatureSensor,Building --link ctx
+
+```
+6
+6
+```

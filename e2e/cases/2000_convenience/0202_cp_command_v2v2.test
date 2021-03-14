@@ -1,0 +1,243 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0011 Remove entity
+#
+ngsi rm --run --host orion --type Device
+
+```
+REGEX(.*)
+```
+
+#
+# 0012 Create enttiies
+#
+ngsi create --host orion entities \
+--data '[
+ {"id":"urn:ngsi-ld:Device:001","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:002","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:003","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:004","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:005","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:006","type":"Device"}
+]'
+
+```
+```
+
+#
+# 0013 Count entities
+#
+ngsi wc entities --type Device
+
+```
+6
+```
+
+#
+# 0014 Copy entites
+#
+ngsi cp --host orion --host2 orion --service2 openiot --type Device
+
+```
+6 entities will be copied. run copy with --run option
+```
+
+#
+# 0015 Copy entites --run
+#
+ngsi cp --run --host orion --host2 orion --service2 openiot --type Device
+
+```
+6
+```
+
+#
+# 0016 List entities
+#
+ngsi list --host orion --service openiot entities --type Device
+
+```
+urn:ngsi-ld:Device:001
+urn:ngsi-ld:Device:002
+urn:ngsi-ld:Device:003
+urn:ngsi-ld:Device:004
+urn:ngsi-ld:Device:005
+urn:ngsi-ld:Device:006
+```
+
+#
+# 0017 Remove entities
+#
+ngsi rm --run --host orion --service openiot --type Device
+
+```
+6
+```
+
+#
+# 0018 Remove entities
+#
+ngsi rm --run --host orion --service "" --type Device
+
+```
+6
+```
+
+#
+# 0021 Remove entity
+#
+ngsi rm --run --host orion --type Device
+
+```
+REGEX(.*)
+```
+
+#
+# 0022 Remove entity
+#
+ngsi rm --run --host orion --type Event
+
+```
+REGEX(.*)
+```
+
+#
+# 0023 Create enttiies
+#
+ngsi create --host orion entities \
+--data '[
+ {"id":"urn:ngsi-ld:Device:001","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:002","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:003","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:004","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:005","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:006","type":"Device"}
+]'
+
+```
+```
+
+#
+# 0024 Create enttiies
+#
+ngsi create --host orion entities \
+--data '[
+ {"id":"urn:ngsi-ld:Event:001","type":"Event"},
+ {"id":"urn:ngsi-ld:Event:002","type":"Event"},
+ {"id":"urn:ngsi-ld:Event:003","type":"Event"},
+ {"id":"urn:ngsi-ld:Event:004","type":"Event"},
+ {"id":"urn:ngsi-ld:Event:005","type":"Event"}
+]'
+
+```
+```
+
+#
+# 0025 Count entities
+#
+ngsi wc entities --type Device
+
+```
+6
+```
+
+#
+# 0026 Count entities
+#
+ngsi wc entities --type Event
+
+```
+5
+```
+
+#
+# 0027 Copy entites
+#
+ngsi cp --host orion --host2 orion --service2 openiot --type Device,Event
+
+```
+6 entities will be copied. run copy with --run option
+5 entities will be copied. run copy with --run option
+```
+
+#
+# 0028 Copy entites --run
+#
+ngsi cp --run --host orion --host2 orion --service2 openiot --type Device,Event
+
+```
+6
+5
+```
+
+#
+# 0029 List entities
+#
+ngsi list --host orion --service openiot entities --type Device
+
+```
+urn:ngsi-ld:Device:001
+urn:ngsi-ld:Device:002
+urn:ngsi-ld:Device:003
+urn:ngsi-ld:Device:004
+urn:ngsi-ld:Device:005
+urn:ngsi-ld:Device:006
+```
+
+#
+# 0030 List entities
+#
+ngsi list --host orion --service openiot entities --type Event
+
+```
+urn:ngsi-ld:Event:001
+urn:ngsi-ld:Event:002
+urn:ngsi-ld:Event:003
+urn:ngsi-ld:Event:004
+urn:ngsi-ld:Event:005
+```
+
+#
+# 0031 Remove entities
+#
+ngsi rm --run --host orion --service openiot --type Device,Event
+
+```
+6
+5
+```
+
+#
+# 0032 Remove entities
+#
+ngsi rm --run --host orion --service "" --type Device,Event
+
+```
+6
+5
+```

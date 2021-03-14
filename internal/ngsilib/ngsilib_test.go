@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"bufio"
 	"errors"
 	"os"
 	"testing"
@@ -124,6 +125,15 @@ func TestBoolError(t *testing.T) {
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: fiware", ngsiErr.Message)
 	}
+}
+
+func TestStdoutFlush(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	ngsi.StdWriter = bufio.NewWriter(os.Stdout)
+
+	ngsi.StdoutFlush()
+
 }
 
 func TestGetConfigDir(t *testing.T) {
