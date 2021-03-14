@@ -108,7 +108,7 @@ ngsi hget entities --type Event
 ### History of an attribute of a given entity instance
 
 ```console
-ngsi hget attr --id device001 --attrName A1 --lastN 3
+ngsi hget attr --id device001 --attr A1 --lastN 3
 ```
 
 ```json
@@ -131,7 +131,7 @@ ngsi hget attr --id device001 --attrName A1 --lastN 3
 ### History values of an attribute of a given entity instance
 
 ```console
-ngsi hget attr --id device001 --attrName A1 --lastN 3 --value
+ngsi hget attr --id device001 --attr A1 --lastN 3 --value
 ```
 
 ```json
@@ -152,7 +152,7 @@ ngsi hget attr --id device001 --attrName A1 --lastN 3 --value
 ### History of an attribute of N entities of the same type
 
 ```console
-ngsi hget attr --sameType --type Thing --attrName A2 --hLimit 4
+ngsi hget attr --sameType --type Thing --attr A2 --hLimit 4
 ```
 
 ```json
@@ -189,7 +189,7 @@ ngsi hget attr --sameType --type Thing --attrName A2 --hLimit 4
 ### History values of an attribute of N entities of the same type
 
 ```console
-ngsi hget attr --sameType --type Thing --attrName A2 --hLimit 4 --value
+ngsi hget attr --sameType --type Thing --attr A2 --hLimit 4 --value
 ```
 
 ```json
@@ -224,7 +224,7 @@ ngsi hget attr --sameType --type Thing --attrName A2 --hLimit 4 --value
 ### History of an attribute of N entities of N types
 
 ```console
-ngsi hget attr --nTypes --attrName A2 --hLimit 4
+ngsi hget attr --nTypes --attr A2 --hLimit 4
 ```
 
 ```json
@@ -292,7 +292,7 @@ ngsi hget attr --nTypes --attrName A2 --hLimit 4
 ### History values of of an attribute of N entities of N types
 
 ```console
-ngsi hget attr --nTypes --attrName A2 --hLimit 4 --value
+ngsi hget attr --nTypes --attr A2 --hLimit 4 --value
 ```
 
 ```json

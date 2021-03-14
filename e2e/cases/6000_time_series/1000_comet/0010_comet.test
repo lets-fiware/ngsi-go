@@ -40,7 +40,7 @@ FIWARE-SerivcePath /
 # 0010 hget attr Filtering by offset and limit - Raw data consumption
 #
 ngsi hget --host comet --service openiot --path / \
-attr --type Thing --id device001 --attrName A1 --hLimit 10 --hOffset 0 --pretty
+attr --type Thing --id device001 --attr A1 --hLimit 10 --hOffset 0 --pretty
 
 ```
 {
@@ -104,7 +104,7 @@ attr --type Thing --id device001 --attrName A1 --hLimit 10 --hOffset 0 --pretty
 # 0020 hget attr Filtering by number of last entries - Raw data consumption
 #
 ngsi hget --host comet --service openiot --path / \
-attr --type Thing --id device001 --attrName A1 --lastN 10 --pretty
+attr --type Thing --id device001 --attr A1 --lastN 10 --pretty
 
 ```
 {
@@ -168,7 +168,7 @@ attr --type Thing --id device001 --attrName A1 --lastN 10 --pretty
 # 0030 hget attr Filtering by aggregation method and resolution
 #
 ngsi hget --host comet --service openiot --path / \
-attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod hour --pretty
+attr --type Thing --id device001 --attr A1 --aggrMethod sum --aggrPeriod hour --pretty
 
 ```
 {
@@ -459,7 +459,7 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod hou
 # 0040 hget attr Filtering by aggregation method and resolution
 #
 ngsi hget --host comet --service openiot --path / \
-attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod day --pretty
+attr --type Thing --id device001 --attr A1 --aggrMethod sum --aggrPeriod day --pretty
 
 ```
 {
@@ -497,7 +497,7 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod sum --aggrPeriod day
 # 0050 hget attr Filtering by aggregation method and resolution
 #
 ngsi hget --host comet --service openiot --path / \
-attr --type Thing --id device001 --attrName A1 --aggrMethod max --aggrPeriod day --pretty
+attr --type Thing --id device001 --attr A1 --aggrMethod max --aggrPeriod day --pretty
 
 ```
 {
@@ -535,7 +535,7 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod max --aggrPeriod day
 # 0060 hget attr Filtering by aggregation method and resolution
 #
 ngsi hget --host comet \
-attr --type Thing --id device001 --attrName A1 --aggrMethod min --aggrPeriod day --pretty
+attr --type Thing --id device001 --attr A1 --aggrMethod min --aggrPeriod day --pretty
 
 ```
 {
@@ -572,7 +572,7 @@ attr --type Thing --id device001 --attrName A1 --aggrMethod min --aggrPeriod day
 #
 # 9999 Clean up
 #
-ngsi hdelete --host comet attr --type Thing --id device001 --attrName A1 --run
+ngsi hdelete --host comet attr --type Thing --id device001 --attr A1 --run
 
 ```
 ```

@@ -127,8 +127,8 @@ func qlAttrRead(c *cli.Context) error {
 func qlAttrReadMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "qlAttrReadMain"
 
-	if !c.IsSet("attrName") {
-		return &ngsiCmdError{funcName, 1, "missing attrName", nil}
+	if !c.IsSet("attr") {
+		return &ngsiCmdError{funcName, 1, "missing attr", nil}
 	}
 
 	if c.IsSet("sameType") && c.IsSet("nTypes") {
@@ -143,21 +143,21 @@ func qlAttrReadMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 	param := []string{"aggrMethod", "aggrPeriod", "lastN", "hLimit", "hOffset", "lastN", "georel", "geometry", "coords"}
 
 	if c.Bool("nTypes") { // History of an attribute of N entities of N types.
-		path = fmt.Sprintf("/v2/attrs/%s", c.String("attrName"))
+		path = fmt.Sprintf("/v2/attrs/%s", c.String("attr"))
 		param = append([]string{"id", "type", "aggrScope"}, param...)
 
 	} else if c.Bool("sameType") { // History of an attribute of N entities of the same type.
 		if !c.IsSet("type") {
 			return &ngsiCmdError{funcName, 4, "missing type", nil}
 		}
-		path = fmt.Sprintf("/v2/types/%s/attrs/%s", c.String("type"), c.String("attrName"))
+		path = fmt.Sprintf("/v2/types/%s/attrs/%s", c.String("type"), c.String("attr"))
 		param = append([]string{"id", "aggrScope"}, param...)
 
 	} else { // History of an attribute of a given entity instance.
 		if !c.IsSet("id") {
 			return &ngsiCmdError{funcName, 5, "missing id", nil}
 		}
-		path = fmt.Sprintf("/v2/entities/%s/attrs/%s", c.String("id"), c.String("attrName"))
+		path = fmt.Sprintf("/v2/entities/%s/attrs/%s", c.String("id"), c.String("attr"))
 		param = append([]string{"type"}, param...)
 	}
 

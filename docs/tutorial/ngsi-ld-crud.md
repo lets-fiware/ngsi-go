@@ -276,7 +276,7 @@ This example updates the value of the `category` attribute of the Entity with `i
 #### :one::four: Request:
 
 ```console
-ngsi update attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attrName category \
+ngsi update attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attr category \
 --data '{
     "value": ["sensor", "actuator"],
     "type": "Property"
@@ -409,7 +409,7 @@ This example removes the `batteryLevel` attribute from the entity with `id=urn:n
 #### :one::nine: Request:
 
 ```console
-ngsi delete attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attrName batteryLevel
+ngsi delete attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attr batteryLevel
 ```
 
 ### Batch Delete Multiple Entities
@@ -419,7 +419,7 @@ This example uses the convenience batch processing endpoint to delete some **Tem
 #### :two::zero: Request:
 
 ```console
-ngsi delete attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attrName batteryLevel
+ngsi delete attr --link tutorial --id urn:ngsi-ld:TemperatureSensor:001 --attr batteryLevel
 ngsi delete entities --link tutorial \
 --data '[
   "urn:ngsi-ld:TemperatureSensor:002",

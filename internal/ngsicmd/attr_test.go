@@ -50,10 +50,10 @@ func TestAttrReadV2(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrRead(c)
 
@@ -79,10 +79,10 @@ func TestAttrReadV2Pretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--pretty", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--pretty", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrRead(c)
 
@@ -108,10 +108,10 @@ func TestAttrReadV2SafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--safeString=on"})
 
 	err := attrRead(c)
 
@@ -127,7 +127,7 @@ func TestAttrReadV2SafeString(t *testing.T) {
 func TestAttrReadLD(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -138,7 +138,7 @@ func TestAttrReadLD(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 	err := attrRead(c)
 
 	if assert.NoError(t, err) {
@@ -153,7 +153,7 @@ func TestAttrReadLD(t *testing.T) {
 func TestAttrReadErrorInitCmd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -164,7 +164,7 @@ func TestAttrReadErrorInitCmd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:001", "--attr=price"})
 	err := attrRead(c)
 
 	if assert.Error(t, err) {
@@ -187,10 +187,10 @@ func TestAttrReadErrorNewClient(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,link")
+	setupFlagString(set, "host,id,type,attr,data,link")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrRead(c)
 
@@ -214,10 +214,10 @@ func TestAttrReadErrorId(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--attr=price"})
 
 	err := attrRead(c)
 
@@ -241,10 +241,10 @@ func TestAttrReadErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrRead(c)
 
@@ -268,10 +268,10 @@ func TestAttrReadErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrRead(c)
 
@@ -296,10 +296,10 @@ func TestAttrReadV2ErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--safeString=on"})
 
 	err := attrRead(c)
 
@@ -323,10 +323,10 @@ func TestAttrReadV2ErrorPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--pretty", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--pretty", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	setJSONIndentError(ngsi)
 
@@ -352,10 +352,10 @@ func TestAttrUpdateV2Int(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=89"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=89"})
 
 	err := attrUpdate(c)
 
@@ -373,10 +373,10 @@ func TestAttrUpdateV2Float(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=123.45"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=123.45"})
 
 	err := attrUpdate(c)
 
@@ -394,10 +394,10 @@ func TestAttrUpdateV2Null(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=null"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=null"})
 
 	err := attrUpdate(c)
 
@@ -415,10 +415,10 @@ func TestAttrUpdateV2BoolTrue(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=true"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=true"})
 
 	err := attrUpdate(c)
 
@@ -436,10 +436,10 @@ func TestAttrUpdateV2BoolFalse(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=false"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=false"})
 
 	err := attrUpdate(c)
 
@@ -457,10 +457,10 @@ func TestAttrUpdateV2StringNull(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=\"null\""})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=\"null\""})
 
 	err := attrUpdate(c)
 
@@ -478,10 +478,10 @@ func TestAttrUpdateV2StringEmpty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=\"\""})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=\"\""})
 
 	err := attrUpdate(c)
 
@@ -499,10 +499,10 @@ func TestAttrUpdateV2StringTrue(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=\"true\""})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=\"true\""})
 
 	err := attrUpdate(c)
 
@@ -520,10 +520,10 @@ func TestAttrUpdateV2StringFalse(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=\"false\""})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=\"false\""})
 
 	err := attrUpdate(c)
 
@@ -541,10 +541,10 @@ func TestAttrUpdateV2String(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=FIWARE"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=FIWARE"})
 
 	err := attrUpdate(c)
 
@@ -562,10 +562,10 @@ func TestAttrUpdateV2StringWithSpace(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=\"Open APIs\""})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=\"Open APIs\""})
 
 	err := attrUpdate(c)
 
@@ -583,10 +583,10 @@ func TestAttrUpdateV2StringSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=<>", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=<>", "--safeString=on"})
 
 	err := attrUpdate(c)
 
@@ -604,10 +604,10 @@ func TestAttrUpdateV2StringSafeString2(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=\"\"", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=\"\"", "--safeString=on"})
 
 	err := attrUpdate(c)
 
@@ -625,10 +625,10 @@ func TestAttrUpdateV2JSON(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":89}"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data={\"value\":89}"})
 
 	err := attrUpdate(c)
 
@@ -646,10 +646,10 @@ func TestAttrUpdateV2JSONSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":\"<>\"}", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data={\"value\":\"<>\"}", "--safeString=on"})
 
 	err := attrUpdate(c)
 
@@ -667,10 +667,10 @@ func TestAttrUpdateLD(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=99"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=99"})
 
 	err := attrUpdate(c)
 
@@ -688,10 +688,10 @@ func TestAttrUpdateLDJSON(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":99}"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data={\"value\":99}"})
 
 	err := attrUpdate(c)
 
@@ -709,10 +709,10 @@ func TestAttrUpdateLDJSONContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagString(set, "host,id,type,attr,data,context")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":89}", "--context=[\"http://context\"]"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data={\"value\":89}", "--context=[\"http://context\"]"})
 
 	err := attrUpdate(c)
 
@@ -729,10 +729,10 @@ func TestAttrUpdateErrorInitCmd(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=89"})
+	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=89"})
 
 	err := attrUpdate(c)
 
@@ -755,10 +755,10 @@ func TestAttrUpdateErrorNewClient(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,link")
+	setupFlagString(set, "host,id,type,attr,data,link")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=89"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=89"})
 
 	err := attrUpdate(c)
 
@@ -781,10 +781,10 @@ func TestAttrUpdateErrorReadALl(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName")
+	setupFlagString(set, "host,id,type,attr")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrUpdate(c)
 
@@ -808,10 +808,10 @@ func TestAttrUpdateLDJSONContextError(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagString(set, "host,id,type,attr,data,context")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":89}", "--context=[\"http://context\""})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data={\"value\":89}", "--context=[\"http://context\""})
 
 	err := attrUpdate(c)
 
@@ -826,10 +826,10 @@ func TestAttrUpdateLDJSONContextError(t *testing.T) {
 func TestAttrUpdateV2ErrorJSONSafeString(t *testing.T) {
 	_, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data={\"value\":\"<>}", "--safeString=on"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data={\"value\":\"<>}", "--safeString=on"})
 
 	err := attrUpdate(c)
 
@@ -853,10 +853,10 @@ func TestAttrUpdateV2ErrorLength(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=\""})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=\""})
 
 	err := attrUpdate(c)
 
@@ -880,10 +880,10 @@ func TestAttrUpdateErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=89"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=89"})
 
 	err := attrUpdate(c)
 
@@ -907,10 +907,10 @@ func TestAttrUpdateErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price", "--data=89"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price", "--data=89"})
 
 	err := attrUpdate(c)
 
@@ -933,9 +933,9 @@ func TestAttrDelete(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName")
+	setupFlagString(set, "host,id,type,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrDelete(c)
 
@@ -953,9 +953,9 @@ func TestAttrDeleteErrorInitCmd(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName")
+	setupFlagString(set, "host,id,type,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrDelete(c)
 
@@ -979,9 +979,9 @@ func TestAttrDeleteErrorNewClient(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,link")
+	setupFlagString(set, "host,id,type,attr,link")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrDelete(c)
 
@@ -1005,9 +1005,9 @@ func TestAttrDeleteErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName")
+	setupFlagString(set, "host,id,type,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrDelete(c)
 
@@ -1031,9 +1031,9 @@ func TestAttrDeleteErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName")
+	setupFlagString(set, "host,id,type,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attrName=price"})
+	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:001", "--attr=price"})
 
 	err := attrDelete(c)
 

@@ -27,7 +27,7 @@
 #
 # 0001 hget --nTypes --hLimit
 #
-ngsi hget attr --attrName A2 --nTypes --hLimit 12
+ngsi hget attr --attr A2 --nTypes --hLimit 12
 
 ```
 {
@@ -127,7 +127,7 @@ ngsi hget attr --attrName A2 --nTypes --hLimit 12
 # 0002 hget attr --hLimit --value
 #
 #
-ngsi hget attr --attrName A2 --nTypes --hLimit 12 --value
+ngsi hget attr --attr A2 --nTypes --hLimit 12 --value
 
 ```
 {
@@ -224,7 +224,7 @@ ngsi hget attr --attrName A2 --nTypes --hLimit 12 --value
 
 # 0003 hget attr --hLimit --hOffset
 #
-ngsi hget attr --attrName A2 --nTypes --hLimit 12 --hOffset 12
+ngsi hget attr --attr A2 --nTypes --hLimit 12 --hOffset 12
 
 ```
 {
@@ -323,7 +323,7 @@ ngsi hget attr --attrName A2 --nTypes --hLimit 12 --hOffset 12
 #
 # 0004 hget attr --nTypes --hLimit --hOffset --value
 #
-ngsi hget attr --attrName A2 --nTypes --hLimit 12 --hOffset 12 --value
+ngsi hget attr --attr A2 --nTypes --hLimit 12 --hOffset 12 --value
 
 ```
 {
@@ -421,7 +421,7 @@ ngsi hget attr --attrName A2 --nTypes --hLimit 12 --hOffset 12 --value
 #
 # 0010 hget attr --nTypes --lastN
 #
-ngsi hget attr --attrName A2 --nTypes --lastN 8
+ngsi hget attr --attr A2 --nTypes --lastN 8
 
 ```
 {
@@ -504,7 +504,7 @@ ngsi hget attr --attrName A2 --nTypes --lastN 8
 #
 # 0011  hget attr --nTypes --lastN --value
 #
-ngsi hget attr --attrName A2 --nTypes --lastN 8 --value
+ngsi hget attr --attr A2 --nTypes --lastN 8 --value
 
 ```
 {

@@ -27,7 +27,7 @@
 #
 # 0001 hget attr --lastN
 #
-ngsi hget --host quantumleap attr --id device001 --attrName A1 --lastN 10
+ngsi hget --host quantumleap attr --id device001 --attr A1 --lastN 10
 
 ```
 {
@@ -63,7 +63,7 @@ ngsi hget --host quantumleap attr --id device001 --attrName A1 --lastN 10
 #
 # 0002 hget attr --lastN --value
 #
-ngsi hget attr --id device001 --attrName A1 --lastN 10 --value
+ngsi hget attr --id device001 --attr A1 --lastN 10 --value
 
 ```
 {
@@ -97,7 +97,7 @@ ngsi hget attr --id device001 --attrName A1 --lastN 10 --value
 #
 # 0003 hget attr --hLimit
 #
-ngsi hget attr --id device001 --attrName A1 --hLimit 10
+ngsi hget attr --id device001 --attr A1 --hLimit 10
 
 ```
 {
@@ -133,7 +133,7 @@ ngsi hget attr --id device001 --attrName A1 --hLimit 10
 #
 # 0004 hget attr --hLimit --hOffset
 #
-ngsi hget attr --id device001 --attrName A1 --hLimit 10 --hOffset 11
+ngsi hget attr --id device001 --attr A1 --hLimit 10 --hOffset 11
 
 ```
 {
@@ -169,7 +169,7 @@ ngsi hget attr --id device001 --attrName A1 --hLimit 10 --hOffset 11
 #
 # 0005 hget attr --hLimit
 #
-ngsi hget attr --id device001 --attrName A2 --hLimit 10
+ngsi hget attr --id device001 --attr A2 --hLimit 10
 
 ```
 {
@@ -205,7 +205,7 @@ ngsi hget attr --id device001 --attrName A2 --hLimit 10
 #
 # 0006 hget attr --hLimit --hOffset
 #
-ngsi hget attr --id device001 --attrName A2 --hLimit 10 --hOffset 11
+ngsi hget attr --id device001 --attr A2 --hLimit 10 --hOffset 11
 
 ```
 {
@@ -241,7 +241,7 @@ ngsi hget attr --id device001 --attrName A2 --hLimit 10 --hOffset 11
 #
 # 0007 hget attr --aggrMethod count --aggrPeriod hour --lastN
 #
-ngsi hget attr --id device001 --attrName A1 --aggrMethod count --aggrPeriod hour --lastN 5
+ngsi hget attr --id device001 --attr A1 --aggrMethod count --aggrPeriod hour --lastN 5
 
 ```
 {
@@ -261,7 +261,7 @@ ngsi hget attr --id device001 --attrName A1 --aggrMethod count --aggrPeriod hour
 #
 # 0011 hget attr --fromDate
 #
-ngsi hget attr --id device001 --attrName A1 --lastN 3 \
+ngsi hget attr --id device001 --attr A1 --lastN 3 \
 --fromDate 2016-09-13T01:34:00.000+00:00
 
 ```
@@ -284,7 +284,7 @@ ngsi hget attr --id device001 --attrName A1 --lastN 3 \
 #
 # 0012 hget attr --toDate
 #
-ngsi hget attr --id device001 --attrName A1 --lastN 3 \
+ngsi hget attr --id device001 --attr A1 --lastN 3 \
 --toDate 2016-09-13T01:34:00.000+00:00
 
 ```
@@ -307,7 +307,7 @@ ngsi hget attr --id device001 --attrName A1 --lastN 3 \
 #
 # 0013 hget attr --fromDate --toDate
 #
-ngsi hget attr --id device001 --attrName A1 --lastN 3 \
+ngsi hget attr --id device001 --attr A1 --lastN 3 \
 --fromDate 2016-09-13T01:35:00.000+00:00 --toDate 2016-09-13T01:38:00.000+00:00
 
 ```

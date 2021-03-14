@@ -66,7 +66,7 @@ func TestTsAttrReadQuantumleap(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "missing attrName", ngsiErr.Message)
+		assert.Equal(t, "missing attr", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

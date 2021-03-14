@@ -160,7 +160,7 @@ ngsi get [common options] attr [options]
 | ---------------------- | ------------------------------- |
 | --id value, -i value   | specify id                      |
 | --type value, -t value | specify entity type             |
-| --attrName value       | specify attrName                |
+| --attr value           | specify attribute name          |
 | --pretty, -P           | pretty format (default: false)  |
 | --safeString value     | use safe string (value: on/off) |
 | --help                 | show help (default: false)      |
@@ -170,7 +170,7 @@ ngsi get [common options] attr [options]
 #### Request:
 
 ```console
-ngsi get attr --id urn:ngsi-ld:Product:010 --type Product --attrName size "S"
+ngsi get attr --id urn:ngsi-ld:Product:010 --type Product --attr size "S"
 ```
 
 <a name="get-multiple-attributes"></a>

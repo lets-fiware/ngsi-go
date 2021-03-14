@@ -968,7 +968,7 @@ var deleteCmd = cli.Command{
 			Flags: []cli.Flag{
 				idRFlag,
 				typeFlag,
-				attrNameRFlag,
+				attrRFlag,
 				linkFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -980,7 +980,7 @@ var deleteCmd = cli.Command{
 			Usage: "delete attr for temporal entity",
 			Flags: []cli.Flag{
 				idFlag,
-				attrNameFlag,
+				attrFlag,
 				deleteAllFlag,
 				deleteDatasetID,
 				instanceIDFlag,
@@ -1092,7 +1092,7 @@ var getCmd = cli.Command{
 			Flags: []cli.Flag{
 				idFlag,
 				typeFlag,
-				attrNameRFlag,
+				attrRFlag,
 				prettyFlag,
 				safeStringFlag,
 			},
@@ -1336,7 +1336,7 @@ var updateCmd = cli.Command{
 			Flags: []cli.Flag{
 				idRFlag,
 				dataFlag,
-				attrNameRFlag,
+				attrRFlag,
 				linkFlag,
 				contextFlag,
 				safeStringFlag,
@@ -1351,7 +1351,7 @@ var updateCmd = cli.Command{
 			Flags: []cli.Flag{
 				idFlag,
 				dataFlag,
-				attrNameFlag,
+				attrFlag,
 				instanceIDFlag,
 				linkFlag,
 				contextFlag,
@@ -1619,7 +1619,7 @@ var hGetCmd = cli.Command{
 			Flags: []cli.Flag{
 				typeFlag,
 				idFlag,
-				attrNameFlag,
+				attrFlag,
 				sameTypeFlag,
 				nTypesFlag,
 				aggrMethodFlag,
@@ -1729,7 +1729,7 @@ var hDeleteCmd = cli.Command{
 			Flags: []cli.Flag{
 				idFlag,
 				typeFlag,
-				attrNameFlag,
+				attrFlag,
 				runFlag,
 			},
 			Action: func(c *cli.Context) error {

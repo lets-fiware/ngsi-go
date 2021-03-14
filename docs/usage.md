@@ -397,7 +397,7 @@ ngsi create entity --keyValues --safeString on \
 Get an attribute value with `--safeString off`
 
 ```console
-ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString off
+ngsi get attr --id urn:ngsi-ld:Product:110 --attr name --safeString off
 ```
 
 ```json
@@ -407,7 +407,7 @@ ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString off
 Get an attribute value with `--safeString on`
 
 ```console
-ngsi get attr --id urn:ngsi-ld:Product:110 --attrName name --safeString on
+ngsi get attr --id urn:ngsi-ld:Product:110 --attr name --safeString on
 ```
 
 ```json

@@ -27,7 +27,7 @@
 #
 # 0001 hget attr --sameType --hLimit
 #
-ngsi hget --host quantumleap attr --type Thing --attrName A2 --sameType --hLimit 6
+ngsi hget --host quantumleap attr --type Thing --attr A2 --sameType --hLimit 6
 
 ```
 {
@@ -67,7 +67,7 @@ ngsi hget --host quantumleap attr --type Thing --attrName A2 --sameType --hLimit
 #
 # 0002 hget attr --sameType --hLimit --hOffset
 #
-ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6
+ngsi hget attr --type Thing --attr A2 --sameType --hLimit 6 --hOffset 6
 
 ```
 {
@@ -107,7 +107,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6
 #
 # 0003 hget attr --sameType --lastN
 #
-ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6
+ngsi hget attr --type Thing --attr A2 --sameType --lastN 6
 
 ```
 {
@@ -147,7 +147,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6
 #
 # 0004 attr --sameType --hLimit --value
 #
-ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --value
+ngsi hget attr --type Thing --attr A2 --sameType --hLimit 6 --value
 
 ```
 {
@@ -185,7 +185,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --value
 #
 # 0005 attr --sameType  --hLimit --hOffset --value
 #
-ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6 --value
+ngsi hget attr --type Thing --attr A2 --sameType --hLimit 6 --hOffset 6 --value
 
 ```
 {
@@ -223,7 +223,7 @@ ngsi hget attr --type Thing --attrName A2 --sameType --hLimit 6 --hOffset 6 --va
 #
 # 0006 attr --sameType --lastN --value
 #
-ngsi hget attr --type Thing --attrName A2 --sameType --lastN 6 --value
+ngsi hget attr --type Thing --attr A2 --sameType --lastN 6 --value
 
 ```
 {

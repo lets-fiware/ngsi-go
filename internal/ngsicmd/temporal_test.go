@@ -1086,9 +1086,9 @@ func TestTroeAttrDelete(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,attrName")
+	setupFlagString(set, "host,id,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature"})
 
 	err := troeAttrDelete(c)
 
@@ -1105,10 +1105,10 @@ func TestTroeAttrDeleteDeleteAll(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,attrName")
+	setupFlagString(set, "host,id,attr")
 	setupFlagBool(set, "deleteAll")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--deleteAll", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature"})
+	_ = set.Parse([]string{"--host=orion-ld", "--deleteAll", "--id=urn:ngsi-ld:sensor100", "--attr=temperature"})
 
 	err := troeAttrDelete(c)
 
@@ -1125,9 +1125,9 @@ func TestTroeAttrDeleteDatasetId(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,attrName,datasetId")
+	setupFlagString(set, "host,id,attr,datasetId")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--datasetId=datasetid001", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature"})
+	_ = set.Parse([]string{"--host=orion-ld", "--datasetId=datasetid001", "--id=urn:ngsi-ld:sensor100", "--attr=temperature"})
 
 	err := troeAttrDelete(c)
 
@@ -1144,9 +1144,9 @@ func TestTroeAttrDeleteInstanceID(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,attrName,instanceId")
+	setupFlagString(set, "host,id,attr,instanceId")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature", "--instanceId=urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature", "--instanceId=urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0"})
 
 	err := troeAttrDelete(c)
 
@@ -1246,8 +1246,8 @@ func TestTroeAttrDeleteErrorAttrName(t *testing.T) {
 func TestTroeAttrDeleteErrorInstanceId(t *testing.T) {
 	_, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,attrName,datasetId,instanceId")
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=attr", "--datasetId=dataset001", "--instanceId=instance001"})
+	setupFlagString(set, "host,id,attr,datasetId,instanceId")
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=attr", "--datasetId=dataset001", "--instanceId=instance001"})
 	c := cli.NewContext(app, set, nil)
 
 	err := troeAttrDelete(c)
@@ -1271,9 +1271,9 @@ func TestTroeAttrDeleteErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,attrName")
+	setupFlagString(set, "host,id,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature"})
 
 	err := troeAttrDelete(c)
 
@@ -1297,9 +1297,9 @@ func TestTroeAttrDeleteErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,attrName")
+	setupFlagString(set, "host,id,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature"})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature"})
 
 	err := troeAttrDelete(c)
 
@@ -1323,9 +1323,9 @@ func TestTroeAttrUpdate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,data,attrName,instanceId")
+	setupFlagString(set, "host,id,data,attr,instanceId")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
 
 	err := troeAttrUpdate(c)
 
@@ -1425,8 +1425,8 @@ func TestTroeAttrsUpdateErrorAttrName(t *testing.T) {
 func TestTroeAttrsUpdateErrorInstanceId(t *testing.T) {
 	_, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,attrName")
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature"})
+	setupFlagString(set, "host,id,attr")
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature"})
 	c := cli.NewContext(app, set, nil)
 
 	err := troeAttrUpdate(c)
@@ -1443,8 +1443,8 @@ func TestTroeAttrsUpdateErrorInstanceId(t *testing.T) {
 func TestTroeAttrsUpdateErrorDataEmpty(t *testing.T) {
 	_, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,data,attrName,instanceId")
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature", "--instanceId=instance001"})
+	setupFlagString(set, "host,id,data,attr,instanceId")
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature", "--instanceId=instance001"})
 	c := cli.NewContext(app, set, nil)
 
 	err := troeAttrUpdate(c)
@@ -1469,9 +1469,9 @@ func TestTroeAttrsUpdateErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,data,attrName,instanceId,safeString")
+	setupFlagString(set, "host,id,data,attr,instanceId,safeString")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}`})
+	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=urn:ngsi-ld:sensor100", "--attr=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}`})
 	err := troeAttrUpdate(c)
 
 	if assert.Error(t, err) {
@@ -1494,9 +1494,9 @@ func TestTroeAttrsUpdateErrorContext(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,data,attrName,instanceId,context")
+	setupFlagString(set, "host,id,data,attr,instanceId,context")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--context=ctx", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
+	_ = set.Parse([]string{"--host=orion-ld", "--context=ctx", "--id=urn:ngsi-ld:sensor100", "--attr=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
 
 	err := troeAttrUpdate(c)
 
@@ -1520,9 +1520,9 @@ func TestTroeAttrsUpdateErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,data,attrName,instanceId")
+	setupFlagString(set, "host,id,data,attr,instanceId")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
 
 	err := troeAttrUpdate(c)
 
@@ -1547,9 +1547,9 @@ func TestTroeAttrsUpdateErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,data,attrName,instanceId")
+	setupFlagString(set, "host,id,data,attr,instanceId")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attrName=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
+	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:sensor100", "--attr=temperature", "--instanceId=instance001", `--data={"temperature":{"type":"Property","value":20,"instanceId":"urn:ngsi-ld:1d293e44-01e2-4527-9a31-9cbdae761fe0","observedAt":"2017-01-01T00:00:01Z"}}`})
 
 	err := troeAttrUpdate(c)
 

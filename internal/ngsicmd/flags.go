@@ -268,13 +268,13 @@ var (
 		Name:  "orderBy",
 		Usage: "orderBy",
 	}
-	attrNameFlag = &cli.StringFlag{
-		Name:  "attrName",
-		Usage: "attrName",
+	attrFlag = &cli.StringFlag{
+		Name:  "attr",
+		Usage: "attribute name",
 	}
-	attrNameRFlag = &cli.StringFlag{
-		Name:     "attrName",
-		Usage:    "attrName",
+	attrRFlag = &cli.StringFlag{
+		Name:     "attr",
+		Usage:    "attribute name",
 		Value:    "",
 		Required: true,
 	}

@@ -59,8 +59,8 @@ func attrRead(c *cli.Context) error {
 	}
 
 	id := c.String("id")
-	attrName := c.String("attrName")
-	path := fmt.Sprintf("/entities/%s/attrs/%s", id, attrName)
+	attr := c.String("attr")
+	path := fmt.Sprintf("/entities/%s/attrs/%s", id, attr)
 	if client.IsNgsiV2() {
 		path = path + "/value"
 	}
@@ -113,8 +113,8 @@ func attrUpdate(c *cli.Context) error {
 	}
 
 	id := c.String("id")
-	attrName := c.String("attrName")
-	path := fmt.Sprintf("/entities/%s/attrs/%s", id, attrName)
+	attr := c.String("attr")
+	path := fmt.Sprintf("/entities/%s/attrs/%s", id, attr)
 	if client.IsNgsiV2() {
 		path = path + "/value"
 	}
@@ -190,8 +190,8 @@ func attrDelete(c *cli.Context) error {
 	}
 
 	id := c.String("id")
-	attrName := c.String("attrName")
-	path := fmt.Sprintf("/entities/%s/attrs/%s", id, attrName)
+	attr := c.String("attr")
+	path := fmt.Sprintf("/entities/%s/attrs/%s", id, attr)
 	client.SetPath(path)
 
 	args := []string{"type"}

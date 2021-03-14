@@ -92,7 +92,7 @@ ngsi create --host orion subscription --idPattern ".*" --url http://192.168.1.1:
 #### Update an attribute value
 
 ```console
-ngsi update --host orion attr --id device001 --attrName temperature --data 22
+ngsi update --host orion attr --id device001 --attr temperature --data 22
 ```
 
 #### Notification message

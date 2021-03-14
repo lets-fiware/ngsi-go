@@ -77,7 +77,7 @@ ngsi get entity --id urn:ngsi-ld:Product:110 --type Product
 ## Update attribute
 
 ```console
-ngsi update attr --id urn:ngsi-ld:Product:110 --attrName price --data 11
+ngsi update attr --id urn:ngsi-ld:Product:110 --attr price --data 11
 ```
 
 ## Get a entity (keyValues)

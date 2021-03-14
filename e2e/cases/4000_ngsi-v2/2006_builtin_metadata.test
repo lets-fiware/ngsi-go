@@ -150,7 +150,7 @@ ngsi list entities --metadata "dateCreated,dateModified" -pretty
 #
 # 0005 Update attribute
 #
-ngsi update attr --id E1 --attrName A1 --data 567.89
+ngsi update attr --id E1 --attr A1 --data 567.89
 
 ```
 ```

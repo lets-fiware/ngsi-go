@@ -128,7 +128,7 @@ ngsi hget --host ql entities
 #
 # 0006 hget attr
 #
-ngsi hget attr --id urn:ngsi-ld:Building:store001 --attrName address --pretty
+ngsi hget attr --id urn:ngsi-ld:Building:store001 --attr address --pretty
 
 ```0
 {

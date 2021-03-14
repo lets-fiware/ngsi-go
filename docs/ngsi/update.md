@@ -62,7 +62,7 @@ ngsi update [common options] attr [options]
 | ------------------------- | -------------------------- |
 | --id value, -i value      | specify id                 |
 | --data value, -d value    | specify data               |
-| --attrName value          | specify attribute name     |
+| --attr value              | specify attribute name     |
 | --link value, -L value    | specify @context           |
 | --context value, -C value | specify @context (LD)      |
 | --help                    | show help (default: false) |
@@ -90,8 +90,8 @@ ngsi update [common options] tattr [options]
 | Options                   | Description                        |
 | ------------------------- | ---------------------------------- |
 | --id value, -i value      | specify id                         |
-| --data value, -d value    | data                               |
-| --attrName value          | attrName                           |
+| --data value, -d value    | specify data                       |
+| --attr value              | specify attribute name             |
 | --instanceId value        | attribute instance id (LD)         |
 | --link value, -L value    | @context (LD)                      |
 | --context value, -C value | @context (LD)                      |
