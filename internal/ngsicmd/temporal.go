@@ -321,7 +321,7 @@ func troeAttrDelete(c *cli.Context) error {
 		msg string
 	}{
 		{"id", "specify temporal entity id"},
-		{"attrName", "specify attribute name"},
+		{"attr", "specify attribute name"},
 	}
 	for _, param := range params {
 		if !c.IsSet(param.arg) {
@@ -333,7 +333,7 @@ func troeAttrDelete(c *cli.Context) error {
 		if isSetOR(c, []string{"deleteAll", "datasetId"}) {
 			return &ngsiCmdError{funcName, 5, "cannot specify --deleteALl and/or --datasetId with --instanceId", nil}
 		}
-		client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s/%s", c.String("id"), c.String("attrName"), c.String("instanceId")))
+		client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s/%s", c.String("id"), c.String("attr"), c.String("instanceId")))
 	} else {
 		v := url.Values{}
 		if c.Bool("deleteAll") {
@@ -343,7 +343,7 @@ func troeAttrDelete(c *cli.Context) error {
 			v.Set("datasetId", c.String("datasetId"))
 		}
 		client.SetQuery(&v)
-		client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s", c.String("id"), c.String("attrName")))
+		client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s", c.String("id"), c.String("attr")))
 	}
 
 	res, body, err := client.HTTPDelete(nil)
@@ -379,7 +379,7 @@ func troeAttrUpdate(c *cli.Context) error {
 		msg string
 	}{
 		{"id", "specify temporal entity id"},
-		{"attrName", "specify attribute name"},
+		{"attr", "specify attribute name"},
 		{"instanceId", "specify instance id"},
 	}
 	for _, param := range params {
@@ -388,7 +388,7 @@ func troeAttrUpdate(c *cli.Context) error {
 		}
 	}
 
-	client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s/%s", c.String("id"), c.String("attrName"), c.String("instanceId")))
+	client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s/%s", c.String("id"), c.String("attr"), c.String("instanceId")))
 
 	client.SetContentType()
 

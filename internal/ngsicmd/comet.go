@@ -62,7 +62,7 @@ func cometAttrRead(c *cli.Context) error {
 func cometAttrReadMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "cometAttrReadMain"
 
-	for _, v := range []string{"type", "id", "attrName"} {
+	for _, v := range []string{"type", "id", "attr"} {
 		if !c.IsSet(v) {
 			return &ngsiCmdError{funcName, 1, "missing " + v, nil}
 		}
@@ -99,7 +99,7 @@ func cometAttrReadMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 	}
 	client.SetQuery(&v)
 
-	path := fmt.Sprintf("/STH/v2/entities/%s/attrs/%s", c.String("id"), c.String("attrName"))
+	path := fmt.Sprintf("/STH/v2/entities/%s/attrs/%s", c.String("id"), c.String("attr"))
 	client.SetPath(path)
 
 	res, body, err := client.HTTPGet()
@@ -239,19 +239,19 @@ func cometAttrDeleteMain(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	const funcName = "cometAttrDeleteMain"
 
 	path := ""
-	if c.IsSet("type") && c.IsSet("id") && c.IsSet("attrName") {
-		path = fmt.Sprintf("/STH/v1/contextEntities/type/%s/id/%s/attributes/%s", c.String("type"), c.String("id"), c.String("attrName"))
+	if c.IsSet("type") && c.IsSet("id") && c.IsSet("attr") {
+		path = fmt.Sprintf("/STH/v1/contextEntities/type/%s/id/%s/attributes/%s", c.String("type"), c.String("id"), c.String("attr"))
 	} else {
 		if !c.IsSet("type") && c.IsSet("id") {
 			return &ngsiCmdError{funcName, 1, "missing type", nil}
 		} else if c.IsSet("type") && !c.IsSet("id") {
 			return &ngsiCmdError{funcName, 2, "missing id", nil}
 		}
-		return &ngsiCmdError{funcName, 3, "missing attrName", nil}
+		return &ngsiCmdError{funcName, 3, "missing attr", nil}
 	}
 
 	if !c.IsSet("run") {
-		fmt.Fprintf(ngsi.StdWriter, "all the data associated to attribute <%s> of entity <%s>, service and service path wiil be removed. run delete with -run option\n", c.String("attrName"), c.String("id"))
+		fmt.Fprintf(ngsi.StdWriter, "all the data associated to attribute <%s> of entity <%s>, service and service path wiil be removed. run delete with -run option\n", c.String("attr"), c.String("id"))
 		return nil
 	}
 

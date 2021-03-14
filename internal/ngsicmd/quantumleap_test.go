@@ -283,9 +283,9 @@ func TestQlAttrReadMainLastN(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1", "--lastN=3"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1", "--lastN=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -312,9 +312,9 @@ func TestQlAttrReadMainLimitOffset(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1", "--hLimit=10", "--hOffset=1"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1", "--hLimit=10", "--hOffset=1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -341,10 +341,10 @@ func TestQlAttrReadMainValue(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	setupFlagBool(set, "value")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1", "--hLimit=10", "--hOffset=1", "--value"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1", "--hLimit=10", "--hOffset=1", "--value"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -371,10 +371,10 @@ func TestQlAttrReadMainNtypes(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	setupFlagBool(set, "value,nTypes")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1", "--nTypes"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1", "--nTypes"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -401,10 +401,10 @@ func TestQlAttrReadMainSameType(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate")
 	setupFlagBool(set, "value,nTypes,sameType")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--attrName=A1", "--sameType", "--fromDate=1day"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--attr=A1", "--sameType", "--fromDate=1day"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -431,10 +431,10 @@ func TestQlAttrReadMainSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--attrName=A1", "--sameType", "--safeString=on"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--attr=A1", "--sameType", "--safeString=on"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -461,10 +461,10 @@ func TestQlAttrReadMainPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attrName=A1", "--sameType"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attr=A1", "--sameType"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -491,7 +491,7 @@ func TestQlAttrReadMainErrorAttrName(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString,georel")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString,georel")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=ql"})
@@ -506,7 +506,7 @@ func TestQlAttrReadMainErrorAttrName(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "missing attrName", ngsiErr.Message)
+		assert.Equal(t, "missing attr", ngsiErr.Message)
 	}
 }
 
@@ -521,10 +521,10 @@ func TestQlAttrReadMainErrorTypes(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString,georel")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString,georel")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--sameType", "--nTypes", "--attrName=A1"})
+	_ = set.Parse([]string{"--host=ql", "--sameType", "--nTypes", "--attr=A1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -551,10 +551,10 @@ func TestQlAttrReadMainErrorGeo(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString,georel")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString,georel")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--sameType", "--attrName=A1", "--georel=line"})
+	_ = set.Parse([]string{"--host=ql", "--sameType", "--attr=A1", "--georel=line"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -581,10 +581,10 @@ func TestQlAttrReadMainErrorType(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--sameType", "--attrName=A1"})
+	_ = set.Parse([]string{"--host=ql", "--sameType", "--attr=A1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -611,10 +611,10 @@ func TestQlAttrReadMainErrorID(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--attrName=A1"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--attr=A1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -641,10 +641,10 @@ func TestQlAttrReadMainErrorDate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attrName=A1", "--sameType", "--fromDate=123"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attr=A1", "--sameType", "--fromDate=123"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -671,10 +671,10 @@ func TestQlAttrReadMainErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attrName=A1", "--sameType"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attr=A1", "--sameType"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -700,10 +700,10 @@ func TestQlAttrReadMainErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attrName=A1", "--sameType"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attr=A1", "--sameType"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -730,10 +730,10 @@ func TestQlAttrReadMainErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--attrName=A1", "--sameType", "--safeString=on"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--attr=A1", "--sameType", "--safeString=on"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -760,10 +760,10 @@ func TestQlAttrReadMainErrorPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "value,nTypes,sameType,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attrName=A1", "--sameType"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--pretty", "--attr=A1", "--sameType"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -792,9 +792,9 @@ func TestQlAttrsReadMain(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--lastN=3"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--lastN=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -821,10 +821,10 @@ func TestQlAttrsReadMainSameType(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	setupFlagBool(set, "sameType")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--type=device", "--sameType", "--attrName=A1,A2", "--lastN=3"})
+	_ = set.Parse([]string{"--host=ql", "--type=device", "--sameType", "--attr=A1,A2", "--lastN=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -851,7 +851,7 @@ func TestQlAttrsReadMainNtypes(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	setupFlagBool(set, "nTypes")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=ql", "--type=device", "--nTypes", "--lastN=3"})
@@ -881,9 +881,9 @@ func TestQlAttrsReadMainDate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--lastN=3", "--fromDate=1day"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--lastN=3", "--fromDate=1day"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -910,9 +910,9 @@ func TestQlAttrsReadMainLimitOffset(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--hLimit=10", "--hOffset=1"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--hLimit=10", "--hOffset=1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -939,10 +939,10 @@ func TestQlAttrsReadMainValue(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate")
 	setupFlagBool(set, "value")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--value"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--value"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -969,9 +969,9 @@ func TestQlAttrsReadMainSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--safeString=on"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--safeString=on"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -998,10 +998,10 @@ func TestQlAttrsReadMainPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--safeString=on", "--pretty"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--safeString=on", "--pretty"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1028,9 +1028,9 @@ func TestQlAttrsReadMainErrorGeo(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,georel")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,georel")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--lastN=3", "--georel=line"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--lastN=3", "--georel=line"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1057,10 +1057,10 @@ func TestQlAttrsReadMainErrorType(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN")
 	setupFlagBool(set, "sameType")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--sameType", "--attrName=A1,A2", "--lastN=3"})
+	_ = set.Parse([]string{"--host=ql", "--sameType", "--attr=A1,A2", "--lastN=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1087,9 +1087,9 @@ func TestQlAttrsReadMainErrorID(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--attrName=A1,A2", "--lastN=3", "--fromDate=123"})
+	_ = set.Parse([]string{"--host=ql", "--attr=A1,A2", "--lastN=3", "--fromDate=123"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1116,9 +1116,9 @@ func TestQlAttrsReadMainErrorDate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--lastN=3", "--fromDate=123"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--lastN=3", "--fromDate=123"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1145,9 +1145,9 @@ func TestQlAttrsReadMainErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,georel")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,georel")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--lastN=3"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--lastN=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1173,9 +1173,9 @@ func TestQlAttrsReadMainErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,georel")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,georel")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--lastN=3"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--lastN=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1202,9 +1202,9 @@ func TestQlAttrsReadMainErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--safeString=on"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--safeString=on"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -1231,10 +1231,10 @@ func TestQlAttrsReadMainErrorPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,hOffset,lastN,fromDate,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,hOffset,lastN,fromDate,safeString")
 	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attrName=A1,A2", "--safeString=on", "--pretty"})
+	_ = set.Parse([]string{"--host=ql", "--id=device001", "--attr=A1,A2", "--safeString=on", "--pretty"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)

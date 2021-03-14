@@ -30,7 +30,7 @@ ngsi hdelete [common options] attr [options]
 | ---------------------- | ---------------------------- |
 | --id value, -i value   | entity id                    |
 | --type value, -t value | entity Type                  |
-| --attrName value       | attribute name               |
+| --attr value           | attribute name               |
 | --run                  | run command (default: false) |
 | --help                 | show help (default: false)   |
 
@@ -39,7 +39,7 @@ ngsi hdelete [common options] attr [options]
 #### Request:
 
 ```console
-ngsi hdelete --host comet attr --type device --id device001 --attrName A1
+ngsi hdelete --host comet attr --type device --id device001 --attr A1
 ```
 <a name="delete-historical-data-of-a-certain-entity"></a>
 

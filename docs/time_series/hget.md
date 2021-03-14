@@ -32,7 +32,7 @@ ngsi hget [command options] attr [options]
 | ---------------------- | ------------------------------------------------------------------------------ |
 | --type value, -t value | Entity type                                                                    |
 | --id value, -i value   | Entity id                                                                      |
-| --attrName value       | attrName                                                                       |
+| --attr value           | attribute name                                                                 |
 | --sameType             | same type (default: false)                                                     |
 | --nTypes               | nTypes (default: false)                                                        |
 | --aggrMethod value     | aggregation method (max, min, sum, sum, occur)                                 |
@@ -55,7 +55,7 @@ ngsi hget [command options] attr [options]
 
 ```console
 ngsi hget --host comet --service openiot --path / \
-attr --type Thing --id device001 --attrName A1 \
+attr --type Thing --id device001 --attr A1 \
 --hLimit 3 --hOffset 0 --pretty
 ```
 
@@ -86,12 +86,12 @@ attr --type Thing --id device001 --attrName A1 \
 
 ```console
 ngsi hget --host quantumleap \
-attr --id device001 --attrName A1 --fromDate -5years -hLimit 3
+attr --id device001 --attr A1 --fromDate -5years -hLimit 3
 ```
 
 ```json
 {
-  "attrName": "A1",
+  "attr": "A1",
   "entityId": "device001",
   "index": [
     "2016-09-13T00:00:00.000+00:00",
@@ -151,7 +151,7 @@ attrs --id device001 --attrs A1,A2 --fromDate -5years -hLimit 3
 {
   "attributes": [
     {
-      "attrName": "A1",
+      "attr": "A1",
       "values": [
         1.0,
         2.0,
@@ -159,7 +159,7 @@ attrs --id device001 --attrs A1,A2 --fromDate -5years -hLimit 3
       ]
     },
     {
-      "attrName": "A2",
+      "attr": "A2",
       "values": [
         2.0,
         3.0,

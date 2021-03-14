@@ -12,8 +12,8 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | DELETE /ngsi-ld/v1/entities/{entityId}                                      | delete entity --id {entityId}                                              |
 | POST /ngsi-ld/v1/entities/{entityId}/attrs/                                 | append attrs --id {entityId}                                               |
 | PATCH /ngsi-ld/v1/entities/{entityId}/attrs/                                | update attrs --id {entityId}                                               |
-| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                        | update attr --id {entityId} --attrName {attrId}                            |
-| DELETE /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                       | delete attr --id {entityId} --attrName {attrId}                            |
+| PATCH /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                        | update attr --id {entityId} --attr {attrId}                                |
+| DELETE /ngsi-ld/v1/entities/{entityId}/attrs/{attrId}                       | delete attr --id {entityId} --attr {attrId}                                |
 | POST /ngsi-ld/v1/subscriptions/                                             | create subscription                                                        |
 | GET /ngsi-ld/v1/subscriptions/                                              | list subscriptions                                                         |
 | GET /ngsi-ld/v1/subscriptions/{subscriptionId}                              | get subscription --id {subscriptionId}                                     |
@@ -43,9 +43,9 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | GET /ngsi-ld/v1/temporal/entities/{entityId}                                | get tentity --id {entityId}                                                |
 | DELETE /ngsi-ld/v1/temporal/entities/{entityId}                             | delete tentity --id {entityId}                                             |
 | POST /ngsi-ld/v1/temporal/entities/{entityId}/attrs/                        | append tattrs --id {entityId}                                              |
-| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}              | delete tattr --id {entityId} --attrName {attrId}                           |
-| PATCH /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}  | update tattr --id {entityId} --attrName {attrId} --instanceId {instanceId} |
-| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId} | delete tattr --id {entityId} --attrName {attrId} --instanceId {instanceId} |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}              | delete tattr --id {entityId} --attr {attrId}                               |
+| PATCH /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}  | update tattr --id {entityId} --attr {attrId} --instanceId {instanceId}     |
+| DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId} | delete tattr --id {entityId} --attr {attrId} --instanceId {instanceId}     |
 | POST /ngsi-ld/v1/temporal/entityOperations/query                            | (not yet implemented)                                                      |
 
 ### Orion-LD API
@@ -78,9 +78,9 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | POST /v2/entities/{entityId}/attrs                 | append attributes --id {entityId}                 |
 | PATCH /v2/entities/{entityId}/attrs                | update attributes --id {entityId}                 |
 | PUT /v2/entities/{entityId}/attrs                  | replace attributes --id {entityId}                |
-| GET /v2/entities/{entityId}/attrs/{attrName}       | get attr --id {entityId} --attrName {attrName}    |
-| PUT /v2/entities/{entityId}/attrs/{attrName}       | update attr --id {entityId} --attrName {attrName} |
-| DELETE /v2/entities/{entityId}/attrs/{attrName}    | delete attr --id {entityId} --attrName {attrName} |
+| GET /v2/entities/{entityId}/attrs/{attrName}       | get attr --id {entityId} --attr {attrName}        |
+| PUT /v2/entities/{entityId}/attrs/{attrName}       | update attr --id {entityId} --attr {attrName}     |
+| DELETE /v2/entities/{entityId}/attrs/{attrName}    | delete attr --id {entityId} --attr {attrName}     |
 | GET /v2/entities/{entityId}/attrs/{attrName}/value | (not yet implemented)                             |
 | PUT /v2/entities/{entityId}/attrs/{attrName}/value | (not yet implemented)                             |
 | GET /v2/types/                                     | list types                                        |
@@ -124,15 +124,15 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 
 ## STH-Comet API 
 
-| STH-Comet API                                                                                             | NGSI Go commands                                                                                                |
+| STH-Comet API                                                                                              | NGSI Go commands                                                                                                |
 | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | GET /version                                                                                               | version                                                                                                         |
-| GET /STH/v2/entities/{entityId}/attrs/{attrName}?type={entityType}&hLimit={n}&hOffset={n}                  | hget attr --hLimit {n} --type {entityType} --id {enttiyId} --attrName {attrName}                                |
-| GET /STH/v2/entities/{entityId}/attrs/{attrName}?entityType={entityType}&lastN={n}                         | hget attr --lastN {n} --type {entityType} --id {enttiyId} --attrName {attrName}                                 |
-| GET /STH/v2/entities/{entityId}/attrs/{attrName}?type={entityType}&aggrMethod={method}&aggrPeriod={period} | hget attr --arrgMethod {method} --aggrPeriod {period} --type {entityType} --id {enttiyId} --attrName {attrName} |
+| GET /STH/v2/entities/{entityId}/attrs/{attrName}?type={entityType}&hLimit={n}&hOffset={n}                  | hget attr --hLimit {n} --type {entityType} --id {enttiyId} --attr {attrName}                                    |
+| GET /STH/v2/entities/{entityId}/attrs/{attrName}?entityType={entityType}&lastN={n}                         | hget attr --lastN {n} --type {entityType} --id {enttiyId} --attr {attrName}                                     |
+| GET /STH/v2/entities/{entityId}/attrs/{attrName}?type={entityType}&aggrMethod={method}&aggrPeriod={period} | hget attr --arrgMethod {method} --aggrPeriod {period} --type {entityType} --id {enttiyId} --attr {attrName}     |
 | DELETE /STH/v1/contextEntities                                                                             | hdelete                                                                                                         |
 | DELETE /STH/v1/contextEntities/type/{entityType}/id/{entityId}                                             | hdelete --type {entityType} --id {enttiyId}                                                                     |
-| DELETE /STH/v1/contextEntities/type/{entityType}/id/{entityId}/attributes/{attrName}                       | hdelete --type {entityType} --id {enttiyId} --attrName {attrName}                                               |
+| DELETE /STH/v1/contextEntities/type/{entityType}/id/{entityId}/attributes/{attrName}                       | hdelete --type {entityType} --id {enttiyId} --attr {attrName}                                                   |
 
 -   [STH-Comet API - GitHub](https://github.com/telefonicaid/fiware-sth-comet/blob/master/apiary.apib)
 
@@ -147,16 +147,16 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | POST /notify                                       | (not yet implemented)                                                  |
 | POST /subscribe                                    | (not yet implemented)                                                  |
 | GET /v2/entities                                   | hget entities                                                          |
-| GET /v2/entities/{entityId}/attrs/{attrName}       | hget attr --id {entityId} --attrName {attrName}                        |
-| GET /v2/entities/{entityId}/attrs/{attrName}/value | hget attr --id {entityId} --attrName {attrName} --value                |
+| GET /v2/entities/{entityId}/attrs/{attrName}       | hget attr --id {entityId} --attr {attrName}                            |
+| GET /v2/entities/{entityId}/attrs/{attrName}/value | hget attr --id {entityId} --attr {attrName} --value                    |
 | GET /v2/entities/{entityId}                        | hget attrs --id {entityId}                                             |
 | GET /v2/entities/{entityId}/value                  | hget attrs --id {entityId} --value                                     |
-| GET /v2/types/{entityType}/attrs/{attrName}        | hget attr --sameType --type {entityType} --attrName {attrName}         |
-| GET /v2/types/{entityType}/attrs/{attrName}/value  | hget attr --sameType --type {entityType} --attrName {attrName} --value |
+| GET /v2/types/{entityType}/attrs/{attrName}        | hget attr --sameType --type {entityType} --attr {attrName}             |
+| GET /v2/types/{entityType}/attrs/{attrName}/value  | hget attr --sameType --type {entityType} --attr {attrName} --value     |
 | GET /v2/types/{entityType}                         | hget attrs --sameType --type {entityType}                              |
 | GET /v2/types/{entityType}/value                   | hget attrs --sameType --type {entityType} --value                      |
-| GET /v2/attrs/{attrName}                           | hget attr --nTypes --attrName {attrName}                               |
-| GET /v2/attrs/{attrName}/value                     | hget attr --nTypes --attrName {attrName} --value                       |
+| GET /v2/attrs/{attrName}                           | hget attr --nTypes --attr {attrName}                                   |
+| GET /v2/attrs/{attrName}/value                     | hget attr --nTypes --attr {attrName} --value                           |
 | GET /v2/attrs                                      | hget attrs --nTypes                                                    |
 | GET /v2/attrs/value                                | hget attrs --nTypes --value                                            |
 | DELETE /v2/entities/{entityId}                     | hdelete entity --id {entityId}                                         |

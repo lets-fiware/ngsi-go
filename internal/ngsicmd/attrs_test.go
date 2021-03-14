@@ -40,7 +40,7 @@ import (
 func TestAttrsReadV2(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -51,7 +51,7 @@ func TestAttrsReadV2(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO"})
+	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO"})
 	err := attrsRead(c)
 
 	if assert.NoError(t, err) {
@@ -66,7 +66,7 @@ func TestAttrsReadV2(t *testing.T) {
 func TestAttrsReadV2Pretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues,pretty")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -77,7 +77,7 @@ func TestAttrsReadV2Pretty(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO", "--pretty"})
+	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO", "--pretty"})
 	err := attrsRead(c)
 
 	if assert.NoError(t, err) {
@@ -92,7 +92,7 @@ func TestAttrsReadV2Pretty(t *testing.T) {
 func TestAttrsReadV2SafeString(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -103,7 +103,7 @@ func TestAttrsReadV2SafeString(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attrName=CO"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attr=CO"})
 	err := attrsRead(c)
 
 	if assert.NoError(t, err) {
@@ -118,7 +118,7 @@ func TestAttrsReadV2SafeString(t *testing.T) {
 func TestAttrsReadErrorInitCmd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -128,7 +128,7 @@ func TestAttrsReadErrorInitCmd(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=airqualityobserved1", "--attrName=CO"})
+	_ = set.Parse([]string{"--id=airqualityobserved1", "--attr=CO"})
 	err := attrsRead(c)
 
 	if assert.Error(t, err) {
@@ -143,7 +143,7 @@ func TestAttrsReadErrorInitCmd(t *testing.T) {
 func TestAttrsReadErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,link")
+	setupFlagString(set, "host,id,type,attr,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -153,7 +153,7 @@ func TestAttrsReadErrorNewClient(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=airqualityobserved1", "--attrName=CO"})
+	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=airqualityobserved1", "--attr=CO"})
 	err := attrsRead(c)
 
 	if assert.Error(t, err) {
@@ -168,7 +168,7 @@ func TestAttrsReadErrorNewClient(t *testing.T) {
 func TestAttrsReadErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -178,7 +178,7 @@ func TestAttrsReadErrorHTTP(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO"})
+	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO"})
 	err := attrsRead(c)
 
 	if assert.Error(t, err) {
@@ -193,7 +193,7 @@ func TestAttrsReadErrorHTTP(t *testing.T) {
 func TestAttrsReadErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -203,7 +203,7 @@ func TestAttrsReadErrorHTTPStatus(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO"})
+	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO"})
 	err := attrsRead(c)
 
 	if assert.Error(t, err) {
@@ -217,7 +217,7 @@ func TestAttrsReadErrorHTTPStatus(t *testing.T) {
 func TestAttrsReadV2ErrorSafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
@@ -228,7 +228,7 @@ func TestAttrsReadV2ErrorSafeString(t *testing.T) {
 	ngsi.HTTP = mock
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attrName=CO"})
+	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attr=CO"})
 	err := attrsRead(c)
 
 	if assert.Error(t, err) {
@@ -252,10 +252,10 @@ func TestAttrsReadV2ErrorPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues,pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attrName=CO", "--pretty"})
+	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO", "--pretty"})
 
 	setJSONIndentError(ngsi)
 
@@ -273,7 +273,7 @@ func TestAttrsReadV2ErrorPretty(t *testing.T) {
 func TestAttrsAppendV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -292,7 +292,7 @@ func TestAttrsAppendV2(t *testing.T) {
 func TestAttrsAppendV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -311,7 +311,7 @@ func TestAttrsAppendV2SafeString(t *testing.T) {
 func TestAttrsAppendLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagString(set, "host,id,type,attr,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -331,7 +331,7 @@ func TestAttrsAppendLD(t *testing.T) {
 func TestAttrsAppendErrorInitCmd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -356,7 +356,7 @@ func TestAttrsAppendErrorInitCmd(t *testing.T) {
 func TestAttrsAppendErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,link")
+	setupFlagString(set, "host,id,type,attr,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -381,7 +381,7 @@ func TestAttrsAppendErrorNewClient(t *testing.T) {
 func TestAttrsAppendErrorData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -406,7 +406,7 @@ func TestAttrsAppendErrorData(t *testing.T) {
 func TestAttrsAppendLDErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagString(set, "host,id,type,attr,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -432,7 +432,7 @@ func TestAttrsAppendLDErrorContext(t *testing.T) {
 func TestAttrsAppendV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -457,7 +457,7 @@ func TestAttrsAppendV2SafeStringError(t *testing.T) {
 func TestAttrsAppendErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -482,7 +482,7 @@ func TestAttrsAppendErrorHTTP(t *testing.T) {
 func TestAttrsAppendErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -506,7 +506,7 @@ func TestAttrsAppendErrorHTTPStatus(t *testing.T) {
 func TestAttrsUpdateV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -525,7 +525,7 @@ func TestAttrsUpdateV2(t *testing.T) {
 func TestAttrsUpdateV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -544,7 +544,7 @@ func TestAttrsUpdateV2SafeString(t *testing.T) {
 func TestAttrsUpdateLD(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagString(set, "host,id,type,attr,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -564,7 +564,7 @@ func TestAttrsUpdateLD(t *testing.T) {
 func TestAttrsUpdateErrorInitCmd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -589,7 +589,7 @@ func TestAttrsUpdateErrorInitCmd(t *testing.T) {
 func TestAttrsUpdateErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,link")
+	setupFlagString(set, "host,id,type,attr,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -614,7 +614,7 @@ func TestAttrsUpdateErrorNewClient(t *testing.T) {
 func TestAttrsUpdateErrorData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -639,7 +639,7 @@ func TestAttrsUpdateErrorData(t *testing.T) {
 func TestAttrsUpdateLDErrorContext(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,context")
+	setupFlagString(set, "host,id,type,attr,data,context")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -665,7 +665,7 @@ func TestAttrsUpdateLDErrorContext(t *testing.T) {
 func TestAttrsUpdateV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -689,7 +689,7 @@ func TestAttrsUpdateV2SafeStringError(t *testing.T) {
 func TestAttrsUpdateErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -714,7 +714,7 @@ func TestAttrsUpdateErrorHTTP(t *testing.T) {
 func TestAttrsUpdateErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -738,7 +738,7 @@ func TestAttrsUpdateErrorHTTPStatus(t *testing.T) {
 func TestAttrsReplaceV2(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -757,7 +757,7 @@ func TestAttrsReplaceV2(t *testing.T) {
 func TestAttrsReplaceV2SafeString(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -776,7 +776,7 @@ func TestAttrsReplaceV2SafeString(t *testing.T) {
 func TestAttrsReplaceErrorInitCmd(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -801,7 +801,7 @@ func TestAttrsReplaceErrorInitCmd(t *testing.T) {
 func TestAttrsReplaceErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,link")
+	setupFlagString(set, "host,id,type,attr,data,link")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -826,7 +826,7 @@ func TestAttrsReplaceErrorNewClient(t *testing.T) {
 func TestAttrsReplaceErrorData(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
@@ -851,7 +851,7 @@ func TestAttrsReplaceErrorData(t *testing.T) {
 func TestAttrsReplaceV2SafeStringError(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data,safeString")
+	setupFlagString(set, "host,id,type,attr,data,safeString")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -876,7 +876,7 @@ func TestAttrsReplaceV2SafeStringError(t *testing.T) {
 func TestAttrsReplaceErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
@@ -901,7 +901,7 @@ func TestAttrsReplaceErrorHTTP(t *testing.T) {
 func TestAttrsReplaceErrorHTTPStatus(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,id,type,attrName,data")
+	setupFlagString(set, "host,id,type,attr,data")
 	setupFlagBool(set, "append,keyValues")
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest

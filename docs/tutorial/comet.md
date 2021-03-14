@@ -29,7 +29,7 @@ ngsi version --host comet
 
 ```console
 ngsi hget --host comet \
-attr --hLimit 3 --hOffset 0 --type Thing --id device001 --attrName A1 --pretty
+attr --hLimit 3 --hOffset 0 --type Thing --id device001 --attr A1 --pretty
 ```
 
 ```json
@@ -59,7 +59,7 @@ attr --hLimit 3 --hOffset 0 --type Thing --id device001 --attrName A1 --pretty
 
 ```console
 ngsi hget --host comet \
-attr -lastN 3 --type Thing --id device001 --attrName A1 --pretty
+attr -lastN 3 --type Thing --id device001 --attr A1 --pretty
 ```
 
 ```json
@@ -90,7 +90,7 @@ attr -lastN 3 --type Thing --id device001 --attrName A1 --pretty
 
 ```console
 ngsi hget --host comet attr \
---aggrMethod sum --aggrPeriod day --type Thing --id device001 --attrName A1 --pretty
+--aggrMethod sum --aggrPeriod day --type Thing --id device001 --attr A1 --pretty
 ```
 
 ```json
@@ -129,7 +129,7 @@ ngsi hget --host comet attr \
 
 ```console
 ngsi hget --host comet attr \
---attrName A1 --aggrMethod max --aggrPeriod day --type Thing --id device001 --pretty
+--attr A1 --aggrMethod max --aggrPeriod day --type Thing --id device001 --pretty
 ```
 
 ```json
@@ -167,7 +167,7 @@ ngsi hget --host comet attr \
 ### Filtering by min, day
 
 ```console
-ngsi hget --host comet attr --attrName A1 --aggrMethod min --aggrPeriod day --type Thing --id device001 --pretty
+ngsi hget --host comet attr --attr A1 --aggrMethod min --aggrPeriod day --type Thing --id device001 --pretty
 ```
 
 ```json
@@ -219,5 +219,5 @@ ngsi hdelete --host comet entity --type Thing --id device001 --run
 ### Deleting all the data associated to certain attribute of certain entity, service and service path
 
 ```
-ngsi hdelete --host comet attr --type Thing --id device001 --attrName A1 --run
+ngsi hdelete --host comet attr --type Thing --id device001 --attr A1 --run
 ```

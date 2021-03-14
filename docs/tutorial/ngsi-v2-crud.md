@@ -135,7 +135,7 @@ This example reads the value of a single attribute (`name`) from an existing **P
 #### :eight: Request:
 
 ```console
-ngsi get attr --id urn:ngsi-ld:Product:001 --attrName name
+ngsi get attr --id urn:ngsi-ld:Product:001 --attr name
 ```
 
 ### Read a Data Entity (key-value pairs)
@@ -212,7 +212,7 @@ This example updates the value of the price attribute of the Entity with `id=urn
 #### :one::four: Request:
 
 ```console
-ngsi update attr --id urn:ngsi-ld:Product:001 --attrName price --data 89
+ngsi update attr --id urn:ngsi-ld:Product:001 --attr price --data 89
 ```
 
 ### Overwrite Multiple Attributes of a Data Entity
@@ -307,7 +307,7 @@ This example removes the `specialOffer` attribute from the entity with `id=urn:n
 #### :two::zero: Request:
 
 ```console
-ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
+ngsi delete attr --id urn:ngsi-ld:Product:001 --attr specialOffer
 ```
 
 ### Batch Delete Multiple Entities

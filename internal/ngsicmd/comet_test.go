@@ -48,9 +48,9 @@ func TestCometAttrReadMain(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit")
+	setupFlagString(set, "host,id,type,attr,hLimit")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -77,9 +77,9 @@ func TestCometAttrReadMainDate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,fromDate,toDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,fromDate,toDate")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3", "--fromDate=1day", "--toDate=2days"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3", "--fromDate=1day", "--toDate=2days"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -106,9 +106,9 @@ func TestCometAttrReadMainSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,safeString")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3", "--safeString=on"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3", "--safeString=on"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -135,10 +135,10 @@ func TestCometAttrReadMainPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit")
+	setupFlagString(set, "host,id,type,attr,hLimit")
 	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3", "--pretty"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3", "--pretty"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -165,7 +165,7 @@ func TestCometAttrReadMainErrorNoType(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,fromDate")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=comet"})
 
@@ -194,9 +194,9 @@ func TestCometAttrReadMainNoWayToConsumeData(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit")
+	setupFlagString(set, "host,id,type,attr,hLimit")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -223,9 +223,9 @@ func TestCometAttrReadMainErrorDate(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,fromDate")
+	setupFlagString(set, "host,id,type,attr,hLimit,fromDate")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3", "--fromDate=1"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3", "--fromDate=1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -251,9 +251,9 @@ func TestCometAttrReadMainErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit")
+	setupFlagString(set, "host,id,type,attr,hLimit")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -279,9 +279,9 @@ func TestCometAttrReadMainErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit")
+	setupFlagString(set, "host,id,type,attr,hLimit")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -308,9 +308,9 @@ func TestCometAttrReadMainErrorSafeString(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit,safeString")
+	setupFlagString(set, "host,id,type,attr,hLimit,safeString")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3", "--safeString=on"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3", "--safeString=on"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -337,10 +337,10 @@ func TestCometAttrReadMainErrorPretty(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,type,attrName,hLimit")
+	setupFlagString(set, "host,id,type,attr,hLimit")
 	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attrName=A1", "--hLimit=3", "--pretty"})
+	_ = set.Parse([]string{"--host=comet", "--id=device001", "--type=device", "--attr=A1", "--hLimit=3", "--pretty"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -649,9 +649,9 @@ func TestCometEntityDeleteMainErrorHTTPStatus(t *testing.T) {
 func TestCometAttrDelete(t *testing.T) {
 	_, set, app, buf := setupTest()
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attrName=A1"})
+	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attr=A1"})
 
 	err := cometAttrDelete(c)
 
@@ -703,9 +703,9 @@ func TestCometAttrDeleteMain(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attrName=A1"})
+	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attr=A1"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -732,10 +732,10 @@ func TestCometAttrDeleteMainWithRun(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attrName=A1", "--run"})
+	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attr=A1", "--run"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -758,7 +758,7 @@ func TestCometAttrDeleteMainErrorType(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=comet", "--id=device001"})
 
@@ -787,7 +787,7 @@ func TestCometAttrDeleteMainErrorID(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=comet", "--type=device"})
 
@@ -816,7 +816,7 @@ func TestCometAttrDeleteMainErrorAttrName(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001"})
 
@@ -830,7 +830,7 @@ func TestCometAttrDeleteMainErrorAttrName(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "missing attrName", ngsiErr.Message)
+		assert.Equal(t, "missing attr", ngsiErr.Message)
 	}
 }
 
@@ -845,10 +845,10 @@ func TestCometAttrDeleteMainErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attrName=A1", "--run"})
+	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attr=A1", "--run"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
@@ -875,10 +875,10 @@ func TestCometAttrDeleteMainErrorHTTPStatus(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type,id,attrName")
+	setupFlagString(set, "host,type,id,attr")
 	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attrName=A1", "--run"})
+	_ = set.Parse([]string{"--host=comet", "--type=device", "--id=device001", "--attr=A1", "--run"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)

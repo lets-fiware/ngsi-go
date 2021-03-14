@@ -534,7 +534,7 @@ ngsi list entities --type TemperatureSensor --link ctx -P --acceptJson
 #
 # 0014 Overwrite the value of an Attribute value
 #
-ngsi update attr --link ctx --id urn:ngsi-ld:TemperatureSensor:002 --attrName category \
+ngsi update attr --link ctx --id urn:ngsi-ld:TemperatureSensor:002 --attr category \
 --data '{
     "value": ["sensor", "actuator"],
     "type": "Property"

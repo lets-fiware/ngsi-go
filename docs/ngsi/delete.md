@@ -132,7 +132,7 @@ ngsi delete [common options] attr [options]
 | ---------------------- | -------------------------- |
 | --id value, -i value   | specify entity id          |
 | --type value, -t value | specify entity Type        |
-| --attrName value       | specify attribute name     |
+| --attr value           | specify attribute name     |
 | --link value, -L value | specify @context           |
 | --help                 | show help (default: false) |
 
@@ -141,7 +141,7 @@ ngsi delete [common options] attr [options]
 #### Request:
 
 ```console
-ngsi delete attr --id urn:ngsi-ld:Product:001 --attrName specialOffer
+ngsi delete attr --id urn:ngsi-ld:Product:001 --attr specialOffer
 ```
 
 <a name="delete-an-attribute-from-a-temporal-entity"></a>
@@ -159,7 +159,7 @@ ngsi delete [common options] tattr [options]
 | Options                | Description                                         |
 | ---------------------- | --------------------------------------------------- |
 | --id value, -i value   | specify entity id                                   |
-| --attrName value       | attrName                                            |
+| --attr value           | specify attribute name                              |
 | --deleteAll            | all atribute instances are deleted (default: false) |
 | --datasetId value      | datasetId of the dataset to be deleted              |
 | --instanceId value     | attribute instance id (LD)                          |
