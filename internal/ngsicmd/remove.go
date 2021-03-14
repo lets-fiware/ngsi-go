@@ -137,10 +137,14 @@ func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entity
 			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 
-		_, _, err = client.OpUpdate(&entities, "delete", false, false)
+		res, body, err = client.OpUpdate(&entities, "delete", false, false)
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
+		if res.StatusCode != http.StatusNoContent {
+			return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		}
+
 		client.RemoveHeader("Content-Type")
 	}
 
