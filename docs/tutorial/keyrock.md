@@ -20,7 +20,7 @@ Password 1234
 
 ### Get a token
 
-``console
+```console
 ngsi token --host keyrock
 ```
 
