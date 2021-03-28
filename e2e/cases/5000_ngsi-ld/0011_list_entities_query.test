@@ -20,7 +20,7 @@ ngsi create --host orion-ld entities --link test \
 ]'
 
 ```
-{"@context":"http://atcontext:8000/test-context.jsonld","success":["urn:ngsi-ld:sensor001","urn:ngsi-ld:sensor002"],"errors":[]}
+["urn:ngsi-ld:sensor001","urn:ngsi-ld:sensor002"]
 ```
 
 #

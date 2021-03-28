@@ -285,7 +285,7 @@ func TestBatchCreate(t *testing.T) {
 
 	setupFlagString(set, "host,data,link")
 	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ResBody = []byte(testData)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/create"
 	mock := NewMockHTTP()
@@ -309,7 +309,7 @@ func TestBatchCreateContext(t *testing.T) {
 
 	setupFlagString(set, "host,data,link,context")
 	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`[{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:002","temperature":{"type":"Property","unitCode":"CEL","value":21},"type":"TemperatureSensor"},{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:003","temperature":{"type":"Property","unitCode":"CEL","value":27},"type":"TemperatureSensor"}]`)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/create"
 	mock := NewMockHTTP()

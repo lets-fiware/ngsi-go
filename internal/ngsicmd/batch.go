@@ -101,7 +101,7 @@ func batchCreate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	if err != nil {
 		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusCreated {
 		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 	}
 

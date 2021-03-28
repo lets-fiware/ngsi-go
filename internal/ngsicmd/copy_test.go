@@ -1585,7 +1585,7 @@ func TestLDLDCopyPage(t *testing.T) {
 	reqRes1.ResHeader = http.Header{"Ngsild-Results-Count": []string{"200"}}
 	reqRes1.Path = "/ngsi-ld/v1/entities"
 	reqRes2 := MockHTTPReqRes{}
-	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.Res.StatusCode = http.StatusCreated
 	reqRes2.Path = "/ngsi-ld/v1/entityOperations/create"
 	reqRes3 := MockHTTPReqRes{}
 	reqRes3.Res.StatusCode = http.StatusOK
@@ -1593,7 +1593,7 @@ func TestLDLDCopyPage(t *testing.T) {
 	reqRes3.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes3.Path = "/ngsi-ld/v1/entities"
 	reqRes4 := MockHTTPReqRes{}
-	reqRes4.Res.StatusCode = http.StatusOK
+	reqRes4.Res.StatusCode = http.StatusCreated
 	reqRes4.Path = "/ngsi-ld/v1/entityOperations/create"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
@@ -1707,7 +1707,7 @@ func TestLDLDCopyPageContext(t *testing.T) {
 	reqRes1.ResHeader = http.Header{"Ngsild-Results-Count": []string{"3"}}
 	reqRes1.Path = "/ngsi-ld/v1/entities"
 	reqRes2 := MockHTTPReqRes{}
-	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.Res.StatusCode = http.StatusCreated
 	reqRes2.Path = "/ngsi-ld/v1/entityOperations/create"
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes1)

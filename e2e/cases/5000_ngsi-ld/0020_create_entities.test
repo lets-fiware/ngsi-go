@@ -47,7 +47,7 @@ ngsi create --host orion-ld entities --link ctx \
 ]'
 
 ```
-{"@context":"http://atcontext:8000/ngsi-context.jsonld","success":["urn:ngsi-ld:TemperatureSensor:001","urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"],"errors":[]}
+["urn:ngsi-ld:TemperatureSensor:001","urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"]
 ```
 
 #

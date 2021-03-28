@@ -235,7 +235,7 @@ func copyLDLD(c *cli.Context, ngsi *ngsilib.NGSI, source, destination *ngsilib.C
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
-		if res.StatusCode != http.StatusOK {
+		if res.StatusCode != http.StatusCreated {
 			return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
 		}
 
