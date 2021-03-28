@@ -174,7 +174,7 @@ ngsi create entities --link ctx \
 ]'
 
 ```
-{"@context":"http://REGEX(.*)/ngsi-context.jsonld","success":\["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003","urn:ngsi-ld:TemperatureSensor:004"\],"errors":\[\]}
+["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003","urn:ngsi-ld:TemperatureSensor:004"]
 ```
 
 #
