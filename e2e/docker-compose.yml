@@ -28,7 +28,7 @@ version: "3"
 
 services:
   orion:
-    image: fiware/orion:2.6.0
+    image: fiware/orion:2.6.1
     depends_on:
       - mongo
     command: -dbhost mongo
