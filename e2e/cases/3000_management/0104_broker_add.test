@@ -349,7 +349,7 @@ ngsi broker get --host orion-v2
 ```
 brokerHost https://orion-v2
 ngsiType v2
-FIWARE-Serivce iot
+FIWARE-Service iot
 ```
 
 #
@@ -380,7 +380,7 @@ ngsi broker get --host orion-v2
 ```
 brokerHost https://orion-v2
 ngsiType v2
-FIWARE-SerivcePath /iot
+FIWARE-ServicePath /iot
 ```
 
 #
@@ -562,7 +562,7 @@ ngsi broker get --host tenant
 ```
 brokerHost http://orion:1026
 ngsiType v2
-FIWARE-Serivce foo
+FIWARE-Service foo
 ```
 
 #

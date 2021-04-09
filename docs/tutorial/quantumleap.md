@@ -9,8 +9,8 @@ ngsi server get --host quantumleap
 ```json
 serverType quantumleap
 serverHost http://localhost:8668
-FIWARE-Serivce openiot
-FIWARE-SerivcePath /
+FIWARE-Service openiot
+FIWARE-ServicePath /
 ```
 
 ## Print version

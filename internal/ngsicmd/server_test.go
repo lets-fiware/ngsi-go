@@ -802,7 +802,7 @@ func TestPrintServerInfo(t *testing.T) {
 	printServerInfo(ngsi, &broker)
 
 	actual := buf.String()
-	expected := "serverType comet\nserverHost http://sth\nFIWARE-Serivce openiot\nFIWARE-SerivcePath /iot\nContext http://conetxt\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword 1234\nClientID clientid\nClientSecret clientsecret\nXAuthToken false\nToken token\nAPIPath /path\n"
+	expected := "serverType comet\nserverHost http://sth\nFIWARE-Service openiot\nFIWARE-ServicePath /iot\nContext http://conetxt\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword 1234\nClientID clientid\nClientSecret clientsecret\nXAuthToken false\nToken token\nAPIPath /path\n"
 	assert.Equal(t, expected, actual)
 }
 

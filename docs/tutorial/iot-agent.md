@@ -9,8 +9,8 @@ ngsi server list --host iota
 ```json
 serverType iota
 serverHost http://iot-agent:4041
-FIWARE-Serivce openiot
-FIWARE-SerivcePath /
+FIWARE-Service openiot
+FIWARE-ServicePath /
 ```
 
 ## Print version
@@ -328,7 +328,7 @@ idasDevicesGet005 404 Not Found {"name":"DEVICE_NOT_FOUND","message":"No device 
 ngsi services delete --resource /iot/d
 ``` 
 
-## List serivces
+## List services
 
 ```console
 ngsi services list --pretty

@@ -59,8 +59,8 @@ ngsi server list --host comet
 ```text
 serverType comet
 serverHost http://localhost:8666
-FIWARE-Serivce openiot
-FIWARE-SerivcePath /
+FIWARE-Service openiot
+FIWARE-ServicePath /
 ```
 
 #### Example 2
@@ -153,7 +153,7 @@ Specify the following value to `--serverType` option when you add an alias for F
 | KeyrockTokenProvider | idmHost, username, password                         | It provides auth token from Keyrock                                          |
 | tokenproxy           | idmHost, username, password                         | It provides auth token from Keyrock                                          |
 
-### FIWARE Serivce and FIWARE ServicePath
+### FIWARE Service and FIWARE ServicePath
 
 Specify the `--service` and/or `--path` parameter when adding a new alias.
 

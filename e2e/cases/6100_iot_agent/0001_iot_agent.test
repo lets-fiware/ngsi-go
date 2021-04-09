@@ -100,6 +100,6 @@ ngsi server list --host iota
 ```
 serverType iota
 serverHost http://iot-agent:4041
-FIWARE-Serivce openiot
-FIWARE-SerivcePath /
+FIWARE-Service openiot
+FIWARE-ServicePath /
 ```

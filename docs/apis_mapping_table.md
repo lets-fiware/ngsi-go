@@ -209,7 +209,7 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | --------------------------- | ------------------------------- |
 | GET /services               | services list                   |
 | POST /services              | services create                 |
-| PUT /serivces               | services update                 |
+| PUT /services               | services update                 |
 | DELETE /services            | services delete                 |
 | GET /devices                | devices list                    |
 | GET /devices/{device_id}    | devices get --id {device_id}    |
