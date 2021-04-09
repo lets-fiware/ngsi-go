@@ -797,7 +797,7 @@ func TestPrintBrokerInfoV2(t *testing.T) {
 	printBrokerInfo(ngsi, &broker)
 
 	actual := buf.String()
-	expected := "brokerHost http://orion\nngsiType v2\nFIWARE-Serivce openiot\nFIWARE-SerivcePath /iot\nContext http://context\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword 1234\nClientID clientid\nClientSecret clientsecret\nXAuthToken false\nToken token\nAPIPath /path\n"
+	expected := "brokerHost http://orion\nngsiType v2\nFIWARE-Service openiot\nFIWARE-ServicePath /iot\nContext http://context\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword 1234\nClientID clientid\nClientSecret clientsecret\nXAuthToken false\nToken token\nAPIPath /path\n"
 	assert.Equal(t, expected, actual)
 }
 

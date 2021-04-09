@@ -272,10 +272,10 @@ func printServerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 	fmt.Fprintln(ngsi.StdWriter, "serverType "+info.ServerType)
 	fmt.Fprintln(ngsi.StdWriter, "serverHost "+info.ServerHost)
 	if info.Tenant != "" {
-		fmt.Fprintln(ngsi.StdWriter, "FIWARE-Serivce "+info.Tenant)
+		fmt.Fprintln(ngsi.StdWriter, "FIWARE-Service "+info.Tenant)
 	}
 	if info.Scope != "" {
-		fmt.Fprintln(ngsi.StdWriter, "FIWARE-SerivcePath "+info.Scope)
+		fmt.Fprintln(ngsi.StdWriter, "FIWARE-ServicePath "+info.Scope)
 	}
 	if info.Context != "" {
 		fmt.Fprintln(ngsi.StdWriter, "Context "+info.Context)

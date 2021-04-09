@@ -177,7 +177,7 @@ Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Brok
 | KeyrockTokenProvider | idmHost, username, password                         | It provides auth token from Keyrock                                          |
 | tokenproxy           | idmHost, username, password                         | It provides auth token from Keyrock                                          |
 
-### FIWARE Serivce and FIWARE ServicePath
+### FIWARE Service and FIWARE ServicePath
 
 Specify the `--service` and/or `--path` parameter when adding a new alias.
 

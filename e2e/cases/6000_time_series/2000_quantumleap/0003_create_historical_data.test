@@ -41,8 +41,8 @@ ngsi server get --host quantumleap
 ```
 serverType quantumleap
 serverHost http://quantumleap:8668
-FIWARE-Serivce openiot
-FIWARE-SerivcePath /
+FIWARE-Service openiot
+FIWARE-ServicePath /
 ```
 
 #

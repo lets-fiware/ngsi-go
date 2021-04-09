@@ -32,8 +32,8 @@ ngsi server get --host comet
 ```
 serverType comet
 serverHost http://comet:8666
-FIWARE-Serivce openiot
-FIWARE-SerivcePath /
+FIWARE-Service openiot
+FIWARE-ServicePath /
 ```
 
 #

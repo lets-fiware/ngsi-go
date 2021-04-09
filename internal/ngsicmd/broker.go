@@ -264,10 +264,10 @@ func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 	}
 	if strings.ToLower(info.NgsiType) == "v2" {
 		if info.Tenant != "" {
-			fmt.Fprintln(ngsi.StdWriter, "FIWARE-Serivce "+info.Tenant)
+			fmt.Fprintln(ngsi.StdWriter, "FIWARE-Service "+info.Tenant)
 		}
 		if info.Scope != "" {
-			fmt.Fprintln(ngsi.StdWriter, "FIWARE-SerivcePath "+info.Scope)
+			fmt.Fprintln(ngsi.StdWriter, "FIWARE-ServicePath "+info.Scope)
 		}
 	} else {
 		if info.BrokerType != "" {
