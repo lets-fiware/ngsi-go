@@ -302,20 +302,6 @@ ngsi list entities --type TemperatureSensor --link ctx -P
 [
   {
     "@context": "http://REGEX(.*)/ngsi-context.jsonld",
-    "id": "urn:ngsi-ld:TemperatureSensor:004",
-    "type": "TemperatureSensor",
-    "category": {
-      "type": "Property",
-      "value": "sensor"
-    },
-    "temperature": {
-      "type": "Property",
-      "value": 100,
-      "unitCode": "CEL"
-    }
-  },
-  {
-    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
     "id": "urn:ngsi-ld:TemperatureSensor:002",
     "type": "TemperatureSensor",
     "category": {
@@ -339,6 +325,20 @@ ngsi list entities --type TemperatureSensor --link ctx -P
     "temperature": {
       "type": "Property",
       "value": 37,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 100,
       "unitCode": "CEL"
     }
   }
@@ -353,19 +353,6 @@ ngsi list entities --type TemperatureSensor --link ctx -P --acceptJson
 ```
 [
   {
-    "id": "urn:ngsi-ld:TemperatureSensor:004",
-    "type": "TemperatureSensor",
-    "category": {
-      "type": "Property",
-      "value": "sensor"
-    },
-    "temperature": {
-      "type": "Property",
-      "value": 100,
-      "unitCode": "CEL"
-    }
-  },
-  {
     "id": "urn:ngsi-ld:TemperatureSensor:002",
     "type": "TemperatureSensor",
     "category": {
@@ -388,6 +375,19 @@ ngsi list entities --type TemperatureSensor --link ctx -P --acceptJson
     "temperature": {
       "type": "Property",
       "value": 37,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 100,
       "unitCode": "CEL"
     }
   }
@@ -439,20 +439,6 @@ ngsi list entities --type TemperatureSensor --link ctx -P
 [
   {
     "@context": "http://REGEX(.*)/ngsi-context.jsonld",
-    "id": "urn:ngsi-ld:TemperatureSensor:004",
-    "type": "TemperatureSensor",
-    "category": {
-      "type": "Property",
-      "value": "sensor"
-    },
-    "temperature": {
-      "type": "Property",
-      "value": 100,
-      "unitCode": "CEL"
-    }
-  },
-  {
-    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
     "id": "urn:ngsi-ld:TemperatureSensor:002",
     "type": "TemperatureSensor",
     "category": {
@@ -476,6 +462,20 @@ ngsi list entities --type TemperatureSensor --link ctx -P
     "temperature": {
       "type": "Property",
       "value": 30,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 100,
       "unitCode": "CEL"
     }
   }
@@ -490,19 +490,6 @@ ngsi list entities --type TemperatureSensor --link ctx -P --acceptJson
 ```
 [
   {
-    "id": "urn:ngsi-ld:TemperatureSensor:004",
-    "type": "TemperatureSensor",
-    "category": {
-      "type": "Property",
-      "value": "sensor"
-    },
-    "temperature": {
-      "type": "Property",
-      "value": 100,
-      "unitCode": "CEL"
-    }
-  },
-  {
     "id": "urn:ngsi-ld:TemperatureSensor:002",
     "type": "TemperatureSensor",
     "category": {
@@ -525,6 +512,19 @@ ngsi list entities --type TemperatureSensor --link ctx -P --acceptJson
     "temperature": {
       "type": "Property",
       "value": 30,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "temperature": {
+      "type": "Property",
+      "value": 100,
       "unitCode": "CEL"
     }
   }
