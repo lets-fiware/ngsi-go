@@ -122,7 +122,8 @@ ngsi broker add [options]
 | --safeString value             | Use safe string: `off` or `on`                            |
 | --help                         | show help (default: false)                                |
 
--   The `--brokerType` option is used with `--ngsiType ld` when adding a NGSI-lD broker. It is not needed for NGSIv2.
+-   The `--brokerType` option is used with `--ngsiType ld` option when adding a NGSI-LD broker. It is not needed for
+    NGSIv2.
 
 > **Note:** Orion interprets the FIWARE Service name (tenant name) in lowercase. To use a coherent FIWARE Service name,
 > NGSI Go allows only lowercase letters in FIWARE Service name. Please have a look at
