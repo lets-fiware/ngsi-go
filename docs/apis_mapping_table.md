@@ -2,6 +2,24 @@
 
 These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 
+<details>
+<summary><strong>Details</strong></summary>
+
+-   [NGSI-LD API](#ngsi-ld-api-etsi-gs-cim-009-v141-2021-02)
+    -   [Orion-LD API](#orion-ld-api)
+    -   [Scorpio broker API](#scorpio-broker-api)
+-   [FIWARE NGSI v2](#fiware-ngsi-v2)
+    -   [Orion API](#orion-api)
+-   [STH-Comet API](#sth-comet-api)
+-   [QuantumLeap API](#quantumleap-api)
+-   [Cygnus API](#cygnus-api)
+-   [IoT Agent Provision API](#iot-agent-provision-api)
+-   [Perseo FE](#perseo-fe)
+-   [Perseo CORE](#perseo-core)
+-   [Keyrock API](#keyrock-api)
+
+</details>
+
 ## NGSI-LD API (ETSI GS CIM 009 V1.4.1 2021-02)
 
 | NGSI-LD API                                                                 | NGSI Go commands                                                           | 
@@ -105,7 +123,7 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 
 ### Orion API
 
-| Orion-LD API                   | NGSI Go commands                          |
+| Orion API                      | NGSI Go commands                          |
 | ------------------------------ | ----------------------------------------- |
 | GET /version                   | version                                   |
 | GET /admin/log                 | admin log                                 |
@@ -117,7 +135,7 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | GET /admin/sem                 | admin semaphore                           |
 | GET /admin/metrics             | admin metrics                             |
 | DELETE /admin/metrics          | admin metrics --reset                     |
-| GET /admin statistics          | amdin statistics                          |
+| GET /admin statistics          | admin statistics                          |
 | DELETE /admin statistics       | admin statistics --delete                 |
 | GET /cache/statistics          | admin cacheStatistics                     |
 | DELETE /cache/statistics       | admin cacheStatistics --delete            |
