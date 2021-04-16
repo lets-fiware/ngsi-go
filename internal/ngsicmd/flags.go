@@ -669,7 +669,7 @@ var (
 	}
 	brokerTypeFlag = &cli.StringFlag{
 		Name:  "brokerType",
-		Usage: "orion-ld, scorpio, stellio",
+		Usage: "specify NGSI-LD broker type: orion-ld, scorpio or stellio",
 	}
 	idmTypeFlag = &cli.StringFlag{
 		Name:    "idmType",

@@ -46,7 +46,7 @@ RUN \
         bash=5.0.17-r0 \
         bash-completion=2.10-r0 \
         jq=1.6-r1 \
-        curl=7.69.1-r3 && \
+        curl=7.76.1-r0 && \
     echo "source /usr/share/bash-completion/bash_completion" >> /root/.bashrc && \
     echo "source /usr/share/bash-compeletion/completions/ngsi_bash_autocomplete" >> /root/.bashrc
 

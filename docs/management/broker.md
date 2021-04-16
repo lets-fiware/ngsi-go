@@ -103,24 +103,27 @@ ngsi broker add [options]
 
 ### Options
 
-| Options                        | Description                    |
-| ------------------------------ | ------------------------------ |
-| --host value, -h value         | specify host or alias          |
-| --brokerHost value, -b value   | specify context broker host    |
-| --ngsiType value               | specify NGSI type: v2 or ld    |
-| --brokerType value             | orion-ld, scorpio, stellio     |
-| --idmType value, -t value      | specify token type             |
-| --idmHost value, -m value      | specify identity manager host  |
-| --apiPath value, -a value      | specify API path               |
-| --username value, -U value     | specify username               |
-| --password value, -P value     | specify password               |
-| --clientId value, -I value     | specify client id              |
-| --clientSecret value, -S value | specify client secret          |
-| --token value                  | specify oauth token            |
-| --service value, -s value      | specify FIWARE Service         |
-| --path value, -p value         | specify FIWARE ServicePath     |
-| --safeString value             | Use safe string: `off` or `on` |
-| --help                         | show help (default: false)     |
+| Options                        | Description                                               |
+| ------------------------------ | --------------------------------------------------------- |
+| --host value, -h value         | specify host or alias                                     |
+| --brokerHost value, -b value   | specify context broker host                               |
+| --ngsiType value               | specify NGSI type: v2 or ld                               |
+| --brokerType value             | specify NGSI-LD broker type: orion-ld, scorpio or stellio |
+| --idmType value, -t value      | specify token type                                        |
+| --idmHost value, -m value      | specify identity manager host                             |
+| --apiPath value, -a value      | specify API path                                          |
+| --username value, -U value     | specify username                                          |
+| --password value, -P value     | specify password                                          |
+| --clientId value, -I value     | specify client id                                         |
+| --clientSecret value, -S value | specify client secret                                     |
+| --token value                  | specify oauth token                                       |
+| --service value, -s value      | specify FIWARE Service                                    |
+| --path value, -p value         | specify FIWARE ServicePath                                |
+| --safeString value             | Use safe string: `off` or `on`                            |
+| --help                         | show help (default: false)                                |
+
+-   The `--brokerType` option is used with `--ngsiType ld` option when adding a NGSI-LD broker. It is not needed for
+    NGSIv2.
 
 > **Note:** Orion interprets the FIWARE Service name (tenant name) in lowercase. To use a coherent FIWARE Service name,
 > NGSI Go allows only lowercase letters in FIWARE Service name. Please have a look at
@@ -144,10 +147,23 @@ NGSI-LD Broker
 ```console
 ngsi broker add \
   --host orion-ld \
-  --brokerHost http://localhost:1026
+  --brokerHost http://localhost:1026 \
+  --ngsiType ld
 ```
 
 #### Example 3
+
+NGSI-LD Broker
+
+```console
+ngsi broker add \
+  --host scorpio \
+  --brokerHost http://localhost:9090 \
+  --ngsiType ld \
+  --brokerType scorpio
+```
+
+#### Example 4
 
 Orion-LD with Keyrock
 
@@ -249,24 +265,24 @@ ngsi broker upadte [options]
 
 ### Options
 
-| Options                        | Description                      |
-| ------------------------------ | -------------------------------- |
-| --host value, -h value         | specify host or alias (Required) |
-| --brokerHost value, -b value   | specify context broker host      |
-| --ngsiType value               | specify NGSI type: v2 or ld      |
-| --brokerType value             | orion-ld, scorpio, stellio     |
-| --idmType value, -t value      | specify token type               |
-| --idmHost value, -m value      | specify identity manager host    |
-| --apiPath value, -a value      | specify API path                 |
-| --username value, -U value     | specify username                 |
-| --password value, -P value     | specify password                 |
-| --clientId value, -I value     | specify client id                |
-| --clientSecret value, -S value | specify client secret            |
-| --token value                  | specify oauth token              |
-| --service value, -s value      | specify FIWARE Service           |
-| --path value, -p value         | specify FIWARE ServicePath       |
-| --safeString value             | Use safe string: `off` or `on`   |
-| --help                         | show help (default: false)       |
+| Options                        | Description                                               |
+| ------------------------------ | --------------------------------------------------------- |
+| --host value, -h value         | specify host or alias (Required)                          |
+| --brokerHost value, -b value   | specify context broker host                               |
+| --ngsiType value               | specify NGSI type: v2 or ld                               |
+| --brokerType value             | specify NGSI-LD broker type: orion-ld, scorpio or stellio |
+| --idmType value, -t value      | specify token type                                        |
+| --idmHost value, -m value      | specify identity manager host                             |
+| --apiPath value, -a value      | specify API path                                          |
+| --username value, -U value     | specify username                                          |
+| --password value, -P value     | specify password                                          |
+| --clientId value, -I value     | specify client id                                         |
+| --clientSecret value, -S value | specify client secret                                     |
+| --token value                  | specify oauth token                                       |
+| --service value, -s value      | specify FIWARE Service                                    |
+| --path value, -p value         | specify FIWARE ServicePath                                |
+| --safeString value             | Use safe string: `off` or `on`                            |
+| --help                         | show help (default: false)                                |
 
 #### Example 1
 

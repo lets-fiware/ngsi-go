@@ -40,7 +40,7 @@ OPTIONS:
    --host value, -h value          host or alias
    --brokerHost value, -b value    specify context broker host
    --ngsiType value                specify NGSI type: v2 or ld
-   --brokerType value              orion-ld, scorpio, stellio
+   --brokerType value              specify NGSI-LD broker type: orion-ld, scorpio or stellio
    --idmType value, -t value       specify token type
    --idmHost value, -m value       specify identity manager host
    --apiPath value, -a value       specify API path
