@@ -49,3 +49,48 @@ http post ${oauth}/admin/ \
 
 ```
 ```
+
+#
+# 0002 register user to Keystone mock server
+#
+http post ${oauth}/admin/keystone \
+--data '[
+  {
+    "username": "fiware",
+    "password": "1234",
+    "tenant": "smartcity",
+    "scope": "/madrid",
+    "token": "fiware1234smartcity/madridcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s"
+  },
+  {
+    "username": "fiware",
+    "password": "1234",
+    "tenant": "smartcity",
+    "scope": "",
+    "token": "fiware1234smartcityrsO4gpQcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s"
+  },
+  {
+    "username": "fiware",
+    "password": "1234",
+    "tenant": "",
+    "scope": "/madrid",
+    "token": "fiware1234/madridXRrsO4gpQcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s"
+  },
+  {
+    "username": "fiware",
+    "password": "1234",
+    "tenant": "",
+    "scope": "",
+    "token": "fiware1234s3tTMDRXRrsO4gpQcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s"
+  },
+  {
+    "username": "usertest",
+    "password": "123456789",
+    "tenant": "smartcity",
+    "scope": "",
+    "token": "usertest123456789smartcitycMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s"
+  }
+]'
+
+```
+```

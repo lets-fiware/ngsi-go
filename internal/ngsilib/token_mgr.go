@@ -64,10 +64,12 @@ type KeyrockToken struct {
 
 // TokenInfo is ...
 type TokenInfo struct {
-	Expires      int64         `json:"expires,omitempty"`
-	OauthToken   *OauthToken   `json:"token,omitempty"`
-	Keyrock      *KeyrockToken `json:"keyrock,omitempty"`
-	KeyrockToken *string       `json:"keyrock_token,omitempty"`
+	Expires       int64          `json:"expires,omitempty"`
+	OauthToken    *OauthToken    `json:"token,omitempty"`
+	Keyrock       *KeyrockToken  `json:"keyrock,omitempty"`
+	KeyrockToken  *string        `json:"keyrock_token,omitempty"`
+	Keystone      *KeyStoneToken `json:"keystone,omitempty"`
+	KeystoneToken *string        `json:"keystone_token,omitempty"`
 }
 
 type tokenInfoList map[string]TokenInfo
@@ -184,6 +186,8 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 			accessToken = info.OauthToken.AccessToken
 		} else if info.KeyrockToken != nil {
 			accessToken = *info.KeyrockToken
+		} else if info.KeystoneToken != nil {
+			accessToken = *info.KeystoneToken
 		} else {
 			return "", &LibError{funcName, 1, "token list error", nil}
 		}
@@ -245,6 +249,9 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 	case cKeyrockIDM: // Keyrock
 		idm.SetHeader(cContentType, cAppJSON)
 		data = fmt.Sprintf("{\"name\": \"%s\", \"password\": \"%s\"}", username, password)
+	case cThinkingCities:
+		idm.SetHeader(cContentType, cAppJSON)
+		data = getKeyStoneTokenRequest(username, password, client.Server.Tenant, client.Server.Scope)
 	}
 
 	res, body, err := idm.HTTPPost(data)
@@ -292,6 +299,18 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 		tokenInfo.Expires = t.Unix()
 		tokenInfo.Keyrock = &token
 		tokenInfo.KeyrockToken = &accessToken
+	case cThinkingCities:
+		var token KeyStoneToken
+		err := JSONUnmarshal(body, &token)
+		if err != nil {
+			return "", &LibError{funcName, 9, err.Error(), err}
+		}
+		layout := "2006-01-02T15:04:05.000000Z"
+		t, _ := time.Parse(layout, token.Token.ExpiresAt)
+		accessToken = res.Header.Get("X-Subject-Token")
+		tokenInfo.Expires = t.Unix()
+		tokenInfo.Keystone = &token
+		tokenInfo.KeystoneToken = &accessToken
 	}
 
 	client.storeToken(accessToken)
@@ -313,7 +332,7 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 
 	err = saveToken(*ngsi.CacheFile.FileName(), tokens)
 	if err != nil {
-		return "", &LibError{funcName, 8, err.Error(), err}
+		return "", &LibError{funcName, 10, err.Error(), err}
 	}
 	return accessToken, nil
 }
@@ -349,6 +368,9 @@ func saveToken(file string, tokens map[string]interface{}) error {
 
 func getHash(client *Client) string {
 	s := client.Server.ServerHost + client.Server.Username
+	if client.Server.IdmType == cThinkingCities {
+		s = s + client.Server.Tenant + client.Server.Scope
+	}
 	r := sha1.Sum([]byte(s))
 	return hex.EncodeToString(r[:])
 }

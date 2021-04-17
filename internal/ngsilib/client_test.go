@@ -116,6 +116,22 @@ func TestInitHeaderTenantLD(t *testing.T) {
 	}
 }
 
+func TestInitHeaderThinkingCities(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
+	client.XAuthToken = false
+	client.Tenant = "fiware"
+	client.Server.IdmType = cThinkingCities
+
+	err := client.InitHeader()
+	actual := client.Headers["Fiware-ServicePath"]
+	expected := "/"
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestInitHeaderErrorTenant(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
 	client.Server = &Server{ServerType: "broker"}

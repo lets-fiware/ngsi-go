@@ -83,6 +83,7 @@ const (
 	cKeyrocktokenprovider = "keyrocktokenprovider"
 	cTokenproxy           = "tokenproxy"
 	cKeyrockIDM           = "idm"
+	cThinkingCities       = "thinkingcities"
 )
 
 const (
@@ -116,7 +117,7 @@ var (
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
 	brokerTypeArgs = []string{cOrionLD, cScorpio, cStellio}
 	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud}
-	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM}
+	idmTypes       = []string{cPasswordCredentials, cKeyrock, cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM, cThinkingCities}
 	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes    = []string{cNgsiLd, cLd}
 	apiPaths       = []string{cPathRoot, cPathV2, cPathNgsiLd}
@@ -248,7 +249,7 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 			return &LibError{funcName, 5, "clientID and clientSecret are needed", nil}
 		}
 		fallthrough
-	case cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM:
+	case cKeyrocktokenprovider, cTokenproxy, cKeyrockIDM, cThinkingCities:
 		if username == "" && password != "" {
 			return &LibError{funcName, 6, "username is needed", nil}
 		}

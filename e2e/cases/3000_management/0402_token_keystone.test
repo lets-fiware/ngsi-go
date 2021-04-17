@@ -1,0 +1,165 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# https://thinking-cities.readthedocs.io/en/latest/authentication_api/index.html
+
+#
+# 0001 broker add keystone1 usertest 123456789 smartcity
+#
+ngsi broker add --host keystone1 --brokerHost http://orion:1026 --ngsiType v2 \
+--idmType thinkingcities --idmHost http://oauth:8000/v3/auth/tokens \
+--username usertest --password '123456789' \
+--service smartcity
+
+```
+```
+
+#
+# 0002 get token keystone1
+#
+ngsi token --host keystone1
+
+```
+usertest123456789smartcitycMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s
+```
+
+#
+# 0011 broker add keystone2 fiware 1234 smartcity /madrid
+#
+ngsi broker add --host keystone2 --brokerHost http://orion:1026 --ngsiType v2 \
+--idmType thinkingcities --idmHost http://oauth:8000/v3/auth/tokens \
+--username fiware --password 1234 \
+--service smartcity --path /madrid
+
+```
+```
+
+#
+# 0012 get token keystone2
+#
+ngsi token --host keystone2
+
+```
+fiware1234smartcity/madridcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s
+```
+
+#
+# 0021 broker add keystone3 fiware 1234 smartcity
+#
+ngsi broker add --host keystone3 --brokerHost http://orion:1026 --ngsiType v2 \
+--idmType thinkingcities --idmHost http://oauth:8000/v3/auth/tokens \
+--username fiware --password 1234 \
+--service smartcity
+
+```
+```
+
+#
+# 0022 get token keystone3
+#
+ngsi token --host keystone3
+
+```
+fiware1234smartcityrsO4gpQcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s
+```
+
+#
+# 0031 broker add keystone4 fiware 1234 /madrid
+#
+ngsi broker add --host keystone4 --brokerHost http://orion:1026 --ngsiType v2 \
+--idmType thinkingcities --idmHost http://oauth:8000/v3/auth/tokens \
+--username fiware --password 1234 \
+--path /madrid
+
+```
+```
+
+#
+# 0032 get token keystone4
+#
+ngsi token --host keystone4
+
+```
+fiware1234/madridXRrsO4gpQcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s
+```
+
+#
+# 0041 broker add keystone5 fiware 1234
+#
+ngsi broker add --host keystone5 --brokerHost http://orion:1026 --ngsiType v2 \
+--idmType thinkingcities --idmHost http://oauth:8000/v3/auth/tokens \
+--username fiware --password 1234
+
+```
+```
+
+#
+# 0042 get token keystone5
+#
+ngsi token --host keystone5
+
+```
+fiware1234s3tTMDRXRrsO4gpQcMYw44U3u5RwPrYkBLzPZZBFxbwLkhzNGdvcZ-oIrWGIeEJvTEEtUIMGXZu3ERUQZ0iejpamdeIPRPb4RpppZVoW-QF972lDSNWHPetJEEIwU9SUzDrD8J8Z6cThOnIV36Kor2BrRI3YyTL3-glGkCwj23I5s
+```
+
+#
+# 9991 delete broker keystone1
+#
+ngsi broker delete --host keystone1
+
+```
+```
+#
+# 9992 delete broker keystone2
+#
+ngsi broker delete --host keystone2
+
+```
+```
+
+#
+# 9993 delete broker keystone3
+#
+ngsi broker delete --host keystone3
+
+```
+```
+
+#
+# 9994 delete broker keystone4
+#
+ngsi broker delete --host keystone4
+
+```
+```
+
+#
+# 9995 delete broker keystone5
+#
+ngsi broker delete --host keystone5
+
+```
+```

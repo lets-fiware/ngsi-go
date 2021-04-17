@@ -68,7 +68,7 @@ func (client *Client) InitHeader() error {
 		if client.Server.ServerType == "keyrock" {
 			client.Headers["X-Auth-Token"] = client.Token
 			client.Headers["X-Subject-token"] = client.Token
-		} else if client.XAuthToken {
+		} else if client.XAuthToken || client.Server.IdmType == cThinkingCities {
 			client.Headers["X-Auth-Token"] = client.Token
 		} else {
 			client.Headers["Authorization"] = "Bearer " + client.Token
@@ -90,6 +90,10 @@ func (client *Client) InitHeader() error {
 				return &LibError{funcName, 2, err.Error(), err}
 			}
 			client.Headers["Fiware-ServicePath"] = client.Scope
+		} else {
+			if client.Server.IdmType == cThinkingCities {
+				client.Headers["Fiware-ServicePath"] = "/"
+			}
 		}
 	}
 	if client.NgsiType == ngsiLd {
