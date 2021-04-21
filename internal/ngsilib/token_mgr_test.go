@@ -306,6 +306,27 @@ func TestNgsiGetTokenExpires(t *testing.T) {
 	}
 }
 
+func TestNgsiGetTokenThinkingCities(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	ngsi.CacheFile = &MockIoLib{}
+	ngsi.LogWriter = &bytes.Buffer{}
+	ngsi.HTTP = &MockHTTP{}
+	ngsi.TimeLib = &MockTimeLib{unixTime: 0}
+	token := "123456"
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Expires: 3600, KeystoneToken: &token}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", IdmType: cThinkingCities}}
+
+	actual, err := ngsi.GetToken(client)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "123456", actual)
+	}
+}
+
 func TestNgsiGetTokenErrorTokenList(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
@@ -400,6 +421,32 @@ func TestGetTokenKeyrockIDM(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		expected := ""
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestNgsiGetTokenThinkingCitiesIDM(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.ResBody = []byte(`{"token":{"domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"methods":["password"],"roles":[],"expires_at":"2021-04-16T11:30:47.000000Z","catalog":[],"extras":{"password_creation_time":"2021-04-16T08:29:01Z","last_login_attempt_time":"2021-04-16T08:29:05.000000","pwd_user_in_blacklist":false,"password_expiration_time":"2022-04-16T08:29:01Z"},"user":{"password_expires_at":"2022-04-16T08:29:00.000000","domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"id":"80e292b7dae445e7af66c284162ff049","name":"usertest"},"audit_ids":["6kJ9zBFCQaKRa7aCFc6bpw"],"issued_at":"2021-04-16T08:30:47.000000Z"}}`)
+	reqRes.ResHeader = http.Header{"X-Subject-Token": []string{"gAAAAABgeojDoWDHy9r4Lq1sNRbss2ncweTzmQ5jBpefFI5eYFh6fA3DyzQM8mjzoiGqrUH6JNWl4Sk1XVVMwTf18eFJ7FluEkPklrM_AFSGXv1IO0j_Dy-UQxNUAEYyxqT8Ny3O2TNC78MOKkt2UoR3oOg4HBcjkf6iCsVFwPhW9BGjC37LWdk"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: cThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
+
+	actual, err := getToken(ngsi, client)
+
+	if assert.NoError(t, err) {
+		expected := "gAAAAABgeojDoWDHy9r4Lq1sNRbss2ncweTzmQ5jBpefFI5eYFh6fA3DyzQM8mjzoiGqrUH6JNWl4Sk1XVVMwTf18eFJ7FluEkPklrM_AFSGXv1IO0j_Dy-UQxNUAEYyxqT8Ny3O2TNC78MOKkt2UoR3oOg4HBcjkf6iCsVFwPhW9BGjC37LWdk"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -718,6 +765,33 @@ func TestGetTokenErrorKeyrockIDM(t *testing.T) {
 	}
 }
 
+func TestNgsiGetTokenErrorThinkingCitiesIDM(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.ResBody = []byte(`{"token":{"domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"methods":["password"],"roles":[],"expires_at":"2021-04-16T11:30:47.000000Z","catalog":[],"extras":{"password_creation_time":"2021-04-16T08:29:01Z","last_login_attempt_time":"2021-04-16T08:29:05.000000","pwd_user_in_blacklist":false,"password_expiration_time":"2022-04-16T08:29:01Z"},"user":{"password_expires_at":"2022-04-16T08:29:00.000000","domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"id":"80e292b7dae445e7af66c284162ff049","name":"usertest"},"audit_ids":["6kJ9zBFCQaKRa7aCFc6bpw"],"issued_at":"2021-04-16T08:30:47.000000Z"}`)
+	reqRes.ResHeader = http.Header{"X-Subject-Token": []string{"gAAAAABgeojDoWDHy9r4Lq1sNRbss2ncweTzmQ5jBpefFI5eYFh6fA3DyzQM8mjzoiGqrUH6JNWl4Sk1XVVMwTf18eFJ7FluEkPklrM_AFSGXv1IO0j_Dy-UQxNUAEYyxqT8Ny3O2TNC78MOKkt2UoR3oOg4HBcjkf6iCsVFwPhW9BGjC37LWdk"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: cThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
+
+	_, err := getToken(ngsi, client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
+		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
+	}
+}
+
 func TestGetTokenErrorSave(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
@@ -739,7 +813,7 @@ func TestGetTokenErrorSave(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
 }
@@ -811,6 +885,16 @@ func TestGetHash(t *testing.T) {
 
 	actual := getHash(client)
 	expected := "583a5c111b603ff8925585f48503e343403115f9"
+
+	assert.Equal(t, expected, actual)
+
+}
+
+func TestGetHashThinkingCities(t *testing.T) {
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cThinkingCities, Username: "fiware", Tenant: "smartcity", Scope: "/madrid"}}
+
+	actual := getHash(client)
+	expected := "a50ef2c09c126141f16967c62ef78a4c031bdb6f"
 
 	assert.Equal(t, expected, actual)
 

@@ -180,24 +180,41 @@ ngsi broker add \
   --clientSecret 55555555-6666-7777-8888-999999999999
 ```
 
+#### Example 5
+
+Telefónica Thinking Cities (Keystone)
+
+```console
+ngsi broker add \
+  --host myinstance \
+  --ngsiType v2 \
+  --brokerHost http://localhost:1026 \
+  --idmType ThinkingCities \
+  --idmHost http://localhost:5001/v3/auth/tokens \
+  --username usertest \
+  --password '<ofuscated>' \
+  --service smartcity
+```
+
 ### NGSI type
 
 Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Broker.
 
 ### Parameters for Identity Managers
 
-| idmType              | Required parameters                                 | Description                                                                  |
-| -------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
-| password             | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keycloak, WSO2, Apinf, and Stellio) |
-| keyrock              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock                             |
-| KeyrockTokenProvider | idmHost, username, password                         | It provides auth token from Keyrock                                          |
-| tokenproxy           | idmHost, username, password                         | It provides auth token from Keyrock                                          |
+| idmType                                                                    | Required parameters                                 | Description                                                                  |
+| -------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keycloak, WSO2, Apinf, and Stellio) |
+| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock                             |
+| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock                                          |
+| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock                                          |
+| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone                                         |
 
 ### FIWARE Service and FIWARE ServicePath
 
 Specify the `--service` and/or `--path` parameter when adding a new alias.
 
-#### Example 4
+#### Example 1
 
 ```console
 ngsi broker add \
@@ -211,7 +228,7 @@ ngsi broker add \
 You can add a new alias using an exising alias.
 Specify an existing alias to the `--brokerHost` parameter when adding a new alias.
 
-#### Example 5
+#### Example 2
 
 ```console
 ngsi broker add \
