@@ -76,6 +76,7 @@ nav:
     - 'iot-agent': tutorial/iot-agent.md
     - 'perseo': tutorial/perseo.md
     - 'keyrock': tutorial/keyrock.md
+    - 'keystone': tutorial/keystone.md
 
 plugins:
     - search:
