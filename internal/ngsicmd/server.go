@@ -53,7 +53,8 @@ func serverList(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 2, host + " not found", err}
 		}
-		printServerInfo(ngsi, info)
+		clearText := c.Bool("clearText")
+		printServerInfo(ngsi, info, clearText)
 	} else {
 		if c.IsSet("json") || c.Bool("pretty") {
 			lists, err := ngsi.AllServersList().ServerInfoJSON("", gCmdMode)
@@ -114,7 +115,8 @@ func serverGet(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, host + " not found", err}
 		}
-		printServerInfo(ngsi, info)
+		clearText := c.Bool("clearText")
+		printServerInfo(ngsi, info, clearText)
 	}
 
 	return nil
@@ -264,7 +266,7 @@ func serverDelete(c *cli.Context) error {
 	return nil
 }
 
-func printServerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
+func printServerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server, clearText bool) {
 	if info.ServerType == "broker" {
 		fmt.Fprintln(ngsi.StdWriter, "server type error")
 		return
@@ -294,13 +296,13 @@ func printServerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 		fmt.Fprintln(ngsi.StdWriter, "Username "+info.Username)
 	}
 	if info.Password != "" {
-		fmt.Fprintln(ngsi.StdWriter, "Password "+info.Password)
+		fmt.Fprintln(ngsi.StdWriter, "Password "+obfuscateText(info.Password, clearText))
 	}
 	if info.ClientID != "" {
-		fmt.Fprintln(ngsi.StdWriter, "ClientID "+info.ClientID)
+		fmt.Fprintln(ngsi.StdWriter, "ClientID "+obfuscateText(info.ClientID, clearText))
 	}
 	if info.ClientSecret != "" {
-		fmt.Fprintln(ngsi.StdWriter, "ClientSecret "+info.ClientSecret)
+		fmt.Fprintln(ngsi.StdWriter, "ClientSecret "+obfuscateText(info.ClientSecret, clearText))
 	}
 
 	if info.XAuthToken != "" {

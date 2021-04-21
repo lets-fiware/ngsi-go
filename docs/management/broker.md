@@ -16,12 +16,13 @@ ngsi broker list [options]
 
 ### Options
 
-| Options                | Description                        |
-| ---------------------- | ---------------------------------- |
-| --host value, -h value | specify host or alias              |
-| --json, -j             | print JSON format (default: false) |
-| --pretty, -P           | pretty format (default: false)     |
-| --help                 | show help (default: false)         |
+| Options                | Description                                          |
+| ---------------------- | ---------------------------------------------------- |
+| --host value, -h value | specify host or alias                                |
+| --json, -j             | print JSON format (default: false)                   |
+| --pretty, -P           | pretty format (default: false)                       |
+| --clearText            | show obfuscated items as clear text (default: false) |
+| --help                 | show help (default: false)                           |
 
 #### Example 1
 
@@ -65,12 +66,13 @@ ngsi broker get [options]
 
 ### Options
 
-| Options                 | Description                        |
-| ----------------------- | ---------------------------------- |
-| --host value, -h value  | specify host or alias              |
-| --json, -j              | print JSON format (default: false) |
-| --pretty, -P            | pretty format (default: false)     |
-| --help                  | show help (default: false)         |
+| Options                | Description                                          |
+| ---------------------- | ---------------------------------------------------- |
+| --host value, -h value | specify host or alias                                |
+| --json, -j             | print JSON format (default: false)                   |
+| --pretty, -P           | pretty format (default: false)                       |
+| --clearText            | show obfuscated items as clear text (default: false) |
+| --help                 | show help (default: false)                           |
 
 #### Example 1
 

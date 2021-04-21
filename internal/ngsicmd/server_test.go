@@ -799,7 +799,35 @@ func TestPrintServerInfo(t *testing.T) {
 		APIPath:      "/path",
 	}
 
-	printServerInfo(ngsi, &broker)
+	printServerInfo(ngsi, &broker, false)
+
+	actual := buf.String()
+	expected := "serverType comet\nserverHost http://sth\nFIWARE-Service openiot\nFIWARE-ServicePath /iot\nContext http://conetxt\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword ****\nClientID ********\nClientSecret ************\nXAuthToken false\nToken token\nAPIPath /path\n"
+	assert.Equal(t, expected, actual)
+}
+
+func TestPrintServerInfoClearText(t *testing.T) {
+	ngsi, _, _, buf := setupTest()
+
+	broker := ngsilib.Server{
+		ServerType:   "comet",
+		ServerHost:   "http://sth",
+		Context:      "http://conetxt",
+		SafeString:   "on",
+		Tenant:       "openiot",
+		Scope:        "/iot",
+		IdmType:      "keyrock",
+		IdmHost:      "http://keyrock",
+		Username:     "fiware",
+		Password:     "1234",
+		ClientID:     "clientid",
+		ClientSecret: "clientsecret",
+		XAuthToken:   "false",
+		Token:        "token",
+		APIPath:      "/path",
+	}
+
+	printServerInfo(ngsi, &broker, true)
 
 	actual := buf.String()
 	expected := "serverType comet\nserverHost http://sth\nFIWARE-Service openiot\nFIWARE-ServicePath /iot\nContext http://conetxt\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword 1234\nClientID clientid\nClientSecret clientsecret\nXAuthToken false\nToken token\nAPIPath /path\n"
@@ -813,7 +841,7 @@ func TestPrintServerInfoError(t *testing.T) {
 		ServerType: "broker",
 	}
 
-	printServerInfo(ngsi, &broker)
+	printServerInfo(ngsi, &broker, false)
 
 	actual := buf.String()
 	expected := "server type error\n"

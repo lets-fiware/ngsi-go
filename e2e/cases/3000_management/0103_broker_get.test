@@ -25,35 +25,23 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi get --help
+# 0001 ngsi broker get --help
 #
-ngsi get --help
+ngsi broker get --help
 
 ```
 NAME:
-   ngsi get - get entity(ies), attribute(s), subscription, registration or type
+   ngsi broker get - get broker
 
 USAGE:
-   ngsi get command [command options] [arguments...]
-
-COMMANDS:
-   entities      get entities
-   entity        get entity
-   tentity       get temporal entity
-   attr          get attr
-   attrs         get attrs
-   subscription  get subscription
-   registration  get registration
-   type          get type
-   help, h       Shows a list of commands or help for one command
+   ngsi broker get [command options] [arguments...]
 
 OPTIONS:
-   --host value, -h value     host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --help                     show help (default: false)
-   --version, -v              print the version (default: false)
+   --host value, -h value  host or alias
+   --json, -j              JSON format (default: false)
+   --pretty, -P            pretty format (default: false)
+   --clearText             show obfuscated items as clear text (default: false)
+   --help                  show help (default: false)
    
 ```
 

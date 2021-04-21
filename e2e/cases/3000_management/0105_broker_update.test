@@ -125,7 +125,7 @@ ngsi broker update \
 #
 # 0008 Check broker info
 # 
-ngsi broker get --host idm 
+ngsi broker get --host idm --clearText
 
 ```
 brokerHost https://orion-ld
@@ -176,7 +176,7 @@ ngsi broker update \
 #
 # 0012 Check broker info
 # 
-ngsi broker get --host password
+ngsi broker get --host password --clearText
 
 ```
 brokerHost https://orion-ld
@@ -225,7 +225,7 @@ ngsi broker update \
 #
 # 0016 Check broker info
 # 
-ngsi broker get --host KeyrockTokenProvider
+ngsi broker get --host KeyrockTokenProvider --clearText
 
 ```
 brokerHost https://orion-ld
@@ -272,7 +272,7 @@ ngsi broker update \
 #
 # 0020 Check broker info
 # 
-ngsi broker get --host tokenproxy
+ngsi broker get --host tokenproxy --clearText
 
 ```
 brokerHost https://orion-ld
@@ -329,7 +329,7 @@ ngsi broker update \
 #
 # 0025 Check broker info
 # 
-ngsi broker get --host tokenproxy
+ngsi broker get --host tokenproxy --clearText
 
 ```
 brokerHost base

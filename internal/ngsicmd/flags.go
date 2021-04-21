@@ -139,6 +139,10 @@ var (
 		Name:  "ngsiV1",
 		Usage: "NGSI v1 mode",
 	}
+	clearTextFlag = &cli.BoolFlag{
+		Name:  "clearText",
+		Usage: "show obfuscated items as clear text",
+	}
 )
 
 // Common flags for copy command

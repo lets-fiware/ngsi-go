@@ -25,32 +25,23 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi list --help
+# 0001 ngsi broker list --help
 #
-ngsi list --help
+ngsi broker list --help
 
 ```
 NAME:
-   ngsi list - list types, entities, subscriptions or registrations
+   ngsi broker list - list brokers
 
 USAGE:
-   ngsi list command [command options] [arguments...]
-
-COMMANDS:
-   types          list types
-   entities       list entities
-   tentities      list temporal entities
-   subscriptions  list subscriptions
-   registrations  list registrations
-   help, h        Shows a list of commands or help for one command
+   ngsi broker list [command options] [arguments...]
 
 OPTIONS:
-   --host value, -h value     host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --help                     show help (default: false)
-   --version, -v              print the version (default: false)
+   --host value, -h value  host or alias
+   --json, -j              JSON format (default: false)
+   --pretty, -P            pretty format (default: false)
+   --clearText             show obfuscated items as clear text (default: false)
+   --help                  show help (default: false)
    
 ```
 
