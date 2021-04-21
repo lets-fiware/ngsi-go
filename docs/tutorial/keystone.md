@@ -21,6 +21,9 @@ This tutorial describes how to use NGSI Go in this scenario.
 * A subservice named `/watermeter` is created within service `smartgondor`
 * The user `admin_smartgondor` with password `admin1234` has permissions on `/irrigation` and `/watermeter`subservices
 
+If you are unfamiliar with the service and subservice concepts [this reference](https://thinking-cities.readthedocs.io/en/master/multitenancy/index.html)
+can be useful.
+
 ## Using subservice in the IDM configuration
 
 Create the broker using the following command:
