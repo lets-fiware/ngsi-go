@@ -70,7 +70,7 @@ ngsi broker add \
 #
 # 0004 Check broker info
 # 
-ngsi broker get --host tokenproxy
+ngsi broker get --host tokenproxy --clearText
 
 ```
 brokerHost base

@@ -794,7 +794,35 @@ func TestPrintBrokerInfoV2(t *testing.T) {
 		APIPath:      "/path",
 	}
 
-	printBrokerInfo(ngsi, &broker)
+	printBrokerInfo(ngsi, &broker, false)
+
+	actual := buf.String()
+	expected := "brokerHost http://orion\nngsiType v2\nFIWARE-Service openiot\nFIWARE-ServicePath /iot\nContext http://context\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword ****\nClientID ********\nClientSecret ************\nXAuthToken false\nToken token\nAPIPath /path\n"
+	assert.Equal(t, expected, actual)
+}
+
+func TestPrintBrokerInfoV2ClearText(t *testing.T) {
+	ngsi, _, _, buf := setupTest()
+
+	broker := ngsilib.Server{
+		ServerHost:   "http://orion",
+		NgsiType:     "v2",
+		Tenant:       "openiot",
+		Scope:        "/iot",
+		Context:      "http://context",
+		SafeString:   "on",
+		IdmType:      "keyrock",
+		IdmHost:      "http://keyrock",
+		Username:     "fiware",
+		Password:     "1234",
+		ClientID:     "clientid",
+		ClientSecret: "clientsecret",
+		XAuthToken:   "false",
+		Token:        "token",
+		APIPath:      "/path",
+	}
+
+	printBrokerInfo(ngsi, &broker, true)
 
 	actual := buf.String()
 	expected := "brokerHost http://orion\nngsiType v2\nFIWARE-Service openiot\nFIWARE-ServicePath /iot\nContext http://context\nSafeString on\nIdmType keyrock\nIdmHost http://keyrock\nUsername fiware\nPassword 1234\nClientID clientid\nClientSecret clientsecret\nXAuthToken false\nToken token\nAPIPath /path\n"
@@ -811,7 +839,7 @@ func TestPrintBrokerInfoLD(t *testing.T) {
 		Scope:      "/iot",
 	}
 
-	printBrokerInfo(ngsi, &broker)
+	printBrokerInfo(ngsi, &broker, false)
 
 	actual := buf.String()
 	expected := "brokerHost http://orion-ld\nngsiType ld\nTenant openiot\nScope /iot\n"
@@ -829,9 +857,26 @@ func TestPrintBrokerInfoScorpio(t *testing.T) {
 		Scope:      "/iot",
 	}
 
-	printBrokerInfo(ngsi, &broker)
+	printBrokerInfo(ngsi, &broker, false)
 
 	actual := buf.String()
 	expected := "brokerHost http://scorpio\nngsiType ld\nbrokerType scorpio\nTenant openiot\nScope /iot\n"
 	assert.Equal(t, expected, actual)
+}
+
+func TestObfuscateText(t *testing.T) {
+	cases := []struct {
+		text      string
+		clearText bool
+		expected  string
+	}{
+		{text: "fiware", clearText: false, expected: "******"},
+		{text: "fiware", clearText: true, expected: "fiware"},
+		{text: "", clearText: false, expected: ""},
+		{text: "", clearText: true, expected: ""},
+	}
+	for _, c := range cases {
+		actual := obfuscateText(c.text, c.clearText)
+		assert.Equal(t, c.expected, actual)
+	}
 }

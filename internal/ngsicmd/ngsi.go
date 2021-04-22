@@ -453,6 +453,7 @@ var brokersCmd = cli.Command{
 				hostFlag,
 				jsonFlag,
 				prettyFlag,
+				clearTextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return brokersList(c)
@@ -465,6 +466,7 @@ var brokersCmd = cli.Command{
 				hostFlag,
 				jsonFlag,
 				prettyFlag,
+				clearTextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return brokersGet(c)
@@ -546,6 +548,7 @@ var serverCmd = cli.Command{
 				jsonFlag,
 				prettyFlag,
 				allServersFlag,
+				clearTextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return serverList(c)
@@ -558,6 +561,7 @@ var serverCmd = cli.Command{
 				hostFlag,
 				jsonFlag,
 				prettyFlag,
+				clearTextFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return serverGet(c)

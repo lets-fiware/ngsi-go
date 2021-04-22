@@ -53,7 +53,8 @@ func brokersList(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 2, host + " not found", err}
 		}
-		printBrokerInfo(ngsi, info)
+		clearText := c.Bool("clearText")
+		printBrokerInfo(ngsi, info, clearText)
 		return nil
 	}
 
@@ -115,7 +116,8 @@ func brokersGet(c *cli.Context) error {
 		if err != nil {
 			return &ngsiCmdError{funcName, 5, host + " not found", err}
 		}
-		printBrokerInfo(ngsi, info)
+		clearText := c.Bool("clearText")
+		printBrokerInfo(ngsi, info, clearText)
 	}
 
 	return nil
@@ -256,7 +258,7 @@ func brokersDelete(c *cli.Context) error {
 	return nil
 }
 
-func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
+func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server, clearText bool) {
 
 	fmt.Fprintln(ngsi.StdWriter, "brokerHost "+info.ServerHost)
 	if info.NgsiType != "" {
@@ -290,9 +292,9 @@ func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 		{"IdmType", info.IdmType},
 		{"IdmHost", info.IdmHost},
 		{"Username", info.Username},
-		{"Password", info.Password},
-		{"ClientID", info.ClientID},
-		{"ClientSecret", info.ClientSecret},
+		{"Password", obfuscateText(info.Password, clearText)},
+		{"ClientID", obfuscateText(info.ClientID, clearText)},
+		{"ClientSecret", obfuscateText(info.ClientSecret, clearText)},
 		{"XAuthToken", info.XAuthToken},
 		{"Token", info.Token},
 		{"APIPath", info.APIPath},
@@ -303,4 +305,15 @@ func printBrokerInfo(ngsi *ngsilib.NGSI, info *ngsilib.Server) {
 			fmt.Fprintf(ngsi.StdWriter, "%s %s\n", item.key, item.value)
 		}
 	}
+}
+
+func obfuscateText(text string, clearText bool) string {
+	if !clearText {
+		s := ""
+		for range text {
+			s += "*"
+		}
+		return s
+	}
+	return text
 }
