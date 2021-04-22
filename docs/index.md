@@ -62,7 +62,8 @@ It's a powerful tool and easy to use. It has various features as shown:
 -   [QuantumLeap](tutorial/quantumleap.md)
 -   [IoT Agent](tutorial/iot-agent.md)
 -   [Perseo](tutorial/perseo.md)
--   [keyrock](tutorial/keyrock.md)
+-   [Keyrock](tutorial/keyrock.md)
+-   [Keystone](tutorial/keystone.md)
 
 ## Command reference
 
