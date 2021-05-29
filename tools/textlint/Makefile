@@ -1,23 +1,21 @@
-#!/bin/sh
-#
 # MIT License
-#
+# 
 # Copyright (c) 2020-2021 Kazuhito Suda
-#
+# 
 # This file is part of NGSI Go
-#
+# 
 # https://github.com/lets-fiware/ngsi-go
-#
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-#
+# 
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-#
+# 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,18 +24,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-set -e
+curdir = $(shell pwd)
+files = '*.md' 'docs/*.md'
+container = letsfiware/textlint:1.0
+vol = -v $(curdir):/work
 
-if [ -e lint-dockerfile.sh ]; then
-  cd ..
-fi
+build:
+	docker build -t $(container) .
+pull:
+	docker pull $(container)
+run:
+	docker run --rm -it $(vol) $(container) $(files)
 
-docker pull hadolint/hadolint
-docker run --rm -i hadolint/hadolint < docker/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/ngsi-test/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/accumulator/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/atcontext/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/csource/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/oauth/Dockerfile
-docker run --rm -i hadolint/hadolint < tools/mdlint/Dockerfile
-docker run --rm -i hadolint/hadolint < tools/textlint/Dockerfile

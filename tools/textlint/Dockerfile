@@ -1,5 +1,3 @@
-#!/bin/sh
-#
 # MIT License
 #
 # Copyright (c) 2020-2021 Kazuhito Suda
@@ -26,18 +24,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-set -e
+FROM node:14
 
-if [ -e lint-dockerfile.sh ]; then
-  cd ..
-fi
+WORKDIR /
+COPY package.json .
+COPY package-lock.json .
+RUN npm ci && \
+    ln -s /node_modules/textlint/bin/textlint.js /usr/local/bin/textlint
 
-docker pull hadolint/hadolint
-docker run --rm -i hadolint/hadolint < docker/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/ngsi-test/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/accumulator/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/atcontext/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/csource/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/oauth/Dockerfile
-docker run --rm -i hadolint/hadolint < tools/mdlint/Dockerfile
-docker run --rm -i hadolint/hadolint < tools/textlint/Dockerfile
+WORKDIR /work
+
+ENTRYPOINT ["/usr/local/bin/textlint"]
