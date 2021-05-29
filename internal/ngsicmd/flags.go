@@ -349,7 +349,7 @@ var (
 	}
 	deleteAllFlag = &cli.BoolFlag{
 		Name:  "deleteAll",
-		Usage: "all atribute instances are deleted",
+		Usage: "all attribute instances are deleted",
 	}
 	deleteDatasetID = &cli.StringFlag{
 		Name:  "datasetId",

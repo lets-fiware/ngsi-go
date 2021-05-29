@@ -1,2 +1,11 @@
-issues:
-  exclude-use-default: false
+linters:
+  enable:
+    - errcheck
+    - gofmt
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - staticcheck
+    - unused
+  disable-all: true

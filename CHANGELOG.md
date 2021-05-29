@@ -1,3 +1,8 @@
+## NGSI Go v0.x.x
+
+- Fix typo in flag message
+- Fixe misuse of unbuffered os.Signal channel in testing tools (#134)
+
 ## NGSI Go v0.8.1 - April 23, 2021
 
 - Hardening: Show obfuscated password in broker/server command (#131)
