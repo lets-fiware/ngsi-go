@@ -163,7 +163,7 @@ func oauthServer() int {
 		return 1
 	}
 
-	sig := make(chan os.Signal)
+	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT)
 
 	m := http.NewServeMux()

@@ -33,7 +33,8 @@ fi
 
 for i in internal/ngsicmd internal/ngsilib e2e/ngsi-test e2e/server/accumulator e2e/server/atcontext e2e/server/csource e2e/server/oauth
 do
-  cd "$i"
+  echo "${i}"
+  cd "${i}"
   golangci-lint run
-  cd -
+  cd - > /dev/null
 done

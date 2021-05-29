@@ -75,7 +75,7 @@ func accumulator() int {
 
 	allNotifications = sync.Map{}
 
-	sig := make(chan os.Signal)
+	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT)
 
 	m := http.NewServeMux()
