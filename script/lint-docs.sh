@@ -28,16 +28,13 @@
 
 set -e
 
-if [ -e lint-dockerfile.sh ]; then
-  cd ..
-fi
+cd $(dirname $0)
+cd ..
 
-docker pull hadolint/hadolint
-docker run --rm -i hadolint/hadolint < docker/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/ngsi-test/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/accumulator/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/atcontext/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/csource/Dockerfile
-docker run --rm -i hadolint/hadolint < e2e/server/oauth/Dockerfile
-docker run --rm -i hadolint/hadolint < tools/mdlint/Dockerfile
-docker run --rm -i hadolint/hadolint < tools/textlint/Dockerfile
+# md lint
+make -f tools/mdlint/Makefile build
+make -f tools/mdlint/Makefile run
+
+# textfile lint
+make -f tools/textlint/Makefile build
+make -f tools/textlint/Makefile run

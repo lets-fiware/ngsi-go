@@ -4,9 +4,9 @@
 
 NGSI Go supports Keystone (part of the OpenStack project) as IDM. More in detail, the security framework in this case is:
 
-* [Keystone](https://docs.openstack.org/keystone/latest) (as IDM)
-* [Keypass](https://github.com/telefonicaid/fiware-keypass) (as Access Control)
-* [Steelskin](https://github.com/telefonicaid/fiware-pep-steelskin) (as PEP)
+-   [Keystone](https://docs.openstack.org/keystone/latest) (as IDM)
+-   [Keypass](https://github.com/telefonicaid/fiware-keypass) (as Access Control)
+-   [Steelskin](https://github.com/telefonicaid/fiware-pep-steelskin) (as PEP)
 
 Note this is the stack used by [ThinkingCities platform](https://thinking-cities.readthedocs.io/en/master/).
 
@@ -14,12 +14,12 @@ This tutorial describes how to use NGSI Go in this scenario.
 
 ## Preconditions
 
-* Orion PEP is running at endpoint `http://orion-pep:1026`
-* Keystone IDM is running at endpoint `http://idm:5001`
-* A service named `smartgondor` is created in Keystone IDM
-* A subservice named `/irrigation` is created within service `smartgondor`
-* A subservice named `/watermeter` is created within service `smartgondor`
-* The user `admin_smartgondor` with password `admin1234` has permissions on `/irrigation` and `/watermeter`subservices
+-   Orion PEP is running at endpoint `http://orion-pep:1026`
+-   Keystone IDM is running at endpoint `http://idm:5001`
+-   A service named `smartgondor` is created in Keystone IDM
+-   A subservice named `/irrigation` is created within service `smartgondor`
+-   A subservice named `/watermeter` is created within service `smartgondor`
+-   The user `admin_smartgondor` with password `admin1234` has permissions on `/irrigation` and `/watermeter`subservices
 
 If you are unfamiliar with the service and subservice concepts [this reference](https://thinking-cities.readthedocs.io/en/master/multitenancy/index.html)
 can be useful.

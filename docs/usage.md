@@ -55,7 +55,7 @@ ngsi [global options] command [common options] sub-command [options]
 | [apis](./convenience/apis.md)         | -                                                          | -                                                        | print endpoints of FWARE Open APIs                               |
 | [cp](./convenience/cp.md)             | -                                                          | -                                                        | copy entities                                                    |
 | [wc](./convenience/wc.md)             | -                                                          | -                                                        | print number of entities, subscriptions, registrations, or types |
-| [man](./convenience/man.md)           | -                                                          |                                                          | print urls of document                                           |
+| [man](./convenience/man.md)           | -                                                          |                                                          | print URLs of document                                           |
 | [health](./convenience/health.md)     | -                                                          |                                                          | print health status of FIWARE GEs                                |
 | [ls](./convenience/ls.md)             | -                                                          |                                                          | list entities                                                    |
 | [rm](./convenience/rm.md)             | -                                                          |                                                          | remove entities                                                  |
@@ -115,7 +115,7 @@ ngsi [global options] command [common options] sub-command [options]
 | [hdelete](./time_series/hdelete.md) | [attr](./time_series/hdelete.md#delete-all-the-data-associated-to-certain-attribute-of-certain-entity) | delete all the data associated to certain attribute of certain entity |
 |                                     | [entity](./time_series/hdelete.md#delete-historical-data-of-a-certain-entity)                          | delete historical data of a certain entity                            |
 |                                     | [entities](./time_series/hdelete.md#delete-historical-data-of-all-entities-of-a-certain-type)          | delete historical data of all entities of a certain type              |
-| [hget](./time_series/hget.md)       | [attr](./time_series/hget.md#get-hstory-of-an-attribute)                                               | get hstory of an attribute                                            |
+| [hget](./time_series/hget.md)       | [attr](./time_series/hget.md#get-hstory-of-an-attribute)                                               | get history of an attribute                                           |
 |                                     | [attrs](./time_series/hget.md#get-history-of-attributes)                                               | get history of attributes                                             |
 |                                     | [entities](./time_series/hget.md#list-of-all-the-entity-id)                                            | list of all the entity id                                             |
 
@@ -269,9 +269,9 @@ ngsi [global options] command [common options] sub-command [options]
 
 Some commands have the following options for specifying the date and time:
 
-- expires {value}
-- fromDate {value}
-- toDate {value}
+-   expires {value}
+-   fromDate {value}
+-   toDate {value}
 
 These options can have a value as shown:
 
