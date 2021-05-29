@@ -1,4 +1,4 @@
-name: CI
+name: Dockerfile
 on:
   push:
     branches:
@@ -8,84 +8,8 @@ on:
       - main
 
 jobs:
-  build-test:
-    name: build test
-
-    runs-on: ubuntu-latest
-
-    env:
-      TZ: Asia/Tokyo
-
-    steps:
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Checkout dependencies
-      run: |
-        go get github.com/x-motemen/gobump/cmd/gobump
-        make devel-deps
-
-    - name: Build NGSI Go
-      run: make build
-
-  unit-test:
-    name: unit test
-
-    runs-on: ubuntu-latest
-
-    env:
-      TZ: Asia/Tokyo
-
-    steps:
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Checkout dependencies
-      run: |
-        go get github.com/x-motemen/gobump/cmd/gobump
-        make devel-deps
-
-    - name: Test NGSI Go
-      run: make unit-test
-
-    - name: Convert coverage to lcov
-      uses: jandelgado/gcov2lcov-action@v1.0.8
-      with:
-        working-directory: coverage
-
-    - name: Coveralls
-      uses: coverallsapp/github-action@v1.1.2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: coverage/coverage.lcov
-
-  e2e-test:
-    name: e2e test
-
-    runs-on: ubuntu-latest
-
-    env:
-      TZ: Asia/Tokyo
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Run e2e test
-      run: make e2e-test
-
-  lint-dockerfile:
-    name: Lint Dockerfile
+  lint-dockerfiles:
+    name: Lint Dockerfiles
     runs-on: ubuntu-latest
     steps:
       - name: Git checkout
@@ -126,3 +50,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HADOLINT_ACTION_DOCKERFILE_FOLDER: e2e/server/oauth
+
+      - name: Run Hadolint Dockerfile Linter
+        uses: burdzwastaken/hadolint-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HADOLINT_ACTION_DOCKERFILE_FOLDER: tools/mdlint
+
+      - name: Run Hadolint Dockerfile Linter
+        uses: burdzwastaken/hadolint-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HADOLINT_ACTION_DOCKERFILE_FOLDER: tools/textlint

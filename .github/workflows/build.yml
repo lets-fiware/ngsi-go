@@ -1,0 +1,34 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    name: build test
+
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Asia/Tokyo
+
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Checkout dependencies
+      run: |
+        go get github.com/x-motemen/gobump/cmd/gobump
+        make devel-deps
+
+    - name: Build NGSI Go
+      run: make build

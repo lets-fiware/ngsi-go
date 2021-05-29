@@ -34,5 +34,4 @@ build:
 pull:
 	docker pull $(container)
 run:
-	docker run --rm -it $(vol) $(container) $(files)
-
+	docker run --rm -t $(vol) $(container) $(files)

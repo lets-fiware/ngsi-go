@@ -32,9 +32,13 @@ cd $(dirname $0)
 cd ..
 
 # md lint
-make -f tools/mdlint/Makefile build
+cd tools/mdlint
+make build
+cd -
 make -f tools/mdlint/Makefile run
 
 # textfile lint
-make -f tools/textlint/Makefile build
+cd tools/textlint
+make build
+cd -
 make -f tools/textlint/Makefile run

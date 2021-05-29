@@ -1,0 +1,45 @@
+name: Unit Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit-test:
+    name: unit test
+
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Asia/Tokyo
+
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Checkout dependencies
+      run: |
+        go get github.com/x-motemen/gobump/cmd/gobump
+        make devel-deps
+
+    - name: Test NGSI Go
+      run: make unit-test
+
+    - name: Convert coverage to lcov
+      uses: jandelgado/gcov2lcov-action@v1.0.8
+      with:
+        working-directory: coverage
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage/coverage.lcov
