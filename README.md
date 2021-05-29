@@ -9,9 +9,15 @@
 <br/>
 ![GitHub top language](https://img.shields.io/github/languages/top/lets-fiware/ngsi-go)
 ![Lines of code](https://img.shields.io/tokei/lines/github/lets-fiware/ngsi-go)
+[![Lint](https://github.com/lets-fiware/ngsi-go/actions/workflows/lint.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/lint.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lets-fiware/ngsi-go)](https://goreportcard.com/report/github.com/lets-fiware/ngsi-go)
-![CI](https://github.com/lets-fiware/ngsi-go/workflows/CI/badge.svg)
+[![Docs](https://github.com/lets-fiware/ngsi-go/actions/workflows/docs.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/docs.yml)
+[![Dockerfile](https://github.com/lets-fiware/ngsi-go/actions/workflows/dockerfile.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/dockerfile.yml)
+<br/>
+[![Build](https://github.com/lets-fiware/ngsi-go/actions/workflows/build.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/build.yml)
+[![Unit Tests](https://github.com/lets-fiware/ngsi-go/actions/workflows/unit-test.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/unit-test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/lets-fiware/ngsi-go/badge.svg?branch=main)](https://coveralls.io/github/lets-fiware/ngsi-go?branch=main)
+[![E2E tests](https://github.com/lets-fiware/ngsi-go/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/e2e-test.yml)
 
 The NGSI Go is a command-line interface supporting FIWARE Open APIs for FIWARE developers.
 

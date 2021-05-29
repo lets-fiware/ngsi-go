@@ -1,0 +1,24 @@
+name: E2E tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  e2e-test:
+    name: e2e test
+
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Asia/Tokyo
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run e2e test
+      run: make e2e-test
