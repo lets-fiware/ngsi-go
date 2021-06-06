@@ -1,4 +1,4 @@
-## NGSI Go v0.8.1-next
+## NGSI Go v0.8.2
 
 -   Hardening: feature to copy NGSIv2 entities as NGSI-LD entities (#138)
 -   Improve quality of documents (#136)
