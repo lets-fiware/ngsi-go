@@ -1,6 +1,7 @@
-## NGSI Go v0.x.x
+## NGSI Go v0.8.1-next
 
--   Improve quality of documents
+-   Hardening: feature to copy NGSIv2 entities as NGSI-LD entities
+-   Improve quality of documents (#136)
 -   Fix typo in flag message (#135)
 -   Fix misuse of unbuffered os.Signal channel in testing tools (#134)
 

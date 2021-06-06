@@ -84,6 +84,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 			ngsi.Logging(ngsilib.LogInfo, s)
 		}
 		ngsi.Logging(ngsilib.LogInfo, "abnormal termination\n")
+		_ = bufStdout.Flush()
 		return 1
 	}
 	ngsi.Logging(ngsilib.LogInfo, "normal termination\n")

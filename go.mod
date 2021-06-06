@@ -3,7 +3,6 @@ module github.com/lets-fiware/ngsi-go
 go 1.15
 
 require (
-	github.com/client9/misspell v0.3.4 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/urfave/cli/v2 v2.2.0

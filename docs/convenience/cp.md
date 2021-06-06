@@ -29,5 +29,17 @@ ngsi cp [options]
 #### Request:
 
 ```console
-ngsi cp --host orion1 --destination orion2 --type EvacuationSpace --run
+ngsi cp --host orion1 --host2 orion2 --type EvacuationSpace --run
+```
+
+#### Request:
+
+```
+ngsi cp --run --host orion-ld --host2 orion-ld --service2 openiot --type TemperatureSensor --link ctx
+```
+
+#### Request:
+
+```
+ngsi cp --host orion --type TemperatureSensor --host2 orion-ld --context2 ctx --run
 ```

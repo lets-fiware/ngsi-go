@@ -25,11 +25,738 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi cp from v2 to ld
+# 0001 Remove entity
 #
-ngsi cp --host orion --host2 orion-ld --type Thing
+ngsi rm --run --host orion --type TemperatureSensor
 
-```1
-copy010 not yet implemented
+```
+REGEX(.*)
 ```
 
+#
+# 0002 Remove entity
+#
+ngsi rm --run --host orion-ld --type TemperatureSensor --link ctx
+
+```
+REGEX(.*)
+```
+
+#
+# 0011 Create enttiies
+#
+ngsi create --host orion entities \
+--data '[
+{
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "name": {
+    "type": "Text",
+    "value": "FIWARE"
+  },
+  "temperature": {
+    "type": "Number",
+    "value": 23,
+    "metadata": {
+      "unitCode": {
+        "type": "Text",
+        "value": "CEL"
+      },
+      "timestamp": {
+        "type": "DateTime",
+        "value": "2017-06-17T07:21:24.238Z"
+      },
+      "accuracy": {
+        "type": "Number",
+        "value": 0.8
+      }
+    }
+  },
+  "location": {
+    "type": "geo:json",
+    "value": {
+      "type": "Point",
+      "coordinates": [135,35]
+    }
+  },
+  "refDevice": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Device:001"
+  },
+  "updatedAt": {
+    "type": "DateTime",
+    "value": "2021-06-06T16:21:24.238Z"
+  }
+},
+{
+  "id": "urn:ngsi-ld:TemperatureSensor:002",
+  "type": "TemperatureSensor",
+  "name": {
+    "type": "Text",
+    "value": "FIWARE"
+  },
+  "temperature": {
+    "type": "Number",
+    "value": 23,
+    "metadata": {
+      "unitCode": {
+        "type": "Text",
+        "value": "CEL"
+      },
+      "timestamp": {
+        "type": "DateTime",
+        "value": "2017-06-17T07:21:24.238Z"
+      },
+      "accuracy": {
+        "type": "Number",
+        "value": 0.8
+      }
+    }
+  },
+  "location": {
+    "type": "geo:point",
+    "value": "35.1, 135.1"
+  },
+  "refDevice": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Device:001"
+  },
+  "updatedAt": {
+    "type": "DateTime",
+    "value": "2021-06-06T16:21:24.238Z"
+  }
+},
+{
+  "id": "urn:ngsi-ld:TemperatureSensor:003",
+  "type": "TemperatureSensor",
+  "name": {
+    "type": "Text",
+    "value": "FIWARE"
+  },
+  "temperature": {
+    "type": "Number",
+    "value": 23,
+    "metadata": {
+      "unitCode": {
+        "type": "Text",
+        "value": "CEL"
+      },
+      "timestamp": {
+        "type": "DateTime",
+        "value": "2017-06-17T07:21:24.238Z"
+      },
+      "accuracy": {
+        "type": "Number",
+        "value": 0.8
+      }
+    }
+  },
+  "location": {
+    "type": "geo:line",
+    "value": ["35.1, 135.1", "35.2, 135.2"]
+  },
+  "refDevice": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Device:001"
+  },
+  "updatedAt": {
+    "type": "DateTime",
+    "value": "2021-06-06T16:21:24.238Z"
+  }
+},
+{
+  "id": "urn:ngsi-ld:TemperatureSensor:004",
+  "type": "TemperatureSensor",
+  "name": {
+    "type": "Text",
+    "value": "FIWARE"
+  },
+  "temperature": {
+    "type": "Number",
+    "value": 23,
+    "metadata": {
+      "unitCode": {
+        "type": "Text",
+        "value": "CEL"
+      },
+      "timestamp": {
+        "type": "DateTime",
+        "value": "2017-06-17T07:21:24.238Z"
+      },
+      "accuracy": {
+        "type": "Number",
+        "value": 0.8
+      }
+    }
+  },
+  "location": {
+    "type": "geo:box",
+    "value": ["35.1, 135.1", "35.2, 135.2"]
+  },
+  "refDevice": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Device:001"
+  },
+  "updatedAt": {
+    "type": "DateTime",
+    "value": "2021-06-06T16:21:24.238Z"
+  }
+},
+{
+  "id": "urn:ngsi-ld:TemperatureSensor:005",
+  "type": "TemperatureSensor",
+  "name": {
+    "type": "Text",
+    "value": "FIWARE"
+  },
+  "temperature": {
+    "type": "Number",
+    "value": 23,
+    "metadata": {
+      "unitCode": {
+        "type": "Text",
+        "value": "CEL"
+      },
+      "timestamp": {
+        "type": "DateTime",
+        "value": "2017-06-17T07:21:24.238Z"
+      },
+      "accuracy": {
+        "type": "Number",
+        "value": 0.8
+      }
+    }
+  },
+  "location": {
+    "type": "geo:polygon",
+    "value": ["35.1, 135.1", "35.2, 135.2", "35.3, 135.3", "35.1, 135.1"]
+  },
+  "refDevice": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Device:001"
+  },
+  "updatedAt": {
+    "type": "DateTime",
+    "value": "2021-06-06T16:21:24.238Z"
+  }
+}
+]'
+
+```
+```
+
+#
+# 0012 List v2 enttiies
+#
+ngsi list --host orion entities --pretty
+
+```
+[
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "TemperatureSensor",
+    "location": {
+      "type": "geo:json",
+      "value": {
+        "coordinates": [
+          135,
+          35
+        ],
+        "type": "Point"
+      },
+      "metadata": {}
+    },
+    "name": {
+      "type": "Text",
+      "value": "FIWARE",
+      "metadata": {}
+    },
+    "refDevice": {
+      "type": "Relationship",
+      "value": "urn:ngsi-ld:Device:001",
+      "metadata": {}
+    },
+    "temperature": {
+      "type": "Number",
+      "value": 23,
+      "metadata": {
+        "accuracy": {
+          "type": "Number",
+          "value": 0.8
+        },
+        "timestamp": {
+          "type": "DateTime",
+          "value": "2017-06-17T07:21:24.238Z"
+        },
+        "unitCode": {
+          "type": "Text",
+          "value": "CEL"
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "DateTime",
+      "value": "2021-06-06T16:21:24.238Z",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "TemperatureSensor",
+    "location": {
+      "type": "geo:point",
+      "value": "35.1, 135.1",
+      "metadata": {}
+    },
+    "name": {
+      "type": "Text",
+      "value": "FIWARE",
+      "metadata": {}
+    },
+    "refDevice": {
+      "type": "Relationship",
+      "value": "urn:ngsi-ld:Device:001",
+      "metadata": {}
+    },
+    "temperature": {
+      "type": "Number",
+      "value": 23,
+      "metadata": {
+        "accuracy": {
+          "type": "Number",
+          "value": 0.8
+        },
+        "timestamp": {
+          "type": "DateTime",
+          "value": "2017-06-17T07:21:24.238Z"
+        },
+        "unitCode": {
+          "type": "Text",
+          "value": "CEL"
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "DateTime",
+      "value": "2021-06-06T16:21:24.238Z",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "TemperatureSensor",
+    "location": {
+      "type": "geo:line",
+      "value": [
+        "35.1, 135.1",
+        "35.2, 135.2"
+      ],
+      "metadata": {}
+    },
+    "name": {
+      "type": "Text",
+      "value": "FIWARE",
+      "metadata": {}
+    },
+    "refDevice": {
+      "type": "Relationship",
+      "value": "urn:ngsi-ld:Device:001",
+      "metadata": {}
+    },
+    "temperature": {
+      "type": "Number",
+      "value": 23,
+      "metadata": {
+        "accuracy": {
+          "type": "Number",
+          "value": 0.8
+        },
+        "timestamp": {
+          "type": "DateTime",
+          "value": "2017-06-17T07:21:24.238Z"
+        },
+        "unitCode": {
+          "type": "Text",
+          "value": "CEL"
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "DateTime",
+      "value": "2021-06-06T16:21:24.238Z",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "TemperatureSensor",
+    "location": {
+      "type": "geo:box",
+      "value": [
+        "35.1, 135.1",
+        "35.2, 135.2"
+      ],
+      "metadata": {}
+    },
+    "name": {
+      "type": "Text",
+      "value": "FIWARE",
+      "metadata": {}
+    },
+    "refDevice": {
+      "type": "Relationship",
+      "value": "urn:ngsi-ld:Device:001",
+      "metadata": {}
+    },
+    "temperature": {
+      "type": "Number",
+      "value": 23,
+      "metadata": {
+        "accuracy": {
+          "type": "Number",
+          "value": 0.8
+        },
+        "timestamp": {
+          "type": "DateTime",
+          "value": "2017-06-17T07:21:24.238Z"
+        },
+        "unitCode": {
+          "type": "Text",
+          "value": "CEL"
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "DateTime",
+      "value": "2021-06-06T16:21:24.238Z",
+      "metadata": {}
+    }
+  },
+  {
+    "id": "urn:ngsi-ld:TemperatureSensor:005",
+    "type": "TemperatureSensor",
+    "location": {
+      "type": "geo:polygon",
+      "value": [
+        "35.1, 135.1",
+        "35.2, 135.2",
+        "35.3, 135.3",
+        "35.1, 135.1"
+      ],
+      "metadata": {}
+    },
+    "name": {
+      "type": "Text",
+      "value": "FIWARE",
+      "metadata": {}
+    },
+    "refDevice": {
+      "type": "Relationship",
+      "value": "urn:ngsi-ld:Device:001",
+      "metadata": {}
+    },
+    "temperature": {
+      "type": "Number",
+      "value": 23,
+      "metadata": {
+        "accuracy": {
+          "type": "Number",
+          "value": 0.8
+        },
+        "timestamp": {
+          "type": "DateTime",
+          "value": "2017-06-17T07:21:24.238Z"
+        },
+        "unitCode": {
+          "type": "Text",
+          "value": "CEL"
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "DateTime",
+      "value": "2021-06-06T16:21:24.238Z",
+      "metadata": {}
+    }
+  }
+]
+```
+
+#
+# 0013 cp v2 entities to ld entities
+#
+ngsi cp --host orion --type TemperatureSensor --host2 orion-ld --context2 ctx --run
+
+```
+5
+```
+
+#
+# 0014 List ld entities
+#
+ngsi list --host orion-ld entities --pretty
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "refDevice": {
+      "type": "Relationship",
+      "object": "urn:ngsi-ld:Device:001"
+    },
+    "updatedAt": {
+      "type": "Property",
+      "value": {
+        "@type": "DateTime",
+        "@value": "2021-06-06T16:21:24.238Z"
+      }
+    },
+    "name": {
+      "type": "Property",
+      "value": "FIWARE"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 23,
+      "accuracy": {
+        "type": "Property",
+        "value": 0.8
+      },
+      "observedAt": "2017-06-17T07:21:24.238Z",
+      "unitCode": "CEL"
+    },
+    "location": {
+      "type": "GeoProperty",
+      "value": {
+        "coordinates": [
+          135,
+          35
+        ],
+        "type": "Point"
+      }
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "refDevice": {
+      "type": "Relationship",
+      "object": "urn:ngsi-ld:Device:001"
+    },
+    "updatedAt": {
+      "type": "Property",
+      "value": {
+        "@type": "DateTime",
+        "@value": "2021-06-06T16:21:24.238Z"
+      }
+    },
+    "name": {
+      "type": "Property",
+      "value": "FIWARE"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 23,
+      "accuracy": {
+        "type": "Property",
+        "value": 0.8
+      },
+      "observedAt": "2017-06-17T07:21:24.238Z",
+      "unitCode": "CEL"
+    },
+    "location": {
+      "type": "GeoProperty",
+      "value": {
+        "coordinates": [
+          135.1,
+          35.1
+        ],
+        "type": "Point"
+      }
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "refDevice": {
+      "type": "Relationship",
+      "object": "urn:ngsi-ld:Device:001"
+    },
+    "updatedAt": {
+      "type": "Property",
+      "value": {
+        "@type": "DateTime",
+        "@value": "2021-06-06T16:21:24.238Z"
+      }
+    },
+    "name": {
+      "type": "Property",
+      "value": "FIWARE"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 23,
+      "accuracy": {
+        "type": "Property",
+        "value": 0.8
+      },
+      "observedAt": "2017-06-17T07:21:24.238Z",
+      "unitCode": "CEL"
+    },
+    "location": {
+      "type": "GeoProperty",
+      "value": {
+        "coordinates": [
+          [
+            135.1,
+            35.1
+          ],
+          [
+            135.2,
+            35.2
+          ]
+        ],
+        "type": "LineString"
+      }
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:004",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "refDevice": {
+      "type": "Relationship",
+      "object": "urn:ngsi-ld:Device:001"
+    },
+    "updatedAt": {
+      "type": "Property",
+      "value": {
+        "@type": "DateTime",
+        "@value": "2021-06-06T16:21:24.238Z"
+      }
+    },
+    "name": {
+      "type": "Property",
+      "value": "FIWARE"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 23,
+      "accuracy": {
+        "type": "Property",
+        "value": 0.8
+      },
+      "observedAt": "2017-06-17T07:21:24.238Z",
+      "unitCode": "CEL"
+    },
+    "location": {
+      "type": "GeoProperty",
+      "value": {
+        "coordinates": [
+          [
+            [
+              135.1,
+              35.1
+            ],
+            [
+              135.2,
+              35.1
+            ],
+            [
+              135.2,
+              35.2
+            ],
+            [
+              135.1,
+              35.2
+            ],
+            [
+              135.1,
+              35.1
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      }
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:005",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "refDevice": {
+      "type": "Relationship",
+      "object": "urn:ngsi-ld:Device:001"
+    },
+    "updatedAt": {
+      "type": "Property",
+      "value": {
+        "@type": "DateTime",
+        "@value": "2021-06-06T16:21:24.238Z"
+      }
+    },
+    "name": {
+      "type": "Property",
+      "value": "FIWARE"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 23,
+      "accuracy": {
+        "type": "Property",
+        "value": 0.8
+      },
+      "observedAt": "2017-06-17T07:21:24.238Z",
+      "unitCode": "CEL"
+    },
+    "location": {
+      "type": "GeoProperty",
+      "value": {
+        "coordinates": [
+          [
+            [
+              135.1,
+              35.1
+            ],
+            [
+              135.2,
+              35.2
+            ],
+            [
+              135.3,
+              35.3
+            ],
+            [
+              135.1,
+              35.1
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      }
+    }
+  }
+]
+```
+
+#
+# 9998 Remove entity
+#
+ngsi rm --run --host orion --type TemperatureSensor
+
+```
+REGEX(.*)
+```
+
+#
+# 9999 Remove entity
+#
+ngsi rm --run --host orion-ld --type TemperatureSensor --link ctx
+
+```
+REGEX(.*)
+```
