@@ -58,7 +58,7 @@ ngsi applications pep --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --pretty
 This command creates a PEP Proxy.
 
 ```console
-ngsi application [command options] pep --aid {id} add [options]
+ngsi application [command options] pep --aid {id} create [options]
 ```
 
 ### Options
