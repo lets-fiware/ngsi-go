@@ -1,3 +1,7 @@
+## NGSI Go v0.8.2-next
+
+-   Update: applications-pep-proxies.md (#142)
+
 ## NGSI Go v0.8.2
 
 -   Hardening: feature to copy NGSIv2 entities as NGSI-LD entities (#138)

@@ -8,3 +8,4 @@ Thanks for the contribution!
 | Jason Fox            | [@jason-fox](https://github.com/jason-fox)     | Documentation       |
 |                      | [@modularTaco](https://github.com/modularTaco) | Documentation, code |
 | Fermín Galán Márquez | [@fgalan](https://github.com/fgalan)           | Documentation       |
+| Christoph            | [@Siedlerchr](https://github.com/Siedlerchr)   | Documentation       |
