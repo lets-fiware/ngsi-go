@@ -145,6 +145,21 @@ Specify the following value to `--serverType` option when you add an alias for F
 | IoT Agent   | iota        |
 | Perseo FE   | perseo      |
 | Perseo Core | perseo-core |
+| Keyrock     | keyrock     |
+
+#### Example 3
+
+The following example is how to add Keyrock as a server type. Specify an admin user name of Keyrock to
+`--username` option.
+
+```console
+ngsi server add \
+  --host fiware-idm \
+  --serverType keyrock \
+  --serverHost https://idm.letsfiware.jp \
+  --username admin@letsfiware.jp \
+  --password 1234567
+```
 
 ### Parameters for Identity Managers
 
@@ -159,7 +174,7 @@ Specify the following value to `--serverType` option when you add an alias for F
 
 Specify the `--service` and/or `--path` parameter when adding a new alias.
 
-#### Example 3
+#### Example 4
 
 ```console
 ngsi server add \
@@ -173,7 +188,7 @@ ngsi server add \
 You can add a new alias using an exising alias.
 Specify an existing alias to the `--serverHost` parameter when adding a new alias.
 
-#### Example 4
+#### Example 5
 
 ```console
 ngsi server add \
