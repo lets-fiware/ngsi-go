@@ -41,6 +41,7 @@ ngsi applications --host keyrock list --pretty
 ngsi applications create --name "Test_application 1" \
 --description "test app" \
 --redirectUri http://localhost/login \
+--redirectSignOutUri http://localhost/signout \
 --url http://localhost \
 --grantType authorization_code,implicit,password \
 --tokenTypes jwt,permanent
@@ -69,7 +70,7 @@ ngsi applications list --pretty
       "image": "default",
       "url": "http://localhost",
       "redirect_uri": "http://localhost/login",
-      "redirect_sign_out_uri": null,
+      "redirect_sign_out_uri": "http://localhost/signout",
       "grant_type": "password,authorization_code,implicit",
       "response_type": "code,token",
       "token_types": "jwt,permanent,bearer",
@@ -102,7 +103,7 @@ ngsi applications get --aid $aid --pretty
     "secret": "REGEX(.*)",
     "url": "http://localhost",
     "redirect_uri": "http://localhost/login",
-    "redirect_sign_out_uri": null,
+    "redirect_sign_out_uri": "http://localhost/signout",
     "image": "default",
     "grant_type": "password,authorization_code,implicit",
     "response_type": "code,token",

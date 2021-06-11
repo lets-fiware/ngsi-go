@@ -1104,14 +1104,14 @@ func TestMakeAppBodyData(t *testing.T) {
 func TestMakeAppBodyParam1(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "name,description,redirectUri,url,grantType,tokenTypes,resposeType,clientType")
+	setupFlagString(set, "name,description,redirectUri,redirectSignOutUri,url,grantType,tokenTypes,resposeType,clientType")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--name=app1", "--description=application1", "--redirectUri=http://ruril", "--url=http://url"})
+	_ = set.Parse([]string{"--name=app1", "--description=application1", "--redirectUri=http://ruri", "--redirectSignOutUri=http://suri", "--url=http://url"})
 
 	actual, err := makeAppBody(c, ngsi)
 
 	if assert.NoError(t, err) {
-		assert.Equal(t, "{\"application\":{\"name\":\"app1\",\"description\":\"application1\",\"url\":\"http://url\",\"redirect_uri\":\"http://ruril\"}}", string(actual))
+		assert.Equal(t, "{\"application\":{\"name\":\"app1\",\"description\":\"application1\",\"url\":\"http://url\",\"redirect_uri\":\"http://ruri\",\"redirect_sign_out_uri\":\"http://suri\"}}", string(actual))
 	}
 }
 

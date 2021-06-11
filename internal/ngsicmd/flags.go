@@ -960,6 +960,11 @@ var (
 		Aliases: []string{"R"},
 		Usage:   "redirect uri",
 	}
+	keyrcokApplicationRedirectSignOutURIFlag = &cli.StringFlag{
+		Name:    "redirectSignOutUri",
+		Aliases: []string{"S"},
+		Usage:   "redirect redirect sign out uri",
+	}
 	keyrcokApplicationURLFlag = &cli.StringFlag{
 		Name:    "url",
 		Aliases: []string{"u"},
