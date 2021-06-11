@@ -24,15 +24,15 @@ ngsi version -h orion
 ```json
 {
 "orion" : {
-  "version" : "3.0.0",
-  "uptime" : "0 d, 0 h, 17 m, 19 s",
-  "git_hash" : "d6f8f4c6c766a9093527027f0a4b3f906e7f04c4",
-  "compile_time" : "Mon Apr 12 14:48:44 UTC 2021",
+  "version" : "3.1.0",
+  "uptime" : "0 d, 0 h, 0 m, 10 s",
+  "git_hash" : "260505c911ecf204ebcf0bd31788013c225da6dd",
+  "compile_time" : "Wed Jun 9 12:59:59 UTC 2021",
   "compiled_by" : "root",
-  "compiled_in" : "f307ca0746f5",
-  "release_date" : "Mon Apr 12 14:48:44 UTC 2021",
+  "compiled_in" : "e11ec65d5407",
+  "release_date" : "Wed Jun 9 12:59:59 UTC 2021",
   "machine" : "x86_64",
-  "doc" : "https://fiware-orion.rtfd.io/en/3.0.0/",
+  "doc" : "https://fiware-orion.rtfd.io/en/3.1.0/",
   "libversions": {
      "boost": "1_66",
      "libcurl": "libcurl/7.61.1 OpenSSL/1.1.1g zlib/1.2.11 nghttp2/1.33.0",
