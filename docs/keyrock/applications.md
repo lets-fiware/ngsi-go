@@ -10,11 +10,11 @@ This command allows you to manage applications for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                |
+| ---------------------- | -------------------------- |
+| --host value, -h value | specify host or alias      |
+| --token value          | specify oauth token        |
+| --help                 | show help (default: false) |
 
 <a name="list-application"></a>
 
@@ -139,20 +139,21 @@ ngsi application [command options] create [options]
 
 ### Options
 
-| Options                        | Description                    |
-| ------------------------------ | ------------------------------ |
-| --data value, -d value         | application data               |
-| --name value, -n value         | application name               |
-| --description value, -D value  | description                    |
-| --url value, -u value          | url                            |
-| --redirectUri value, -R value  | redirect uri                   |
-| --grantType value, -g value    | grant type                     |
-| --tokenTypes value, -t value   | token types                    |
-| --responseType value, -r value | response type                  |
-| --clientType value, -c value   | client type                    |
-| --verbose, -v                  | verbose (default: false)       |
-| --pretty, -P                   | pretty format (default: false) |
-| --help                         | show help (default: false)     |
+| Options                              | Description                    |
+| ------------------------------------ | ------------------------------ |
+| --data value, -d value               | application data               |
+| --name value, -n value               | application name               |
+| --description value, -D value        | description                    |
+| --url value, -u value                | url                            |
+| --redirectUri value, -R value        | redirect uri                   |
+| --redirectSignOutUri value, -S value | redirect redirect sign out uri |
+| --grantType value, -g value          | grant type                     |
+| --tokenTypes value, -t value         | token types                    |
+| --responseType value, -r value       | response type                  |
+| --clientType value, -c value         | client type                    |
+| --verbose, -v                        | verbose (default: false)       |
+| --pretty, -P                         | pretty format (default: false) |
+| --help                               | show help (default: false)     |
 
 ### Examples
 
@@ -183,21 +184,22 @@ ngsi application [command options] update [options]
 
 ### Options
 
-| Options                        | Description                    |
-| ------------------------------ | ------------------------------ |
-| --aid value, -i value          | application id                 |
-| --data value, -d value         | application data               |
-| --name value, -n value         | application name               |
-| --description value, -D value  | description                    |
-| --url value, -u value          | url                            |
-| --redirectUri value, -R value  | redirect uri                   |
-| --grantType value, -g value    | grant type                     |
-| --tokenTypes value, -t value   | token types                    |
-| --responseType value, -r value | response type                  |
-| --clientType value, -c value   | client type                    |
-| --verbose, -v                  | verbose (default: false)       |
-| --pretty, -P                   | pretty format (default: false) |
-| --help                         | show help (default: false)     |
+| Options                              | Description                    |
+| ------------------------------------ | ------------------------------ |
+| --aid value, -i value                | application id                 |
+| --data value, -d value               | application data               |
+| --name value, -n value               | application name               |
+| --description value, -D value        | description                    |
+| --url value, -u value                | url                            |
+| --redirectUri value, -R value        | redirect uri                   |
+| --redirectSignOutUri value, -S value | redirect redirect sign out uri |
+| --grantType value, -g value          | grant type                     |
+| --tokenTypes value, -t value         | token types                    |
+| --responseType value, -r value       | response type                  |
+| --clientType value, -c value         | client type                    |
+| --verbose, -v                        | verbose (default: false)       |
+| --pretty, -P                         | pretty format (default: false) |
+| --help                               | show help (default: false)     |
 
 ### Examples
 
@@ -229,10 +231,10 @@ ngsi application [command options] delete [options]
 
 ### Options
 
-| Options                        | Description                    |
-| ------------------------------ | ------------------------------ |
-| --aid value, -i value          | application id                 |
-| --help                         | show help (default: false)     |
+| Options               | Description                |
+| --------------------- | -------------------------- |
+| --aid value, -i value | application id             |
+| --help                | show help (default: false) |
 
 ### Examples
 

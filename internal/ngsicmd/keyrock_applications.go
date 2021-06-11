@@ -40,16 +40,17 @@ import (
 )
 
 type keyrockApplicationItems struct {
-	ID           string      `json:"id,omitempty"`
-	Name         string      `json:"name,omitempty"`
-	Description  string      `json:"description,omitempty"`
-	Image        string      `json:"image,omitempty"`
-	URL          string      `json:"url,omitempty"`
-	RedirectURI  string      `json:"redirect_uri,omitempty"`
-	GrantType    interface{} `json:"grant_type,omitempty"`
-	ResponseType interface{} `json:"response_type,omitempty"`
-	TokenTypes   interface{} `json:"token_types,omitempty"`
-	ClientType   interface{} `json:"client_type,omitempty"`
+	ID                 string      `json:"id,omitempty"`
+	Name               string      `json:"name,omitempty"`
+	Description        string      `json:"description,omitempty"`
+	Image              string      `json:"image,omitempty"`
+	URL                string      `json:"url,omitempty"`
+	RedirectURI        string      `json:"redirect_uri,omitempty"`
+	RedirectSignOutUri string      `json:"redirect_sign_out_uri,omitempty"`
+	GrantType          interface{} `json:"grant_type,omitempty"`
+	ResponseType       interface{} `json:"response_type,omitempty"`
+	TokenTypes         interface{} `json:"token_types,omitempty"`
+	ClientType         interface{} `json:"client_type,omitempty"`
 }
 
 type keyrockApplication struct {
@@ -295,6 +296,7 @@ func makeAppBody(c *cli.Context, ngsi *ngsilib.NGSI) ([]byte, error) {
 	app.Application.Name = c.String("name")
 	app.Application.Description = c.String("description")
 	app.Application.RedirectURI = c.String("redirectUri")
+	app.Application.RedirectSignOutUri = c.String("redirectSignOutUri")
 	app.Application.URL = c.String("url")
 	s := c.String("grantType")
 	if s != "" {
