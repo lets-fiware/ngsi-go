@@ -36,10 +36,10 @@ REGEX(.*)
 ```
 
 #
-# 0001 Create entities with link
+# 0001 Upsert entities with link
 #
 
-ngsi create --host orion-ld entities --link ctx \
+ngsi upsert --host orion-ld entities --link ctx \
 --data '[
 {"id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","category":{"type":"Property","value":"sensor"},"temperature":{"type":"Property","value":25,"unitCode":"CEL"}},
 {"id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","category":{"type":"Property","value":"sensor"},"temperature":{"type":"Property","value":26,"unitCode":"CEL"}},
@@ -60,10 +60,10 @@ REGEX(.*)
 ```
 
 #
-# 0012 Create entities with context
+# 0012 Upsert entities with context
 #
 
-ngsi create --host orion-ld entities --context ctx \
+ngsi upsert --host orion-ld entities --context ctx \
 --data '[
 {"id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","category":{"type":"Property","value":"sensor"},"temperature":{"type":"Property","value":25,"unitCode":"CEL"}},
 {"id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","category":{"type":"Property","value":"sensor"},"temperature":{"type":"Property","value":26,"unitCode":"CEL"}},

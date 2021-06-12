@@ -48,6 +48,7 @@ ngsi upsert entities --link ctx \
 ]'
 
 ```
+["urn:ngsi-ld:TemperatureSensor:001","urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003","urn:ngsi-ld:TemperatureSensor:004","urn:ngsi-ld:TemperatureSensor:005","urn:ngsi-ld:TemperatureSensor:006"]
 ```
 
 #
@@ -274,6 +275,7 @@ ngsi upsert entities --link ctx \
 ]'
 
 ```
+["urn:ngsi-ld:TemperatureSensor:001","urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003","urn:ngsi-ld:TemperatureSensor:004","urn:ngsi-ld:TemperatureSensor:005","urn:ngsi-ld:TemperatureSensor:006"]
 ```
 
 #
@@ -290,6 +292,7 @@ ngsi upsert entities --link ctx \
 ]'
 
 ```
+["urn:ngsi-ld:Building:001","urn:ngsi-ld:Building:002","urn:ngsi-ld:Building:003","urn:ngsi-ld:Building:004","urn:ngsi-ld:Building:005","urn:ngsi-ld:Building:006"]
 ```
 
 #
