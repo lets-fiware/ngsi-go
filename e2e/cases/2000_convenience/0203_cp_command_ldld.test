@@ -51,7 +51,7 @@ ngsi upsert entities --link ctx \
 ```
 
 #
-# 0012 List entites
+# 0012 List entities
 #
 ngsi list --host orion-ld entities --type TemperatureSensor --link ctx
 
@@ -293,7 +293,7 @@ ngsi upsert entities --link ctx \
 ```
 
 #
-# 0105 List entites TemperatureSensor
+# 0105 List entities TemperatureSensor
 #
 ngsi list --host orion-ld entities --type TemperatureSensor --link ctx
 
@@ -307,7 +307,7 @@ urn:ngsi-ld:TemperatureSensor:006
 ```
 
 #
-# 0106 List entites Building
+# 0106 List entities Building
 #
 ngsi list --host orion-ld entities --type Building --link ctx
 

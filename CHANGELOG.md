@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.2-next
 
+-   Fix: Fix message in cp command (#148)
 -   Update: Update test process
 -   Update: Update Orion version to 3.1.0 (#146)
 -   Hardening: Adds redirectSignOutUri option in applications command (#145)
