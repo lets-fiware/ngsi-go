@@ -42,3 +42,5 @@ echo "*** golangci-lint"
 make golangci-lint
 echo "*** lint dockerfile ***"
 make lint-dockerfile
+echo "*** lint documentation ***"
+make lint-docs

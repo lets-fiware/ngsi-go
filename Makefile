@@ -68,6 +68,10 @@ e2e-test:
 lint-dockerfile:
 	script/lint-dockerfile.sh
 
+.PHONY: lint-docs
+lint-docs:
+	script/lint-docs.sh
+
 .PHONY: all-tests
 all-tests:
 	script/all-tests.sh
