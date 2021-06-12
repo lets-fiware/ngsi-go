@@ -8,33 +8,34 @@ ngsi ls [options]
 
 ## Options
 
-| Options                       | Description                                 |
-| ----------------------------- | ------------------------------------------- |
-| --host value, -h value        | specify host or alias for source (Required) |
-| --token value                 | specify oauth token                         |
-| --service value, -s value     | specify FIWARE Service                      |
-| --path value, -p value        | specify FIWARE ServicePath                  |
-| --type value, -t value        | specify Entity Type                         |
-| --idPattern value             | specify idPattern                           |
-| --typePattern value           | specify typePattern                         |
-| --query value, -q value       | specify query                               |
-| --mq value, -m value          | specify mq                                  |
-| --georel value                | specify georel                              |
-| --geometry value              | specify geometry                            |
-| --coords value                | specify coords                              |
-| --attrs value                 | specify attrs                               |
-| --metadata value              | specify metadata                            |
-| --orderBy value               | specify orderBy                             |
-| --count, -C                   | specify count (default: false)              |
-| --keyValues, -k               | specify keyValues (default: false)          |
-| --values, -V                  | specify values (default: false)             |
-| --unique, -u                  | specify unique (default: false)             |
-| --id value, -i value          | specify id                                  |
-| --link value, -L value        | specify @context                            |
-| --verbose, -v                 | specify verbose (default: false)            |
-| --pretty, -P                  | pretty format (default: false)              |
-| --lines, -1                   | specify lines (default: false)              |
-| --help                        | show help (default: false)                  |
+| Options                   | Description                                         |
+| ------------------------- | --------------------------------------------------- |
+| --host value, -h value    | specify host or alias for source (Required)         |
+| --token value             | specify oauth token                                 |
+| --service value, -s value | specify FIWARE Service                              |
+| --path value, -p value    | specify FIWARE ServicePath                          |
+| --type value, -t value    | specify Entity Type                                 |
+| --idPattern value         | specify idPattern                                   |
+| --typePattern value       | specify typePattern                                 |
+| --query value, -q value   | specify query                                       |
+| --mq value, -m value      | specify mq                                          |
+| --georel value            | specify georel                                      |
+| --geometry value          | specify geometry                                    |
+| --coords value            | specify coords                                      |
+| --attrs value             | specify attrs                                       |
+| --metadata value          | specify metadata                                    |
+| --orderBy value           | specify orderBy                                     |
+| --count, -C               | specify count (default: false)                      |
+| --keyValues, -k           | specify keyValues (default: false)                  |
+| --values, -V              | specify values (default: false)                     |
+| --unique, -u              | specify unique (default: false)                     |
+| --id value, -i value      | specify id                                          |
+| --skipForwarding          | skip forwarding to CPrs (v2) (Orion 3.1.0 or later) |
+| --link value, -L value    | specify @context                                    |
+| --verbose, -v             | specify verbose (default: false)                    |
+| --pretty, -P              | pretty format (default: false)                      |
+| --lines, -1               | specify lines (default: false)                      |
+| --help                    | show help (default: false)                          |
 
 ### Example
 

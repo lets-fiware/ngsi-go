@@ -131,7 +131,11 @@ func copyV2V2(c *cli.Context, ngsi *ngsilib.NGSI, source, destination *ngsilib.C
 
 		v := url.Values{}
 		v.Set("type", entityType)
-		v.Set("options", "count")
+		if c.Bool("skipForwarding") {
+			v.Set("options", "count,skipForwarding")
+		} else {
+			v.Set("options", "count")
+		}
 		v.Set("limit", fmt.Sprintf("%d", limit))
 		v.Set("offset", fmt.Sprintf("%d", page*limit))
 		source.SetQuery(&v)
@@ -382,7 +386,11 @@ func copyV2LD(c *cli.Context, ngsi *ngsilib.NGSI, source, destination *ngsilib.C
 
 		v := url.Values{}
 		v.Set("type", entityType)
-		v.Set("options", "count")
+		if c.Bool("skipForwarding") {
+			v.Set("options", "count,skipForwarding")
+		} else {
+			v.Set("options", "count")
+		}
 		v.Set("limit", fmt.Sprintf("%d", limit))
 		v.Set("offset", fmt.Sprintf("%d", page*limit))
 		source.SetQuery(&v)

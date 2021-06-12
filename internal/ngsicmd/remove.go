@@ -99,7 +99,11 @@ func removeV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, entity
 
 		v := url.Values{}
 		v.Set("type", entityType)
-		v.Set("options", "count")
+		if c.Bool("skipForwarding") {
+			v.Set("options", "count,skipForwarding")
+		} else {
+			v.Set("options", "count")
+		}
 		v.Set("limit", fmt.Sprintf("%d", limit))
 		v.Set("attrs", "__NONE")
 		client.SetQuery(&v)

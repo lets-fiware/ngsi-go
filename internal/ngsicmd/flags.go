@@ -531,6 +531,10 @@ var (
 		Aliases: []string{"1"},
 		Usage:   "lines",
 	}
+	skipForwardingFlag = &cli.BoolFlag{
+		Name:  "skipForwarding",
+		Usage: "skip forwarding to CPrs (v2)",
+	}
 )
 
 var (

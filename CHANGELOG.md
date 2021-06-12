@@ -1,7 +1,8 @@
 ## NGSI Go v0.8.2-next
 
--   Fix: Fix message in cp command (#148)
--   Update: Update test process
+-   Hardening: Add skipForwarding option for Orion
+-   Fix: Fix message in cp command (#149)
+-   Update: Update test process (#148)
 -   Update: Update Orion version to 3.1.0 (#146)
 -   Hardening: Adds redirectSignOutUri option in applications command (#145)
 -   Update: applications-pep-proxies.md (#142)

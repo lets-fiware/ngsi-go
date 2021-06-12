@@ -93,6 +93,7 @@ ngsi list [common options] entities [options]
 | --values, -V            | specify values (default: false)                                  |
 | --unique, -u            | specify unique (default: false)                                  |
 | --id value, -i value    | specify id                                                       |
+| --skipForwarding        | skip forwarding to CPrs (v2) (Orion 3.1.0 or later)              |
 | --acceptJson            | set accecpt header to application/json (LD) (default: false)     |
 | --acceptGeoJson         | set accecpt header to application/geo+json (LD) (default: false) |
 | --link value, -L value  | specify @context                                                 |

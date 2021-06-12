@@ -45,9 +45,10 @@ OPTIONS:
    --service value, -s value  FIWARE Service
    --path value, -p value     FIWARE ServicePath
    --type value, -t value     Entity Type
-   --run                      run command (default: false)
    --link value, -L value     @context (LD)
    --ngsiV1                   NGSI v1 mode (default: false)
+   --skipForwarding           skip forwarding to CPrs (v2) (default: false)
+   --run                      run command (default: false)
    --help                     show help (default: false)
    
 ```
@@ -124,4 +125,38 @@ ngsi rm --run --type Device,Event,Thing --ngsiV1
 ngsi list types
 
 ```
+```
+
+#
+# 0031 Remove entity
+#
+ngsi rm --run --host orion --type Device
+
+```
+REGEX(.*)
+```
+
+#
+# 0032 Create enttiies
+#
+ngsi create --host orion entities \
+--data '[
+ {"id":"urn:ngsi-ld:Device:001","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:002","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:003","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:004","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:005","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:006","type":"Device"}
+]'
+
+```
+```
+
+#
+# 0033 Remove entity with --skipForwarding
+#
+ngsi rm --run --skipForwarding --host orion --type Device
+
+```
+REGEX(.*)
 ```

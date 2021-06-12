@@ -27,7 +27,7 @@
 #
 # 0011 Remove entity
 #
-ngsi rm --run --host orion --type Device
+ngsi rm --run --host orion --service "" --type Device
 
 ```
 REGEX(.*)
@@ -240,4 +240,65 @@ ngsi rm --run --host orion --service "" --type Device,Event
 ```
 6
 5
+```
+
+#
+# 0041 Remove entity
+#
+ngsi rm --run --host orion --type Device
+
+```
+REGEX(.*)
+```
+
+#
+# 0042 Remove entity
+#
+ngsi rm --run --host orion --service openiot --type Device
+
+```
+REGEX(.*)
+```
+
+#
+# 0043 Create enttiies
+#
+ngsi create --host orion --service "" entities \
+--data '[
+ {"id":"urn:ngsi-ld:Device:001","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:002","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:003","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:004","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:005","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:006","type":"Device"}
+]'
+
+```
+```
+
+#
+# 0044 Copy entities with --skipForwarding
+#
+ngsi cp --run --host orion --host2 orion --service2 openiot --type Device
+
+```
+6
+```
+
+#
+# 0045 Remove entity
+#
+ngsi rm --run --host orion --service "" --type Device
+
+```
+REGEX(.*)
+```
+
+#
+# 0046 Remove entity
+#
+ngsi rm --run --host orion --service openiot --type Device
+
+```
+REGEX(.*)
 ```

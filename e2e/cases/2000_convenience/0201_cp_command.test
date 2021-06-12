@@ -52,6 +52,7 @@ OPTIONS:
    --path2 value              FIWARE ServicePath for destination
    --context2 value           @context for destination
    --ngsiV1                   NGSI v1 mode (default: false)
+   --skipForwarding           skip forwarding to CPrs (v2) (default: false)
    --run                      run command (default: false)
    --help                     show help (default: false)
    

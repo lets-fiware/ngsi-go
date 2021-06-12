@@ -60,6 +60,7 @@ OPTIONS:
    --values, -V               values (default: false)
    --unique, -U               unique (default: false)
    --id value, -i value       id
+   --skipForwarding           skip forwarding to CPrs (v2) (default: false)
    --link value, -L value     @context (LD)
    --verbose, -v              verbose (default: false)
    --lines, -1                lines (default: false)

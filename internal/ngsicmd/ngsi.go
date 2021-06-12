@@ -200,6 +200,7 @@ var copyCmd = cli.Command{
 		scope2Flag,
 		context2Flag,
 		ngsiV1Flag,
+		skipForwardingFlag,
 		runFlag,
 	},
 	Action: func(c *cli.Context) error {
@@ -224,6 +225,7 @@ var countCmd = cli.Command{
 			Flags: []cli.Flag{
 				typeFlag,
 				linkFlag,
+				skipForwardingFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return entitiesCount(c)
@@ -287,6 +289,7 @@ var lsCmd = cli.Command{
 		valuesFlag,
 		uniqueFlag,
 		idFlag,
+		skipForwardingFlag,
 		linkFlag,
 		verboseFlag,
 		linesFlag,
@@ -308,9 +311,10 @@ var removeCmd = cli.Command{
 		tenantFlag,
 		scopeFlag,
 		typeFlag,
-		runFlag,
 		linkFlag,
 		ngsiV1Flag,
+		skipForwardingFlag,
+		runFlag,
 	},
 	Action: func(c *cli.Context) error {
 		return remove(c)
@@ -1206,6 +1210,7 @@ var listCmd = cli.Command{
 				valuesFlag,
 				uniqueFlag,
 				idFlag,
+				skipForwardingFlag,
 				linkFlag,
 				acceptJSONFlag,
 				acceptGeoJSONFlag,

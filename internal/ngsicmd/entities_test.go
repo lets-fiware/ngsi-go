@@ -91,6 +91,35 @@ func TestEntitiesListV2Main(t *testing.T) {
 	}
 }
 
+func TestEntitiesListV2MainSkipForwarding(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entities"
+	q := "attrs=__NONE&limit=1&options=count"
+	reqRes.RawQuery = &q
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"9"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,type")
+	setupFlagBool(set, "count,skipForwarding")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--skipForwarding", "--count"})
+
+	err := entitiesList(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "9\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestEntitiesListErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
@@ -1519,6 +1548,35 @@ func TestEntitiesCountV2(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
+	err := entitiesCount(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "10\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestEntitiesCountV2SkipForwarding(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/entities"
+	q := "attrs=__NONE&limit=1&options=count%2CskipForwarding"
+	reqRes.RawQuery = &q
+	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"10"}}
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	setupFlagBool(set, "skipForwarding")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--skipForwarding"})
+
 	err := entitiesCount(c)
 
 	if assert.NoError(t, err) {

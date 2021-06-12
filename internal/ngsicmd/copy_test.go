@@ -525,6 +525,72 @@ func TestV2V2CopyPage(t *testing.T) {
 	}
 }
 
+func TestV2V2CopyPageSkipForwarding(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion-src": {
+				"serverHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"serverHost": "https://orion-dest",
+				"ngsiType": "v2"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"id":"device001"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"150"}}
+	reqRes1.Path = "/v2/entities"
+	q := "limit=100&offset=0&options=count%2CskipForwarding&type=Thing"
+	reqRes1.RawQuery = &q
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusNoContent
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte(`[{"id":"device001"}]`)
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"150"}}
+	reqRes3.Path = "/v2/entities"
+	reqRes4 := MockHTTPReqRes{}
+	reqRes4.Res.StatusCode = http.StatusNoContent
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	mock.ReqRes = append(mock.ReqRes, reqRes4)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,host2")
+	setupFlagBool(set, "run,skipForwarding")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-src", "--host2=orion-dest", "--skipForwarding", "--run"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	source, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+	flags, err := parseFlags2(ngsi, c)
+	assert.NoError(t, err)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	assert.NoError(t, err)
+
+	err = copyV2V2(c, ngsi, source, dest, "Thing")
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "2\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestCopyV2V2ErrorRunFlag(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
@@ -2107,6 +2173,74 @@ func TestV2LDCopyPage(t *testing.T) {
 	setupFlagBool(set, "run")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-src", "--host2=orion-dest", "--run"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	source, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+	flags, err := parseFlags2(ngsi, c)
+	assert.NoError(t, err)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	assert.NoError(t, err)
+
+	err = copyV2LD(c, ngsi, source, dest, "Thing")
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "201\n"
+		assert.Equal(t, expected, actual)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestV2LDCopyPageSkipForwarding(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion-src": {
+				"serverHost": "https://orion-src",
+				"ngsiType": "v2"
+			},
+			"orion-dest": {
+				"serverHost": "https://orion-dest",
+				"ngsiType": "ld"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	reqRes1 := MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.ResBody = []byte(`[{"id":"device001","type":"T"}]`)
+	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"200"}}
+	q := "limit=100&offset=0&options=count%2CskipForwarding&type=Thing"
+	reqRes1.RawQuery = &q
+	reqRes1.Path = "/v2/entities"
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusCreated
+	reqRes2.Path = "/ngsi-ld/v1/entityOperations/create"
+	reqRes3 := MockHTTPReqRes{}
+	reqRes3.Res.StatusCode = http.StatusOK
+	reqRes3.ResBody = []byte(`[{"id":"device001","type":"T"}]`)
+	reqRes3.ResHeader = http.Header{"Fiware-Total-Count": []string{"1"}}
+	reqRes1.Path = "/v2/entities"
+	reqRes4 := MockHTTPReqRes{}
+	reqRes4.Res.StatusCode = http.StatusCreated
+	reqRes4.Path = "/ngsi-ld/v1/entityOperations/create"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes1)
+	mock.ReqRes = append(mock.ReqRes, reqRes2)
+	mock.ReqRes = append(mock.ReqRes, reqRes3)
+	mock.ReqRes = append(mock.ReqRes, reqRes4)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,host2")
+	setupFlagBool(set, "run,skipForwarding")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-src", "--host2=orion-dest", "--skipForwarding", "--run"})
 
 	ngsi, err := initCmd(c, "", true)
 	assert.NoError(t, err)
