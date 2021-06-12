@@ -58,10 +58,10 @@ OPTIONS:
 ```
 
 #
-# 1000 copy008 cannot copy entites from NGSI-LD to NGSI v2
+# 1000 copy008 cannot copy entities from NGSI-LD to NGSI v2
 #
 ngsi cp --host orion-ld --host2 orion
 
 ```1
-copy008 cannot copy entites from NGSI-LD to NGSI v2
+copy008 cannot copy entities from NGSI-LD to NGSI v2
 ```

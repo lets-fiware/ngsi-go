@@ -371,7 +371,7 @@ func TestCopyErrroLDV2(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
-		assert.Equal(t, "cannot copy entites from NGSI-LD to NGSI v2", ngsiErr.Message)
+		assert.Equal(t, "cannot copy entities from NGSI-LD to NGSI v2", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

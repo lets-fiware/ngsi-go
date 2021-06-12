@@ -59,7 +59,7 @@ ngsi wc entities --type Device
 ```
 
 #
-# 0114 Copy entites --ngsiV1
+# 0114 Copy entities --ngsiV1
 #
 ngsi cp --ngsiV1 --host orion --host2 orion --service2 openiot --type Device
 
@@ -68,7 +68,7 @@ ngsi cp --ngsiV1 --host orion --host2 orion --service2 openiot --type Device
 ```
 
 #
-# 0115 Copy entites --ngsiV1 --run
+# 0115 Copy entities --ngsiV1 --run
 #
 ngsi cp --ngsiV1 --run --host orion --host2 orion --service2 openiot --type Device
 
@@ -176,7 +176,7 @@ ngsi wc entities --type Event
 ```
 
 #
-# 0127 Copy entites --ngsiV1
+# 0127 Copy entities --ngsiV1
 #
 ngsi cp --ngsiV1 --host orion --host2 orion --service2 openiot --type Device,Event
 
@@ -186,7 +186,7 @@ ngsi cp --ngsiV1 --host orion --host2 orion --service2 openiot --type Device,Eve
 ```
 
 #
-# 0128 Copy entites --ngsiV1 --run
+# 0128 Copy entities --ngsiV1 --run
 #
 ngsi cp --ngsiV1 --run --host orion --host2 orion --service2 openiot --type Device,Event
 

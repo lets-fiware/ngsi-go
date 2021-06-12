@@ -97,7 +97,7 @@ func copy(c *cli.Context) error {
 	} else if source.IsNgsiLd() && destination.IsNgsiLd() {
 		f = copyLDLD
 	} else {
-		return &ngsiCmdError{funcName, 8, "cannot copy entites from NGSI-LD to NGSI v2", err}
+		return &ngsiCmdError{funcName, 8, "cannot copy entities from NGSI-LD to NGSI v2", err}
 	}
 
 	if !c.IsSet("type") {
