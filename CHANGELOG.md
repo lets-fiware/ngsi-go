@@ -1,6 +1,7 @@
 ## NGSI Go v0.8.2-next
 
--   Update: Update Orion version to 3.1.0
+-   Update: Update test process
+-   Update: Update Orion version to 3.1.0 (#146)
 -   Hardening: Adds redirectSignOutUri option in applications command (#145)
 -   Update: applications-pep-proxies.md (#142)
 
