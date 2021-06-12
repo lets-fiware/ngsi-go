@@ -226,7 +226,7 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 	}
 	if r.RawQuery != nil {
 		if *r.RawQuery != url.RawQuery {
-			return nil, nil, &ngsiCmdError{funcName, 4, "raw query error", nil}
+			return nil, nil, &ngsiCmdError{funcName, 4, "raw query error: " + url.RawQuery, nil}
 		}
 	}
 	if r.ResHeader != nil {

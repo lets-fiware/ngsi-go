@@ -31,11 +31,12 @@ ngsi wc [common options] entities [options]
 
 ### Options
 
-| Options                | Description                        |
-| ---------------------- | ---------------------------------- |
-| --type value, -t value | specify Entity Type                |
-| --link value, -L value | specify @context                   |
-| --help                 | specify show help (default: false) |
+| Options                | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| --type value, -t value | specify Entity Type                                 |
+| --link value, -L value | specify @context                                    |
+| --skipForwarding       | skip forwarding to CPrs (v2) (Orion 3.1.0 or later) |
+| --help                 | specify show help (default: false)                  |
 
 ### Examples
 

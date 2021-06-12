@@ -52,3 +52,55 @@ OPTIONS:
    --version, -v              print the version (default: false)
    
 ```
+
+#
+# 0011 Remove entity
+#
+ngsi rm --run --host orion --type Device
+
+```
+REGEX(.*)
+```
+
+#
+# 0012 Create enttiies
+#
+ngsi create --host orion entities \
+--data '[
+ {"id":"urn:ngsi-ld:Device:001","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:002","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:003","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:004","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:005","type":"Device"},
+ {"id":"urn:ngsi-ld:Device:006","type":"Device"}
+]'
+
+```
+```
+
+#
+# 0013 Count entities
+#
+ngsi wc entities --type Device
+
+```
+6
+```
+
+#
+# 0013 Count entities with --skipForwarding
+#
+ngsi wc entities --skipForwarding --type Device
+
+```
+6
+```
+
+#
+# 0014 Remove entity
+#
+ngsi rm --run --host orion --type Device
+
+```
+REGEX(.*)
+```

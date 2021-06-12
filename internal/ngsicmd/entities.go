@@ -96,7 +96,7 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 		client.SetPath("/entities")
 
 		args := []string{"id", "type", "idPattern", "typePattern", "query", "mq", "georel", "geometry", "coords", "attrs", "metadata", "orderBy"}
-		opts := []string{"keyValues", "values", "unique"}
+		opts := []string{"keyValues", "values", "unique", "skipForwarding"}
 		v := parseOptions(c, args, opts)
 
 		if attrs != "" {
@@ -367,7 +367,11 @@ func entitiesCount(c *cli.Context) error {
 		v.Set("count", "true")
 	} else {
 		v.Set("limit", "1")
-		v.Set("options", "count")
+		if c.Bool("skipForwarding") {
+			v.Set("options", "count,skipForwarding")
+		} else {
+			v.Set("options", "count")
+		}
 		v.Set("attrs", "__NONE")
 	}
 	client.SetQuery(v)
