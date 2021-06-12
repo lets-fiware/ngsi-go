@@ -84,6 +84,7 @@ func batchCreate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	client.SetPath("/entityOperations/create")
 
 	client.SetContentType()
+	client.SetAcceptJSON()
 
 	b, err := readAll(c, ngsi)
 	if err != nil {
@@ -120,6 +121,7 @@ func batchUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	client.SetQuery(v)
 
 	client.SetContentType()
+	client.SetAcceptJSON()
 
 	b, err := readAll(c, ngsi)
 	if err != nil {
@@ -153,6 +155,7 @@ func batchUpsert(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	client.SetQuery(v)
 
 	client.SetContentType()
+	client.SetAcceptJSON()
 
 	b, err := readAll(c, ngsi)
 	if err != nil {
