@@ -1,6 +1,6 @@
-## NGSI Go v0.8.2-next
+## NGSI Go v0.8.3
 
--   Fix: Set Accept Header to application/json in batch request
+-   Fix: Set Accept Header to application/json in batch request (#151)
 -   Hardening: Add skipForwarding option for Orion (#150)
 -   Fix: Fix message in cp command (#149)
 -   Update: Update test process (#148)
