@@ -69,9 +69,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 					return nil, &LibError{funcName, 4, "url error: " + host, nil}
 				}
 			}
-			if strings.HasSuffix(host, "/") {
-				host = host[:len(host)-1]
-			}
+			host = strings.TrimSuffix(host, "/")
 		} else {
 			if !isIPAddress(host) && !isLocalHost(host) {
 				return nil, &LibError{funcName, 5, "error host: " + host, nil}

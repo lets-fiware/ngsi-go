@@ -94,9 +94,7 @@ func GetExpirationDate(s string) (string, error) {
 	if !isExpirationDate(s) {
 		return s, &LibError{funcName, 1, "error " + s, nil}
 	}
-	if strings.HasSuffix(s, "s") {
-		s = strings.TrimSuffix(s, "s")
-	}
+	s = strings.TrimSuffix(s, "s")
 
 	saveTime := time.Local
 
