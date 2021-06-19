@@ -1,4 +1,8 @@
-## NGSI Go v0.8.3
+## NGSI Go v0.x.x
+
+-   Fix: Fix cache parameter
+
+## NGSI Go v0.8.3 - June 12, 2021
 
 -   Fix: Set Accept Header to application/json in batch request (#151)
 -   Hardening: Add skipForwarding option for Orion (#150)
@@ -8,7 +12,7 @@
 -   Hardening: Adds redirectSignOutUri option in applications command (#145)
 -   Update: applications-pep-proxies.md (#142)
 
-## NGSI Go v0.8.2
+## NGSI Go v0.8.2 - June 6, 2021
 
 -   Hardening: feature to copy NGSIv2 entities as NGSI-LD entities (#138)
 -   Improve quality of documents (#136)
