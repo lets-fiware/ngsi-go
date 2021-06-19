@@ -1,6 +1,7 @@
 ## NGSI Go v0.x.x
 
--   Fix: Fix cache parameter
+-   Fix: Fix not to stay messages in buffer for Stdout at receiver command
+-   Fix: Fix cache parameter (#154)
 
 ## NGSI Go v0.8.3 - June 12, 2021
 

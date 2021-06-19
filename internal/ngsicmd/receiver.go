@@ -162,6 +162,7 @@ func receiverHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		fmt.Fprintf(receiverGlobal.ngsi.StdWriter, "%s\n", string(b))
+		receiverGlobal.ngsi.StdoutFlush()
 	}
 	w.WriteHeader(status)
 }
