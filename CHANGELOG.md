@@ -1,6 +1,6 @@
 ## NGSI Go v0.8.4 - June 20, 2021
 
--   Hardening: Add registration proxy server
+-   Hardening: Add registration proxy server (#156)
 -   Fix: Fix not to stay messages in buffer for Stdout at receiver command (#155)
 -   Fix: Fix cache parameter (#154)
 
