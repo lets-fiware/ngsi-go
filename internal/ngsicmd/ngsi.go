@@ -133,6 +133,7 @@ func getNgsiApp() *cli.App {
 			&lsCmd,
 			&removeCmd,
 			&receiverCmd,
+			&regProxyCmd,
 			&replaceCmd,
 			&perseoRulesCmd,
 			&settingsCmd,
@@ -429,6 +430,25 @@ var receiverCmd = cli.Command{
 	},
 	Action: func(c *cli.Context) error {
 		return receiver(c)
+	},
+}
+
+var regProxyCmd = cli.Command{
+	Name:     "regproxy",
+	Category: "CONVENIENCE",
+	Usage:    "registration proxy",
+	Flags: []cli.Flag{
+		regProxyHostFlag,
+		regProxyRhostFlag,
+		regProxyPortFlag,
+		regProxyURLFlag,
+		regProxyHTTPSFlag,
+		regProxyKeyFlag,
+		regProxyCertFlag,
+		verboseFlag,
+	},
+	Action: func(c *cli.Context) error {
+		return regProxy(c)
 	},
 }
 

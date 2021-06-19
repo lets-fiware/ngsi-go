@@ -1,6 +1,7 @@
 ## NGSI Go v0.x.x
 
--   Fix: Fix not to stay messages in buffer for Stdout at receiver command
+-   Hardening: Add registration proxy server
+-   Fix: Fix not to stay messages in buffer for Stdout at receiver command (#155)
 -   Fix: Fix cache parameter (#154)
 
 ## NGSI Go v0.8.3 - June 12, 2021

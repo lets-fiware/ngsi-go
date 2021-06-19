@@ -76,3 +76,10 @@ func TestErrorUnwap(t *testing.T) {
 	assert.Equal(t, expected, actual)
 	assert.Error(t, &e)
 }
+
+func TestSprintMsg(t *testing.T) {
+	expected := "NGSI-GO001 error"
+	actual := sprintMsg("NGSI-GO", 1, "error")
+
+	assert.Equal(t, expected, actual)
+}

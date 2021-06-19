@@ -57,6 +57,10 @@ func (e *ngsiCmdError) Error() string {
 
 func (e *ngsiCmdError) Unwrap() error { return e.Err }
 
+func sprintMsg(funcName string, no int, msg string) string {
+	return fmt.Sprintf("%s%03d %s", funcName, no, msg)
+}
+
 /*
 func setNewError(funcName string, num int, newErr error, err *error) {
 	if *err == nil && newErr != nil {

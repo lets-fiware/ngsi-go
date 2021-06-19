@@ -51,6 +51,7 @@ COMMANDS:
      ls        list entities
      rm        remove entities
      receiver  notification receiver
+     regproxy  registration proxy
      template  create template of subscription or registration
      version   print the version
    Context-Aware CEP:
