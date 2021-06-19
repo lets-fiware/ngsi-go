@@ -80,6 +80,7 @@ It's a powerful tool and easy to use. It has various features as shown:
 -   [ls](convenience/ls.md): list entities
 -   [rm](convenience/rm.md): remove entities
 -   [receiver](convenience/receiver.md): notification receiver
+-   [regproxy](convenience/regproxy.md): registration proxy
 -   [template](convenience/template.md): create template of subscription or registration
 -   [version](convenience/version.md): print the version of Context Broker
 

@@ -70,6 +70,7 @@ It's a powerful tool and easy to use. It has various features as shown:
         -   Copy and remove entities at once
         -   Create template of subscription or registration
         -   Notification receiver
+        -   Registration proxy
     -   Management commands
         -   Broker alias or server alias with API endpoint URL, FIWARE Service and FIWARE ServicePath
         -   Manage @context

@@ -23,6 +23,7 @@ nav:
     - 'health': convenience/health.md
     - 'ls': convenience/ls.md
     - 'receiver': convenience/receiver.md
+    - 'regproxy': convenience/regproxy.md
     - 'rm': convenience/rm.md
     - 'template': convenience/template.md
     - 'version': convenience/version.md

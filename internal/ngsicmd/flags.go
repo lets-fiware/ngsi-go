@@ -805,6 +805,48 @@ var (
 	}
 )
 
+// flag for registration proxy
+var (
+	regProxyHostFlag = &cli.StringFlag{
+		Name:    "host",
+		Aliases: []string{"h"},
+		Usage:   "context broker or csource host",
+	}
+	regProxyRhostFlag = &cli.StringFlag{
+		Name:  "rhost",
+		Value: "0.0.0.0",
+		Usage: "host for registration proxy",
+	}
+	regProxyPortFlag = &cli.StringFlag{
+		Name:    "port",
+		Aliases: []string{"p"},
+		Value:   "1028",
+		Usage:   "port for registration proxy",
+	}
+	regProxyURLFlag = &cli.StringFlag{
+		Name:    "url",
+		Aliases: []string{"u"},
+		Value:   "/",
+		Usage:   "url for registration proxy",
+	}
+	regProxyHTTPSFlag = &cli.BoolFlag{
+		Name:    "https",
+		Aliases: []string{"s"},
+		Value:   false,
+		Usage:   "start in https",
+	}
+	regProxyKeyFlag = &cli.StringFlag{
+		Name:    "key",
+		Aliases: []string{"k"},
+		Usage:   "key file (only needed if https is enabled)",
+	}
+	regProxyCertFlag = &cli.StringFlag{
+		Name:    "cert",
+		Aliases: []string{"c"},
+		Usage:   "cert file (only needed if https is enabled)",
+	}
+)
+
 // flag for context
 var (
 	nameFlag = &cli.StringFlag{
