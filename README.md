@@ -139,7 +139,7 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.8.3 (git_hash:17f3d4e53c47ba1b093773890e5d678145dcfad0)
+   0.8.4 (git_hash:35ee7560911b403029880242789039f2532c817b)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -153,6 +153,7 @@ COMMANDS:
      ls        list entities
      rm        remove entities
      receiver  notification receiver
+     regproxy  registration proxy
      template  create template of subscription or registration
      version   print the version
    Context-Aware CEP:
@@ -214,20 +215,20 @@ The NGSI Go binary is installed in `/usr/local/bin`.
 #### Installation on Linux
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.8.3/ngsi-v0.8.3-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.8.3-linux-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.8.4/ngsi-v0.8.4-linux-amd64.tar.gz
+sudo tar zxvf ngsi-v0.8.4-linux-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.8.3-linux-arm.tar.gz` and `ngsi-v0.8.3-linux-arm64.tar.gz` binaries are also available.
+`ngsi-v0.8.4-linux-arm.tar.gz` and `ngsi-v0.8.4-linux-arm64.tar.gz` binaries are also available.
 
 #### Installation on Mac
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.8.3/ngsi-v0.8.3-darwin-amd64.tar.gz
-sudo tar zxvf ngsi-v0.8.3-darwin-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.8.4/ngsi-v0.8.4-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.8.4-darwin-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.8.3-darwin-arm64.tar.gz` binary is also available.
+`ngsi-v0.8.4-darwin-arm64.tar.gz` binary is also available.
 
 ### Install bash autocomplete file for NGSI Go
 
