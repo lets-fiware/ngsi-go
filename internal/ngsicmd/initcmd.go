@@ -147,17 +147,17 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 		return nil, &ngsiCmdError{funcName, 5, "required host not found", err}
 	}
 
-	var cacheFile *string
+	var cache *string
 	if d.CacheFile != "" {
-		cacheFile = &d.CacheFile
+		cache = &d.CacheFile
 	}
-	if c.IsSet("cacheFile") {
-		d.CacheFile = c.String("cacheFile")
-		cacheFile = &d.CacheFile
+	if c.IsSet("cache") {
+		d.CacheFile = c.String("cache")
+		cache = &d.CacheFile
 		ngsi.Updated = true
 	}
 
-	err = ngsi.InitTokenMgr(cacheFile)
+	err = ngsi.InitTokenMgr(cache)
 	if err != nil {
 		return nil, &ngsiCmdError{funcName, 6, err.Error(), err}
 	}

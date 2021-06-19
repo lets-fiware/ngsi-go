@@ -101,7 +101,7 @@ func TestInitCmdConfigConfigFile(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
-	setupFlagString(set, "host,config,cacheFile")
+	setupFlagString(set, "host,config,cache")
 	_ = set.Parse([]string{"--host=orion", "--config=config.json"})
 
 	_, err := initCmd(c, "Testing", true)
@@ -113,8 +113,8 @@ func TestInitCmdConfigCacheFile(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
-	setupFlagString(set, "host,config,cacheFile")
-	_ = set.Parse([]string{"--host=orion", "--cacheFile=cache.json"})
+	setupFlagString(set, "host,config,cache")
+	_ = set.Parse([]string{"--host=orion", "--cache=cache.json"})
 
 	_, err := initCmd(c, "Testing", true)
 
