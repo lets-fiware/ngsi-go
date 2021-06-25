@@ -83,3 +83,12 @@ func TestGetDateTimeError(t *testing.T) {
 		assert.Equal(t, "error 1", ngsiErr.Message)
 	}
 }
+
+func TestGetTime(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	expected := "2021/06/27 06:47:39"
+	ngsi.TimeLib = &MockTimeLib{format: &expected}
+	actual := getTime(ngsi, 0)
+	assert.Equal(t, expected, actual)
+}

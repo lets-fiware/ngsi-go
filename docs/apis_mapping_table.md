@@ -328,34 +328,34 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 
 | WireCloud API                                                                    | NGSI Go commands                                                       |
 | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| /api/features                                                                    | version                                                                |
-| GET /api/preferences/platform                                                    |                                                                        |
-| POST /api/preferences/platform                                                   |                                                                        |
+| GET /api/features                                                                | version                                                                |
+| GET /api/preferences/platform                                                    | preferences get                                                        |
+| POST /api/preferences/platform                                                   | (not yet implemented)                                                  |
 | GET /api/workspaces                                                              | workspaces list                                                        |
-| POST /api/workspaces                                                             | workspaces create                                                      |
+| POST /api/workspaces                                                             | (not yet implemented)                                                  |
 | GET /api/workspace/{workspace_id}                                                | workspaces get --wid {workspace_id}                                    |
-| POST /api/workspace/{workspace_id}                                               | workspaces update --wid {workspace_id}                                 |
-| DELETE /api/workspace/{workspace_id}                                             | workspaces delete --wid {workspace_id}                                 |
-| POST /api/workspace/{workspace_id}/preferences                                   |                                                                        |
-| PATCH /api/workspace/{workspace_id}/wiring                                       |                                                                        |
-| PUT /api/workspace/{workspace_id}/wiring                                         |                                                                        |
-| POST /api/worksace/{workspace_id}/tabs                                           | tabs create --wid {workspace_id}                                       |
+| POST /api/workspace/{workspace_id}                                               | (not yet implemented)                                                  |
+| DELETE /api/workspace/{workspace_id}                                             | (not yet implemented)                                                  |
+| POST /api/workspace/{workspace_id}/preferences                                   | (not yet implemented)                                                  |
+| PATCH /api/workspace/{workspace_id}/wiring                                       | (not yet implemented)                                                  |
+| PUT /api/workspace/{workspace_id}/wiring                                         | (not yet implemented)                                                  |
+| POST /api/worksace/{workspace_id}/tabs                                           | (not yet implemented)                                                  |
 | GET /api/workspace/{workspace_id}/tab/{tab_id}                                   | tabs get --wid {workspace_id} --tid {tab_id}                           |
-| UPDATE /api/workspace/{workspace_id}/tab/{tab_id}                                | tabs update --wid {workspace_id} --tid {tab_id}                        |
-| DELETE /api/workspace/{workspace_id}/tab/{tab_id}                                | tabs delete --wid {workspace_id} --tid {tab_id}                        |
-| POST /api/workspace/{workspace_id}/tab/{tab_id}/preferences                      |                                                                        |
-| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidgets                         | widgets                                                                |
-| DELETE /api/workspace/{workspace_id}/tab/{tab_id}/iwidgets                       | widgets                                                                |
-| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}             |                                                                        |
-| GET /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/preferences  |                                                                        |
-| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/preferences |                                                                        |
-| GET /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/properties   |                                                                        |
-| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/properties  |                                                                        |
-| GET /api/workspace/{workspace_id}/operators/{operator_id}/variables              |                                                                        |
-| GET /api/resources                                                               |                                                                        |
-| POST /api/resources                                                              |                                                                        |
-| GET /api/resource/{vendor}/{name}/{version}                                      |                                                                        |
-| DELETE /api/resource/{vendor}/{name}/{version}                                   |                                                                        |
-| DELETE /api/resource/{vendor}/{name}                                             |                                                                        |
+| UPDATE /api/workspace/{workspace_id}/tab/{tab_id}                                | (not yet implemented)                                                  |
+| DELETE /api/workspace/{workspace_id}/tab/{tab_id}                                | (not yet implemented)                                                  |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/preferences                      | (not yet implemented)                                                  |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidgets                         | (not yet implemented)                                                  |
+| DELETE /api/workspace/{workspace_id}/tab/{tab_id}/iwidgets                       | (not yet implemented)                                                  |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}             | (not yet implemented)                                                  |
+| GET /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/preferences  | (not yet implemented)                                                  |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/preferences | (not yet implemented)                                                  |
+| GET /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/properties   | (not yet implemented)                                                  |
+| POST /api/workspace/{workspace_id}/tab/{tab_id}/iwidget/{iwidget_id}/properties  | (not yet implemented)                                                  |
+| GET /api/workspace/{workspace_id}/operators/{operator_id}/variables              | (not yet implemented)                                                  |
+| GET /api/resources                                                               | macs list                                                              |
+| POST /api/resources                                                              | macs install {mashable_application_component_file}                     |
+| GET /api/resource/{vendor}/{name}/{version}                                      | macs download --vendor {vendor} --name {name} --version {version}      |
+| DELETE /api/resource/{vendor}/{name}/{version}                                   | macs uninstall --vendor {vendor} --name {name} --version {version}     |
+| DELETE /api/resource/{vendor}/{name}                                             | macs uninstall --vendor {vendor} --name {name}                         |
 
 -   [WireCloud API - GitHub](https://github.com/Wirecloud/wirecloud/blob/develop/docs/restapi/applicationmashup.apib)

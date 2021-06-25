@@ -9,9 +9,17 @@
 <br/>
 ![GitHub top language](https://img.shields.io/github/languages/top/lets-fiware/ngsi-go)
 ![Lines of code](https://img.shields.io/tokei/lines/github/lets-fiware/ngsi-go)
+[![Lint](https://github.com/lets-fiware/ngsi-go/actions/workflows/lint.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/lint.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lets-fiware/ngsi-go)](https://goreportcard.com/report/github.com/lets-fiware/ngsi-go)
-[![Build Status](https://travis-ci.com/lets-fiware/ngsi-go.svg?branch=main)](https://travis-ci.com/lets-fiware/ngsi-go)
+<br/>
+[![Build](https://github.com/lets-fiware/ngsi-go/actions/workflows/build.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/build.yml)
+[![Unit Tests](https://github.com/lets-fiware/ngsi-go/actions/workflows/unit-test.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/unit-test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/lets-fiware/ngsi-go/badge.svg?branch=main)](https://coveralls.io/github/lets-fiware/ngsi-go?branch=main)
+[![E2E tests](https://github.com/lets-fiware/ngsi-go/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/e2e-test.yml)
+<br/>
+[![Docs](https://github.com/lets-fiware/ngsi-go/actions/workflows/docs.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/docs.yml)
+[![Dockerfile](https://github.com/lets-fiware/ngsi-go/actions/workflows/dockerfile.yml/badge.svg)](https://github.com/lets-fiware/ngsi-go/actions/workflows/dockerfile.yml)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4973/badge)](https://bestpractices.coreinfrastructure.org/projects/4973)
 
 # What is NGSI Go?
 
@@ -27,6 +35,7 @@ It's a powerful tool and easy to use. It has various features as shown:
     -   [IoT Agent](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib) Provision API
     -   [Perseo](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md) API
     -   [Keyrock](https://github.com/ging/fiware-idm/blob/master/apiary.apib) API
+    -   [Application Mashup](https://github.com/Wirecloud/wirecloud/blob/develop/docs/restapi/applicationmashup.apib) API
 -   Various convenience commands
     -   NGSI commands to manage NGSI Entity, subscription, registration and so on
     -   Time series commands to manage historical data
@@ -69,6 +78,15 @@ It's a powerful tool and easy to use. It has various features as shown:
 
 ### NGSI
 
+-   [append](ngsi/append.md) append attributes
+-   [create](ngsi/create.md) create entity(ies), subscription or registration
+-   [delete](ngsi/delete.md) delete entity(ies), attribute, subscription or registration
+-   [get](ngsi/get.md) get entity(ies), attribute(s), subscription, registration or type
+-   [list](ngsi/list.md) list types, entities, subscriptions or registrations
+-   [replace](ngsi/replace.md) replace entities or attributes
+-   [update](ngsi/update.md) update entities, attribute(s) or subscription
+-   [upsert](ngsi/upsert.md) upsert entity or entities
+
 ### Convenience
 
 -   [admin](convenience/admin.md): administrative command for FIWARE Orion
@@ -103,16 +121,16 @@ It's a powerful tool and easy to use. It has various features as shown:
 -   [namemappings](cygnus/namemappings.md): manage namemappings for Cygnus
 -   [groupingrules](cygnus/groupingrules.md): manage groupingrules for Cygnus
 
-## IoT Agent
+### IoT Agent
 
 -   [services](iot_agent/services.md): services command for IoT Agent
 -   [devices](iot_agent/devices.md): devices command for IoT Agent
 
-## Context-Aware CEP
+### Context-Aware CEP
 
 -   [rules](cep/rules.md): rules command for Perseo
 
-## Keyrock
+### Keyrock
 
 -   [users](keyrock/users.md): manage users
 -   [organizations](keyrock/organizations.md): manage organizations for Keyrock
@@ -126,6 +144,13 @@ It's a powerful tool and easy to use. It has various features as shown:
     -   [trusted-applications.md](keyrock/applications-trusted-applications.md): manage trusted applications
 -   [providers](keyrock/providers.md): print service providers for Keyrock
 
+### application Mashup
+
+-   [preferences](wirecloud/preferences.md) manage preferences for WireCloud
+-   [macs](wirecloud/macs/md) manage mashable application components for WireCloud
+-   [workspaces](wirecloud/workspaces.md) manage workspaces for WireCloud
+-   [tabs](wirecloud/tabs.md) manage tabs for WireCloud
+
 ### Management
 
 -   [broker](management/broker.md): manage config for broker
@@ -138,7 +163,7 @@ It's a powerful tool and easy to use. It has various features as shown:
 
 -   [Global Options](global.md)
 
-### Files
+## Files
 
 -   [Files](files.md)
 

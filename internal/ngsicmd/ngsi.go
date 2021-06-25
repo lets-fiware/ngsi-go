@@ -153,6 +153,7 @@ func getNgsiApp() *cli.App {
 			&wireCloudPreferencesCmd,
 			&wireCloudResourcesCmd,
 			&wireCloudWorkspacesCmd,
+			&wireCloudTabsCmd,
 		},
 	}
 }
@@ -3059,6 +3060,7 @@ var wireCloudWorkspacesCmd = cli.Command{
 			Name:  "list",
 			Usage: "list workspaces",
 			Flags: []cli.Flag{
+				jsonFlag,
 				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -3070,18 +3072,23 @@ var wireCloudWorkspacesCmd = cli.Command{
 			Usage: "get workspace",
 			Flags: []cli.Flag{
 				wireCloudWorkspaceIdFlag,
+				wireCloudUsersFlag,
+				wireCloudTabsFlag,
+				wireCloudWidgetsFlag,
+				wireCloudOperatorsFlag,
+				jsonFlag,
 				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
-				return wireCloudWorkspacesGet(c)
+				return wireCloudWorkspaceGet(c)
 			},
 		},
 	},
 }
 
-var wireCloudResourcesCmd = cli.Command{
-	Name:     "resources",
-	Usage:    "manage resources for WireCloud",
+var wireCloudTabsCmd = cli.Command{
+	Name:     "tabs",
+	Usage:    "manage tabs for WireCloud",
 	Category: "APPLICATION MASHUP",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -3090,7 +3097,43 @@ var wireCloudResourcesCmd = cli.Command{
 	Subcommands: []*cli.Command{
 		{
 			Name:  "list",
-			Usage: "list resources",
+			Usage: "list tabs",
+			Flags: []cli.Flag{
+				wireCloudWorkspaceIdFlag,
+				jsonFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudTabsList(c)
+			},
+		},
+		{
+			Name:  "get",
+			Usage: "get tab",
+			Flags: []cli.Flag{
+				wireCloudWorkspaceIdFlag,
+				wireCloudTabIdFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return wireCloudTabGet(c)
+			},
+		},
+	},
+}
+
+var wireCloudResourcesCmd = cli.Command{
+	Name:     "macs",
+	Usage:    "manage mashable application components for WireCloud",
+	Category: "APPLICATION MASHUP",
+	Flags: []cli.Flag{
+		hostFlag,
+		tokenFlag,
+	},
+	Subcommands: []*cli.Command{
+		{
+			Name:  "list",
+			Usage: "list mashable application components",
 			Flags: []cli.Flag{
 				wireCloudWidgetFlag,
 				wireCloudOperatorFlag,
@@ -3107,7 +3150,7 @@ var wireCloudResourcesCmd = cli.Command{
 		},
 		{
 			Name:  "get",
-			Usage: "get resource",
+			Usage: "get mashable application component",
 			Flags: []cli.Flag{
 				wireCloudVenderFlag,
 				wireCloudNameFlag,
@@ -3120,7 +3163,7 @@ var wireCloudResourcesCmd = cli.Command{
 		},
 		{
 			Name:  "download",
-			Usage: "download resource",
+			Usage: "download mashable application component",
 			Flags: []cli.Flag{
 				wireCloudVenderFlag,
 				wireCloudNameFlag,
@@ -3132,10 +3175,13 @@ var wireCloudResourcesCmd = cli.Command{
 		},
 		{
 			Name:  "install",
-			Usage: "install resource",
+			Usage: "install mashable application component",
 			Flags: []cli.Flag{
 				wireCloudFileFlag,
 				wireCloudPublicFlag,
+				wireCloudOverwriteFlag,
+				jsonFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return wireCloudResourceInstall(c)
@@ -3143,12 +3189,14 @@ var wireCloudResourcesCmd = cli.Command{
 		},
 		{
 			Name:  "uninstall",
-			Usage: "uninstall resource",
+			Usage: "uninstall mashable application component",
 			Flags: []cli.Flag{
 				wireCloudVenderFlag,
 				wireCloudNameFlag,
 				wireCloudVersionFlag,
 				runFlag,
+				jsonFlag,
+				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return wireCloudResourceUninstall(c)

@@ -46,6 +46,8 @@ import (
 type MockTimeLib struct {
 	dateTime string
 	unixTime int64
+	format   *string
+	tTime    *time.Time
 }
 
 func (t *MockTimeLib) Now() time.Time {
@@ -56,6 +58,22 @@ func (t *MockTimeLib) Now() time.Time {
 
 func (t *MockTimeLib) NowUnix() int64 {
 	return t.unixTime
+}
+
+func (t *MockTimeLib) Unix(sec int64, nsec int64) time.Time {
+	if t.tTime != nil {
+		return *t.tTime
+	}
+	tt := time.Unix(sec, nsec)
+	t.tTime = &tt
+	return tt
+}
+
+func (t *MockTimeLib) Format(layout string) string {
+	if t.format != nil {
+		return *t.format
+	}
+	return t.tTime.Format(layout)
 }
 
 //

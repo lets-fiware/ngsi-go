@@ -8,6 +8,7 @@
     -   [IoT Agent command](#iot-agent-command)
     -   [Perseo command](#context-aware-cep-command)
     -   [Keyrock](#keyrock-command)
+    -   [Application mashup](#application-mashup-command)
     -   [Management command](#management-command)
     -   [Global Options](#global-options)
     -   [Common options](#common-options)
@@ -212,6 +213,23 @@ ngsi [global options] command [common options] sub-command [options]
 |                                           |                                                                         | [delete](keyrock/applications-trusted-applications.md#delete-a-trusted-application)                         | Delete a trusted application                                                                  |
 | [providers](keyrock/providers.md)         | -                                                                       | -                                                                                                           | Print service providers                                                                       |
 
+<a name="application-mashup-command"></a>
+
+### Application mashup commAnd
+
+| command                                   | sub-command                                       | Description                                       |
+| ----------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
+| [preferences](./wirecloud/preferences.md) | [get](./wirecloud/preferences.md#get-preferences) | get preferences                                   |
+| [workspaces](./wirecloud/workspaces.md)   | [list](./wirecloud/workspaces.md#list-workspaces) | list workspaces                                   |
+|                                           | [get](./wirecloud/workspaces.md#get-workspace)    | get workspace                                     |
+| [tabs](./wirecloud/tabs.md)               | [list](./wirecloud/tabs.md#list-tabs)             | list tabs                                         |
+|                                           | [get](./wirecloud/get-tab)                        | get tab                                           |
+| [macs](./wirecloud/macs.md)               | [list](./wirecloud/macs.md#list-macs)             | list mashable application components              |
+|                                           | [get](./wirecloud/macs.md#get-macs)               | get information of mashable application component |
+|                                           | [download](./wirecloud/macs.md#download-macs)     | download mashable application component           |
+|                                           | [install](./wirecloud/macs.md#install-macs)       | install mashable application component            |
+|                                           | [uninstall](./wirecloud/macs.md#uninstall-macs)   | uninstall mashable application component(s)       |
+
 <a name="management-command"></a>
 
 ### Management command
@@ -236,7 +254,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                                      | [add](./management/server.md#add-server)                   | add server      |
 |                                      | [update](./management/server.md#update-server)             | update server   |
 |                                      | [delete](./management/server.md#delete-server)             | delete server   |
-| [token](./management/token.md)       | -            | manage token    |
+| [token](./management/token.md)       | -                                                          | manage token    |
 
 <a name="global-options"></a>
 

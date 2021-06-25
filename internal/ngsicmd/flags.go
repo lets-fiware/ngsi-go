@@ -1191,12 +1191,12 @@ var (
 // WireCloud
 var (
 	wireCloudWorkspaceIdFlag = &cli.StringFlag{
-		Name:    "wId",
+		Name:    "wid",
 		Aliases: []string{"w"},
 		Usage:   "workspace id",
 	}
 	wireCloudTabIdFlag = &cli.StringFlag{
-		Name:    "tId",
+		Name:    "tid",
 		Aliases: []string{"t"},
 		Usage:   "tab id",
 	}
@@ -1236,5 +1236,30 @@ var (
 		Name:    "public",
 		Aliases: []string{"p"},
 		Usage:   "install mashable application component as public",
+	}
+	wireCloudOverwriteFlag = &cli.BoolFlag{
+		Name:    "overwrite",
+		Aliases: []string{"o"},
+		Usage:   "overwrite mashable application component",
+	}
+	wireCloudWidgetsFlag = &cli.BoolFlag{
+		Name:    "widgets",
+		Aliases: []string{"W"},
+		Usage:   "list widgets",
+	}
+	wireCloudOperatorsFlag = &cli.BoolFlag{
+		Name:    "operators",
+		Aliases: []string{"o"},
+		Usage:   "list operators",
+	}
+	wireCloudTabsFlag = &cli.BoolFlag{
+		Name:    "tabs",
+		Aliases: []string{"t"},
+		Usage:   "list tabs",
+	}
+	wireCloudUsersFlag = &cli.BoolFlag{
+		Name:    "users",
+		Aliases: []string{"u"},
+		Usage:   "list users",
 	}
 )

@@ -33,11 +33,11 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"mime/multipart"
 	"net/http"
 	"net/textproto"
-	"path/filepath"
+	"net/url"
+	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
@@ -58,7 +58,7 @@ type wireCloudEndPoint struct {
 	Type        string `json:"type"`
 }
 
-type wireCloudWiring struct {
+type wireCloudWiringEndPoint struct {
 	Inputs  []wireCloudEndPoint `json:"inputs"`
 	Outputs []wireCloudEndPoint `json:"outputs"`
 }
@@ -98,30 +98,30 @@ type wireCloudRequirement struct {
 }
 
 type wireCloudResource struct {
-	Authors         []wireCloudAuthor      `json:"authors"`
-	Changelog       string                 `json:"changelog"`
-	Contributors    []wireCloudAuthor      `json:"contributors"`
-	DefaultLang     string                 `json:"default_lang"`
-	Description     string                 `json:"description"`
-	Doc             string                 `json:"doc"`
-	Email           string                 `json:"email"`
-	Homepage        string                 `json:"homepage"`
-	Image           string                 `json:"image"`
-	Issuetracker    string                 `json:"issuetracker"`
-	JsFiles         []string               `json:"js_files"`
-	License         string                 `json:"license"`
-	Licenseurl      string                 `json:"licenseurl"`
-	Longdescription string                 `json:"longdescription"`
-	Name            string                 `json:"name"`
-	Preferences     interface{}            `json:"preferences"`
-	Properties      []wireCloudProperty    `json:"properties"`
-	Requirements    []wireCloudRequirement `json:"requirements"`
-	Smartphoneimage string                 `json:"smartphoneimage"`
-	Title           string                 `json:"title"`
-	Type            string                 `json:"type"`
-	Vendor          string                 `json:"vendor"`
-	Version         string                 `json:"version"`
-	Wiring          wireCloudWiring        `json:"wiring"`
+	Authors         []wireCloudAuthor       `json:"authors"`
+	Changelog       string                  `json:"changelog"`
+	Contributors    []wireCloudAuthor       `json:"contributors"`
+	DefaultLang     string                  `json:"default_lang"`
+	Description     string                  `json:"description"`
+	Doc             string                  `json:"doc"`
+	Email           string                  `json:"email"`
+	Homepage        string                  `json:"homepage"`
+	Image           string                  `json:"image"`
+	Issuetracker    string                  `json:"issuetracker"`
+	JsFiles         []string                `json:"js_files"`
+	License         string                  `json:"license"`
+	Licenseurl      string                  `json:"licenseurl"`
+	Longdescription string                  `json:"longdescription"`
+	Name            string                  `json:"name"`
+	Preferences     interface{}             `json:"preferences"`
+	Properties      []wireCloudProperty     `json:"properties"`
+	Requirements    []wireCloudRequirement  `json:"requirements"`
+	Smartphoneimage string                  `json:"smartphoneimage"`
+	Title           string                  `json:"title"`
+	Type            string                  `json:"type"`
+	Vendor          string                  `json:"vendor"`
+	Version         string                  `json:"version"`
+	Wiring          wireCloudWiringEndPoint `json:"wiring"`
 }
 
 type wireCloudResources map[string]wireCloudResource
@@ -149,53 +149,74 @@ func wireCloudResourcesList(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	resource := make(wireCloudResources)
-	err = ngsilib.JSONUnmarshal(body, &resource)
-	if err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), err}
-	}
-
-	r := make(wireCloudResources)
-	widget := c.Bool("widget")
-	operator := c.Bool("operator")
-	mashup := c.Bool("mashup")
 	noOption := !isSetOR(c, []string{"widget", "operator", "mashup"})
-	for key, value := range resource {
-		if (widget && value.Type == "widget") ||
-			(operator && value.Type == "operator") ||
-			(mashup && value.Type == "mashup") ||
-			(noOption) {
-			if c.IsSet("vender") && value.Vendor != c.String("vender") {
-				continue
-			}
-			if c.IsSet("name") && value.Vendor != c.String("name") {
-				continue
-			}
-			if c.IsSet("version") && value.Vendor != c.String("version") {
-				continue
-			}
-			r[key] = value
-		}
-	}
 
-	if isSetOR(c, []string{"json", "pretty"}) {
-		b, err := ngsilib.JSONMarshal(r)
-		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
-		}
-		if c.Bool("pretty") {
+	if noOption && isSetOR(c, []string{"json", "pretty"}) {
+		if c.IsSet("pretty") {
 			newBuf := new(bytes.Buffer)
-			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 8, err.Error(), err}
+				return &ngsiCmdError{funcName, 5, err.Error(), err}
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
-			fmt.Fprintln(ngsi.StdWriter, string(b))
+			fmt.Fprintln(ngsi.StdWriter, string(body))
 		}
 	} else {
-		for key := range r {
-			fmt.Fprintln(ngsi.StdWriter, key)
+		resource := make(wireCloudResources)
+		err = ngsilib.JSONUnmarshal(body, &resource)
+		if err != nil {
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
+		}
+
+		r := make(wireCloudResources)
+		widget := c.Bool("widget")
+		operator := c.Bool("operator")
+		mashup := c.Bool("mashup")
+		for key, value := range resource {
+			if (widget && value.Type == "widget") ||
+				(operator && value.Type == "operator") ||
+				(mashup && value.Type == "mashup") ||
+				(noOption) {
+				if c.IsSet("vender") && value.Vendor != c.String("vender") {
+					continue
+				}
+				if c.IsSet("name") && value.Name != c.String("name") {
+					continue
+				}
+				if c.IsSet("version") && value.Version != c.String("version") {
+					continue
+				}
+				r[key] = value
+			}
+		}
+
+		if isSetOR(c, []string{"json", "pretty"}) {
+			b, err := ngsilib.JSONMarshal(r)
+			if err != nil {
+				return &ngsiCmdError{funcName, 7, err.Error(), err}
+			}
+			if c.Bool("pretty") {
+				newBuf := new(bytes.Buffer)
+				err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
+				if err != nil {
+					return &ngsiCmdError{funcName, 8, err.Error(), err}
+				}
+				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+			} else {
+				fmt.Fprintln(ngsi.StdWriter, string(b))
+			}
+		} else {
+			keys := make([]string, len(r))
+			i := 0
+			for key := range r {
+				keys[i] = key
+				i++
+			}
+			sort.Strings(keys)
+			for _, key := range keys {
+				fmt.Fprintln(ngsi.StdWriter, key)
+			}
 		}
 	}
 
@@ -215,17 +236,17 @@ func wireCloudResourceGet(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	var mashup string
+	var macName string
 
 	if isSetAND(c, []string{"vender", "name", "version"}) && c.Args().Len() == 0 {
-		mashup = fmt.Sprintf("%s/%s/%s", c.String("vender"), c.String("name"), c.String("version"))
+		macName = c.String("vender") + "/" + c.String("name") + "/" + c.String("version")
 	} else if c.Args().Len() == 1 {
-		mashup = c.Args().Get(0)
+		macName = c.Args().Get(0)
 	} else {
 		return &ngsiCmdError{funcName, 3, "argument error", nil}
 	}
 
-	client.SetPath("/api/resource/" + mashup)
+	client.SetPath("/api/resources")
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
@@ -235,15 +256,31 @@ func wireCloudResourceGet(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
+	resources := make(wireCloudResources)
+	err = ngsilib.JSONUnmarshal(body, &resources)
+	if err != nil {
+		return &ngsiCmdError{funcName, 6, err.Error(), err}
+	}
+
+	mac, ok := resources[macName]
+	if !ok {
+		return &ngsiCmdError{funcName, 7, macName + " not found", nil}
+	}
+
+	b, err := ngsilib.JSONMarshal(mac)
+	if err != nil {
+		return &ngsiCmdError{funcName, 8, err.Error(), err}
+	}
+
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
-		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return &ngsiCmdError{funcName, 9, err.Error(), err}
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 	} else {
-		fmt.Fprintln(ngsi.StdWriter, string(body))
+		fmt.Fprintln(ngsi.StdWriter, string(b))
 	}
 
 	return nil
@@ -279,14 +316,17 @@ func wireCloudResourceDownload(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		if res.StatusCode == http.StatusNotFound {
+			return &ngsiCmdError{funcName, 5, mashup + " not found", nil}
+		}
+		return &ngsiCmdError{funcName, 6, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
 	fileName := strings.Replace(mashup, "/", "_", -1) + ".wgt"
 
-	err = ioutil.WriteFile(fileName, body, 0644)
+	err = ngsi.Ioutil.WriteFile(fileName, body, 0644)
 	if err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), err}
+		return &ngsiCmdError{funcName, 7, err.Error(), err}
 	}
 
 	return nil
@@ -306,6 +346,7 @@ func wireCloudResourceInstall(c *cli.Context) error {
 	}
 
 	var file string
+
 	if c.IsSet("file") && c.Args().Len() == 0 {
 		file = c.String("file")
 	} else if c.Args().Len() == 1 {
@@ -313,47 +354,83 @@ func wireCloudResourceInstall(c *cli.Context) error {
 	} else {
 		return &ngsiCmdError{funcName, 3, "argument error", nil}
 	}
-	file, err = filepath.Abs(file)
+	file, err = ngsi.FilePath.FilePathAbs(file)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), nil}
 	}
-	fileName := filepath.Base(file)
+	fileName := ngsi.FilePath.FilePathBase(file)
 
-	b, err := ioutil.ReadFile(file)
+	b, err := ngsi.Ioutil.ReadFile(file)
 	if err != nil {
 		return &ngsiCmdError{funcName, 5, err.Error(), err}
 	}
 
-	var body bytes.Buffer
-
-	contentType, err := makeMultipart(&body, fileName, b)
+	_, name, err := getMacName(ngsi, b)
 	if err != nil {
 		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}
 
-	url := "/api/resource"
-	if c.Bool("public") {
-		url += "?public=true"
-	}
-
-	client.SetPath(url)
-	client.SetHeader("Content-Type", contentType)
-
-	res, resbody, err := client.HTTPPost(body.Bytes())
+	exists, err := existsMac(ngsi, client, name)
 	if err != nil {
 		return &ngsiCmdError{funcName, 7, err.Error(), err}
 	}
-	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 8, fmt.Sprintf("error %s %s", res.Status, string(resbody)), nil}
+
+	if exists {
+		if c.Bool("overwrite") {
+			err = uninstallMac(ngsi, client, name)
+			if err != nil {
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
+			}
+		} else {
+			return &ngsiCmdError{funcName, 9, name + " already exists", nil}
+		}
+	}
+
+	var body bytes.Buffer
+	m := ngsi.MultiPart.NewWriter(&body)
+
+	contentType, err := makeMultipart(ngsi, m, fileName, b)
+	if err != nil {
+		return &ngsiCmdError{funcName, 10, err.Error(), err}
+	}
+
+	if c.Bool("public") {
+		v := url.Values{}
+		v.Set("public", "true")
+		client.SetQuery(&v)
+	}
+
+	url := "/api/resources"
+	client.SetPath(url)
+	client.SetHeader("Content-Type", contentType)
+
+	res, resBody, err := client.HTTPPost(body.Bytes())
+	if err != nil {
+		return &ngsiCmdError{funcName, 11, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 12, fmt.Sprintf("error %s %s", res.Status, string(resBody)), nil}
+	}
+
+	if isSetOR(c, []string{"json", "pretty"}) {
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, resBody, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 13, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		} else {
+			fmt.Fprintln(ngsi.StdWriter, string(resBody))
+		}
 	}
 
 	return nil
 }
 
-func makeMultipart(buf *bytes.Buffer, fileName string, b []byte) (string, error) {
+func makeMultipart(ngsi *ngsilib.NGSI, mw ngsilib.MultiPartLib, fileName string, b []byte) (string, error) {
 	const funcName = "makeMultipart"
 
-	mw := multipart.NewWriter(buf)
 	mh := make(textproto.MIMEHeader)
 	mh.Set("Content-Type", "application/octet-stream")
 	mh.Set("Content-Disposition", "form-data; name=\"file\"; filename=\""+fileName+"\"")
@@ -361,7 +438,7 @@ func makeMultipart(buf *bytes.Buffer, fileName string, b []byte) (string, error)
 	if err != nil {
 		return "", &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
-	_, err = io.Copy(pw, bytes.NewReader(b))
+	_, err = ngsi.Ioutil.Copy(pw, bytes.NewReader(b))
 	if err != nil {
 		return "", &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -406,15 +483,119 @@ func wireCloudResourceUninstall(c *cli.Context) error {
 		return nil
 	}
 
-	client.SetPath("/api/resource/" + mashup + "?affected=true")
+	affected := isSetOR(c, []string{"json", "pretty"})
+	if affected {
+		v := url.Values{}
+		v.Set("affected", "true")
+		client.SetQuery(&v)
+	}
+
+	client.SetPath("/api/resource/" + mashup)
 
 	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
-	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	if res.StatusCode != http.StatusNoContent && res.StatusCode != http.StatusOK {
+		if res.StatusCode == http.StatusNotFound {
+			return &ngsiCmdError{funcName, 5, mashup + " not found", nil}
+		}
+		return &ngsiCmdError{funcName, 6, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	if affected {
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 7, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		} else {
+			fmt.Fprintln(ngsi.StdWriter, string(body))
+		}
 	}
 
 	return nil
+}
+
+var mashupRegEx = regexp.MustCompile(`<(widget|operator|mashup)\s+xmlns="([^"]+)"\s+vendor="([^"]+)"\s+name="([^"]+)"\s+version="([^"]+)"\s*>`)
+
+func uninstallMac(ngsi *ngsilib.NGSI, client *ngsilib.Client, name string) error {
+	const funcName = "uninstallMac"
+
+	client.SetPath("/api/resource/" + name)
+
+	res, body, err := client.HTTPDelete(nil)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusNoContent && res.StatusCode != http.StatusNotFound {
+		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	return nil
+}
+
+func getMacName(ngsi *ngsilib.NGSI, b []byte) (string, string, error) {
+	const funcName = "getMacName"
+
+	r := bytes.NewReader(b)
+	zr, err := ngsi.ZipLib.NewReader(r, r.Size())
+	if err != nil {
+		return "", "", &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	for _, f := range zr.File {
+		if f.Name == "config.xml" {
+			rc, _ := f.Open()
+			defer func() { _ = rc.Close() }()
+			return getFromConfigXML(ngsi, rc, f.UncompressedSize)
+		}
+	}
+
+	return "", "", &ngsiCmdError{funcName, 2, "config.xml not found", nil}
+}
+
+func getFromConfigXML(ngsi *ngsilib.NGSI, rc io.ReadCloser, size uint32) (string, string, error) {
+	const funcName = "configXML"
+
+	buf := make([]byte, size)
+	_, err := ngsi.Ioutil.ReadFull(rc, buf)
+	if err != nil {
+		return "", "", &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	lines := strings.Split(string(buf), "\n")
+	for _, line := range lines {
+		s := strings.TrimSpace(line)
+		if strings.HasPrefix(s, "<mashup") ||
+			strings.HasPrefix(s, "<widget") ||
+			strings.HasPrefix(s, "<operator") {
+			mac := mashupRegEx.FindStringSubmatch(s)
+			if len(mac) == 6 {
+				mashup := mac[1]
+				name := fmt.Sprintf("%s/%s/%s", mac[3], mac[4], mac[5])
+				return mashup, name, nil
+			}
+			return "", "", &ngsiCmdError{funcName, 2, "config.xml error", nil}
+		}
+	}
+	return "", "", &ngsiCmdError{funcName, 3, "config.xml error", nil}
+}
+
+func existsMac(ngsi *ngsilib.NGSI, client *ngsilib.Client, name string) (bool, error) {
+	const funcName = "existMac"
+
+	client.SetPath("/api/resource/" + name)
+
+	res, body, err := client.HTTPGet()
+	if err != nil {
+		return false, &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNotFound {
+		return false, &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	return res.StatusCode != http.StatusNotFound, nil
 }

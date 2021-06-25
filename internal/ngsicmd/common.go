@@ -36,6 +36,11 @@ import (
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 )
 
+type option struct {
+	Name        string
+	Description string
+}
+
 // NetLib is ...
 type NetLib interface {
 	InterfaceAddrs() ([]net.Addr, error)
@@ -68,4 +73,9 @@ func getDateTime(dateTime string) (string, error) {
 		}
 	}
 	return dateTime, nil
+}
+
+func getTime(ngsi *ngsilib.NGSI, v int64) string {
+	_ = ngsi.TimeLib.Unix(v/1000, 0)
+	return ngsi.TimeLib.Format("2006/01/02 15:04:05")
 }
