@@ -219,6 +219,16 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"append", "tattrs"}, rc: 1},
 		{args: []string{"update", "tattr"}, rc: 1},
 		{args: []string{"delete", "tattr"}, rc: 1},
+		{args: []string{"preferences", "get"}, rc: 1},
+		{args: []string{"macs", "list"}, rc: 1},
+		{args: []string{"macs", "get"}, rc: 1},
+		{args: []string{"macs", "download"}, rc: 1},
+		{args: []string{"macs", "install"}, rc: 1},
+		{args: []string{"macs", "uninstall"}, rc: 1},
+		{args: []string{"workspaces", "list"}, rc: 1},
+		{args: []string{"workspaces", "get"}, rc: 1},
+		{args: []string{"tabs", "list"}, rc: 1},
+		{args: []string{"tabs", "get"}, rc: 1},
 	}
 
 	for _, c := range cases {

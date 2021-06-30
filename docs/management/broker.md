@@ -175,7 +175,7 @@ ngsi broker add \
   --ngsiType ld \
   --brokerHost https://orion-ld \
   --idmType keyrock \
-  --idmHost https://keyrock \
+  --idmHost https://keyrock/oauth2/token \
   --username keyrock001@letsfiware.jp \
   --password 0123456789 \
   --clientId 00000000-1111-2222-3333-444444444444 \

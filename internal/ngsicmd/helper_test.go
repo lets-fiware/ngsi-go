@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"archive/zip"
 	"bufio"
 	"bytes"
 	"encoding/json"
@@ -37,10 +38,14 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"mime/multipart"
 	"net"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"time"
@@ -137,6 +142,9 @@ func setupTest() (*ngsilib.NGSI, *flag.FlagSet, *cli.App, *bytes.Buffer) {
 	buffer := &bytes.Buffer{}
 	ngsi.StdWriter = buffer
 	ngsi.LogWriter = &bytes.Buffer{}
+	ngsi.FilePath = &MockFilePathLib{}
+	ngsi.Ioutil = &MockIoutilLib{}
+	ngsi.ZipLib = &MockZipLib{}
 
 	set := flag.NewFlagSet("test", 0)
 	app := cli.NewApp()
@@ -395,7 +403,7 @@ func (f *MockFileLib) File() bufio.Reader {
 }
 
 //
-// MockJSONLIB
+// MockJSONLib
 //
 type MockJSONLib struct {
 	IndentErr error
@@ -477,6 +485,8 @@ func (s *MockSyslogLib) New() (io.Writer, error) {
 type MockTimeLib struct {
 	dateTime string
 	unixTime int64
+	format   *string
+	tTime    *time.Time
 }
 
 func (t *MockTimeLib) Now() time.Time {
@@ -487,6 +497,22 @@ func (t *MockTimeLib) Now() time.Time {
 
 func (t *MockTimeLib) NowUnix() int64 {
 	return t.unixTime + time.Now().Unix()
+}
+
+func (t *MockTimeLib) Unix(sec int64, nsec int64) time.Time {
+	if t.tTime != nil {
+		return *t.tTime
+	}
+	tt := time.Unix(sec, nsec)
+	t.tTime = &tt
+	return tt
+}
+
+func (t *MockTimeLib) Format(layout string) string {
+	if t.format != nil {
+		return *t.format
+	}
+	return t.tTime.Format(layout)
 }
 
 type MockNetLib struct {
@@ -507,4 +533,141 @@ func (n *MockNetLib) ListenAndServe(addr string, handler http.Handler) error {
 }
 func (n *MockNetLib) ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) error {
 	return n.ListenAndServeTLSErr
+}
+
+//
+//  MockIoutilLib
+//
+type MockIoutilLib struct {
+	CopyErr      error
+	ReadFullErr  error
+	ReadFullData []byte
+	WriteFileErr error
+	ReadFileErr  error
+	ReadFileData []byte
+}
+
+func (i *MockIoutilLib) Copy(dst io.Writer, src io.Reader) (int64, error) {
+	if i.CopyErr != nil {
+		return 0, i.CopyErr
+	}
+	return io.Copy(dst, src)
+}
+
+func (i *MockIoutilLib) ReadFull(r io.Reader, buf []byte) (n int, err error) {
+	if i.ReadFullErr != nil {
+		return 0, i.ReadFullErr
+	}
+	if i.ReadFullData != nil {
+		for i, v := range i.ReadFullData {
+			buf[i] = v
+		}
+		return len(buf), nil
+	}
+	return io.ReadFull(r, buf)
+}
+
+func (i *MockIoutilLib) WriteFile(filename string, data []byte, perm os.FileMode) error {
+	if i.WriteFileErr != nil {
+		return i.WriteFileErr
+	}
+	return ioutil.WriteFile(filename, data, perm)
+}
+
+func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
+	if i.ReadFileErr != nil {
+		return nil, i.ReadFileErr
+	}
+	if i.ReadFileData != nil {
+		return i.ReadFileData, nil
+	}
+	return ioutil.ReadFile(filename)
+}
+
+//
+// MockFilePathLib
+//
+type MockFilePathLib struct {
+	PathAbsErr error
+}
+
+func (i *MockFilePathLib) FilePathAbs(path string) (string, error) {
+	return path, i.PathAbsErr
+}
+
+func (i *MockFilePathLib) FilePathJoin(elem ...string) string {
+	return strings.Join(elem, "/")
+}
+
+func (i *MockFilePathLib) FilePathBase(path string) string {
+	return filepath.Base(path)
+}
+
+//
+// MockZipLib
+//
+type MockZipLib struct {
+	Zip       error
+	ZipReader *zip.Reader
+}
+
+func (z *MockZipLib) NewReader(r io.ReaderAt, size int64) (*zip.Reader, error) {
+	if z.Zip != nil {
+		return nil, z.Zip
+	}
+	if z.ZipReader != nil {
+		return z.ZipReader, nil
+	}
+	return zip.NewReader(r, size)
+}
+
+type MockMultiPart struct {
+	CreatePartErr error
+	CloseErr      error
+}
+
+func (m *MockMultiPart) NewWriter(w io.Writer) ngsilib.MultiPartLib {
+	return &MockMultiPartLib{Mw: multipart.NewWriter(w), CreatePartErr: m.CreatePartErr, CloseErr: m.CloseErr}
+}
+
+//
+// MockMultiPartLib
+//
+type MockMultiPartLib struct {
+	CreatePartErr error
+	CloseErr      error
+	Mw            *multipart.Writer
+}
+
+func (m MockMultiPartLib) CreatePart(header textproto.MIMEHeader) (io.Writer, error) {
+	if m.CreatePartErr != nil {
+		return nil, m.CreatePartErr
+	}
+	return m.Mw.CreatePart(header)
+}
+
+func (m MockMultiPartLib) FormDataContentType() string {
+	return m.Mw.FormDataContentType()
+}
+
+func (m MockMultiPartLib) Close() error {
+	if m.CloseErr != nil {
+		return m.CloseErr
+	}
+	return m.Mw.Close()
+}
+
+//
+// MockZipFile
+//
+type MockZipFile struct {
+}
+
+func (f *MockZipFile) DataOffset() (offset int64, err error) {
+	return 0, nil
+
+}
+
+func (f *MockZipFile) Open() (io.ReadCloser, error) {
+	return nil, nil
 }

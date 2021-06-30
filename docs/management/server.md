@@ -146,6 +146,7 @@ Specify the following value to `--serverType` option when you add an alias for F
 | Perseo FE   | perseo      |
 | Perseo Core | perseo-core |
 | Keyrock     | keyrock     |
+| WireCloud   | wirecloud   |
 
 #### Example 3
 
@@ -161,6 +162,23 @@ ngsi server add \
   --password 1234567
 ```
 
+#### Example 4
+
+The following example is how to add WireCloud as a server type with Keyrock.
+
+```console
+ngsi server add \
+  --host wirecloud \
+  --serverType wirecloud \
+  --serverHost https://wirecloud \
+  --idmType keyrock \
+  --idmHost https://keyrock/oauth2/token \
+  --username wirecloud-admin@letsfiware.jp \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444 \
+  --clientSecret 55555555-6666-7777-8888-999999999999
+```
+
 ### Parameters for Identity Managers
 
 | idmType              | Required parameters                                 | Description                                                                  |
@@ -174,7 +192,7 @@ ngsi server add \
 
 Specify the `--service` and/or `--path` parameter when adding a new alias.
 
-#### Example 4
+#### Example 5
 
 ```console
 ngsi server add \
@@ -188,7 +206,7 @@ ngsi server add \
 You can add a new alias using an exising alias.
 Specify an existing alias to the `--serverHost` parameter when adding a new alias.
 
-#### Example 5
+#### Example 6
 
 ```console
 ngsi server add \

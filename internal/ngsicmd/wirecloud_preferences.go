@@ -30,65 +30,47 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"testing"
+	"bytes"
+	"fmt"
+	"net/http"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/urfave/cli/v2"
 )
 
-func TestInterfaceAddrs(t *testing.T) {
-	n := &netLib{}
-	_, err := n.InterfaceAddrs()
+func wireCloudPreferencesGet(c *cli.Context) error {
+	const funcName = "preferencesGet"
 
-	assert.NoError(t, err)
-}
-
-func TestListenAndServe(t *testing.T) {
-	n := &netLib{}
-	err := n.ListenAndServe("", nil)
-
-	assert.Error(t, err)
-}
-func TestListenAndServeTLS(t *testing.T) {
-	n := &netLib{}
-	err := n.ListenAndServeTLS("", "", "", nil)
-	assert.Error(t, err)
-}
-
-func TestGetDateTimeISO8601(t *testing.T) {
-
-	actual, err := getDateTime("2022-09-24T12:07:54.035Z")
-	expected := "2022-09-24T12:07:54.035Z"
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, expected, actual)
+	ngsi, err := initCmd(c, funcName, true)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
-}
 
-func TestGetDateTime1Day(t *testing.T) {
-	setupTest()
-
-	_, err := getDateTime("1day")
-
-	assert.NoError(t, err)
-}
-
-func TestGetDateTimeError(t *testing.T) {
-	setupTest()
-
-	_, err := getDateTime("1")
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "error 1", ngsiErr.Message)
+	client, err := newClient(ngsi, c, false, []string{"wirecloud"})
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
-}
 
-func TestGetTime(t *testing.T) {
-	ngsi, _, _, _ := setupTest()
+	client.SetPath("/api/preferences/platform")
 
-	expected := "2021/06/27 06:47:39"
-	ngsi.TimeLib = &MockTimeLib{format: &expected}
-	actual := getTime(ngsi, 0)
-	assert.Equal(t, expected, actual)
+	res, body, err := client.HTTPGet()
+	if err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		return nil
+	}
+
+	fmt.Fprint(ngsi.StdWriter, string(body))
+
+	return nil
 }

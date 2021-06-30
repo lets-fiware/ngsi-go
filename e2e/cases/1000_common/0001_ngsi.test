@@ -41,6 +41,11 @@ VERSION:
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
+   APPLICATION MASHUP:
+     preferences  manage preferences for WireCloud
+     macs         manage mashable application components for WireCloud
+     workspaces   manage workspaces for WireCloud
+     tabs         manage tabs for WireCloud
    CONVENIENCE:
      admin     admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
      apis      print endpoints of API

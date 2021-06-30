@@ -31,6 +31,8 @@ package ngsilib
 
 import (
 	"bytes"
+	"io/ioutil"
+	"net/textproto"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -309,4 +311,85 @@ func TestTimeLibNowUnix(t *testing.T) {
 	time := &timeLib{}
 
 	_ = time.NowUnix()
+}
+
+func TestTimeLibUnix(t *testing.T) {
+	time := &timeLib{}
+
+	_ = time.Unix(0, 0)
+}
+
+func TestTimeLibFormat(t *testing.T) {
+	time := &timeLib{}
+
+	_ = time.Unix(0, 0)
+	_ = time.Format("2021/06/27 06:47:39")
+}
+
+func TestIoutilLibCopy(t *testing.T) {
+	iolib := ioutilLib{}
+	src := bytes.NewReader([]byte("FIWARE"))
+
+	_, _ = iolib.Copy(ioutil.Discard, src)
+}
+
+func TestIoutilLibReadFull(t *testing.T) {
+	iolib := ioutilLib{}
+	src := bytes.NewReader([]byte("FIWARE"))
+	buf := make([]byte, 10)
+
+	_, _ = iolib.ReadFull(src, buf)
+}
+
+func TestIoutilLibWriteFile(t *testing.T) {
+	iolib := ioutilLib{}
+	buf := make([]byte, 10)
+
+	_ = iolib.WriteFile("", buf, 0644)
+}
+
+func TestIoutilLibReadFile(t *testing.T) {
+	iolib := ioutilLib{}
+
+	_, _ = iolib.ReadFile("")
+}
+
+func TestFilePathLibFilePathAbs(t *testing.T) {
+	f := filePathLib{}
+
+	_, _ = f.FilePathAbs("")
+}
+
+func TestFilePathLibFilePathJoin(t *testing.T) {
+	f := filePathLib{}
+
+	_ = f.FilePathJoin("", "")
+}
+
+func TestFilePathLibFilePathBase(t *testing.T) {
+	f := filePathLib{}
+
+	_ = f.FilePathBase("")
+}
+
+func TestZipNewReader(t *testing.T) {
+	z := zipLib{}
+	src := bytes.NewReader([]byte(""))
+
+	_, _ = z.NewReader(src, -1)
+}
+
+func TestMultiPartLibNewWriter(t *testing.T) {
+	var body bytes.Buffer
+
+	mp := &multiPart{}
+	m := mp.NewWriter(&body)
+	mh := make(textproto.MIMEHeader)
+	mh.Set("Content-Type", "application/octet-stream")
+	mh.Set("Content-Disposition", "form-data; name=\"file\"; filename=\"test\"")
+	_, err := m.CreatePart(mh)
+	assert.NoError(t, err)
+	_ = m.FormDataContentType()
+	err = m.Close()
+	assert.NoError(t, err)
 }

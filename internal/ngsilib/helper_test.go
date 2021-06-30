@@ -33,9 +33,11 @@ import (
 	"bufio"
 	"bytes"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"time"
@@ -44,6 +46,8 @@ import (
 type MockTimeLib struct {
 	dateTime string
 	unixTime int64
+	format   *string
+	tTime    *time.Time
 }
 
 func (t *MockTimeLib) Now() time.Time {
@@ -54,6 +58,22 @@ func (t *MockTimeLib) Now() time.Time {
 
 func (t *MockTimeLib) NowUnix() int64 {
 	return t.unixTime
+}
+
+func (t *MockTimeLib) Unix(sec int64, nsec int64) time.Time {
+	if t.tTime != nil {
+		return *t.tTime
+	}
+	tt := time.Unix(sec, nsec)
+	t.tTime = &tt
+	return tt
+}
+
+func (t *MockTimeLib) Format(layout string) string {
+	if t.format != nil {
+		return *t.format
+	}
+	return t.tTime.Format(layout)
 }
 
 //
@@ -290,4 +310,53 @@ func (f *MockFileLib) File() bufio.Reader {
 	r := f.fileError
 	f.fileError = f.fileError2
 	return r
+}
+
+//
+//  MockIoutilLib
+//
+type MockIoutilLib struct {
+	CopyErr      error
+	WriteFileErr error
+	ReadFileErr  error
+}
+
+func (i *MockIoutilLib) Copy(dst io.Writer, src io.Reader) (int64, error) {
+	if i.CopyErr != nil {
+		return 0, i.CopyErr
+	}
+	return io.Copy(dst, src)
+}
+
+func (i *MockIoutilLib) WriteFile(filename string, data []byte, perm os.FileMode) error {
+	if i.WriteFileErr != nil {
+		return i.WriteFileErr
+	}
+	return ioutil.WriteFile(filename, data, perm)
+}
+
+func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
+	if i.ReadFileErr != nil {
+		return nil, i.ReadFileErr
+	}
+	return ioutil.ReadFile(filename)
+}
+
+//
+// MockFilePathLib
+//
+type MockFilePathLib struct {
+	PathAbsErr error
+}
+
+func (i *MockFilePathLib) FilePathAbs(path string) (string, error) {
+	return path, i.PathAbsErr
+}
+
+func (i *MockFilePathLib) FilePathJoin(elem ...string) string {
+	return strings.Join(elem, "/")
+}
+
+func (i *MockFilePathLib) FilePathBase(path string) string {
+	return filepath.Base(path)
 }

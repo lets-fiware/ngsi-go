@@ -30,11 +30,14 @@ SOFTWARE.
 package ngsilib
 
 import (
+	"archive/zip"
 	"bufio"
 	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
+	"net/textproto"
 	"os"
 	"path/filepath"
 	"time"
@@ -221,9 +224,13 @@ func (j *jsonLib) Valid(data []byte) bool {
 type TimeLib interface {
 	Now() time.Time
 	NowUnix() int64
+	Unix(sec int64, nsec int64) time.Time
+	Format(layout string) string
 }
 
-type timeLib struct{}
+type timeLib struct {
+	TTime time.Time
+}
 
 func (t *timeLib) Now() time.Time {
 	return time.Now()
@@ -231,4 +238,112 @@ func (t *timeLib) Now() time.Time {
 
 func (t *timeLib) NowUnix() int64 {
 	return time.Now().Unix()
+}
+
+func (t *timeLib) Unix(sec int64, nsec int64) time.Time {
+	t.TTime = time.Unix(sec, nsec)
+	return t.TTime
+}
+
+func (t *timeLib) Format(layout string) string {
+	return t.TTime.Format(layout)
+}
+
+// IoutilLib is ...
+type IoutilLib interface {
+	Copy(dst io.Writer, src io.Reader) (int64, error)
+	ReadFull(r io.Reader, buf []byte) (n int, err error)
+	WriteFile(filename string, data []byte, perm os.FileMode) error
+	ReadFile(filename string) ([]byte, error)
+}
+
+type ioutilLib struct {
+}
+
+func (i *ioutilLib) Copy(dst io.Writer, src io.Reader) (int64, error) {
+	return io.Copy(dst, src)
+}
+
+func (i *ioutilLib) ReadFull(r io.Reader, buf []byte) (n int, err error) {
+	return io.ReadFull(r, buf)
+}
+
+func (i *ioutilLib) WriteFile(filename string, data []byte, perm os.FileMode) error {
+	return ioutil.WriteFile(filename, data, perm)
+}
+
+func (i *ioutilLib) ReadFile(filename string) ([]byte, error) {
+	return ioutil.ReadFile(filename)
+}
+
+// FilePathLib is ...
+type FilePathLib interface {
+	FilePathAbs(path string) (string, error)
+	FilePathJoin(elem ...string) string
+	FilePathBase(path string) string
+}
+
+type filePathLib struct {
+}
+
+func (i *filePathLib) FilePathAbs(path string) (string, error) {
+	return filepath.Abs(path)
+}
+
+func (i *filePathLib) FilePathJoin(elem ...string) string {
+	return filepath.Join(elem...)
+}
+
+func (i *filePathLib) FilePathBase(path string) string {
+	return filepath.Base(path)
+}
+
+//
+// ZipLib is ...
+//
+type ZipLib interface {
+	NewReader(r io.ReaderAt, size int64) (*zip.Reader, error)
+}
+
+type zipLib struct {
+}
+
+func (z *zipLib) NewReader(r io.ReaderAt, size int64) (*zip.Reader, error) {
+	return zip.NewReader(r, size)
+}
+
+type MultiPart interface {
+	NewWriter(w io.Writer) MultiPartLib
+}
+
+type multiPart struct {
+}
+
+func (m *multiPart) NewWriter(w io.Writer) MultiPartLib {
+	return &multiPartLib{mw: multipart.NewWriter(w)}
+}
+
+//
+// MultiPartLib is ...
+//
+type MultiPartLib interface {
+	CreatePart(header textproto.MIMEHeader) (io.Writer, error)
+	FormDataContentType() string
+	Close() error
+}
+
+type multiPartLib struct {
+	mw *multipart.Writer
+}
+
+func (m multiPartLib) CreatePart(header textproto.MIMEHeader) (io.Writer, error) {
+	return m.mw.CreatePart(header)
+}
+
+func (m multiPartLib) FormDataContentType() string {
+	return m.mw.FormDataContentType()
+}
+
+func (m multiPartLib) Close() error {
+	return m.mw.Close()
 }

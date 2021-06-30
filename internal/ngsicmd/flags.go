@@ -1170,7 +1170,7 @@ var (
 
 // Cygnus appenders
 var (
-	cygnusAppendersNamelag = &cli.StringFlag{
+	cygnusAppendersNameFlag = &cli.StringFlag{
 		Name:    "name",
 		Aliases: []string{"n"},
 		Usage:   "appender name",
@@ -1185,5 +1185,81 @@ var (
 		Aliases: []string{"t"},
 		Usage:   "true, retrieving from memory, or false, retrieving from file",
 		Value:   false,
+	}
+)
+
+// WireCloud
+var (
+	wireCloudWorkspaceIdFlag = &cli.StringFlag{
+		Name:    "wid",
+		Aliases: []string{"w"},
+		Usage:   "workspace id",
+	}
+	wireCloudTabIdFlag = &cli.StringFlag{
+		Name:    "tid",
+		Aliases: []string{"t"},
+		Usage:   "tab id",
+	}
+	wireCloudWidgetFlag = &cli.BoolFlag{
+		Name:  "widget",
+		Usage: "filtering widget",
+	}
+	wireCloudOperatorFlag = &cli.BoolFlag{
+		Name:  "operator",
+		Usage: "filtering operator",
+	}
+	wireCloudMashupFlag = &cli.BoolFlag{
+		Name:  "mashup",
+		Usage: "filtering mashup",
+	}
+	wireCloudVenderFlag = &cli.StringFlag{
+		Name:    "vender",
+		Aliases: []string{"v"},
+		Usage:   "vender name of mashable application component",
+	}
+	wireCloudNameFlag = &cli.StringFlag{
+		Name:    "name",
+		Aliases: []string{"n"},
+		Usage:   "name of mashable application component",
+	}
+	wireCloudVersionFlag = &cli.StringFlag{
+		Name:    "version",
+		Aliases: []string{"V"},
+		Usage:   "version of mashable application component",
+	}
+	wireCloudFileFlag = &cli.StringFlag{
+		Name:    "file",
+		Aliases: []string{"f"},
+		Usage:   "mashable application component file",
+	}
+	wireCloudPublicFlag = &cli.BoolFlag{
+		Name:    "public",
+		Aliases: []string{"p"},
+		Usage:   "install mashable application component as public",
+	}
+	wireCloudOverwriteFlag = &cli.BoolFlag{
+		Name:    "overwrite",
+		Aliases: []string{"o"},
+		Usage:   "overwrite mashable application component",
+	}
+	wireCloudWidgetsFlag = &cli.BoolFlag{
+		Name:    "widgets",
+		Aliases: []string{"W"},
+		Usage:   "list widgets",
+	}
+	wireCloudOperatorsFlag = &cli.BoolFlag{
+		Name:    "operators",
+		Aliases: []string{"o"},
+		Usage:   "list operators",
+	}
+	wireCloudTabsFlag = &cli.BoolFlag{
+		Name:    "tabs",
+		Aliases: []string{"t"},
+		Usage:   "list tabs",
+	}
+	wireCloudUsersFlag = &cli.BoolFlag{
+		Name:    "users",
+		Aliases: []string{"u"},
+		Usage:   "list users",
 	}
 )
