@@ -1,6 +1,7 @@
 ## NGSI Go v0.8.4-next
 
--   Fix: print stack messages correctly
+-   Update: Refactoring token manager (#161)
+-   Fix: Print stack messages correctly (#160)
 -   Hardening: Add WireCloud command (#159)
 
 ## NGSI Go v0.8.4 - June 20, 2021

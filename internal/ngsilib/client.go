@@ -68,7 +68,7 @@ func (client *Client) InitHeader() error {
 		if client.Server.ServerType == "keyrock" {
 			client.Headers["X-Auth-Token"] = client.Token
 			client.Headers["X-Subject-token"] = client.Token
-		} else if client.XAuthToken || client.Server.IdmType == cThinkingCities {
+		} else if client.XAuthToken || client.Server.IdmType == CThinkingCities {
 			client.Headers["X-Auth-Token"] = client.Token
 		} else {
 			client.Headers["Authorization"] = "Bearer " + client.Token
@@ -91,7 +91,7 @@ func (client *Client) InitHeader() error {
 			}
 			client.Headers["Fiware-ServicePath"] = client.Scope
 		} else {
-			if client.Server.IdmType == cThinkingCities {
+			if client.Server.IdmType == CThinkingCities {
 				client.Headers["Fiware-ServicePath"] = "/"
 			}
 		}
@@ -224,10 +224,6 @@ func (client *Client) idmURL() string {
 
 func (client *Client) storeToken(token string) {
 	client.Token = token
-}
-
-func (client *Client) getExpiresIn() int64 {
-	return 3600
 }
 
 // CheckTenant is ...

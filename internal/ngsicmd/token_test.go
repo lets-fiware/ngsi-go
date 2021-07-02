@@ -269,7 +269,7 @@ func TestVersionTokenCommandExpiresZero(t *testing.T) {
 }
 
 func TestVersionTokenCommandKeyrock(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	ngsi, set, app, buf := setupTest()
 
 	conf := `{
 		"version": "1",
@@ -286,12 +286,12 @@ func TestVersionTokenCommandKeyrock(t *testing.T) {
 	}`
 	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
 
-	tokens := `{"tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"expires":2613170563,"keyrock":{"token":{"methods":["password"],"expires_at":"2121-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"keyrock_token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`
+	tokens := `{"version":"1", "tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"type":"idm","expires":"2121-07-03T00:43:44.000Z","keyrock":{"token":{"methods":["password"],"expires_at":"2121-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`
 	ngsi.CacheFile = &MockIoLib{Tokens: &tokens}
 
 	reqRes1 := MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
-	reqRes1.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":1156,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
+	reqRes1.ResBody = []byte(`{"access_token":"7921ac63-57bc-4063-8d92-816b6b4b118a","expires":"2121-07-03T00:43:44.000Z","valid":true,"User":{"scope":[],"id":"admin","username":"admin","email":"admin@letsfilware.jp","date_password":"2019-11-09T02:06:40.000Z","enabled":true,"admin":true}}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes1)
 	reqRes2 := MockHTTPReqRes{}
@@ -309,7 +309,11 @@ func TestVersionTokenCommandKeyrock(t *testing.T) {
 
 	err := tokenCommand(c)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"access_token\":\"7921ac63-57bc-4063-8d92-816b6b4b118a\",\"expires\":\"2121-07-03T00:43:44.000Z\",\"valid\":true,\"User\":{\"scope\":[],\"id\":\"admin\",\"username\":\"admin\",\"email\":\"admin@letsfilware.jp\",\"date_password\":\"2019-11-09T02:06:40.000Z\",\"enabled\":true,\"admin\":true}}\n"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 // initCmd() Error: no host
@@ -373,7 +377,7 @@ func TestVersionTokenCommandErrorHostNotFound(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandErrorJSON(t *testing.T) {
+func TestVersionTokenCommandErrorOAuthJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
@@ -414,6 +418,47 @@ func TestVersionTokenCommandErrorJSON(t *testing.T) {
 	}
 }
 
+func TestVersionTokenCommandErrorThinkingCitesJSON(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "thinkingCities",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"token":{"domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"methods":["password"],"roles":[],"expires_at":"2021-04-16T11:30:47.000000Z","catalog":[],"extras":{"password_creation_time":"2021-04-16T08:29:01Z","last_login_attempt_time":"2021-04-16T08:29:05.000000","pwd_user_in_blacklist":false,"password_expiration_time":"2022-04-16T08:29:01Z"},"user":{"password_expires_at":"2022-04-16T08:29:00.000000","domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"id":"80e292b7dae445e7af66c284162ff049","name":"usertest"},"audit_ids":["6kJ9zBFCQaKRa7aCFc6bpw"],"issued_at":"2021-04-16T08:30:47.000000Z"}}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	set.Bool("verbose", false, "doc")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--verbose"})
+	setJSONEncodeErr(ngsi, 1)
+
+	err := tokenCommand(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Error(t, err)
+	}
+}
+
 func TestVersionTokenCommandErrorKeyrock(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
@@ -448,7 +493,7 @@ func TestVersionTokenCommandErrorKeyrock(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "token is empty", ngsiErr.Message)
 		assert.Error(t, err)
 	}
@@ -490,7 +535,7 @@ func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()

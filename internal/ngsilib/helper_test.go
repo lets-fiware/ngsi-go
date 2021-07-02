@@ -32,6 +32,7 @@ package ngsilib
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -139,6 +140,7 @@ type MockIoLib struct {
 	MkdirErr     error
 	DecodeErr    error
 	Env          string
+	Data         *string
 }
 
 func (io *MockIoLib) Open() (err error) {
@@ -158,6 +160,9 @@ func (io *MockIoLib) Close() error {
 }
 
 func (io *MockIoLib) Decode(v interface{}) error {
+	if io.Data != nil {
+		return json.Unmarshal([]byte(*io.Data), v)
+	}
 	return io.DecodeErr
 }
 

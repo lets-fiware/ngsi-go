@@ -209,7 +209,7 @@ func TestNewClientIdmType(t *testing.T) {
 
 	InitServerList()
 
-	broker := &Server{ServerHost: "http://orion/", IdmType: cTokenproxy, Username: "fiware", Password: "1234"}
+	broker := &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, Username: "fiware", Password: "1234"}
 	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
@@ -414,7 +414,7 @@ func TestNewClientErrorIdmType(t *testing.T) {
 
 	InitServerList()
 
-	broker := &Server{ServerHost: "http://orion/", IdmType: cKeyrock}
+	broker := &Server{ServerHost: "http://orion/", IdmType: CKeyrock}
 	ngsi.serverList["orion"] = broker
 
 	flags := &CmdFlags{}
