@@ -34,6 +34,7 @@ import (
 	"errors"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -122,6 +123,18 @@ func TestInitTokenList(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestInitTokenListVersion1(t *testing.T) {
+	testNgsiLibInit()
+	tokens := `{"version":"1", "tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"type":"idm","expires":"2121-07-03T00:43:44.000Z","keyrock":{"token":{"methods":["password"],"expires_at":"2121-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`
+	io := &MockIoLib{Data: &tokens}
+	filename := "cache-file"
+	io.SetFileName(&filename)
+
+	err := initTokenList(io)
+
+	assert.NoError(t, err)
+}
+
 func TestInitTokenListNoExistsFile(t *testing.T) {
 	testNgsiLibInit()
 	io := &MockIoLib{StatErr: errors.New("stat error")}
@@ -169,38 +182,6 @@ func TestInitTokenListErrorOpen(t *testing.T) {
 	}
 }
 
-/*
-func TestInitTokenListErrorClose(t *testing.T) {
-	testNgsiLibInit()
-	io := &MockIoLib{CloseErr: errors.New("close error")}
-	filename := "cache-file"
-	io.SetFileName(&filename)
-
-	err := initTokenList(io)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "close error", ngsiErr.Message)
-	}
-}
-*/
-
-func TestInitTokenListErrorDecode(t *testing.T) {
-	testNgsiLibInit()
-	io := &MockIoLib{DecodeErr: errors.New("decode error")}
-	filename := "cache-file"
-	io.SetFileName(&filename)
-
-	err := initTokenList(io)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "decode error", ngsiErr.Message)
-	}
-}
-
 func TestTokenInfo(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
@@ -232,7 +213,7 @@ func TestTokenInfoNotFound(t *testing.T) {
 	}
 }
 
-func TestNgsiGetToken(t *testing.T) {
+func TestGetToken(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -247,7 +228,7 @@ func TestNgsiGetToken(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cTokenproxy, Username: "fiware", Password: "1234"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, Username: "fiware", Password: "1234"}}
 
 	actual, err := ngsi.GetToken(client)
 
@@ -257,7 +238,7 @@ func TestNgsiGetToken(t *testing.T) {
 	}
 }
 
-func TestNgsiGetTokenKeyrock(t *testing.T) {
+func TestGetTokenKeyrock(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -273,9 +254,9 @@ func TestNgsiGetTokenKeyrock(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	token := "1234"
-	ngsi.tokenList["9e7067026d0aac494e8fedf66b1f585e79f52935"] = TokenInfo{KeyrockToken: &token, Expires: 9613169598}
+	ngsi.tokenList["9e7067026d0aac494e8fedf66b1f585e79f52935"] = TokenInfo{Token: token, Expires: time.Unix(9613169598, 0)}
 
-	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 
 	actual, err := ngsi.GetToken(client)
 
@@ -285,17 +266,17 @@ func TestNgsiGetTokenKeyrock(t *testing.T) {
 	}
 }
 
-func TestNgsiGetTokenExpires(t *testing.T) {
+func TestGetTokenExpires(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	ngsi.CacheFile = &MockIoLib{}
 	ngsi.LogWriter = &bytes.Buffer{}
 	ngsi.HTTP = &MockHTTP{}
 	ngsi.TimeLib = &MockTimeLib{unixTime: 0}
-	token := OauthToken{AccessToken: "123456"}
+	token := "123456"
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
-	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Expires: 3600, OauthToken: &token}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: token, Expires: time.Unix(3600, 0)}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
 
@@ -306,7 +287,7 @@ func TestNgsiGetTokenExpires(t *testing.T) {
 	}
 }
 
-func TestNgsiGetTokenThinkingCities(t *testing.T) {
+func TestGetTokenThinkingCities(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	ngsi.CacheFile = &MockIoLib{}
@@ -316,9 +297,9 @@ func TestNgsiGetTokenThinkingCities(t *testing.T) {
 	token := "123456"
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
-	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Expires: 3600, KeystoneToken: &token}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: token, Expires: time.Unix(3600, 0)}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", IdmType: cThinkingCities}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", IdmType: CThinkingCities}}
 
 	actual, err := ngsi.GetToken(client)
 
@@ -327,7 +308,7 @@ func TestNgsiGetTokenThinkingCities(t *testing.T) {
 	}
 }
 
-func TestNgsiGetTokenErrorTokenList(t *testing.T) {
+func TestGetTokenErrorRequestToken(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -344,38 +325,97 @@ func TestNgsiGetTokenErrorTokenList(t *testing.T) {
 
 	ngsi.tokenList["9e7067026d0aac494e8fedf66b1f585e79f52935"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: "unknown", IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 
 	_, err := ngsi.GetToken(client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "token list error", ngsiErr.Message)
+		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
 }
 
-func TestNgsiGetTokenNotFound(t *testing.T) {
+func TestGetAuthHeader(t *testing.T) {
 	ngsi := testNgsiLibInit()
+
 	ngsi.tokenList = tokenInfoList{}
-	ngsi.CacheFile = &MockIoLib{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
 	ngsi.LogWriter = &bytes.Buffer{}
-	ngsi.HTTP = &MockHTTP{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, Username: "fiware", Password: "1234"}}
 
-	_, err := ngsi.GetToken(client)
+	key, value, err := ngsi.GetAuthHeader(client)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "Authorization", key)
+		assert.Equal(t, "Bearer ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", value)
+	}
+}
+
+func TestGetAuthHeaderErrorGetToken(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: "unknown", Username: "fiware", Password: "1234"}}
+
+	_, _, err := ngsi.GetAuthHeader(client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
+	}
+}
+
+func TestGetAuthHeaderErrorIdmType(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", Expires: time.Unix(9999999999, 0)}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: "unknown", Username: "fiware", Password: "1234"}}
+
+	_, _, err := ngsi.GetAuthHeader(client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "username is required", ngsiErr.Message)
+		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
 }
 
-func TestGetToken(t *testing.T) {
+func TestRequestToken(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -390,9 +430,9 @@ func TestGetToken(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	actual, err := getToken(ngsi, client)
+	actual, err := requestToken(ngsi, client, "")
 
 	if assert.NoError(t, err) {
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
@@ -400,7 +440,7 @@ func TestGetToken(t *testing.T) {
 	}
 }
 
-func TestGetTokenKeyrockIDM(t *testing.T) {
+func TestRequestTokenMainKeyrockIDM(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -415,9 +455,9 @@ func TestGetTokenKeyrockIDM(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 
-	actual, err := getToken(ngsi, client)
+	actual, err := requestToken(ngsi, client, "")
 
 	if assert.NoError(t, err) {
 		expected := ""
@@ -425,7 +465,7 @@ func TestGetTokenKeyrockIDM(t *testing.T) {
 	}
 }
 
-func TestNgsiGetTokenThinkingCitiesIDM(t *testing.T) {
+func TestRequestTokenThinkingCitiesIDM(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -441,9 +481,9 @@ func TestNgsiGetTokenThinkingCitiesIDM(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: cThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: CThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
 
-	actual, err := getToken(ngsi, client)
+	actual, err := requestToken(ngsi, client, "")
 
 	if assert.NoError(t, err) {
 		expected := "gAAAAABgeojDoWDHy9r4Lq1sNRbss2ncweTzmQ5jBpefFI5eYFh6fA3DyzQM8mjzoiGqrUH6JNWl4Sk1XVVMwTf18eFJ7FluEkPklrM_AFSGXv1IO0j_Dy-UQxNUAEYyxqT8Ny3O2TNC78MOKkt2UoR3oOg4HBcjkf6iCsVFwPhW9BGjC37LWdk"
@@ -451,7 +491,7 @@ func TestNgsiGetTokenThinkingCitiesIDM(t *testing.T) {
 	}
 }
 
-func TestGetTokenExpires(t *testing.T) {
+func TestRequestTokenExpires(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -464,12 +504,12 @@ func TestGetTokenExpires(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{Expires: 1000}
+	ngsi.tokenList["token1"] = TokenInfo{Expires: time.Unix(1000, 0)}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	actual, err := getToken(ngsi, client)
+	actual, err := requestToken(ngsi, client, "")
 
 	if assert.NoError(t, err) {
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
@@ -477,143 +517,7 @@ func TestGetTokenExpires(t *testing.T) {
 	}
 }
 
-func TestGetTokenPasswordCredentials(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	filename := ""
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-
-	actual, err := getToken(ngsi, client)
-
-	if assert.NoError(t, err) {
-		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
-		assert.Equal(t, expected, actual)
-	}
-}
-
-func TestGetTokenKeyrocktokenprovider(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	filename := ""
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-
-	_, err := getToken(ngsi, client)
-
-	assert.NoError(t, err)
-}
-
-func TestGetTokenTokenproxy(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	filename := ""
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-
-	actual, err := getToken(ngsi, client)
-
-	if assert.NoError(t, err) {
-		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
-		assert.Equal(t, expected, actual)
-	}
-}
-
-func TestGetTokenKeyrock(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	filename := ""
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-
-	actual, err := getToken(ngsi, client)
-
-	if assert.NoError(t, err) {
-		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
-		assert.Equal(t, expected, actual)
-	}
-}
-
-func TestGetTokenErrorUsername(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	ngsi.CacheFile = &MockIoLib{}
-	ngsi.LogWriter = &bytes.Buffer{}
-	ngsi.HTTP = &MockHTTP{}
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/"}}
-
-	_, err := getToken(ngsi, client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "username is required", ngsiErr.Message)
-	}
-}
-
-func TestGetTokenErrorPassword(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	ngsi.CacheFile = &MockIoLib{}
-	ngsi.LogWriter = &bytes.Buffer{}
-	ngsi.HTTP = &MockHTTP{}
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
-
-	_, err := getToken(ngsi, client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "password is required", ngsiErr.Message)
-	}
-}
-
-func TestGetTokenErrorIdmType(t *testing.T) {
+func TestRequestTokenErrorIdmType(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := ""
@@ -629,16 +533,16 @@ func TestGetTokenErrorIdmType(t *testing.T) {
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: "fiware", IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	_, err := requestToken(ngsi, client, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: fiware", ngsiErr.Message)
 	}
 }
 
-func TestGetTokenErrorHTTP(t *testing.T) {
+func TestRequestTokenErrorRequestToken(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := "cache-file"
@@ -653,146 +557,18 @@ func TestGetTokenErrorHTTP(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	_, err := requestToken(ngsi, client, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
-func TestGetTokenErrorHTTPStatus(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	filename := "cache-file"
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-
-	_, err := getToken(ngsi, client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "error  ", ngsiErr.Message)
-	}
-}
-
-func TestGetTokenErrorJSONUnmarshal6(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	ngsi.JSONConverter = &MockJSONLib{DecodeErr: errors.New("decode error")}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-
-	_, err := getToken(ngsi, client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
-		assert.Equal(t, "decode error", ngsiErr.Message)
-	}
-}
-
-func TestGetTokenErrorJSONUnmarshal7(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	ngsi.JSONConverter = &MockJSONLib{DecodeErr: errors.New("decode error")}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrocktokenprovider, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-
-	_, err := getToken(ngsi, client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
-		assert.Equal(t, "decode error", ngsiErr.Message)
-	}
-}
-
-func TestGetTokenErrorKeyrockIDM(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	filename := ""
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(`"tokens":{"9e7067026d0aac494e8fedf66b1f585e79f52935":{"expires":1613170563,"keyrock":{"token":{"methods":["password"],"expires_at":"2021-02-12T22:56:03.410Z"},"idm_authorization_config":{"level":"basic","authzforce":false}},"keyrock_token":"81868db8-d45c-4675-b68c-68860ba6b561"}}}`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: cKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
-
-	_, err := getToken(ngsi, client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
-		assert.Equal(t, "json: cannot unmarshal string into Go value of type ngsilib.KeyrockToken Field: (8) \"tokens\":{\"9e7067026d0a", ngsiErr.Message)
-	}
-}
-
-func TestNgsiGetTokenErrorThinkingCitiesIDM(t *testing.T) {
-	ngsi := testNgsiLibInit()
-	ngsi.tokenList = tokenInfoList{}
-	filename := ""
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusCreated
-	reqRes.ResBody = []byte(`{"token":{"domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"methods":["password"],"roles":[],"expires_at":"2021-04-16T11:30:47.000000Z","catalog":[],"extras":{"password_creation_time":"2021-04-16T08:29:01Z","last_login_attempt_time":"2021-04-16T08:29:05.000000","pwd_user_in_blacklist":false,"password_expiration_time":"2022-04-16T08:29:01Z"},"user":{"password_expires_at":"2022-04-16T08:29:00.000000","domain":{"id":"9f60e700f04544379932d59a17985cff","name":"smartcity"},"id":"80e292b7dae445e7af66c284162ff049","name":"usertest"},"audit_ids":["6kJ9zBFCQaKRa7aCFc6bpw"],"issued_at":"2021-04-16T08:30:47.000000Z"}`)
-	reqRes.ResHeader = http.Header{"X-Subject-Token": []string{"gAAAAABgeojDoWDHy9r4Lq1sNRbss2ncweTzmQ5jBpefFI5eYFh6fA3DyzQM8mjzoiGqrUH6JNWl4Sk1XVVMwTf18eFJ7FluEkPklrM_AFSGXv1IO0j_Dy-UQxNUAEYyxqT8Ny3O2TNC78MOKkt2UoR3oOg4HBcjkf6iCsVFwPhW9BGjC37LWdk"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: cThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
-
-	_, err := getToken(ngsi, client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 9, ngsiErr.ErrNo)
-		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	}
-}
-
-func TestGetTokenErrorSave(t *testing.T) {
+func TestRequestTokenErrorSave(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.tokenList = tokenInfoList{}
 	filename := "cache-file"
@@ -807,13 +583,13 @@ func TestGetTokenErrorSave(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 
-	_, err := getToken(ngsi, client)
+	_, err := requestToken(ngsi, client, "")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 10, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
 }
@@ -891,7 +667,7 @@ func TestGetHash(t *testing.T) {
 }
 
 func TestGetHashThinkingCities(t *testing.T) {
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: cThinkingCities, Username: "fiware", Tenant: "smartcity", Scope: "/madrid"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CThinkingCities, Username: "fiware", Tenant: "smartcity", Scope: "/madrid"}}
 
 	actual := getHash(client)
 	expected := "a50ef2c09c126141f16967c62ef78a4c031bdb6f"
@@ -911,6 +687,19 @@ func TestGetUserName(t *testing.T) {
 
 }
 
+func TestGetUserNameError(t *testing.T) {
+	client := &Client{Server: &Server{}}
+
+	_, err := getUserName(client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "username is required", ngsiErr.Message)
+	}
+
+}
+
 func TestGetPassword(t *testing.T) {
 	client := &Client{Server: &Server{Password: "12345"}}
 
@@ -918,6 +707,57 @@ func TestGetPassword(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "12345", actual)
+	}
+
+}
+
+func TestGetPasswordError(t *testing.T) {
+	client := &Client{Server: &Server{}}
+
+	_, err := getPassword(client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "password is required", ngsiErr.Message)
+	}
+
+}
+
+func TestGetUserNamePassword(t *testing.T) {
+	client := &Client{Server: &Server{Username: "fiware", Password: "12345"}}
+
+	user, password, err := getUserNamePassword(client)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "fiware", user)
+		assert.Equal(t, "12345", password)
+	}
+
+}
+
+func TestGetUserNamePasswordErrorUser(t *testing.T) {
+	client := &Client{Server: &Server{Password: "12345"}}
+
+	_, _, err := getUserNamePassword(client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "username is required", ngsiErr.Message)
+	}
+
+}
+
+func TestGetUserNamePasswordErrorPassword(t *testing.T) {
+	client := &Client{Server: &Server{Username: "fiware"}}
+
+	_, _, err := getUserNamePassword(client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
 
 }

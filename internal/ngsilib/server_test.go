@@ -357,7 +357,7 @@ func TestGetAPIPathErrorAfterPathTail(t *testing.T) {
 }
 
 func TestCheckIdmParams(t *testing.T) {
-	err := checkIdmParams(cKeyrock, "https://keyrock/oauth2/token", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
+	err := checkIdmParams(CKeyrock, "https://keyrock/oauth2/token", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	assert.NoError(t, err)
 }
@@ -389,7 +389,7 @@ func TestCheckIdmParamsErrorIdmType(t *testing.T) {
 }
 
 func TestCheckIdmParamsErrorNoIdmHost(t *testing.T) {
-	err := checkIdmParams(cKeyrock, "", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
+	err := checkIdmParams(CKeyrock, "", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -399,7 +399,7 @@ func TestCheckIdmParamsErrorNoIdmHost(t *testing.T) {
 }
 
 func TestCheckIdmParamsErrorIdmHost(t *testing.T) {
-	err := checkIdmParams(cKeyrock, "fiware", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
+	err := checkIdmParams(CKeyrock, "fiware", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -409,7 +409,7 @@ func TestCheckIdmParamsErrorIdmHost(t *testing.T) {
 }
 
 func TestCheckIdmParamsErrorClientId(t *testing.T) {
-	err := checkIdmParams(cKeyrock, "http://keyrock", "keyrock001@fiware", "0123456789", "", "55555554-6666-7777-8888-999999999999")
+	err := checkIdmParams(CKeyrock, "http://keyrock", "keyrock001@fiware", "0123456789", "", "55555554-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -419,7 +419,7 @@ func TestCheckIdmParamsErrorClientId(t *testing.T) {
 }
 
 func TestCheckIdmParamsErrorUserPassword(t *testing.T) {
-	err := checkIdmParams(cKeyrock, "http://keyrock", "", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
+	err := checkIdmParams(CKeyrock, "http://keyrock", "", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -490,7 +490,7 @@ func TestCopyBrokerInfo(t *testing.T) {
 	param[cNgsiType] = "v2"
 	param[cBrokerType] = "orion-ld"
 	param[cAPIPath] = "/,/orion"
-	param[cIdmType] = cKeyrock
+	param[cIdmType] = CKeyrock
 	param[cIdmHost] = "https://keyrock"
 	param[cToken] = "00000000000000000"
 	param[cUsername] = "fiware"
@@ -517,7 +517,7 @@ func TestCopyBrokerInfo2(t *testing.T) {
 	param[cBrokerHost] = "orion"
 	param[cNgsiType] = "v2"
 	param[cAPIPath] = "/,/orion"
-	param[cIdmType] = cKeyrock
+	param[cIdmType] = CKeyrock
 	param[cIdmHost] = "https://keyrock"
 	param[cToken] = "00000000000000000"
 	param[cUsername] = "fiware"
@@ -548,7 +548,7 @@ func TestSetBrokerParam(t *testing.T) {
 	param[cBrokerHost] = "orion"
 	param[cNgsiType] = "v2"
 	param[cAPIPath] = "/,/orion"
-	param[cIdmType] = cKeyrock
+	param[cIdmType] = CKeyrock
 	param[cIdmHost] = "https://keyrock"
 	param[cToken] = "00000000000000000"
 	param[cUsername] = "fiware"
@@ -739,7 +739,7 @@ func TestIsContextReferencedError(t *testing.T) {
 }
 
 func TestIsIdmTypeTrue(t *testing.T) {
-	b := isIdmType(cKeyrock)
+	b := isIdmType(CKeyrock)
 	assert.Equal(t, b, true)
 }
 

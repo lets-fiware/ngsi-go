@@ -31,11 +31,7 @@ package ngsilib
 
 import (
 	"crypto/sha1"
-	"encoding/base64"
 	"encoding/hex"
-	"fmt"
-	"net/http"
-	"net/url"
 	"path/filepath"
 	"strings"
 	"time"
@@ -50,31 +46,29 @@ type OauthToken struct {
 	TokenType    string   `json:"token_type"`
 }
 
-// KeyrockToken is ...
-type KeyrockToken struct {
-	Token struct {
-		Methods   []string `json:"methods"`
-		ExpiresAt string   `json:"expires_at"`
-	} `json:"token"`
-	IdmAuthorizationConfig struct {
-		Level      string `json:"level"`
-		Authzforce bool   `json:"authzforce"`
-	} `json:"idm_authorization_config"`
-}
-
-// TokenInfo is ...
 type TokenInfo struct {
-	Expires       int64          `json:"expires,omitempty"`
-	OauthToken    *OauthToken    `json:"token,omitempty"`
-	Keyrock       *KeyrockToken  `json:"keyrock,omitempty"`
-	KeyrockToken  *string        `json:"keyrock_token,omitempty"`
-	Keystone      *KeyStoneToken `json:"keystone,omitempty"`
-	KeystoneToken *string        `json:"keystone_token,omitempty"`
+	Type         string         `json:"type"`
+	Token        string         `json:"token"`
+	RefreshToken string         `json:"refresh_token"`
+	Expires      time.Time      `json:"expires"`
+	Oauth        *OauthToken    `json:"Oauth,omitempty"`
+	Keyrock      *KeyrockToken  `json:"keyrock,omitempty"`
+	Keystone     *KeyStoneToken `json:"keystone,omitempty"`
 }
 
 type tokenInfoList map[string]TokenInfo
+
 type tokens struct {
-	Tokens tokenInfoList `json:"tokens"`
+	Version string        `json:"version"`
+	Tokens  tokenInfoList `json:"tokens"`
+}
+
+//
+// TokenPlugin interface
+//
+type TokenPlugin interface {
+	requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error)
+	getAuthHeader(string) (string, string)
 }
 
 const (
@@ -82,8 +76,6 @@ const (
 	cAppXWwwFormUrlencoded = "application/x-www-form-urlencoded"
 	cAppJSON               = "application/json"
 )
-
-// var cacheFile string
 
 const cacheFileName = "ngsi-go-token-cache.json"
 
@@ -129,6 +121,8 @@ func initTokenList(io IoLib) (err error) {
 		return nil
 	}
 
+	gNGSI.tokenList = make(tokenInfoList)
+
 	if existsFile(io, *io.FileName()) {
 		err = io.Open()
 		if err != nil {
@@ -138,14 +132,13 @@ func initTokenList(io IoLib) (err error) {
 
 		tokens := tokens{}
 		err = io.Decode(&tokens)
-		if err != nil {
-			return &LibError{funcName, 3, err.Error(), err}
+		if err == nil {
+			if tokens.Version == "1" {
+				gNGSI.tokenList = tokens.Tokens
+			}
 		}
-
-		gNGSI.tokenList = tokens.Tokens
-	} else {
-		gNGSI.tokenList = make(tokenInfoList)
 	}
+
 	return nil
 }
 
@@ -180,147 +173,83 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 	hash := getHash(client)
 	info, ok := ngsi.tokenList[hash]
 	if ok {
-		accessToken := ""
+		accessToken := info.Token
 		expires := info.Expires
-		if info.OauthToken != nil {
-			accessToken = info.OauthToken.AccessToken
-		} else if info.KeyrockToken != nil {
-			accessToken = *info.KeyrockToken
-		} else if info.KeystoneToken != nil {
-			accessToken = *info.KeystoneToken
-		} else {
-			return "", &LibError{funcName, 1, "token list error", nil}
-		}
-
 		utime := ngsi.TimeLib.NowUnix()
 
-		if expires > utime+gNGSI.Margin {
+		if accessToken != "" && expires.Unix() > utime+gNGSI.Margin {
 			gNGSI.Logging(LogInfo, "Cached token is used\n")
 			gNGSI.Logging(LogDebug, accessToken+"\n")
 			return accessToken, nil
 		}
 	}
-	token, err := getToken(ngsi, client)
+	token, err := requestToken(ngsi, client, info.RefreshToken)
 	if err != nil {
-		return "", &LibError{funcName, 2, err.Error(), err}
+		return "", &LibError{funcName, 1, err.Error(), err}
 	}
 	return token, nil
 }
 
-func getToken(ngsi *NGSI, client *Client) (string, error) {
-	const funcName = "getToken"
+// GetAuthHeader is ...
+func (ngsi *NGSI) GetAuthHeader(client *Client) (string, string, error) {
+	const funcName = "GetAuthHeader"
 
-	ngsi.Logging(LogInfo, funcName+"\n")
-
-	var data string
-	headers := make(map[string]string)
-	u, _ := url.Parse(client.idmURL())
-	idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
-
-	username, err := getUserName(client)
+	token, err := ngsi.GetToken(client)
 	if err != nil {
-		return "", &LibError{funcName, 1, err.Error(), err}
-	}
-	password, err := getPassword(client)
-	if err != nil {
-		return "", &LibError{funcName, 2, err.Error(), err}
+		return "", "", &LibError{funcName, 1, err.Error(), err}
 	}
 
 	broker := client.Server
 	idmType := strings.ToLower(broker.IdmType)
 
-	switch idmType {
-	default:
-		return "", &LibError{funcName, 3, "unknown idm type: " + idmType, nil}
-	case cKeyrock:
-		idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
-		auth := fmt.Sprintf("%s:%s", broker.ClientID, broker.ClientSecret)
-		idm.SetHeader("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth))))
-		data = fmt.Sprintf("grant_type=password&username=%s&password=%s", username, password)
-	case cPasswordCredentials:
-		idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
-		data = fmt.Sprintf("grant_type=password&username=%s&password=%s&client_id=%s&client_secret=%s", username, password, broker.ClientID, broker.ClientSecret)
-	case cKeyrocktokenprovider:
-		idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
-		data = fmt.Sprintf("username=%s&password=%s", username, password)
-	case cTokenproxy:
-		idm.SetHeader(cContentType, cAppJSON)
-		data = fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password)
-	case cKeyrockIDM: // Keyrock
-		idm.SetHeader(cContentType, cAppJSON)
-		data = fmt.Sprintf("{\"name\": \"%s\", \"password\": \"%s\"}", username, password)
-	case cThinkingCities:
-		idm.SetHeader(cContentType, cAppJSON)
-		data = getKeyStoneTokenRequest(username, password, client.Server.Tenant, client.Server.Scope)
+	idm, ok := tokenPlugins[idmType]
+	if !ok {
+		return "", "", &LibError{funcName, 2, "unknown idm type: " + idmType, nil}
 	}
 
-	res, body, err := idm.HTTPPost(data)
+	key, value := idm.getAuthHeader(token)
+
+	return key, value, nil
+}
+
+var tokenPlugins = map[string]TokenPlugin{
+	CKeyrock:              &idmKeyrock{},
+	CPasswordCredentials:  &idmPasswordCredentials{},
+	CKeyrocktokenprovider: &idmKeyrockTokenProvider{},
+	CTokenproxy:           &idmTokenProxy{},
+	CKeyrockIDM:           &idmKeyrockIDM{},
+	CThinkingCities:       &idmThinkingCities{},
+}
+
+func requestToken(ngsi *NGSI, client *Client, refresh string) (string, error) {
+	const funcName = "requestToken"
+
+	ngsi.Logging(LogInfo, funcName+"\n")
+
+	broker := client.Server
+	idmType := strings.ToLower(broker.IdmType)
+
+	idm, ok := tokenPlugins[idmType]
+	if !ok {
+		return "", &LibError{funcName, 1, "unknown idm type: " + idmType, nil}
+	}
+
+	var tokenInfo *TokenInfo
+	tokenInfo, err := idm.requestToken(ngsi, client, broker, refresh)
 	if err != nil {
-		return "", &LibError{funcName, 4, err.Error(), err}
-	}
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		return "", &LibError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return "", &LibError{funcName, 2, err.Error(), err}
 	}
 
-	accessToken := ""
-
-	var tokenInfo TokenInfo
-	utime := ngsi.TimeLib.NowUnix()
-
-	switch idmType {
-	default:
-		var token OauthToken
-		err := JSONUnmarshal(body, &token)
-		if err != nil {
-			return "", &LibError{funcName, 6, err.Error(), err}
-		}
-		tokenInfo.Expires = utime + token.ExpiresIn
-		tokenInfo.OauthToken = &token
-		accessToken = token.AccessToken
-	case cKeyrocktokenprovider:
-		var token OauthToken
-		r := fmt.Sprintf(`{"access_token":"%s", "expires_in":%d}`, string(body), client.getExpiresIn())
-		err := JSONUnmarshal([]byte(r), &token)
-		if err != nil {
-			return "", &LibError{funcName, 7, err.Error(), err}
-		}
-		tokenInfo.Expires = utime + token.ExpiresIn
-		tokenInfo.OauthToken = &token
-		accessToken = token.AccessToken
-	case cKeyrockIDM:
-		var token KeyrockToken
-		err := JSONUnmarshal(body, &token)
-		if err != nil {
-			return "", &LibError{funcName, 8, err.Error(), err}
-		}
-		layout := "2006-01-02T15:04:05.000Z"
-		t, _ := time.Parse(layout, token.Token.ExpiresAt)
-		accessToken = res.Header.Get("X-Subject-Token")
-		tokenInfo.Expires = t.Unix()
-		tokenInfo.Keyrock = &token
-		tokenInfo.KeyrockToken = &accessToken
-	case cThinkingCities:
-		var token KeyStoneToken
-		err := JSONUnmarshal(body, &token)
-		if err != nil {
-			return "", &LibError{funcName, 9, err.Error(), err}
-		}
-		layout := "2006-01-02T15:04:05.000000Z"
-		t, _ := time.Parse(layout, token.Token.ExpiresAt)
-		accessToken = res.Header.Get("X-Subject-Token")
-		tokenInfo.Expires = t.Unix()
-		tokenInfo.Keystone = &token
-		tokenInfo.KeystoneToken = &accessToken
-	}
-
-	client.storeToken(accessToken)
+	client.storeToken(tokenInfo.Token)
 
 	newTokenList := make(tokenInfoList)
 	hash := getHash(client)
-	newTokenList[hash] = tokenInfo
+	newTokenList[hash] = *tokenInfo
+
+	utime := ngsi.TimeLib.NowUnix()
 
 	for k, v := range ngsi.tokenList {
-		if v.Expires > utime+gNGSI.Margin {
+		if v.Expires.Unix() > utime+gNGSI.Margin {
 			newTokenList[k] = v
 		}
 	}
@@ -329,12 +258,14 @@ func getToken(ngsi *NGSI, client *Client) (string, error) {
 
 	tokens := make(map[string]interface{})
 	tokens["tokens"] = ngsi.tokenList
+	tokens["version"] = "1"
 
 	err = saveToken(*ngsi.CacheFile.FileName(), tokens)
 	if err != nil {
-		return "", &LibError{funcName, 10, err.Error(), err}
+		return "", &LibError{funcName, 3, err.Error(), err}
 	}
-	return accessToken, nil
+
+	return tokenInfo.Token, nil
 }
 
 func saveToken(file string, tokens map[string]interface{}) error {
@@ -368,7 +299,7 @@ func saveToken(file string, tokens map[string]interface{}) error {
 
 func getHash(client *Client) string {
 	s := client.Server.ServerHost + client.Server.Username
-	if client.Server.IdmType == cThinkingCities {
+	if client.Server.IdmType == CThinkingCities {
 		s = s + client.Server.Tenant + client.Server.Scope
 	}
 	r := sha1.Sum([]byte(s))
@@ -393,4 +324,19 @@ func getPassword(client *Client) (string, error) {
 		return "", &LibError{funcName, 1, "password is required", nil}
 	}
 	return s, nil
+}
+
+func getUserNamePassword(client *Client) (string, string, error) {
+	const funcName = "getUserNamePassword"
+
+	username, err := getUserName(client)
+	if err != nil {
+		return "", "", &LibError{funcName, 1, err.Error(), err}
+	}
+	password, err := getPassword(client)
+	if err != nil {
+		return "", "", &LibError{funcName, 2, err.Error(), err}
+	}
+
+	return username, password, nil
 }

@@ -57,30 +57,36 @@ func tokenCommand(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 3, host + " has no token", err}
 	}
 
-	time := token.Expires - ngsi.TimeLib.NowUnix()
+	time := token.Expires.Unix() - ngsi.TimeLib.NowUnix()
 	if time < 0 {
 		time = 0
 	}
 
 	if c.Bool("verbose") || c.Bool("pretty") {
 		var b []byte
-		if token.OauthToken != nil {
-			token.OauthToken.ExpiresIn = time
-			b, err = ngsilib.JSONMarshal(token.OauthToken)
+		switch token.Type {
+		default: // ngsilib.CKeyrock, ngsilib.CTokenproxy, ngsilib.CKeyrocktokenprovider:
+			token.Oauth.ExpiresIn = time
+			b, err = ngsilib.JSONMarshal(token.Oauth)
 			if err != nil {
 				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
-		} else {
-			b, err = getKeyrockUserInfo(client, *token.KeyrockToken)
+		case ngsilib.CThinkingCities:
+			b, err = ngsilib.JSONMarshal(token.Keystone)
 			if err != nil {
 				return &ngsiCmdError{funcName, 5, err.Error(), err}
+			}
+		case ngsilib.CKeyrockIDM:
+			b, err = getKeyrockUserInfo(client, token.Token)
+			if err != nil {
+				return &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
 		}
 		if c.Bool("pretty") {
 			newBuf := new(bytes.Buffer)
 			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return &ngsiCmdError{funcName, 7, err.Error(), err}
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {

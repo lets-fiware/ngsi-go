@@ -121,7 +121,7 @@ func TestInitHeaderThinkingCities(t *testing.T) {
 	client.Server = &Server{ServerType: "broker"}
 	client.XAuthToken = false
 	client.Tenant = "fiware"
-	client.Server.IdmType = cThinkingCities
+	client.Server.IdmType = CThinkingCities
 
 	err := client.InitHeader()
 	actual := client.Headers["Fiware-ServicePath"]
@@ -497,14 +497,6 @@ func TestStoreToken(t *testing.T) {
 	client.storeToken("token")
 	actual := client.Token
 	expected := "token"
-	assert.Equal(t, expected, actual)
-}
-
-func TestGetExpiresIn(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Server: &Server{}}
-
-	actual := client.getExpiresIn()
-	expected := int64(3600)
 	assert.Equal(t, expected, actual)
 }
 

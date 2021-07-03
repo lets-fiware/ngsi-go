@@ -91,7 +91,6 @@ func regProxy(c *cli.Context) error {
 		client:  client,
 		http:    ngsi.HTTP,
 		verbose: c.Bool("verbose"),
-		bearer:  !(client.Server.IdmType == "thinkingcities"),
 		mutex:   &sync.Mutex{},
 	}
 
@@ -170,17 +169,15 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 		u.Path = path.Join(u.Path, r.URL.Path)
 
 		regProxyGlobal.mutex.Lock()
-		token, err := ngsi.GetToken(client)
+		key, token, err := ngsi.GetAuthHeader(client)
 		regProxyGlobal.mutex.Unlock()
+
 		if err != nil {
 			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 4, err.Error()))
 			break
 		}
-		if regProxyGlobal.bearer {
-			headers["Authorization"] = "Bearer " + token
-		} else {
-			headers["X-Auth-Token"] = token
-		}
+
+		headers[key] = token
 
 		b := buf.Bytes()
 		if verbose {
