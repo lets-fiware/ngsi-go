@@ -81,6 +81,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 				break
 			}
 			ngsi.Logging(ngsilib.LogDebug, fmt.Sprintf("%T\n", err))
+			s = strings.TrimRight(message(err), "\n") + "\n"
 			ngsi.Logging(ngsilib.LogInfo, s)
 		}
 		ngsi.Logging(ngsilib.LogInfo, "abnormal termination\n")

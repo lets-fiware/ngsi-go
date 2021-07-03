@@ -1,3 +1,8 @@
+## NGSI Go v0.8.4-next
+
+-   Fix: print stack messages correctly
+-   Hardening: Add WireCloud command (#159)
+
 ## NGSI Go v0.8.4 - June 20, 2021
 
 -   Hardening: Add registration proxy server (#156)
