@@ -55,6 +55,15 @@ func TestInitHeaderKeyrock(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestInitHeaderBasic(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Token: "b7308719683033900d37384e723c1660"}
+	client.Server = &Server{ServerType: "broker", IdmType: CBasic}
+
+	err := client.InitHeader()
+
+	assert.NoError(t, err)
+}
+
 func TestInitHeaderXAuthToken(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
 	client.Server = &Server{ServerType: "broker"}

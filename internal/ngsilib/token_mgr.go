@@ -219,6 +219,7 @@ var tokenPlugins = map[string]TokenPlugin{
 	CTokenproxy:           &idmTokenProxy{},
 	CKeyrockIDM:           &idmKeyrockIDM{},
 	CThinkingCities:       &idmThinkingCities{},
+	CBasic:                &idmBasic{},
 }
 
 func requestToken(ngsi *NGSI, client *Client, refresh string) (string, error) {

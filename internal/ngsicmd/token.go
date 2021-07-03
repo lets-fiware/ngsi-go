@@ -65,12 +65,15 @@ func tokenCommand(c *cli.Context) error {
 	if c.Bool("verbose") || c.Bool("pretty") {
 		var b []byte
 		switch token.Type {
-		default: // ngsilib.CKeyrock, ngsilib.CTokenproxy, ngsilib.CKeyrocktokenprovider:
+		default: // ngsilib.CKeyrock, ngsilib.CTokenproxy, ngsilib.CKeyrocktokenprovider
 			token.Oauth.ExpiresIn = time
 			b, err = ngsilib.JSONMarshal(token.Oauth)
 			if err != nil {
 				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
+		case ngsilib.CBasic:
+			fmt.Fprintln(ngsi.StdWriter, "no information available")
+			return nil
 		case ngsilib.CThinkingCities:
 			b, err = ngsilib.JSONMarshal(token.Keystone)
 			if err != nil {

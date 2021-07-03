@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Support basic authentication (#162)
 -   Update: Refactoring token manager (#161)
 -   Fix: Print stack messages correctly (#160)
 -   Hardening: Add WireCloud command (#159)
