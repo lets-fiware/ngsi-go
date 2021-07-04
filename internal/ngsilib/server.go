@@ -84,6 +84,7 @@ const (
 	CTokenproxy           = "tokenproxy"
 	CKeyrockIDM           = "idm"
 	CThinkingCities       = "thinkingcities"
+	CBasic                = "basic"
 )
 
 const (
@@ -117,7 +118,7 @@ var (
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
 	brokerTypeArgs = []string{cOrionLD, cScorpio, cStellio}
 	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud}
-	idmTypes       = []string{CPasswordCredentials, CKeyrock, CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM, CThinkingCities}
+	idmTypes       = []string{CPasswordCredentials, CKeyrock, CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM, CThinkingCities, CBasic}
 	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes    = []string{cNgsiLd, cLd}
 	apiPaths       = []string{cPathRoot, cPathV2, cPathNgsiLd}
@@ -235,12 +236,14 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 		return &LibError{funcName, 2, fmt.Sprintf("idmType error: %s", idmType), nil}
 	}
 
-	if idmHost == "" {
-		return &LibError{funcName, 3, "required idmHost not found", nil}
-	}
+	if idmType != CBasic {
+		if idmHost == "" {
+			return &LibError{funcName, 3, "required idmHost not found", nil}
+		}
 
-	if !(IsHTTP(idmHost) || strings.HasPrefix(idmHost, "/")) {
-		return &LibError{funcName, 4, fmt.Sprintf("idmHost error: %s", idmHost), nil}
+		if !(IsHTTP(idmHost) || strings.HasPrefix(idmHost, "/")) {
+			return &LibError{funcName, 4, fmt.Sprintf("idmHost error: %s", idmHost), nil}
+		}
 	}
 
 	switch idmType {
@@ -249,7 +252,7 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 			return &LibError{funcName, 5, "clientID and clientSecret are needed", nil}
 		}
 		fallthrough
-	case CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM, CThinkingCities:
+	case CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM, CThinkingCities, CBasic:
 		if username == "" && password != "" {
 			return &LibError{funcName, 6, "username is needed", nil}
 		}

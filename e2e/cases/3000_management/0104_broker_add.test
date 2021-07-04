@@ -574,6 +574,59 @@ ngsi broker delete --host tenant
 ```
 
 #
+# 0051 Add broker (Basic authentication)
+#
+ngsi broker add --host orion-with-basic-auth --ngsiType v2 --brokerHost http://localhost:1026/ \
+  --idmType basic \
+  --username fiware \
+  --password 1234
+
+```
+```
+
+#
+# 0052 Get broker
+#
+ngsi broker get --host orion-with-basic-auth
+
+```
+brokerHost http://localhost:1026/
+ngsiType v2
+IdmType basic
+Username fiware
+Password ****
+```
+
+#
+# 0053 Update broker
+#
+ngsi broker update --host orion-with-basic-auth --username orion
+
+```
+```
+
+#
+# 0054 Get broker
+#
+ngsi broker get --host orion-with-basic-auth --clearText
+
+```
+brokerHost http://localhost:1026/
+ngsiType v2
+IdmType basic
+Username orion
+Password 1234
+```
+
+#
+# 0055 Delete broker
+#
+ngsi broker delete --host orion-with-basic-auth
+
+```
+```
+
+#
 # 0100 brokersAdd002 Required host not found
 #
 ngsi broker add

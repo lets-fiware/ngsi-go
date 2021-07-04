@@ -37,7 +37,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestVersionTokenCommand(t *testing.T) {
+func TestTokenCommand(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
@@ -74,7 +74,7 @@ func TestVersionTokenCommand(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandJSON(t *testing.T) {
+func TestTokenCommandJSON(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
@@ -112,7 +112,7 @@ func TestVersionTokenCommandJSON(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandJSONPretty(t *testing.T) {
+func TestTokenCommandJSONPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
@@ -150,7 +150,7 @@ func TestVersionTokenCommandJSONPretty(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandJSONExpiresZero(t *testing.T) {
+func TestTokenCommandJSONExpiresZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
@@ -190,7 +190,7 @@ func TestVersionTokenCommandJSONExpiresZero(t *testing.T) {
 
 }
 
-func TestVersionTokenCommandExpires(t *testing.T) {
+func TestTokenCommandExpires(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
@@ -229,7 +229,7 @@ func TestVersionTokenCommandExpires(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandExpiresZero(t *testing.T) {
+func TestTokenCommandExpiresZero(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
@@ -268,7 +268,7 @@ func TestVersionTokenCommandExpiresZero(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandKeyrock(t *testing.T) {
+func TestTokenCommandKeyrock(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	conf := `{
@@ -316,6 +316,38 @@ func TestVersionTokenCommandKeyrock(t *testing.T) {
 	}
 }
 
+func TestTokenCommandBasic(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "basic",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	setupFlagString(set, "host")
+	set.Bool("verbose", false, "doc")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--verbose"})
+
+	err := tokenCommand(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "no information available\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 // initCmd() Error: no host
 func TestTokenCommandErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
@@ -353,7 +385,7 @@ func TestTokenCommandErrorNewClient(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandErrorHostNotFound(t *testing.T) {
+func TestTokenCommandErrorHostNotFound(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -377,7 +409,7 @@ func TestVersionTokenCommandErrorHostNotFound(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandErrorOAuthJSON(t *testing.T) {
+func TestTokenCommandErrorOAuthJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
@@ -418,7 +450,7 @@ func TestVersionTokenCommandErrorOAuthJSON(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandErrorThinkingCitesJSON(t *testing.T) {
+func TestTokenCommandErrorThinkingCitesJSON(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
@@ -459,7 +491,7 @@ func TestVersionTokenCommandErrorThinkingCitesJSON(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandErrorKeyrock(t *testing.T) {
+func TestTokenCommandErrorKeyrock(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{
@@ -499,7 +531,7 @@ func TestVersionTokenCommandErrorKeyrock(t *testing.T) {
 	}
 }
 
-func TestVersionTokenCommandErrorJSONPretty(t *testing.T) {
+func TestTokenCommandErrorJSONPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	conf := `{

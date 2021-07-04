@@ -68,6 +68,8 @@ func (client *Client) InitHeader() error {
 		if client.Server.ServerType == "keyrock" {
 			client.Headers["X-Auth-Token"] = client.Token
 			client.Headers["X-Subject-token"] = client.Token
+		} else if client.Server.IdmType == CBasic {
+			client.Headers["Authorization"] = "Basic " + client.Token
 		} else if client.XAuthToken || client.Server.IdmType == CThinkingCities {
 			client.Headers["X-Auth-Token"] = client.Token
 		} else {

@@ -198,6 +198,20 @@ ngsi broker add \
   --service smartcity
 ```
 
+#### Example 6
+
+Orion with Basic authentication
+
+```console
+ngsi broker add \
+  --host orion-with-basic-auth \
+  --ngsiType v2 \
+  --brokerHost http://localhost:1026/ \
+  --idmType basic \
+  --username fiware \
+  --password 1234
+```
+
 ### NGSI type
 
 Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Broker.
@@ -206,6 +220,7 @@ Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Brok
 
 | idmType                                                                    | Required parameters                                 | Description                                                                  |
 | -------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| basic                                                                      | username, password                                  | Basic authentication                                                         |
 | password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keycloak, WSO2, Apinf, and Stellio) |
 | [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock                             |
 | [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock                                          |
