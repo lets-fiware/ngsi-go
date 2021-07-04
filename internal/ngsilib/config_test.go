@@ -389,6 +389,8 @@ func TestSavePreviousArgs(t *testing.T) {
 
 func TestSavePreviousArgsNoSave(t *testing.T) {
 	ngsi := testNgsiLibInit()
+	filename := ""
+	ngsi.ConfigFile.SetFileName(&filename)
 	ngsi.PreviousArgs.UsePreviousArgs = false
 
 	err := ngsi.SavePreviousArgs()

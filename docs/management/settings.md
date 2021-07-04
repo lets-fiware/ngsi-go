@@ -3,11 +3,14 @@
 -   [List current settings](#list-current-settings)
 -   [Delete currnet settings](#delete-currnet-settings)
 -   [Clear currnet settings](#clear-currnet-settings)
-
+-   [Set previous args mode](#set-previousargs-mode)
 
 <a name="list-current-settings"></a>
 
 ## List current settings
+
+This command allows you to print currnet previous args. If you get confused about a behavior of NGSI Go,
+please run this command to check previous values. You can clear previous values with `ngsi settings clear`.
 
 ```console
 ngsi settings list [options]
@@ -74,12 +77,40 @@ ngsi settings delete --items service,syslog
 
 ## Clear currnet settings
 
+This command allows you to clear currnet previous args. If you get confused about a behavior of NGSI Go,
+please run `ngsi settings list` command to check previous values. You can clear previous values with this
+command.
+
 ```console
 ngsi settings clear [options]
 ```
 
 ### Options
 
-| Options                 | Description                                 |
-| ----------------------- | ------------------------------------------- |
-| --help                  | show help (default: false)                  |
+| Options | Description                |
+| ------- | -------------------------- |
+| --help  | show help (default: false) |
+
+<a name="set-previousargs-mode"></a>
+
+## Set previous args mode
+
+This command allows you to turns on or off the previous args mode. When multiple NGSI Go are run at the same time,
+there is a conflict in writing to the config file. E.g. you run NGSI Go on an interactive shell and run one in
+background as a batch process at same time. As a result, you may access an unexpected host.
+
+The previous agrs are not stored in the config file when the PreviousArgs mode is off or you run NGSI Go with
+`-B` (`--batch`) option. I recommend to use -Boption and specify explicitly a host, FIWARE Service and FIWARE
+ServicePath when NGSI Go is used in a shell script.
+
+```
+ngsi settings previousArgs [options]
+```
+
+### Options
+
+| Options   | Description                    |
+| --------- | ------------------------------ |
+| --off, -d | off (disable) (default: false) |
+| --on, -e  | on (enable) (default: false)   |
+| --help    | show help (default: false)     |

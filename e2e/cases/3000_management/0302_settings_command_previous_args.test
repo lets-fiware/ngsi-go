@@ -25,32 +25,7 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi settings
-#
-ngsi settings
-
-```
-NAME:
-   ngsi settings - manage settings
-
-USAGE:
-   ngsi settings command [command options] [arguments...]
-
-COMMANDS:
-   list          List settings
-   delete        Delete setting
-   clear         Clear settings
-   previousArgs  Set PreviousArgs mode
-   help, h       Shows a list of commands or help for one command
-
-OPTIONS:
-   --help         show help (default: false)
-   --version, -v  print the version (default: false)
-   
-```
-
-#
-# 0010 ngsi settings clear
+# 0001 ngsi settings clear
 #
 ngsi settings clear
 
@@ -58,7 +33,15 @@ ngsi settings clear
 ```
 
 #
-# 0011 ngsi settings list
+# 0011 ngsi settings
+#
+ngsi settings previousArgs --on
+
+```
+```
+
+#
+# 0012 ngsi settings list
 #
 ngsi settings list
 
@@ -66,7 +49,7 @@ ngsi settings list
 ```
 
 #
-# 0012 ngsi version --host orion
+# 0013 ngsi version --host orion
 #
 ngsi version --host orion
 
@@ -96,7 +79,7 @@ ngsi version --host orion
 ```
 
 #
-# 0013 ngsi settings list
+# 0014 ngsi settings list
 #
 ngsi settings list
 
@@ -105,29 +88,55 @@ Host: orion
 ```
 
 #
-# 0014 ngsi settings clear
+# 0015 ngsi version --host wirecloud --pretty
 #
-ngsi settings clear
+ngsi version --host wirecloud --pretty
 
 ```
+{
+  "ApplicationMashup": "REGEX(.*)",
+  "ComponentManagement": "REGEX(.*)",
+  "DashboardManagement": "REGEX(.*)",
+  "FIWARE": "REGEX(.*)",
+  "FullscreenWidget": "REGEX(.*)",
+  "NGSI": "REGEX(.*)",
+  "OAuth2Provider": "REGEX(.*)",
+  "ObjectStorage": "REGEX(.*)",
+  "StyledElements": "REGEX(.*)",
+  "Wirecloud": "REGEX(.*)"
+}
 ```
 
 #
-# 0015 ngsi settings list
+# 0016 ngsi settings list
 #
 ngsi settings list
 
 ```
+Host: wirecloud
 ```
-#
-# 0016 print $orion
-#
-print $orion
 
 #
-# 0017 ngsi version --host $orion
+# 0021 ngsi settings previousArgs --off
 #
-ngsi version --host $orion
+ngsi settings previousArgs --off
+
+```
+```
+
+#
+# 0022 ngsi settings list
+#
+ngsi settings list
+
+```
+PreviousArgs off
+```
+
+#
+# 0023 ngsi version --host orion
+#
+ngsi version --host orion
 
 ```
 {
@@ -155,17 +164,54 @@ ngsi version --host $orion
 ```
 
 #
-# 0018 ngsi settings list
+# 0024 ngsi settings list
 #
 ngsi settings list
 
 ```
+PreviousArgs off
 ```
 
 #
-# 9999 Clean up
+# 0025 ngsi version --host wirecloud --pretty
+#
+ngsi version --host wirecloud --pretty
+
+```
+{
+  "ApplicationMashup": "REGEX(.*)",
+  "ComponentManagement": "REGEX(.*)",
+  "DashboardManagement": "REGEX(.*)",
+  "FIWARE": "REGEX(.*)",
+  "FullscreenWidget": "REGEX(.*)",
+  "NGSI": "REGEX(.*)",
+  "OAuth2Provider": "REGEX(.*)",
+  "ObjectStorage": "REGEX(.*)",
+  "StyledElements": "REGEX(.*)",
+  "Wirecloud": "REGEX(.*)"
+}
+```
+
+#
+# 0026 ngsi settings list
+#
+ngsi settings list
+
+```
+PreviousArgs off
+```
+#
+# 9998 ngsi settings clear
 #
 ngsi settings clear
+
+```
+```
+
+#
+# 9999 ngsi settings previousArgs --on
+#
+ngsi settings previousArgs --on
 
 ```
 ```

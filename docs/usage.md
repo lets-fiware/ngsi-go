@@ -234,27 +234,28 @@ ngsi [global options] command [common options] sub-command [options]
 
 ### Management command
 
-| command                              | sub-command                                                | Description     |
-| ------------------------------------ | ---------------------------------------------------------- | --------------- |
-| [broker](./management/broker.md)     | [list](./management/broker.md#list-brokers)                | list brokers    |
-|                                      | [get](./management/broker.md#get-broker)                   | get broker      |
-|                                      | [add](./management/broker.md#add-broker)                   | add broker      |
-|                                      | [update](./management/broker.md#update-broker)             | update broker   |
-|                                      | [delete](./management/broker.md#delete-broker)             | delete broker   |
-| [context](./management/context.md)   | [list](./management/context.md#list-contexts)              | list @context   |
-|                                      | [add](./management/context.md#add-context)                 | add @context    |
-|                                      | [update](./management/context.md#update-context)           | udpate @context |
-|                                      | [delete](./management/context.md#delete-context)           | delete @context |
-|                                      | [server](./management/context.md#serve-context)            | Serve @context  |
-| [settings](./management/settings.md) | [list](./management/settings.md#list-current-settings)     | list settings   |
-|                                      | [delete](./management/settings.md#delete-currnet-settings) | delete settings |
-|                                      | [clear](./management/settings.md#clear-currnet-settings)   | clear settings  |
-| [server](./management/server.md)     | [list](./management/server.md#list-servers)                | list servers    |
-|                                      | [get](./management/server.md#get-server)                   | get server      |
-|                                      | [add](./management/server.md#add-server)                   | add server      |
-|                                      | [update](./management/server.md#update-server)             | update server   |
-|                                      | [delete](./management/server.md#delete-server)             | delete server   |
-| [token](./management/token.md)       | -                                                          | manage token    |
+| command                              | sub-command                                                    | Description            |
+| ------------------------------------ | -------------------------------------------------------------- | ---------------------- |
+| [broker](./management/broker.md)     | [list](./management/broker.md#list-brokers)                    | list brokers           |
+|                                      | [get](./management/broker.md#get-broker)                       | get broker             |
+|                                      | [add](./management/broker.md#add-broker)                       | add broker             |
+|                                      | [update](./management/broker.md#update-broker)                 | update broker          |
+|                                      | [delete](./management/broker.md#delete-broker)                 | delete broker          |
+| [context](./management/context.md)   | [list](./management/context.md#list-contexts)                  | list @context          |
+|                                      | [add](./management/context.md#add-context)                     | add @context           |
+|                                      | [update](./management/context.md#update-context)               | udpate @context        |
+|                                      | [delete](./management/context.md#delete-context)               | delete @context        |
+|                                      | [server](./management/context.md#serve-context)                | Serve @context         |
+| [settings](./management/settings.md) | [list](./management/settings.md#list-current-settings)         | list settings          |
+|                                      | [delete](./management/settings.md#delete-currnet-settings)     | delete settings        |
+|                                      | [clear](./management/settings.md#clear-currnet-settings)       | clear settings         |
+|                                      | [previousArgs](./management/settings.md#set-previousargs-mode) | set previous args mode |
+| [server](./management/server.md)     | [list](./management/server.md#list-servers)                    | list servers           |
+|                                      | [get](./management/server.md#get-server)                       | get server             |
+|                                      | [add](./management/server.md#add-server)                       | add server             |
+|                                      | [update](./management/server.md#update-server)                 | update server          |
+|                                      | [delete](./management/server.md#delete-server)                 | delete server          |
+| [token](./management/token.md)       | -                                                              | manage token           |
 
 <a name="global-options"></a>
 

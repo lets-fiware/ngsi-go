@@ -143,6 +143,16 @@ var (
 		Name:  "clearText",
 		Usage: "show obfuscated items as clear text",
 	}
+	onFlag = &cli.BoolFlag{
+		Name:    "on",
+		Aliases: []string{"e"},
+		Usage:   "on (enable)",
+	}
+	offFlag = &cli.BoolFlag{
+		Name:    "off",
+		Aliases: []string{"d"},
+		Usage:   "off (disable)",
+	}
 )
 
 // Common flags for copy command
