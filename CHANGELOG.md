@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Documentation: Add example for regproxy (#163)
 -   Hardening: Support basic authentication (#162)
 -   Update: Refactoring token manager (#161)
 -   Fix: Print stack messages correctly (#160)

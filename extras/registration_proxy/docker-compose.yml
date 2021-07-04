@@ -1,0 +1,22 @@
+version: "3" 
+
+services:
+  regproxy:
+    image: letsfiware/regproxy:1.0
+    build: ./
+    ports:
+      - "1028:1028"
+    depends_on:
+      - orion
+
+  orion:
+    image: fiware/orion:3.1.0
+    ports:
+      - "1026:1026"
+    depends_on:
+      - mongo
+    command: -dbhost mongo
+
+  mongo:
+    image: mongo:4.4
+    command: --nojournal
