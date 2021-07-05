@@ -44,10 +44,45 @@ func TestSettingsList(t *testing.T) {
 
 	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
+
 	err := settingsList(c)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "", buf.String())
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSettingsListPreviousArgsOff(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+		},
+		"settings": {
+			"usePreviousArgs": false,
+			"syslog": "",
+			"stderr": "",
+			"logfile": "",
+			"loglevel": "",
+			"cachefile": "",
+			"host": "",
+			"tenant": "",
+			"scope": "",
+			"token": ""
+		}
+	}`
+
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+
+	err := settingsList(c)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "PreviousArgs off\n", buf.String())
 	} else {
 		t.FailNow()
 	}
@@ -60,6 +95,7 @@ func TestSettingsListAll(t *testing.T) {
 	set.Bool("all", false, "doc")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--all"})
+
 	err := settingsList(c)
 
 	if assert.NoError(t, err) {
@@ -211,6 +247,94 @@ func TestSettingsClearErrorSave(t *testing.T) {
 	}
 }
 
+func TestSettingsPreviousArgs(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "on,off")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--on"})
+
+	err := settingsPreviousArgs(c)
+
+	assert.NoError(t, err)
+}
+
+func TestSettingsPreviousArgsErrInitCmd(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,syslog")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--syslog="})
+
+	err := settingsPreviousArgs(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSettingsPreviousArgsErrParam(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "on,off")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--on", "--off"})
+
+	err := settingsPreviousArgs(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "specify either on or off", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestSettingsPreviousArgsErrParamOnOff(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "on,off")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--on", "--off"})
+
+	err := settingsPreviousArgs(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "specify either on or off", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+func TestSettingsPreviousArgsErrorSave(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	ngsi.ConfigFile = &MockIoLib{OpenErr: errors.New("save error")}
+	setupFlagString(set, "host")
+	setupFlagBool(set, "on,off")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--on"})
+
+	err := settingsPreviousArgs(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "save error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
 func TestPrintItem1(t *testing.T) {
 	buf := &bytes.Buffer{}
 	fmt.Fprintf(buf, "")
@@ -232,5 +356,4 @@ func TestPrintItem3(t *testing.T) {
 	printItem(buf, "host", "", true)
 
 	assert.Equal(t, "host: \n", buf.String())
-
 }

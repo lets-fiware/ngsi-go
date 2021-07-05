@@ -86,6 +86,7 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"settings", "list"}, rc: 1},
 		{args: []string{"settings", "clear"}, rc: 1},
 		{args: []string{"settings", "delete"}, rc: 1},
+		{args: []string{"settings", "previousArgs"}, rc: 1},
 		{args: []string{"append", "attrs", "--id", "abc"}, rc: 1},
 		{args: []string{"create", "entities"}, rc: 1},
 		{args: []string{"create", "entity"}, rc: 1},

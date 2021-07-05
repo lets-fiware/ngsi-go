@@ -49,6 +49,9 @@ func settingsList(c *cli.Context) error {
 
 	all := c.Bool("all")
 
+	if !d.UsePreviousArgs {
+		fmt.Fprintln(ngsi.StdWriter, "PreviousArgs off")
+	}
 	printItem(ngsi.StdWriter, "Host", d.Host, all)
 	printItem(ngsi.StdWriter, "FIWARE-Service", d.Tenant, all)
 	printItem(ngsi.StdWriter, "FIWARE-ServicePath", d.Scope, all)
@@ -135,6 +138,41 @@ func settingsClear(c *cli.Context) error {
 	err = ngsi.SavePreviousArgs()
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	return nil
+}
+
+func settingsPreviousArgs(c *cli.Context) error {
+	const funcName = "settingsPreviousArgs"
+
+	ngsi, err := initCmd(c, funcName, false)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	on := c.Bool("on")
+	off := c.Bool("off")
+
+	if on == off {
+		return &ngsiCmdError{funcName, 2, "specify either on or off", nil}
+	}
+
+	d := ngsi.GetPreviousArgs()
+
+	d.UsePreviousArgs = on
+	d.Host = ""
+	d.Tenant = ""
+	d.Scope = ""
+	d.Token = ""
+	d.Syslog = ""
+	d.Stderr = ""
+	d.Logfile = ""
+	d.Loglevel = ""
+
+	err = ngsi.SavePreviousArgs()
+	if err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
 	}
 
 	return nil

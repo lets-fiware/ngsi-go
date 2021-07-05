@@ -758,6 +758,17 @@ var settingsCmd = cli.Command{
 				return settingsClear(c)
 			},
 		},
+		{
+			Name:  "previousArgs",
+			Usage: "Set PreviousArgs mode",
+			Flags: []cli.Flag{
+				offFlag,
+				onFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return settingsPreviousArgs(c)
+			},
+		},
 	},
 }
 

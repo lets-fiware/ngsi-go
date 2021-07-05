@@ -173,7 +173,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 		return nil, &LibError{funcName, 11, err.Error(), err}
 	}
 
-	if ngsi.Updated {
+	if ngsi.Updated && ngsi.GetPreviousArgs().UsePreviousArgs {
 		if _, ok := ngsi.serverList[ngsi.PreviousArgs.Host]; !ok {
 			ngsi.PreviousArgs.Host = ""
 			ngsi.PreviousArgs.Tenant = ""

@@ -210,10 +210,7 @@ func (ngsi *NGSI) GetPreviousArgs() *Settings {
 
 // SavePreviousArgs is ...
 func (ngsi *NGSI) SavePreviousArgs() error {
-	if ngsi.PreviousArgs.UsePreviousArgs {
-		return ngsi.saveConfigFile()
-	}
-	return nil
+	return ngsi.saveConfigFile()
 }
 
 func migration(config *NgsiConfig) {
