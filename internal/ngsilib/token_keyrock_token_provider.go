@@ -41,7 +41,7 @@ import (
 type idmKeyrockTokenProvider struct {
 }
 
-func (i *idmKeyrockTokenProvider) requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error) {
+func (i *idmKeyrockTokenProvider) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenTokenProvider"
 
 	headers := make(map[string]string)
@@ -70,14 +70,13 @@ func (i *idmKeyrockTokenProvider) requestToken(ngsi *NGSI, client *Client, broke
 	token.AccessToken = string(body)
 	token.ExpiresIn = 3600
 
-	var tokenInfo TokenInfo
 	tokenInfo.Type = CKeyrocktokenprovider
 	tokenInfo.Token = token.AccessToken
 	tokenInfo.Expires = time.Unix(utime+token.ExpiresIn, 0)
 	tokenInfo.RefreshToken = ""
 	tokenInfo.Oauth = &token
 
-	return &tokenInfo, nil
+	return tokenInfo, nil
 }
 
 func (i *idmKeyrockTokenProvider) getAuthHeader(token string) (string, string) {

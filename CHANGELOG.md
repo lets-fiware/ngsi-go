@@ -1,5 +1,7 @@
 ## NGSI Go v0.8.4-next
 
+-   Update: Refactoring token manager (#165)
+-   Hardening: Add PreviousArgs sub-cmd in settings (#164)
 -   Documentation: Add example for regproxy (#163)
 -   Hardening: Support basic authentication (#162)
 -   Update: Refactoring token manager (#161)
@@ -22,7 +24,7 @@
 -   Hardening: Adds redirectSignOutUri option in applications command (#145)
 -   Update: applications-pep-proxies.md (#142)
 
-## NGSI Go v0.8.2 - June 6, 2021
+## NGSI Go v0.8.2 (FIWARE Release 8.0.0) - June 6, 2021
 
 -   Hardening: feature to copy NGSIv2 entities as NGSI-LD entities (#138)
 -   Improve quality of documents (#136)

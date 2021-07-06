@@ -51,7 +51,7 @@ type KeyrockToken struct {
 type idmKeyrockIDM struct {
 }
 
-func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error) {
+func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenKeyrockIDM"
 
 	headers := make(map[string]string)
@@ -74,8 +74,6 @@ func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, broker *Server,
 		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	var tokenInfo TokenInfo
-
 	var token KeyrockToken
 	err = JSONUnmarshal(body, &token)
 	if err != nil {
@@ -90,7 +88,7 @@ func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, broker *Server,
 	tokenInfo.RefreshToken = ""
 	tokenInfo.Keyrock = &token
 
-	return &tokenInfo, nil
+	return tokenInfo, nil
 }
 
 func (i *idmKeyrockIDM) getAuthHeader(token string) (string, string) {

@@ -55,11 +55,11 @@ func TestRequestTokenErrorThinkingCities(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: CThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
 	idm := &idmThinkingCities{}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := idm.requestToken(ngsi, client, broker, "")
+	actual, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, CThinkingCities, actual.Type)
@@ -86,11 +86,11 @@ func TestRequestTokenErrorThinkingCitiesErrorUser(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: CThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Tenant: "smartcity", Scope: "/madrid"}}
 	idm := &idmThinkingCities{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -117,11 +117,11 @@ func TestRequestTokenErrorThinkingCitiesErrorHTTP(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: CThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
 	idm := &idmThinkingCities{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -147,11 +147,11 @@ func TestRequestTokenErrorThinkingCitiesErrorStatus(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: CThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
 	idm := &idmThinkingCities{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -177,11 +177,11 @@ func TestRequestTokenThinkingCitiesErrorUnmarshal(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: CThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
 	idm := &idmThinkingCities{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)

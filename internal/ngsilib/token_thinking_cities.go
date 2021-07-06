@@ -39,7 +39,7 @@ import (
 type idmThinkingCities struct {
 }
 
-func (i *idmThinkingCities) requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error) {
+func (i *idmThinkingCities) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenThinkingCities"
 
 	headers := make(map[string]string)
@@ -70,14 +70,13 @@ func (i *idmThinkingCities) requestToken(ngsi *NGSI, client *Client, broker *Ser
 	layout := "2006-01-02T15:04:05.000000Z"
 	t, _ := time.Parse(layout, token.Token.ExpiresAt)
 
-	var tokenInfo TokenInfo
 	tokenInfo.Type = CThinkingCities
 	tokenInfo.Token = res.Header.Get("X-Subject-Token")
 	tokenInfo.RefreshToken = ""
 	tokenInfo.Expires = t
 	tokenInfo.Keystone = &token
 
-	return &tokenInfo, nil
+	return tokenInfo, nil
 }
 
 func (i *idmThinkingCities) getAuthHeader(token string) (string, string) {

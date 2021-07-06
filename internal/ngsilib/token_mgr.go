@@ -67,7 +67,7 @@ type tokens struct {
 // TokenPlugin interface
 //
 type TokenPlugin interface {
-	requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error)
+	requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error)
 	getAuthHeader(string) (string, string)
 }
 
@@ -183,7 +183,7 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 			return accessToken, nil
 		}
 	}
-	token, err := requestToken(ngsi, client, info.RefreshToken)
+	token, err := requestToken(ngsi, client, &info)
 	if err != nil {
 		return "", &LibError{funcName, 1, err.Error(), err}
 	}
@@ -222,7 +222,7 @@ var tokenPlugins = map[string]TokenPlugin{
 	CBasic:                &idmBasic{},
 }
 
-func requestToken(ngsi *NGSI, client *Client, refresh string) (string, error) {
+func requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (string, error) {
 	const funcName = "requestToken"
 
 	ngsi.Logging(LogInfo, funcName+"\n")
@@ -235,16 +235,27 @@ func requestToken(ngsi *NGSI, client *Client, refresh string) (string, error) {
 		return "", &LibError{funcName, 1, "unknown idm type: " + idmType, nil}
 	}
 
-	var tokenInfo *TokenInfo
-	tokenInfo, err := idm.requestToken(ngsi, client, broker, refresh)
+	tokenInfo, err := idm.requestToken(ngsi, client, tokenInfo)
 	if err != nil {
 		return "", &LibError{funcName, 2, err.Error(), err}
 	}
 
 	client.storeToken(tokenInfo.Token)
 
-	newTokenList := make(tokenInfoList)
 	hash := getHash(client)
+	newList := appendToken(ngsi, hash, tokenInfo)
+	ngsi.tokenList = *newList
+
+	err = saveToken(*ngsi.CacheFile.FileName(), newList)
+	if err != nil {
+		return "", &LibError{funcName, 3, err.Error(), err}
+	}
+
+	return tokenInfo.Token, nil
+}
+
+func appendToken(ngsi *NGSI, hash string, tokenInfo *TokenInfo) *tokenInfoList {
+	newTokenList := make(tokenInfoList)
 	newTokenList[hash] = *tokenInfo
 
 	utime := ngsi.TimeLib.NowUnix()
@@ -255,27 +266,21 @@ func requestToken(ngsi *NGSI, client *Client, refresh string) (string, error) {
 		}
 	}
 
-	ngsi.tokenList = newTokenList
-
-	tokens := make(map[string]interface{})
-	tokens["tokens"] = ngsi.tokenList
-	tokens["version"] = "1"
-
-	err = saveToken(*ngsi.CacheFile.FileName(), tokens)
-	if err != nil {
-		return "", &LibError{funcName, 3, err.Error(), err}
-	}
-
-	return tokenInfo.Token, nil
+	return &newTokenList
 }
 
-func saveToken(file string, tokens map[string]interface{}) error {
+func saveToken(file string, tokenList *tokenInfoList) error {
 	const funcName = "saveToken"
 
 	gNGSI.Logging(LogInfo, funcName+"\n")
 
 	if file == "" {
 		return nil
+	}
+
+	tokens := &tokens{
+		Version: "1",
+		Tokens:  *tokenList,
 	}
 
 	cacheFile := gNGSI.CacheFile

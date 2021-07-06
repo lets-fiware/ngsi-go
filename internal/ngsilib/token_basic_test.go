@@ -38,11 +38,11 @@ import (
 func TestRequestTokenBasic(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmBasic{}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := idm.requestToken(ngsi, client, broker, "")
+	actual, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "basic", actual.Type)
@@ -53,11 +53,11 @@ func TestRequestTokenBasic(t *testing.T) {
 func TestRequestTokenBasicErrorUser(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmBasic{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
