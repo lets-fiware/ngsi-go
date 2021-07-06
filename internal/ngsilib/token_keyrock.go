@@ -40,8 +40,10 @@ import (
 type idmKeyrock struct {
 }
 
-func (i *idmKeyrock) requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error) {
+func (i *idmKeyrock) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenKeyrock"
+
+	broker := client.Server
 
 	headers := make(map[string]string)
 	u, _ := url.Parse(client.idmURL())
@@ -64,7 +66,6 @@ func (i *idmKeyrock) requestToken(ngsi *NGSI, client *Client, broker *Server, re
 		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	var tokenInfo TokenInfo
 	utime := ngsi.TimeLib.NowUnix()
 
 	var token OauthToken
@@ -79,7 +80,7 @@ func (i *idmKeyrock) requestToken(ngsi *NGSI, client *Client, broker *Server, re
 	tokenInfo.Expires = time.Unix(utime+token.ExpiresIn, 0)
 	tokenInfo.Oauth = &token
 
-	return &tokenInfo, nil
+	return tokenInfo, nil
 }
 
 func (i *idmKeyrock) getAuthHeader(token string) (string, string) {

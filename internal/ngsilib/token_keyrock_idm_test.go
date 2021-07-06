@@ -55,11 +55,11 @@ func TestRequestTokenKeyrockIDM(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := idm.requestToken(ngsi, client, broker, "")
+	actual, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, CKeyrockIDM, actual.Type)
@@ -85,11 +85,11 @@ func TestRequestTokenKeyrockIDMErrorUser(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp"}}
 	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -115,11 +115,11 @@ func TestRequestTokenKeyrockIDMErrorHTTP(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -144,12 +144,11 @@ func TestRequestTokenKeyrockIDMErrorHTTPStatus(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
-
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
@@ -173,11 +172,11 @@ func TestRequestTokenKeyrockIDMErrorUnmarshal(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)

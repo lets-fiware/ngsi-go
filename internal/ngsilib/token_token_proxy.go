@@ -41,7 +41,7 @@ import (
 type idmTokenProxy struct {
 }
 
-func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error) {
+func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenTokenProxy"
 
 	headers := make(map[string]string)
@@ -64,7 +64,6 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, broker *Server,
 		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	var tokenInfo TokenInfo
 	utime := ngsi.TimeLib.NowUnix()
 
 	var token OauthToken
@@ -79,7 +78,7 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, broker *Server,
 	tokenInfo.RefreshToken = token.RefreshToken
 	tokenInfo.Oauth = &token
 
-	return &tokenInfo, nil
+	return tokenInfo, nil
 }
 
 func (i *idmTokenProxy) getAuthHeader(token string) (string, string) {

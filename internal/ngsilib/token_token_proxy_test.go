@@ -54,11 +54,11 @@ func TestRequestTokenTokenproxy(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := idm.requestToken(ngsi, client, broker, "")
+	actual, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, CTokenproxy, actual.Type)
@@ -83,11 +83,11 @@ func TestRequestTokenTokenproxyErrorUser(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -113,11 +113,11 @@ func TestRequestTokenTokenproxyErrorHTTP(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -142,11 +142,11 @@ func TestRequestTokenTokenproxyErrorHTTPStatus(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -171,11 +171,11 @@ func TestRequestTokenTokenproxyErrorUnmarshal(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)

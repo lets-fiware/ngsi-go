@@ -37,7 +37,7 @@ import (
 type idmBasic struct {
 }
 
-func (i *idmBasic) requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error) {
+func (i *idmBasic) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenBasic"
 
 	username, password, err := getUserNamePassword(client)
@@ -48,12 +48,10 @@ func (i *idmBasic) requestToken(ngsi *NGSI, client *Client, broker *Server, refr
 	token := base64.URLEncoding.EncodeToString([]byte(username + ":" + password))
 	utime := ngsi.TimeLib.NowUnix()
 
-	tokenInfo := &TokenInfo{
-		Type:         CBasic,
-		Token:        token,
-		RefreshToken: "",
-		Expires:      time.Unix(utime+3600, 0),
-	}
+	tokenInfo.Type = CBasic
+	tokenInfo.Token = token
+	tokenInfo.RefreshToken = ""
+	tokenInfo.Expires = time.Unix(utime+3600, 0)
 
 	return tokenInfo, nil
 }

@@ -39,8 +39,10 @@ import (
 type idmPasswordCredentials struct {
 }
 
-func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, broker *Server, refresh string) (*TokenInfo, error) {
+func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenPasswordCredentials"
+
+	broker := client.Server
 
 	headers := make(map[string]string)
 	u, _ := url.Parse(client.idmURL())
@@ -63,7 +65,6 @@ func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, broker
 		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	var tokenInfo TokenInfo
 	utime := ngsi.TimeLib.NowUnix()
 
 	var token OauthToken
@@ -78,7 +79,7 @@ func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, broker
 	tokenInfo.RefreshToken = token.RefreshToken
 	tokenInfo.Oauth = &token
 
-	return &tokenInfo, nil
+	return tokenInfo, nil
 }
 
 func (i *idmPasswordCredentials) getAuthHeader(token string) (string, string) {

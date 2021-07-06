@@ -431,8 +431,9 @@ func TestRequestToken(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := requestToken(ngsi, client, "")
+	actual, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
@@ -456,8 +457,9 @@ func TestRequestTokenMainKeyrockIDM(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := requestToken(ngsi, client, "")
+	actual, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		expected := ""
@@ -482,8 +484,9 @@ func TestRequestTokenThinkingCitiesIDM(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion:1026/", IdmType: CThinkingCities, IdmHost: "http://localhost:5001/v3/auth/tokens", Username: "usertest", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := requestToken(ngsi, client, "")
+	actual, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		expected := "gAAAAABgeojDoWDHy9r4Lq1sNRbss2ncweTzmQ5jBpefFI5eYFh6fA3DyzQM8mjzoiGqrUH6JNWl4Sk1XVVMwTf18eFJ7FluEkPklrM_AFSGXv1IO0j_Dy-UQxNUAEYyxqT8Ny3O2TNC78MOKkt2UoR3oOg4HBcjkf6iCsVFwPhW9BGjC37LWdk"
@@ -508,8 +511,9 @@ func TestRequestTokenExpires(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := requestToken(ngsi, client, "")
+	actual, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
@@ -532,8 +536,9 @@ func TestRequestTokenErrorIdmType(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: "fiware", IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	tokenInfo := &TokenInfo{}
 
-	_, err := requestToken(ngsi, client, "")
+	_, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -558,8 +563,9 @@ func TestRequestTokenErrorRequestToken(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	tokenInfo := &TokenInfo{}
 
-	_, err := requestToken(ngsi, client, "")
+	_, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -584,8 +590,9 @@ func TestRequestTokenErrorSave(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	tokenInfo := &TokenInfo{}
 
-	_, err := requestToken(ngsi, client, "")
+	_, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -594,13 +601,30 @@ func TestRequestTokenErrorSave(t *testing.T) {
 	}
 }
 
+func TestAppendToken(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	hash := "token3"
+	tokenInfo := &TokenInfo{}
+
+	actual := appendToken(ngsi, hash, tokenInfo)
+
+	_, ok := (*actual)["token3"]
+
+	assert.Equal(t, 1, len(*actual))
+	assert.Equal(t, true, ok)
+}
+
 func TestSaveToken(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{}
 	ngsi.LogWriter = &bytes.Buffer{}
-	tokens := make(map[string]interface{})
+	tokenInfo := &tokenInfoList{}
 
-	err := saveToken("cache-file", tokens)
+	err := saveToken("cache-file", tokenInfo)
 	assert.NoError(t, err)
 }
 
@@ -608,9 +632,9 @@ func TestSaveTokenNoFileName(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{}
 	ngsi.LogWriter = &bytes.Buffer{}
-	tokens := make(map[string]interface{})
+	tokenInfo := &tokenInfoList{}
 
-	err := saveToken("", tokens)
+	err := saveToken("", tokenInfo)
 	assert.NoError(t, err)
 }
 
@@ -618,9 +642,9 @@ func TestSaveTokenErrorOpenFile(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{OpenErr: errors.New("open error")}
 	ngsi.LogWriter = &bytes.Buffer{}
-	tokens := make(map[string]interface{})
+	tokenInfo := &tokenInfoList{}
 
-	err := saveToken("cache-file", tokens)
+	err := saveToken("cache-file", tokenInfo)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
@@ -632,9 +656,9 @@ func TestSaveTokenErrorTruncate(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{TruncateErr: errors.New("truncate error")}
 	ngsi.LogWriter = &bytes.Buffer{}
-	tokens := make(map[string]interface{})
+	tokenInfo := &tokenInfoList{}
 
-	err := saveToken("cache-file", tokens)
+	err := saveToken("cache-file", tokenInfo)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
@@ -646,9 +670,9 @@ func TestSaveTokenErrorEncode(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	ngsi.CacheFile = &MockIoLib{EncodeErr: errors.New("encode error")}
 	ngsi.LogWriter = &bytes.Buffer{}
-	tokens := make(map[string]interface{})
+	tokenInfo := &tokenInfoList{}
 
-	err := saveToken("cache-file", tokens)
+	err := saveToken("cache-file", tokenInfo)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)

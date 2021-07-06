@@ -54,11 +54,11 @@ func TestRequestTokenPasswordCredentials(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{}
 
-	actual, err := idm.requestToken(ngsi, client, broker, "")
+	actual, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, CPasswordCredentials, actual.Type)
@@ -83,11 +83,11 @@ func TestRequestTokenPasswordCredentialsErrorUser(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CPasswordCredentials, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -113,11 +113,11 @@ func TestRequestTokenPasswordCredentialsErrorHTTP(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -143,11 +143,11 @@ func TestRequestTokenPasswordCredentialsErrorHTTPStatus(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -172,12 +172,11 @@ func TestRequestTokenPasswordCredentialsErrorUnmarshal(t *testing.T) {
 	ngsi.tokenList["token1"] = TokenInfo{}
 	ngsi.tokenList["token2"] = TokenInfo{}
 
-	broker := &Server{}
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CPasswordCredentials, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
 	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{}
 
-	_, err := idm.requestToken(ngsi, client, broker, "")
-
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
