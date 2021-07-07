@@ -43,44 +43,64 @@ type idmKeyrock struct {
 func (i *idmKeyrock) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenKeyrock"
 
-	broker := client.Server
+	var res *http.Response
+	var body []byte
+	var payloads []string
 
-	headers := make(map[string]string)
-	u, _ := url.Parse(client.idmURL())
-	idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
+	if tokenInfo.RefreshToken != "" {
+		payloads = append(payloads, fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokenInfo.RefreshToken))
+	}
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
 		return nil, &LibError{funcName, 1, err.Error(), err}
 	}
-	idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
-	auth := fmt.Sprintf("%s:%s", broker.ClientID, broker.ClientSecret)
-	idm.SetHeader("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth))))
-	data := fmt.Sprintf("grant_type=password&username=%s&password=%s", username, password)
+	payloads = append(payloads, fmt.Sprintf("grant_type=password&username=%s&password=%s", username, password))
 
-	res, body, err := idm.HTTPPost(data)
-	if err != nil {
-		return nil, &LibError{funcName, 2, err.Error(), err}
+	for _, payload := range payloads {
+
+		headers := make(map[string]string)
+		u, _ := url.Parse(client.idmURL())
+		idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
+		broker := client.Server
+
+		idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
+		auth := fmt.Sprintf("%s:%s", broker.ClientID, broker.ClientSecret)
+		idm.SetHeader("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth))))
+
+		res, body, err = idm.HTTPPost(payload)
+		if err != nil {
+			return nil, &LibError{funcName, 2, err.Error(), err}
+		}
+
+		switch res.StatusCode {
+		default:
+			gNGSI.Logging(LogInfo, fmt.Sprintf("%s %d\n", funcName, res.StatusCode))
+			continue
+		case http.StatusUnauthorized:
+			gNGSI.Logging(LogInfo, funcName+" Unauthorized\n")
+			continue
+		case http.StatusOK:
+			utime := ngsi.TimeLib.NowUnix()
+
+			var oToken OauthToken
+			err = JSONUnmarshal(body, &oToken)
+			if err != nil {
+				return nil, &LibError{funcName, 3, err.Error(), err}
+			}
+
+			tokenInfo := &TokenInfo{
+				Type:         CKeyrock,
+				Token:        oToken.AccessToken,
+				RefreshToken: oToken.RefreshToken,
+				Expires:      time.Unix(utime+oToken.ExpiresIn, 0),
+				Oauth:        &oToken,
+			}
+			return tokenInfo, nil
+		}
 	}
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
-	}
 
-	utime := ngsi.TimeLib.NowUnix()
-
-	var token OauthToken
-	err = JSONUnmarshal(body, &token)
-	if err != nil {
-		return nil, &LibError{funcName, 4, err.Error(), err}
-	}
-
-	tokenInfo.Type = CKeyrock
-	tokenInfo.Token = token.AccessToken
-	tokenInfo.RefreshToken = token.RefreshToken
-	tokenInfo.Expires = time.Unix(utime+token.ExpiresIn, 0)
-	tokenInfo.Oauth = &token
-
-	return tokenInfo, nil
+	return nil, &LibError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 }
 
 func (i *idmKeyrock) getAuthHeader(token string) (string, string) {
