@@ -66,6 +66,34 @@ func TestRequestTokenKeyrock(t *testing.T) {
 	}
 }
 
+func TestRequestTokenKeyrockRefresh(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token": "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", "expires_in": 3599, "refresh_token": "03e33a311e03317b390956729bcac2794b695670", "scope": [ "bearer" ], "token_type": "Bearer" }`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmKeyrock{}
+	tokenInfo := &TokenInfo{RefreshToken: "refresh"}
+
+	actual, err := idm.requestToken(ngsi, client, tokenInfo)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, CKeyrock, actual.Type)
+		assert.Equal(t, "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", actual.Oauth.AccessToken)
+	}
+}
+
 func TestRequestTokenKeyrockErrorUser(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
@@ -125,35 +153,6 @@ func TestRequestTokenKeyrockErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestRequestTokenKeyrockErrorHTTPStatus(t *testing.T) {
-	ngsi := testNgsiLibInit()
-
-	ngsi.tokenList = tokenInfoList{}
-	filename := ""
-	ngsi.CacheFile = &MockIoLib{filename: &filename}
-	ngsi.LogWriter = &bytes.Buffer{}
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.ResBody = []byte(`bad request`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	ngsi.tokenList["token1"] = TokenInfo{}
-	ngsi.tokenList["token2"] = TokenInfo{}
-
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
-	idm := &idmKeyrock{}
-	tokenInfo := &TokenInfo{}
-
-	_, err := idm.requestToken(ngsi, client, tokenInfo)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "error  bad request", ngsiErr.Message)
-	}
-}
-
 func TestRequestTokenKeyrockErrorUnmarshal(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
@@ -178,9 +177,67 @@ func TestRequestTokenKeyrockErrorUnmarshal(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		actual := "json: cannot unmarshal string into Go value of type ngsilib.OauthToken Field: (14) \"access_token\": \"ad5252cd520c"
 		assert.Equal(t, actual, ngsiErr.Message)
+	}
+}
+
+func TestRequestTokenKeyrockErrorHTTPStatus(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.ResBody = []byte(`bad request`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmKeyrock{}
+	tokenInfo := &TokenInfo{}
+
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "error  bad request", ngsiErr.Message)
+	}
+}
+
+func TestRequestTokenKeyrockErrorHTTPStatusUnauthorized(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusUnauthorized
+	reqRes.ResBody = []byte(`Unauthorized`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeyrock, IdmHost: "http://idm", Username: "fiware", Password: "1234", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmKeyrock{}
+	tokenInfo := &TokenInfo{}
+
+	_, err := idm.requestToken(ngsi, client, tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "error  Unauthorized", ngsiErr.Message)
 	}
 }
 

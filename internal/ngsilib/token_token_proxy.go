@@ -44,41 +44,58 @@ type idmTokenProxy struct {
 func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
 	const funcName = "requestTokenTokenProxy"
 
-	headers := make(map[string]string)
-	u, _ := url.Parse(client.idmURL())
-	idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
+	var res *http.Response
+	var body []byte
+	var payloads []string
 
+	if tokenInfo.RefreshToken != "" {
+		payloads = append(payloads, fmt.Sprintf("{\"refresh\": \"%s\"}", tokenInfo.RefreshToken))
+	}
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
 		return nil, &LibError{funcName, 1, err.Error(), err}
 	}
+	payloads = append(payloads, fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password))
 
-	idm.SetHeader(cContentType, cAppJSON)
-	data := fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password)
+	for _, payload := range payloads {
+		headers := make(map[string]string)
+		u, _ := url.Parse(client.idmURL())
+		idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
 
-	res, body, err := idm.HTTPPost(data)
-	if err != nil {
-		return nil, &LibError{funcName, 2, err.Error(), err}
+		idm.SetHeader(cContentType, cAppJSON)
+
+		res, body, err = idm.HTTPPost(payload)
+		if err != nil {
+			return nil, &LibError{funcName, 2, err.Error(), err}
+		}
+		switch res.StatusCode {
+		default:
+			gNGSI.Logging(LogInfo, fmt.Sprintf("%s %d\n", funcName, res.StatusCode))
+			continue
+		case http.StatusUnauthorized:
+			gNGSI.Logging(LogInfo, funcName+" Unauthorized\n")
+			continue
+		case http.StatusOK:
+			utime := ngsi.TimeLib.NowUnix()
+
+			var oToken OauthToken
+			err = JSONUnmarshal(body, &oToken)
+			if err != nil {
+				return nil, &LibError{funcName, 3, err.Error(), err}
+			}
+
+			tokenInfo := &TokenInfo{
+				Type:         CTokenproxy,
+				Token:        oToken.AccessToken,
+				Expires:      time.Unix(utime+oToken.ExpiresIn, 0),
+				RefreshToken: oToken.RefreshToken,
+				Oauth:        &oToken,
+			}
+			return tokenInfo, nil
+		}
 	}
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
-	}
 
-	utime := ngsi.TimeLib.NowUnix()
-
-	var token OauthToken
-	err = JSONUnmarshal(body, &token)
-	if err != nil {
-		return nil, &LibError{funcName, 4, err.Error(), err}
-	}
-
-	tokenInfo.Type = CTokenproxy
-	tokenInfo.Token = token.AccessToken
-	tokenInfo.Expires = time.Unix(utime+token.ExpiresIn, 0)
-	tokenInfo.RefreshToken = token.RefreshToken
-	tokenInfo.Oauth = &token
-
-	return tokenInfo, nil
+	return nil, &LibError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 }
 
 func (i *idmTokenProxy) getAuthHeader(token string) (string, string) {
