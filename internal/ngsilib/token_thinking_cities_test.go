@@ -190,6 +190,18 @@ func TestRequestTokenThinkingCitiesErrorUnmarshal(t *testing.T) {
 	}
 }
 
+func TestRevokeTokenThinkingCities(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmThinkingCities{}
+	tokenInfo := &TokenInfo{}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	assert.NoError(t, err)
+}
+
 func TestGetAuthHeaderThinkingCities(t *testing.T) {
 	idm := &idmThinkingCities{}
 

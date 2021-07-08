@@ -79,6 +79,10 @@ func (i *idmKeyrockTokenProvider) requestToken(ngsi *NGSI, client *Client, token
 	return tokenInfo, nil
 }
 
+func (i *idmKeyrockTokenProvider) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
+	return nil
+}
+
 func (i *idmKeyrockTokenProvider) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
 }

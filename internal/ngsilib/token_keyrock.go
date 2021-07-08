@@ -34,6 +34,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -101,6 +102,31 @@ func (i *idmKeyrock) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenIn
 	}
 
 	return nil, &LibError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+}
+
+func (i *idmKeyrock) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
+	const funcName = "revokeTokenKeyrock"
+
+	headers := make(map[string]string)
+
+	u, _ := url.Parse(strings.Replace(client.idmURL(), "/token", "/revoke", 1))
+	idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
+	broker := client.Server
+
+	idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
+	auth := fmt.Sprintf("%s:%s", broker.ClientID, broker.ClientSecret)
+	idm.SetHeader("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth))))
+	payload := fmt.Sprintf("token=%s&token_type_hint=refresh_token", tokenInfo.RefreshToken)
+
+	res, body, err := idm.HTTPPost(payload)
+	if err != nil {
+		return &LibError{funcName, 1, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	return nil
 }
 
 func (i *idmKeyrock) getAuthHeader(token string) (string, string) {

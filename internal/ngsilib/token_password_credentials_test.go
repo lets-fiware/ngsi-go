@@ -185,6 +185,73 @@ func TestRequestTokenPasswordCredentialsErrorUnmarshal(t *testing.T) {
 	}
 }
 
+func TestRevokeTokenPasswordCredentials(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ReqData = []byte("token=1a8346b8df2881c8b3407b0f39c80d1374204b93&token_type_hint=refresh_token")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{RefreshToken: "1a8346b8df2881c8b3407b0f39c80d1374204b93"}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	assert.NoError(t, err)
+}
+
+func TestRevokeTokenPasswordCredentialsErrorHTTP(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ReqData = []byte("token=1a8346b8df2881c8b3407b0f39c80d1374204b93&token_type_hint=refresh_token")
+	reqRes.Err = errors.New("http error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{RefreshToken: "1a8346b8df2881c8b3407b0f39c80d1374204b93"}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
+	}
+}
+
+func TestRevokeToknePasswordCredentialsErrorHTTPStatus(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.ReqData = []byte("token=1a8346b8df2881c8b3407b0f39c80d1374204b93&token_type_hint=refresh_token")
+	reqRes.ResBody = []byte("bad request")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{RefreshToken: "1a8346b8df2881c8b3407b0f39c80d1374204b93"}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "error  bad request", ngsiErr.Message)
+	}
+}
+
 func TestGetAuthHeaderPasswordCredentials(t *testing.T) {
 	idm := &idmPasswordCredentials{}
 

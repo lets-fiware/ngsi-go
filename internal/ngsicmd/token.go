@@ -46,6 +46,10 @@ func tokenCommand(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
+	if c.Bool("revoke") {
+		return revokeTokenCommand(c, ngsi)
+	}
+
 	host := ngsi.Host
 
 	client, err := newClient(ngsi, c, false, nil)
@@ -99,6 +103,33 @@ func tokenCommand(c *cli.Context) error {
 		fmt.Fprintf(ngsi.StdWriter, "%d\n", time)
 	} else {
 		fmt.Fprintln(ngsi.StdWriter, client.Token)
+	}
+
+	return nil
+}
+
+func revokeTokenCommand(c *cli.Context, ngsi *ngsilib.NGSI) error {
+	const funcName = "revokeTokenCommand"
+
+	if isSetOR(c, []string{"verbose", "pretty", "expires"}) {
+		return &ngsiCmdError{funcName, 1, "only --revoke can be specified", nil}
+	}
+
+	host := ngsi.Host
+
+	client, err := newClientSkipGetToken(ngsi, c, false, nil)
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	_, err = ngsi.TokenInfo(client)
+	if err != nil {
+		return &ngsiCmdError{funcName, 3, host + " has no token", err}
+	}
+
+	err = ngsi.RevokeToken(client)
+	if err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
 
 	return nil

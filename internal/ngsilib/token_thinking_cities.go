@@ -79,6 +79,10 @@ func (i *idmThinkingCities) requestToken(ngsi *NGSI, client *Client, tokenInfo *
 	return tokenInfo, nil
 }
 
+func (i *idmThinkingCities) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
+	return nil
+}
+
 func (i *idmThinkingCities) getAuthHeader(token string) (string, string) {
 	return "X-Auth-Token", token
 }

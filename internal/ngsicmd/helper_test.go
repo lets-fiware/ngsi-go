@@ -248,13 +248,15 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 //
 
 type MockIoLib struct {
-	OpenErr   error
-	EncodeErr error
-	filename  *string
-	HomeDir   error
-	PathAbs   error
-	StatErr   error
-	Tokens    *string
+	OpenErr    error
+	EncodeErr  error
+	filename   *string
+	HomeDir    error
+	PathAbs    error
+	StatErr    error
+	Tokens     *string
+	TruncIndex int
+	Trunc      []error
 }
 
 func (io *MockIoLib) Open() (err error) {
@@ -266,6 +268,11 @@ func (io *MockIoLib) OpenFile(flag int, perm os.FileMode) (err error) {
 }
 
 func (io *MockIoLib) Truncate(size int64) error {
+	if io.Trunc != nil {
+		e := io.Trunc[io.TruncIndex]
+		io.TruncIndex++
+		return e
+	}
 	return nil
 }
 

@@ -71,7 +71,7 @@ func copy(c *cli.Context) error {
 
 	var f func(c *cli.Context, ngsi *ngsilib.NGSI, source, destination *ngsilib.Client, entityType string) error
 
-	destination, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	destination, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	if err != nil {
 		return &ngsiCmdError{funcName, 5, err.Error() + " (destination)", err}
 	}

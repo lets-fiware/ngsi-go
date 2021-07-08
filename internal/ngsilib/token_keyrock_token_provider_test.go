@@ -152,6 +152,18 @@ func TestRequestTokenKeyrocktokenproviderErrorHTTPStatus(t *testing.T) {
 	}
 }
 
+func TestRevokeTokenKeyrocktokenprovider(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmKeyrockTokenProvider{}
+	tokenInfo := &TokenInfo{}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	assert.NoError(t, err)
+}
+
 func TestGetAuthHeaderKeyrocktokenprovider(t *testing.T) {
 	idm := &idmKeyrockTokenProvider{}
 

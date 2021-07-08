@@ -580,6 +580,11 @@ var (
 		Aliases: []string{"e"},
 		Usage:   "expires",
 	}
+	revokeFlag = &cli.BoolFlag{
+		Name:    "revoke",
+		Aliases: []string{"r"},
+		Usage:   "revoke token",
+	}
 	expiresSFlag = &cli.StringFlag{
 		Name:    "expires",
 		Aliases: []string{"e"},

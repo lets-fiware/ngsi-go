@@ -56,6 +56,10 @@ func (i *idmBasic) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo
 	return tokenInfo, nil
 }
 
+func (i *idmBasic) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
+	return nil
+}
+
 func (i *idmBasic) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Basic " + token
 }

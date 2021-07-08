@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Add revoke token option (#168)
 -   Fix: Fix error information (#167)
 -   Use refresh token to renew token for Keyrock (#166)
 -   Update: Refactoring token manager (#165)

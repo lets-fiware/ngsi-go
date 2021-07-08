@@ -43,7 +43,29 @@ func newClient(ngsi *ngsilib.NGSI, c *cli.Context, isHTTPVerb bool, serverList [
 		return nil, &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := ngsi.NewClient(ngsi.Host, flags, isHTTPVerb)
+	client, err := ngsi.NewClient(ngsi.Host, flags, isHTTPVerb, false)
+	if err != nil {
+		return nil, &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	if serverList != nil {
+		if !ngsilib.Contains(serverList, client.Server.ServerType) {
+			return nil, &ngsiCmdError{funcName, 3, "not supported by " + client.Server.ServerType, nil}
+		}
+	}
+
+	return client, nil
+}
+
+func newClientSkipGetToken(ngsi *ngsilib.NGSI, c *cli.Context, isHTTPVerb bool, serverList []string) (*ngsilib.Client, error) {
+	const funcName = "newClientSkipGetToken"
+
+	flags, err := parseFlags(ngsi, c)
+	if err != nil {
+		return nil, &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	client, err := ngsi.NewClient(ngsi.Host, flags, isHTTPVerb, true)
 	if err != nil {
 		return nil, &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

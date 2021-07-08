@@ -49,7 +49,7 @@ func TestNewClient(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -68,7 +68,7 @@ func TestNewClientHTTP(t *testing.T) {
 
 	ngsi.Updated = true
 	ngsi.PreviousArgs.Host = "http://localhost:1026"
-	_, err := ngsi.NewClient("http://localhost:1026", flags, false)
+	_, err := ngsi.NewClient("http://localhost:1026", flags, false, false)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "", ngsi.PreviousArgs.Host)
@@ -89,7 +89,7 @@ func TestNewClientHTTP2(t *testing.T) {
 
 	ngsi.Updated = true
 	ngsi.PreviousArgs.Host = "localhost:1026"
-	_, err := ngsi.NewClient("localhost:1026", flags, false)
+	_, err := ngsi.NewClient("localhost:1026", flags, false, false)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "", ngsi.PreviousArgs.Host)
@@ -103,7 +103,7 @@ func TestNewClientURL(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("http://orion", flags, false)
+	_, err := ngsi.NewClient("http://orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -117,7 +117,7 @@ func TestNewClientIPAdress(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("192.168.1.1?options=keyValues", flags, false)
+	_, err := ngsi.NewClient("192.168.1.1?options=keyValues", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -137,7 +137,7 @@ func TestNewClientTenatScope(t *testing.T) {
 	scope := "/iot"
 	flags := &CmdFlags{Tenant: &tenant, Scope: &scope}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -154,7 +154,7 @@ func TestNewClientAPIPath(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -171,7 +171,7 @@ func TestNewClientNgsiTypeV2(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -190,7 +190,7 @@ func TestNewClientToken(t *testing.T) {
 	token := "e08ff73ae501d19225152e426ea74d0c4fe458c2"
 	flags := &CmdFlags{Token: &token}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -214,7 +214,7 @@ func TestNewClientIdmType(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -237,7 +237,7 @@ func TestNewClientSafeString(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -261,7 +261,7 @@ func TestNewClientSafeStringCmdFlag(t *testing.T) {
 	safeString := "on"
 	flags := &CmdFlags{SafeString: &safeString}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	assert.NoError(t, err)
 }
@@ -273,7 +273,7 @@ func TestNewClientErrorURL(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("http://orion\n", flags, false)
+	_, err := ngsi.NewClient("http://orion\n", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -294,7 +294,7 @@ func TestNewClientErrorHost(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -315,7 +315,7 @@ func TestNewClientErrorHost2NotFound(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -338,7 +338,7 @@ func TestNewClientErrorHost2Empty(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -356,12 +356,30 @@ func TestNewClientErrorHostNotFound(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("192.168.1", flags, false)
+	_, err := ngsi.NewClient("192.168.1", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "error host: 192.168.1", ngsiErr.Message)
+	}
+}
+
+func TestNewClientErrorHostNotFound2(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	fileName := ""
+	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
+
+	InitServerList()
+
+	flags := &CmdFlags{}
+
+	_, err := ngsi.NewClient("", flags, false, false)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
 }
 
@@ -377,7 +395,7 @@ func TestNewClientErrorURLParse(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -398,7 +416,7 @@ func TestNewClientErrorAPIPath(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -419,7 +437,7 @@ func TestNewClientErrorIdmType(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -446,7 +464,7 @@ func TestNewClientErrorSafeString(t *testing.T) {
 
 	flags := &CmdFlags{}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -474,7 +492,7 @@ func TestNewClientErrorSafeStringCmdFlag(t *testing.T) {
 	safeString := "enable"
 	flags := &CmdFlags{SafeString: &safeString}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -502,7 +520,7 @@ func TestNewClientInitHeader(t *testing.T) {
 	tenant := "FIWARE"
 	flags := &CmdFlags{Tenant: &tenant}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
@@ -525,7 +543,7 @@ func TestNewClientErrorSaveConfig(t *testing.T) {
 	scope := "/iot"
 	flags := &CmdFlags{Tenant: &tenant, Scope: &scope}
 
-	_, err := ngsi.NewClient("orion", flags, false)
+	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)

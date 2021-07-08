@@ -783,5 +783,86 @@ func TestGetUserNamePasswordErrorPassword(t *testing.T) {
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
+}
 
+func TestRevodeToken(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: "token", Expires: time.Unix(3600, 0)}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", IdmType: CBasic}}
+
+	err := ngsi.RevokeToken(client)
+
+	assert.NoError(t, err)
+}
+
+func TestRevodeTokenErrorIdm(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := ""
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: "token", Expires: time.Unix(3600, 0)}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", IdmType: "unknown"}}
+
+	err := ngsi.RevokeToken(client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
+	}
+}
+
+func TestRevodeTokenErrorRevokeToken(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := "file"
+	ngsi.CacheFile = &MockIoLib{filename: &filename}
+	ngsi.LogWriter = &bytes.Buffer{}
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: "token", Expires: time.Unix(3600, 0)}
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Err = errors.New("reovke token error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", IdmType: "keyrock"}}
+
+	err := ngsi.RevokeToken(client)
+
+	assert.NoError(t, err)
+}
+
+func TestRevodeTokenErrorSaveToken(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	ngsi.tokenList = tokenInfoList{}
+	filename := "file"
+	ngsi.CacheFile = &MockIoLib{filename: &filename, OpenErr: errors.New("open error")}
+	ngsi.LogWriter = &bytes.Buffer{}
+	ngsi.tokenList["token1"] = TokenInfo{}
+	ngsi.tokenList["token2"] = TokenInfo{}
+	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: "token", Expires: time.Unix(3600, 0)}
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", IdmType: CBasic}}
+
+	err := ngsi.RevokeToken(client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "open error file", ngsiErr.Message)
+	}
 }

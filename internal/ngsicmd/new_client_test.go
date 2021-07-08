@@ -68,3 +68,114 @@ func TestNewClientError(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestNewClientErrorNewClient(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=keyrock"})
+
+	_, err := newClient(ngsi, c, false, []string{"broker"})
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestNewClientErrorServerType(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=keyrock"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
+	_, err = newClient(ngsi, c, false, []string{"broker"})
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "not supported by keyrock", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestNewClientSkipGetToken(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	_ = set.Parse([]string{"--host=orion"})
+	c := cli.NewContext(app, set, nil)
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
+	_, err = newClientSkipGetToken(ngsi, c, false, []string{"broker"})
+
+	assert.NoError(t, err)
+}
+
+func TestNewClientSkipGetTokenErrorParseFlags(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--link=fiware"})
+
+	_, err := newClientSkipGetToken(ngsi, c, false, []string{"broker"})
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "fiware not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestNewClientSkipGetTokenErrorNewClient(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=keyrock"})
+
+	_, err := newClientSkipGetToken(ngsi, c, false, []string{"broker"})
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestNewClientSkipGetTokenErrorServerType(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=keyrock"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
+	_, err = newClientSkipGetToken(ngsi, c, false, []string{"broker"})
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "not supported by keyrock", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}

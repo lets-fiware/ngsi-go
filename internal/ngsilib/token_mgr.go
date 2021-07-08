@@ -32,6 +32,7 @@ package ngsilib
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
 	"path/filepath"
 	"strings"
 	"time"
@@ -68,6 +69,7 @@ type tokens struct {
 //
 type TokenPlugin interface {
 	requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error)
+	revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error
 	getAuthHeader(string) (string, string)
 }
 
@@ -199,8 +201,7 @@ func (ngsi *NGSI) GetAuthHeader(client *Client) (string, string, error) {
 		return "", "", &LibError{funcName, 1, err.Error(), err}
 	}
 
-	broker := client.Server
-	idmType := strings.ToLower(broker.IdmType)
+	idmType := strings.ToLower(client.Server.IdmType)
 
 	idm, ok := tokenPlugins[idmType]
 	if !ok {
@@ -210,6 +211,35 @@ func (ngsi *NGSI) GetAuthHeader(client *Client) (string, string, error) {
 	key, value := idm.getAuthHeader(token)
 
 	return key, value, nil
+}
+
+// RevokeToken is ...
+func (ngsi *NGSI) RevokeToken(client *Client) error {
+	const funcName = "RevokeToken"
+
+	hash := getHash(client)
+
+	if tokenInfo, ok := ngsi.tokenList[hash]; ok {
+		idmType := strings.ToLower(client.Server.IdmType)
+		idm, ok := tokenPlugins[idmType]
+		if !ok {
+			return &LibError{funcName, 1, "unknown idm type: " + idmType, nil}
+		}
+
+		err := idm.revokeToken(ngsi, client, &tokenInfo)
+		if err != nil {
+			fmt.Fprint(ngsi.Stderr, sprintMsg(funcName, 2, err.Error()))
+		}
+
+		delete(ngsi.tokenList, hash)
+
+		err = saveToken(*ngsi.CacheFile.FileName(), &ngsi.tokenList)
+		if err != nil {
+			return &LibError{funcName, 3, err.Error(), err}
+		}
+	}
+
+	return nil
 }
 
 var tokenPlugins = map[string]TokenPlugin{
@@ -227,8 +257,7 @@ func requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (string, err
 
 	ngsi.Logging(LogInfo, funcName+"\n")
 
-	broker := client.Server
-	idmType := strings.ToLower(broker.IdmType)
+	idmType := strings.ToLower(client.Server.IdmType)
 
 	idm, ok := tokenPlugins[idmType]
 	if !ok {

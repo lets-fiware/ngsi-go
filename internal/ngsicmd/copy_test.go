@@ -511,7 +511,7 @@ func TestV2V2CopyPage(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -577,7 +577,7 @@ func TestV2V2CopyPageSkipForwarding(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -627,7 +627,7 @@ func TestCopyV2V2ErrorRunFlag(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -675,7 +675,7 @@ func TestCopyErrorHTTP(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -726,7 +726,7 @@ func TestCopyErrorHTTPStatus(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -776,7 +776,7 @@ func TestCopyErrorResultCount(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -827,7 +827,7 @@ func TestCopyResultCountZero(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -879,7 +879,7 @@ func TestCopyErrorJSONUnmarshal(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -935,7 +935,7 @@ func TestCopyErrorOpUpdate(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -991,7 +991,7 @@ func TestCopyErrorOpUpdateStatus(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2V2(c, ngsi, source, dest, "Thing")
@@ -1152,7 +1152,7 @@ func TestCopyV1V1Page(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1208,7 +1208,7 @@ func TestCopyV1V1PageZero(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1264,7 +1264,7 @@ func TestCopyV1V1ErrorHTTP1(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1320,7 +1320,7 @@ func TestCopyV1V1ErrorHTTPStatus1(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1376,7 +1376,7 @@ func TestCopyV1V1ErrorMkaeV1Entities(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1432,7 +1432,7 @@ func TestCopyV1V1ErrorHTTP2(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1488,7 +1488,7 @@ func TestCopyV1V1ErrorHTTPStatus2(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1544,7 +1544,7 @@ func TestCopyV1V1ErrorUnmarshal(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1600,7 +1600,7 @@ func TestCopyV1V1ErrorStatusCode(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV1V1(c, ngsi, source, dest, "Thing")
@@ -1666,7 +1666,7 @@ func TestLDLDCopyPage(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -1722,7 +1722,7 @@ func TestLDLDCopyPageCountZero(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -1778,7 +1778,7 @@ func TestLDLDCopyPageContext(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -1834,7 +1834,7 @@ func TestLDLDCopyErrorHTTP1(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -1890,7 +1890,7 @@ func TestLDLDCopyErrorHTTPStatus1(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -1945,7 +1945,7 @@ func TestLDLDCopyErrorCount(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -2001,7 +2001,7 @@ func TestLDLDCopyErrorContext(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -2057,7 +2057,7 @@ func TestLDLDCopyErrorHTTP2(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -2114,7 +2114,7 @@ func TestLDLDCopyErrorHTTPStatus2(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyLDLD(c, ngsi, source, dest, "Thing")
@@ -2180,7 +2180,7 @@ func TestV2LDCopyPage(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2248,7 +2248,7 @@ func TestV2LDCopyPageSkipForwarding(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2304,7 +2304,7 @@ func TestV2LDCopyPageCountZero(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2360,7 +2360,7 @@ func TestV2LDCopyPageContext(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2416,7 +2416,7 @@ func TestV2LDCopyErrorHTTP1(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2472,7 +2472,7 @@ func TestV2LDCopyErrorHTTPStatus1(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2527,7 +2527,7 @@ func TestV2LDCopyErrorCount(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2583,7 +2583,7 @@ func TestV2LDCopyErrorContext(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2639,7 +2639,7 @@ func TestV2LDCopyErrornormalized2LD(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2695,7 +2695,7 @@ func TestV2LDCopyErrorHTTP2(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")
@@ -2752,7 +2752,7 @@ func TestV2LDCopyErrorHTTPStatus2(t *testing.T) {
 	assert.NoError(t, err)
 	flags, err := parseFlags2(ngsi, c)
 	assert.NoError(t, err)
-	dest, err := ngsi.NewClient(ngsi.Destination, flags, false)
+	dest, err := ngsi.NewClient(ngsi.Destination, flags, false, false)
 	assert.NoError(t, err)
 
 	err = copyV2LD(c, ngsi, source, dest, "Thing")

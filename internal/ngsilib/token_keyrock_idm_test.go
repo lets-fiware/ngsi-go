@@ -185,6 +185,70 @@ func TestRequestTokenKeyrockIDMErrorUnmarshal(t *testing.T) {
 	}
 }
 
+func TestRevokeKeyrockIDM(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{Token: "1a8346b8df2881c8b3407b0f39c80d1374204b93"}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	assert.NoError(t, err)
+}
+
+func TestRevokeKeyrockIDMErrorHTTP(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Err = errors.New("http error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{Token: "1a8346b8df2881c8b3407b0f39c80d1374204b93"}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
+	}
+}
+
+func TestRevokeKeyrockIDMErrorHTTPStatus(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.ResBody = []byte("bad request")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{Token: "1a8346b8df2881c8b3407b0f39c80d1374204b93"}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "error  bad request", ngsiErr.Message)
+	}
+}
+
 func TestGetAuthHeaderKeyrockIDM(t *testing.T) {
 	idm := &idmKeyrockIDM{}
 

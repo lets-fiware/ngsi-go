@@ -79,7 +79,7 @@ func TestDebugCommandErrorNewClient(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "error host: ", ngsiErr.Message)
+		assert.Equal(t, "host not found", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}
