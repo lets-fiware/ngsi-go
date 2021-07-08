@@ -470,7 +470,7 @@ func setSubscriptionValuesLd(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 			coords := c.String("coords")
 			err := ngsilib.GetJSONArray([]byte(coords), &t.GeoQ.Coordinates)
 			if err != nil {
-				return &ngsiCmdError{funcName, 3, "coords: " + err.Error(), nil}
+				return &ngsiCmdError{funcName, 3, "coords: " + err.Error(), err}
 			}
 		}
 		if c.IsSet("georel") {
@@ -544,7 +544,7 @@ func setSubscriptionValuesLd(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 			var err error
 			s, err = ngsilib.GetExpirationDate(s)
 			if err != nil {
-				return &ngsiCmdError{funcName, 7, err.Error(), nil}
+				return &ngsiCmdError{funcName, 7, err.Error(), err}
 			}
 		}
 		t.Expires = s
@@ -583,7 +583,7 @@ func setSubscriptionValuesLd(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		var atContext interface{}
 		atContext, err := getAtContext(ngsi, context)
 		if err != nil {
-			return &ngsiCmdError{funcName, 9, err.Error(), nil}
+			return &ngsiCmdError{funcName, 9, err.Error(), err}
 		}
 		t.AtContext = atContext
 	}

@@ -356,7 +356,7 @@ func wireCloudResourceInstall(c *cli.Context) error {
 	}
 	file, err = ngsi.FilePath.FilePathAbs(file)
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), nil}
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}
 	fileName := ngsi.FilePath.FilePathBase(file)
 

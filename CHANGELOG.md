@@ -1,5 +1,7 @@
 ## NGSI Go v0.8.4-next
 
+-   Fix: Fix error information (#167)
+-   Use refresh token to renew token for Keyrock (#166)
 -   Update: Refactoring token manager (#165)
 -   Hardening: Add PreviousArgs sub-cmd in settings (#164)
 -   Documentation: Add example for regproxy (#163)

@@ -106,12 +106,12 @@ func receiver(c *cli.Context) error {
 	if c.Bool("https") {
 		err = gNetLib.ListenAndServeTLS(addr, c.String("cert"), c.String("key"), mux)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), nil}
+			return &ngsiCmdError{funcName, 4, err.Error(), err}
 		}
 	} else {
 		err = gNetLib.ListenAndServe(addr, mux)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), nil}
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
 		}
 	}
 

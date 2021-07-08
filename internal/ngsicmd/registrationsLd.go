@@ -339,7 +339,7 @@ func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegi
 			var err error
 			s, err = ngsilib.GetExpirationDate(s)
 			if err != nil {
-				return &ngsiCmdError{funcName, 4, err.Error(), nil}
+				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
 		}
 		r.Expires = s
@@ -360,7 +360,7 @@ func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegi
 		var atContext interface{}
 		atContext, err := getAtContext(ngsi, context)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), nil}
+			return &ngsiCmdError{funcName, 6, err.Error(), err}
 		}
 		r.AtContext = atContext
 	}

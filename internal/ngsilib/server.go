@@ -395,7 +395,7 @@ func (ngsi *NGSI) DeleteItem(host string, item string) error {
 	err := setServerParam(broker, param)
 
 	if err != nil {
-		return &LibError{funcName, 2, err.Error(), nil}
+		return &LibError{funcName, 2, err.Error(), err}
 	}
 	return nil
 }

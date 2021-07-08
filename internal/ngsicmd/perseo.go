@@ -79,7 +79,7 @@ func perseoRulesList(c *cli.Context) error {
 	}
 
 	if err = perseoPrintRespose(c, ngsi, body); err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), nil}
+		return &ngsiCmdError{funcName, 6, err.Error(), err}
 	}
 	return nil
 }

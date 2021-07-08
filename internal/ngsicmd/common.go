@@ -69,7 +69,7 @@ func getDateTime(dateTime string) (string, error) {
 	if !ngsilib.IsOrionDateTime(dateTime) {
 		dateTime, err = ngsilib.GetExpirationDate(dateTime)
 		if err != nil {
-			return "", &ngsiCmdError{funcName, 1, err.Error(), nil}
+			return "", &ngsiCmdError{funcName, 1, err.Error(), err}
 		}
 	}
 	return dateTime, nil
