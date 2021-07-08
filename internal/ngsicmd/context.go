@@ -213,7 +213,7 @@ func insertAtContext(ngsi *ngsilib.NGSI, payload []byte, context string) (b []by
 	var atContext interface{}
 	atContext, err = getAtContext(ngsi, context)
 	if err != nil {
-		return nil, &ngsiCmdError{funcName, 2, err.Error(), nil}
+		return nil, &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
 	if ngsilib.IsJSONArray(payload) { // JSON Array

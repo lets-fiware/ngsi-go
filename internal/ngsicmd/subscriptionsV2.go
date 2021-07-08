@@ -597,7 +597,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		if !ngsilib.IsOrionDateTime(s) {
 			s, err = ngsilib.GetExpirationDate(s)
 			if err != nil {
-				return &ngsiCmdError{funcName, 8, err.Error(), nil}
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
 			}
 		}
 		t.Expires = s

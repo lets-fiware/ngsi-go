@@ -182,7 +182,7 @@ func getConfigDir(io IoLib) (string, error) {
 	if !existsFile(io, home) {
 		err := io.MkdirAll(home, 0700)
 		if err != nil {
-			return "", &LibError{funcName, 2, err.Error(), nil}
+			return "", &LibError{funcName, 2, err.Error(), err}
 		}
 	}
 	return home, nil
