@@ -1,0 +1,84 @@
+version: "3"
+
+services:
+
+  mongo:
+    image: mongo:4.2.12
+    environment:
+      MONGO_VERSION: 4.2.12
+
+  mysql:
+    image: mysql:5.7.33
+    environment:
+      MYSQL_ROOT_PASSWORD: mysqlpwd1234
+      MYSQL_DATABASE: keypass
+      MYSQL_USER: keypass
+      MYSQL_PASSWORD: keypass
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+
+  orion:
+    image: telefonicaiot/fiware-orion:latest
+    depends_on:
+      - mongo
+    environment:
+      - ORION_MONGO_HOST=mongo
+      - ORION_LOG_LEVEL=INFO
+
+  orchestrator:
+    image: telefonicaiot/orchestrator:latest
+    depends_on:
+      - keystone
+      - keypass
+      - pep-orion
+      - mongo
+    ports:
+      - "8084:8084"
+    environment:
+      - DEBUG_LEVEL=WARN
+    command: -keystonehost keystone -keypasshost keypass -orionhost pep-orion -mongodburi mongo -peppwd proxypwd1234
+
+  keypass:
+    image: telefonicaiot/fiware-keypass:latest
+    depends_on:
+      - mysql
+    ports:
+      - "127.0.0.1:17070:7070"
+      - "127.0.0.1:7071:7071"
+    environment:
+      - KEYPASS_DB_TIMEOUT=240
+    command: -dbhost mysql
+
+  keystone:
+    image: telefonicaiot/fiware-keystone-spassword:latest
+    depends_on:
+      - mysql
+    ports:
+      - "5001:5001"
+    environment:
+      - TOKEN_EXPIRATION_TIME=10800
+      - REVOKE_EXPIRATION_BUFFER=1800
+      - LOG_LEVEL=WARN
+    command: -dbhost mysql -default_pwd proxypwd1234 -mysql_pwd mysqlpwd1234
+
+  pep-orion:
+    image: telefonicaiot/fiware-pep-steelskin:latest
+    links:
+      - orion
+      - keystone
+      - keypass
+    ports:
+      - "1026:1026"
+      - "11211:11211"
+    environment:
+      - COMPONENT_PLUGIN=orion
+      - TARGET_HOST=orion
+      - TARGET_PORT=1026
+      - PROXY_USERNAME=pep
+      - PROXY_PASSWORD=proxypwd1234
+      - ACCESS_HOST=keypass
+      - ACCESS_PORT=7070
+      - AUTHENTICATION_HOST=keystone
+      - AUTHENTICATION_PORT=5001
+      - ACCESS_ACCOUNT=false
+      - ACCESS_ACCOUNTFILE=/var/log/pepAccountOrion.log
