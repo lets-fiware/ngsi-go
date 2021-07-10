@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+
+  postgres:
+      image: postgres:13.3
+      environment:
+        POSTGRES_USER: keycloak
+        POSTGRES_PASSWORD: password
+      volumes:
+        - ./postgres:/docker-entrypoint-initdb.d
+
+  keycloak:
+      image: quay.io/keycloak/keycloak:14.0.0
+      environment:
+        DB_VENDOR: POSTGRES
+        DB_ADDR: postgres
+        DB_DATABASE: keycloak
+        DB_USER: keycloak
+        DB_SCHEMA: public
+        DB_PASSWORD: password
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: 1234
+      depends_on:
+        - postgres
+
+  nginx:
+      image: nginx:1.19.10
+      ports:
+        - 80:80
+        - 1026:1026
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./keycloak_oauth2.js:/etc/nginx/keycloak_oauth2.js:ro
+      depends_on:
+        - orion
+        - keycloak
+
+  orion:
+      image: fiware/orion:3.1.0
+      depends_on:
+        - mongo
+      command: -dbhost mongo
+
+  mongo:
+      image: mongo:4.4
+      command: --nojournal

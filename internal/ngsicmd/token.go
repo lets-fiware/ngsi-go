@@ -83,17 +83,22 @@ func tokenCommand(c *cli.Context) error {
 			if err != nil {
 				return &ngsiCmdError{funcName, 5, err.Error(), err}
 			}
+		case ngsilib.CKeycloak:
+			b, err = ngsilib.JSONMarshal(token.Keycloak)
+			if err != nil {
+				return &ngsiCmdError{funcName, 6, err.Error(), err}
+			}
 		case ngsilib.CKeyrockIDM:
 			b, err = getKeyrockUserInfo(client, token.Token)
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return &ngsiCmdError{funcName, 7, err.Error(), err}
 			}
 		}
 		if c.Bool("pretty") {
 			newBuf := new(bytes.Buffer)
 			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 7, err.Error(), err}
+				return &ngsiCmdError{funcName, 8, err.Error(), err}
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {

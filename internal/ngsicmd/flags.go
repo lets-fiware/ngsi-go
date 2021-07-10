@@ -729,6 +729,10 @@ var (
 		Aliases: []string{"S"},
 		Usage:   "specify client secret",
 	}
+	tokenScopeFlag = &cli.StringFlag{
+		Name:  "tokenScope",
+		Usage: "specify scope for token",
+	}
 	itemsFlag = &cli.StringFlag{
 		Name:    "items",
 		Aliases: []string{"i"},

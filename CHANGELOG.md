@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Support Keycloak (#169)
 -   Hardening: Add revoke token option (#168)
 -   Fix: Fix error information (#167)
 -   Use refresh token to renew token for Keyrock (#166)

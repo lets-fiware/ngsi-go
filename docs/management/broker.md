@@ -118,6 +118,7 @@ ngsi broker add [options]
 | --password value, -P value     | specify password                                          |
 | --clientId value, -I value     | specify client id                                         |
 | --clientSecret value, -S value | specify client secret                                     |
+| --tokenScope value             | specify scope for token                                   |
 | --token value                  | specify oauth token                                       |
 | --service value, -s value      | specify FIWARE Service                                    |
 | --path value, -p value         | specify FIWARE ServicePath                                |
@@ -200,6 +201,23 @@ ngsi broker add \
 
 #### Example 6
 
+Orion with Keycloak
+
+```
+ngsi broker add \
+  --host orion-with-keycloak \
+  --ngsiType v2 \
+  --brokerHost http://localhost:1026 \
+  --idmType keycloak \
+  --idmHost http://keycloak:8080/auth/realms/fiware_service \
+  --username fiware \
+  --password 1234 \
+  --clientId ngsi_api \
+  --clientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
+```
+
+#### Example 7
+
 Orion with Basic authentication
 
 ```console
@@ -218,14 +236,15 @@ Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Brok
 
 ### Parameters for Identity Managers
 
-| idmType                                                                    | Required parameters                                 | Description                                                                  |
-| -------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
-| basic                                                                      | username, password                                  | Basic authentication                                                         |
-| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keycloak, WSO2, Apinf, and Stellio) |
-| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock                             |
-| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock                                          |
-| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock                                          |
-| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone                                         |
+| idmType                                                                    | Required parameters                                 | Description                                      |
+| -------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
+| basic                                                                      | username, password                                  | Basic authentication                             |
+| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials            |
+| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock |
+| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock              |
+| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock              |
+| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
+| Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
 
 ### FIWARE Service and FIWARE ServicePath
 
@@ -312,6 +331,7 @@ ngsi broker upadte [options]
 | --password value, -P value     | specify password                                          |
 | --clientId value, -I value     | specify client id                                         |
 | --clientSecret value, -S value | specify client secret                                     |
+| --tokenScope value             | specify scope for token                                   |
 | --token value                  | specify oauth token                                       |
 | --service value, -s value      | specify FIWARE Service                                    |
 | --path value, -p value         | specify FIWARE ServicePath                                |
