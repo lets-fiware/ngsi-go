@@ -97,6 +97,7 @@ ngsi server add [options]
 | --password value, -P value     | specify password               |
 | --clientId value, -I value     | specify client id              |
 | --clientSecret value, -S value | specify client secret          |
+| --tokenScope value             | specify scope for token        |
 | --token value                  | specify oauth token            |
 | --service value, -s value      | specify FIWARE Service         |
 | --path value, -p value         | specify FIWARE ServicePath     |
@@ -181,12 +182,15 @@ ngsi server add \
 
 ### Parameters for Identity Managers
 
-| idmType              | Required parameters                                 | Description                                                                  |
-| -------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
-| password             | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keycloak, WSO2, Apinf, and Stellio) |
-| keyrock              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock                             |
-| KeyrockTokenProvider | idmHost, username, password                         | It provides auth token from Keyrock                                          |
-| tokenproxy           | idmHost, username, password                         | It provides auth token from Keyrock                                          |
+| idmType                                                                    | Required parameters                                 | Description                                      |
+| -------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
+| basic                                                                      | username, password                                  | Basic authentication                             |
+| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials            |
+| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock |
+| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock              |
+| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock              |
+| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
+| Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
 
 ### FIWARE Service and FIWARE ServicePath
 
@@ -271,6 +275,7 @@ ngsi server upadte [options]
 | --password value, -P value     | specify password                 |
 | --clientId value, -I value     | specify client id                |
 | --clientSecret value, -S value | specify client secret            |
+| --tokenScope value             | specify scope for token          |
 | --token value                  | specify oauth token              |
 | --service value, -s value      | specify FIWARE Service           |
 | --path value, -p value         | specify FIWARE ServicePath       |
