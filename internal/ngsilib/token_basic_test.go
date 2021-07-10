@@ -66,6 +66,18 @@ func TestRequestTokenBasicErrorUser(t *testing.T) {
 	}
 }
 
+func TestRevokeTokenBasic(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmBasic{}
+	tokenInfo := &TokenInfo{}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	assert.NoError(t, err)
+}
+
 func TestGetAuthHeaderBasic(t *testing.T) {
 	idm := &idmBasic{}
 

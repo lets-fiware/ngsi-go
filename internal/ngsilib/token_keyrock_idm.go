@@ -91,6 +91,28 @@ func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 	return tokenInfo, nil
 }
 
+func (i *idmKeyrockIDM) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
+	const funcName = "revokeTokenKeyrockIDM"
+
+	headers := make(map[string]string)
+
+	u, _ := url.Parse(client.idmURL())
+	idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
+
+	idm.SetHeader("X-Auth-token", tokenInfo.Token)
+	idm.SetHeader("X-Subject-token", tokenInfo.Token)
+
+	res, body, err := idm.HTTPDelete(nil)
+	if err != nil {
+		return &LibError{funcName, 1, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusNoContent {
+		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	return nil
+}
+
 func (i *idmKeyrockIDM) getAuthHeader(token string) (string, string) {
 	return "X-Auth-Token", token
 }

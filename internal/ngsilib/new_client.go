@@ -36,7 +36,7 @@ import (
 )
 
 // NewClient is ...
-func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (client *Client, err error) {
+func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, skipGetToken bool) (client *Client, err error) {
 	const funcName = "NewClient"
 
 	client = &Client{}
@@ -72,7 +72,13 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 			host = strings.TrimSuffix(host, "/")
 		} else {
 			if !isIPAddress(host) && !isLocalHost(host) {
-				return nil, &LibError{funcName, 5, "error host: " + host, nil}
+				var s string
+				if host == "" {
+					s = "host not found"
+				} else {
+					s = "error host: " + host
+				}
+				return nil, &LibError{funcName, 5, s, nil}
 			}
 			host = "http://" + host
 		}
@@ -145,7 +151,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool) (c
 	}
 	if token != "" {
 		client.Token = token
-	} else if client.Server.IdmType != "" {
+	} else if client.Server.IdmType != "" && !skipGetToken {
 		token, err := ngsi.GetToken(client)
 		if err != nil {
 			return nil, &LibError{funcName, 8, err.Error(), err}

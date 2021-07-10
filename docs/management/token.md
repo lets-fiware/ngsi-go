@@ -14,6 +14,7 @@ ngsi token [options]
 | --verbose, -v          | print detailed information (default: false) |
 | --pretty, -P           | pretty format (default: false)              |
 | --expires, -e          | print expires (default: false)              |
+| --revoke, -r           | revoke token (default: false)               |
 | --help                 | show help (default: false)                  |
 
 ### Example 1

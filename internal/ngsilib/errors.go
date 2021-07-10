@@ -51,10 +51,6 @@ func (e *LibError) Error() string {
 
 func (e *LibError) Unwrap() error { return e.Err }
 
-/*
-func setNewError(funcName string, num int, newErr error, err *error) {
-	if *err == nil && newErr != nil {
-		*err = &LibError{funcName, num, newErr.Error(), nil}
-	}
+func sprintMsg(funcName string, no int, msg string) string {
+	return fmt.Sprintf("%s%03d %s", funcName, no, msg)
 }
-*/

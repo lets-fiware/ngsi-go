@@ -98,6 +98,28 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 	return nil, &LibError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 }
 
+func (i *idmTokenProxy) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
+	const funcName = "revokeTokenTokenProxy"
+
+	headers := make(map[string]string)
+
+	u, _ := url.Parse(client.idmURL())
+	idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
+
+	idm.SetHeader(cContentType, cAppJSON)
+	payload := fmt.Sprintf(`{"token":"%s","token_type_hint":"refresh_token"}`, tokenInfo.RefreshToken)
+
+	res, body, err := idm.HTTPPost(payload)
+	if err != nil {
+		return &LibError{funcName, 1, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	return nil
+}
+
 func (i *idmTokenProxy) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
 }

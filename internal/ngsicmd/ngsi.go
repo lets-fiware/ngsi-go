@@ -778,8 +778,9 @@ var tokenCmd = cli.Command{
 	Flags: []cli.Flag{
 		hostFlag,
 		verboseFlag,
-		expiresFlag,
 		prettyFlag,
+		expiresFlag,
+		revokeFlag,
 	},
 	Category: "MANAGEMENT",
 	Action: func(c *cli.Context) error {

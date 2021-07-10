@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -71,6 +72,46 @@ func TestTokenCommand(t *testing.T) {
 		actual := buf.String()
 		expected := "c312d32a36a8a1df219a807a79323bb31941f462\n"
 		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestTokenCommandRevoke(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":1156,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "revoke")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--revoke"})
+
+	err := tokenCommand(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "orion has no token", ngsiErr.Message)
+		assert.Error(t, err)
 	}
 }
 
@@ -571,6 +612,225 @@ func TestTokenCommandErrorJSONPretty(t *testing.T) {
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()
+	}
+}
+
+func TestRevokeTokenCommand(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://localhost:3000/",
+				"serverType": "broker",
+				"ngsiType": "v2",
+				"idmType": "basic",
+				"idmHost": "http://orion",
+				"username": "admin",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	file := "cache"
+	tokens := `{
+		"version": "1",
+		"tokens": {
+		  "67c97b389b0b38551db075a6e5d0ba998d5bcb2a": {
+			"type": "tokenproxy",
+			"token": "69e45641cf8e29d647929a3514e27874c031fbae",
+			"refresh_token": "1a8346b8df2881c8b3407b0f39c80d1374204b93",
+			"expires": "2031-01-01T00:00:08+09:00",
+			"Oauth": {
+			  "access_token": "69e45641cf8e29d647929a3514e27874c031fbae",
+			  "expires_in": 3599,
+			  "refresh_token": "1a8346b8df2881c8b3407b0f39c80d1374204b93",
+			  "scope": [
+				"bearer"
+			  ],
+			  "token_type": "Bearer"
+			}
+		  }
+		}
+	}`
+	ngsi.CacheFile = &MockIoLib{filename: &file, Tokens: &tokens}
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "revoke")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--revoke"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
+	err = revokeTokenCommand(c, ngsi)
+
+	assert.NoError(t, err)
+}
+
+func TestRevokeTokenCommandErrorOptions(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+	ngsi.CacheFile = &MockIoLib{Trunc: []error{nil, errors.New("encode error")}}
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "revoke,verbose")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--revoke", "--verbose"})
+
+	err := revokeTokenCommand(c, ngsi)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "only --revoke can be specified", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRevokeTokenCommandErrorRevoke(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "revoke")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--revoke"})
+
+	err := revokeTokenCommand(c, ngsi)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRevokeTokenCommandErrorTokenInfo(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "tokenproxy",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "revoke")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--revoke"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
+	err = revokeTokenCommand(c, ngsi)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "orion has no token", ngsiErr.Message)
+		assert.Error(t, err)
+	}
+}
+
+func TestRevokeTokenCommandErrorRevokeToken(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://localhost:3000/",
+				"serverType": "broker",
+				"ngsiType": "v2",
+				"idmType": "basic",
+				"idmHost": "http://orion",
+				"username": "admin",
+				"password": "1234"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+	file := "cache"
+	tokens := `{
+		"version": "1",
+		"tokens": {
+		  "67c97b389b0b38551db075a6e5d0ba998d5bcb2a": {
+			"type": "tokenproxy",
+			"token": "69e45641cf8e29d647929a3514e27874c031fbae",
+			"refresh_token": "1a8346b8df2881c8b3407b0f39c80d1374204b93",
+			"expires": "2031-01-01T00:00:08+09:00",
+			"Oauth": {
+			  "access_token": "69e45641cf8e29d647929a3514e27874c031fbae",
+			  "expires_in": 3599,
+			  "refresh_token": "1a8346b8df2881c8b3407b0f39c80d1374204b93",
+			  "scope": [
+				"bearer"
+			  ],
+			  "token_type": "Bearer"
+			}
+		  }
+		}
+	}`
+	ngsi.CacheFile = &MockIoLib{filename: &file, Tokens: &tokens, Trunc: []error{errors.New("encode error")}}
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "revoke")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--revoke"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+
+	err = revokeTokenCommand(c, ngsi)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "encode error", ngsiErr.Message)
+		assert.Error(t, err)
 	}
 }
 

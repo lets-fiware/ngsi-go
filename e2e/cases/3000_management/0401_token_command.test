@@ -42,8 +42,9 @@ CATEGORY:
 OPTIONS:
    --host value, -h value  host or alias
    --verbose, -v           verbose (default: false)
-   --expires, -e           expires (default: false)
    --pretty, -P            pretty format (default: false)
+   --expires, -e           expires (default: false)
+   --revoke, -r            revoke token (default: false)
    --help                  show help (default: false)
    
 ```
