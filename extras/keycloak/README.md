@@ -3,6 +3,15 @@
 This documentation explains how to access an Orion Context Broker that the endpoints of NGSI API
 are protected by Keycloak.
 
+## Prepair
+
+Clone the NGSI Go repository and move to `ngsi-go/extras/keycloak` directory.
+
+```
+git clone https://github.com/lets-fiware/ngsi-go.git
+cd ngsi-go/extras/keycloak
+```
+
 ## Start up
 
 Start up an Orion context broker and Keycloak.
@@ -46,7 +55,7 @@ ngsi broker add \
 
 ## Access the broker
 
-The following command allows you to access the broker with Basic authentication.
+The following command allows you to access the broker with Keycloak.
 
 ```
 ngsi version --host orion-with-keycloak

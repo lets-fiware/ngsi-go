@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Documentation: Update documentation (#172)
 -   Documentation: Add example for Keyrock (#171)
 -   Documentation: Add example for Telefonica security stack (#170)
 -   Hardening: Support Keycloak (#169)
