@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+
+  keyrock:
+    image: fiware/idm:8.0.0-distroless
+    depends_on:
+      - mysql
+    ports:
+      - 3000:3000
+    environment:
+      - IDM_DB_HOST=mysql
+      - IDM_ADMIN_USER=admin
+      - IDM_ADMIN_EMAIL=admin@test.com
+      - IDM_ADMIN_PASS=1234
+
+  orion-proxy:
+    image: fiware/pep-proxy:8.0.0-distroless
+    depends_on:
+      - keyrock
+      - orion
+    ports:
+      - 1026:1026
+    environment:
+      - PEP_PROXY_DEBUG=true
+      - PEP_PROXY_APP_HOST=orion
+      - PEP_PROXY_APP_PORT=1026
+      - PEP_PROXY_PORT=1026
+      - PEP_PROXY_IDM_HOST=keyrock
+      - PEP_PROXY_IDM_PORT=3000
+      - PEP_PROXY_APP_ID=a1a6048b-df1d-4d4f-9a08-5cf836041d14
+      - PEP_PROXY_USERNAME=pep_proxy_58b1a6db-1bc0-4323-837e-f100511af19c
+      - PEP_PASSWORD=pep_proxy_1bad5dbf-7ae9-49a8-b0f6-c66e4570357a
+
+  orion:
+    image: fiware/orion:3.1.0
+    depends_on:
+      - mongo
+    command: -dbhost mongo
+
+  mongo:
+    image: mongo:4.4
+    command: --nojournal
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d/:ro
