@@ -3,6 +3,15 @@
 This documentation explains how to access an Orion Context Broker that the endpoints of NGSI API
 are protected by Basic Authentication.
 
+## Prepair
+
+Clone the NGSI Go repository and move to `ngsi-go/extras/basic_authentication` directory.
+
+```
+git clone https://github.com/lets-fiware/ngsi-go.git
+cd ngsi-go/extras/basic_authentication
+```
+
 ## Add user
 
 Add username and password to the htpasswd file.
@@ -29,6 +38,25 @@ basic_authentication_nginx_1   /docker-entrypoint.sh ngin ...   Up      0.0.0.0:
 basic_authentication_orion_1   /usr/bin/contextBroker -fg ...   Up      1026/tcp
 ```
 
+### Sanity check
+
+Check the service is ready by executing the following command.
+
+```
+curl localhost:1026/version
+```
+
+```
+<html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.19.10</center>
+</body>
+</html>
+```
+
+
 ## Add the broker
 
 Add the broker to NGSI Go configuration.
@@ -37,7 +65,7 @@ Add the broker to NGSI Go configuration.
 ngsi broker add \
   --host orion-with-basic-auth \
   --ngsiType v2 \
-  --brokerHost http://localhost/ \
+  --brokerHost http://localhost:1026/ \
   --idmType basic \
   --username fiware \
   --password 1234

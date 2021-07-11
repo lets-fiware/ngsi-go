@@ -36,7 +36,6 @@ telefonicasecurity-stack_mysql_1          docker-entrypoint.sh mysqld      Up   
 telefonicasecurity-stack_orchestrator_1   /opt/orchestrator/bin/orch ...   Up      0.0.0.0:8084->8084/tcp,:::8084->8084/tcp
 telefonicasecurity-stack_orion_1          /usr/bin/contextBroker -fg ...   Up      1026/tcp
 telefonicasecurity-stack_pep-orion_1      docker/entrypoint.sh --  c ...   Up      0.0.0.0:1026->1026/tcp,:::1026->1026/tcp,
-                                                                                   0.0.0.0:11211->11211/tcp,:::11211->11211/tcp
 ```
 
 ### Sanity check
@@ -66,6 +65,7 @@ ngsi broker add \
   --username orion \
   --password 2HNzujGZ60NIyGs9 \
 ```
+
 ## Access the broker
 
 The following commands allow you to create and get a entity in an Orion context broker
@@ -89,7 +89,7 @@ ngsi list --host orion-with-keystone entities --pretty
 
 ## Additional information
 
-## Users
+### Users
 
 | User             | Username              | Password         | Description                                                                         |
 | ---------------- | --------------------- | ---------------- | ----------------------------------------------------------------------------------- |
