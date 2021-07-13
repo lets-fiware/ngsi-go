@@ -86,6 +86,7 @@ const (
 	CThinkingCities       = "thinkingcities"
 	CBasic                = "basic"
 	CKeycloak             = "keycloak"
+	CWSO2                 = "wso2"
 )
 
 const (
@@ -119,7 +120,7 @@ var (
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
 	brokerTypeArgs = []string{cOrionLD, cScorpio, cStellio}
 	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud}
-	idmTypes       = []string{CPasswordCredentials, CKeyrock, CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM, CThinkingCities, CBasic, CKeycloak}
+	idmTypes       = []string{CPasswordCredentials, CKeyrock, CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM, CThinkingCities, CBasic, CKeycloak, CWSO2}
 	ngsiV2Types    = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes    = []string{cNgsiLd, cLd}
 	apiPaths       = []string{cPathRoot, cPathV2, cPathNgsiLd}
@@ -248,7 +249,7 @@ func checkIdmParams(idmType string, idmHost string, username string, password st
 	}
 
 	switch idmType {
-	case CKeyrock, CPasswordCredentials:
+	case CKeyrock, CPasswordCredentials, CKeycloak, CWSO2:
 		if clientID == "" || clientSecret == "" {
 			return &LibError{funcName, 5, "clientID and clientSecret are needed", nil}
 		}

@@ -191,6 +191,7 @@ ngsi server add \
 | tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock              |
 | [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
 | Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
+| WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2                 |
 
 ### FIWARE Service and FIWARE ServicePath
 

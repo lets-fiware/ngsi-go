@@ -218,6 +218,23 @@ ngsi broker add \
 
 #### Example 7
 
+Orion with WSO2
+
+```
+ngsi broker add \
+  --host orion-with-wso2 \
+  --ngsiType v2 \
+  --brokerHost http://localhost:1026 \
+  --idmType wso2 \
+  --idmHost http://wso2am:8243/token \
+  --username fiware \
+  --password 1234 \
+  --clientId 0000000000000000000000_A_ZZZ \
+  --clientSecret 00000000-1111-2222-3333-444444444444
+```
+
+#### Example 8
+
 Orion with Basic authentication
 
 ```console
@@ -245,6 +262,7 @@ Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Brok
 | tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock              |
 | [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
 | Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
+| WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2                 |
 
 ### FIWARE Service and FIWARE ServicePath
 
