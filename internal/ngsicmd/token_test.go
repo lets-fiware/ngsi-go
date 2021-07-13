@@ -544,7 +544,9 @@ func TestTokenCommandErrorKeycloakJSON(t *testing.T) {
 				"idmType": "keycloak",
 				"idmHost": "/token",
 				"username": "testuser",
-				"password": "1234"
+				"password": "1234",
+				"clientId": "11111111-2222-3333-4444-555555555555",
+				"clientSecret": "66666666-7777-8888-9999-000000000000"
 			}
 		}
 	}`
@@ -568,6 +570,49 @@ func TestTokenCommandErrorKeycloakJSON(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+		assert.Error(t, err)
+	}
+}
+
+func TestTokenCommandErrorWSO2JSON(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	conf := `{
+		"version": "1",
+		"servers": {
+			"orion": {
+				"serverHost": "http://orion",
+				"ngsiType": "v2",
+				"idmType": "wso2",
+				"idmHost": "/token",
+				"username": "testuser",
+				"password": "1234",
+				"clientId": "11111111-2222-3333-4444-555555555555",
+				"clientSecret": "66666666-7777-8888-9999-000000000000"
+			}
+		}
+	}`
+	ngsi.FileReader = &MockFileLib{ReadFileData: []byte(conf)}
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"scope":"default","token_type":"Bearer","expires_in":3600,"refresh_token":"a7d6bae2b1d36c041787e9c9e2d6cbf8","access_token":"cba95432f1f8227f5bc6cf4a20633cb3"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	setupFlagString(set, "host")
+	set.Bool("verbose", false, "doc")
+
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--verbose"})
+	setJSONEncodeErr(ngsi, 0)
+
+	err := tokenCommand(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 		assert.Error(t, err)
 	}
@@ -607,7 +652,7 @@ func TestTokenCommandErrorKeyrock(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "token is empty", ngsiErr.Message)
 		assert.Error(t, err)
 	}
@@ -649,7 +694,7 @@ func TestTokenCommandErrorJSONPretty(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	} else {
 		t.FailNow()

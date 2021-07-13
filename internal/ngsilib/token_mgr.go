@@ -56,6 +56,7 @@ type TokenInfo struct {
 	Keyrock      *KeyrockToken  `json:"keyrock,omitempty"`
 	Keystone     *KeyStoneToken `json:"keystone,omitempty"`
 	Keycloak     *KeycloakToken `json:"keycloak,omitempty"`
+	WSO2         *WSO2Token     `json:"wso2,omitempty"`
 }
 
 type tokenInfoList map[string]TokenInfo
@@ -252,6 +253,7 @@ var tokenPlugins = map[string]TokenPlugin{
 	CThinkingCities:       &idmThinkingCities{},
 	CBasic:                &idmBasic{},
 	CKeycloak:             &idmKeycloak{},
+	CWSO2:                 &idmWSO2{},
 }
 
 func requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (string, error) {
