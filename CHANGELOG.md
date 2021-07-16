@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Fix: Fix EOF error when ngsi-go-config.json is empty (#175)
 -   Hardening: Add replace option in regproxy (#174)
 -   Hardening: Support WSO2 (#173)
 -   Documentation: Update documentation (#172)

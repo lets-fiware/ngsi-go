@@ -43,6 +43,7 @@ func TestNgsiIntiConfig(t *testing.T) {
 
 	filename := ""
 	err := ngsi.InitConfig(&filename)
+
 	assert.NoError(t, err)
 }
 
@@ -64,6 +65,20 @@ func TestIntiConfigBrokerList(t *testing.T) {
 	broker := &Server{ServerHost: "http://orion"}
 	ngsi.serverList["orion"] = broker
 	ngsi.configVresion = "1"
+
+	err := initConfig(ngsi, ngsi.ConfigFile)
+
+	assert.NoError(t, err)
+}
+
+func TestIntiConfigBrokerEOF(t *testing.T) {
+	ngsi := testNgsiLibInit()
+	filename := "config.json"
+	ngsi.ConfigFile = &MockIoLib{}
+	ngsi.ConfigFile.SetFileName(&filename)
+	ngsi.CacheFile = &MockIoLib{}
+	ngsi.CacheFile.SetFileName(&filename)
+	ngsi.FileReader = &MockFileLib{readFile: []byte("")}
 
 	err := initConfig(ngsi, ngsi.ConfigFile)
 

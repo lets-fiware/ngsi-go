@@ -97,9 +97,11 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 		}
 
 		ngsiConfig := NgsiConfig{}
-		err = JSONUnmarshal(b, &ngsiConfig)
-		if err != nil {
-			return &LibError{funcName, 4, err.Error(), err}
+		if len(b) > 0 {
+			err = JSONUnmarshal(b, &ngsiConfig)
+			if err != nil {
+				return &LibError{funcName, 4, err.Error(), err}
+			}
 		}
 
 		ngsi.configVresion = ngsiConfig.Version
