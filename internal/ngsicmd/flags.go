@@ -864,6 +864,21 @@ var (
 		Aliases: []string{"c"},
 		Usage:   "cert file (only needed if https is enabled)",
 	}
+	regProxyReplaceTenantFlag = &cli.StringFlag{
+		Name:    "replaceService",
+		Aliases: []string{"S"},
+		Usage:   "replace FIWARE-Serivce",
+	}
+	regProxyReplaceScopeFlag = &cli.StringFlag{
+		Name:    "replacePath",
+		Aliases: []string{"P"},
+		Usage:   "replace FIWARE-SerivcePath",
+	}
+	regProxyReplaceURLFlag = &cli.StringFlag{
+		Name:    "replaceURL",
+		Aliases: []string{"U"},
+		Usage:   "replace URL of forwarding destination",
+	}
 )
 
 // flag for context

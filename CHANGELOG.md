@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Add replace option in regproxy (#174)
 -   Hardening: Support WSO2 (#173)
 -   Documentation: Update documentation (#172)
 -   Documentation: Add example for Keyrock (#171)
