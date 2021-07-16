@@ -345,6 +345,30 @@ func TestSetPath(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func TestSetPathSlash(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
+	client.Server = &Server{ServerType: "broker"}
+	client.NgsiType = ngsiV2
+
+	client.SetPath("/version/")
+
+	actual := client.URL.Path
+	expected := "/version/"
+	assert.Equal(t, expected, actual)
+}
+
+func TestSetPathUrlJoin(t *testing.T) {
+	client := &Client{Path: "/ngsi", URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
+	client.Server = &Server{ServerType: "broker"}
+	client.NgsiType = ngsiV2
+
+	client.SetPath("/version")
+
+	actual := client.URL.Path
+	expected := "/ngsi/version"
+	assert.Equal(t, expected, actual)
+}
+
 func TestSetPathV2(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
 	client.Server = &Server{ServerType: "broker"}
