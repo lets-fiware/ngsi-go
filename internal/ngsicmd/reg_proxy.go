@@ -49,6 +49,9 @@ type regProxyParam struct {
 	http    ngsilib.HTTPRequest
 	verbose bool
 	bearer  bool
+	tenant  *string
+	scope   *string
+	url     *string
 	mutex   *sync.Mutex
 }
 
@@ -92,6 +95,19 @@ func regProxy(c *cli.Context) error {
 		http:    ngsi.HTTP,
 		verbose: c.Bool("verbose"),
 		mutex:   &sync.Mutex{},
+	}
+
+	if c.IsSet("replaceService") {
+		tenant := c.String("replaceService")
+		regProxyGlobal.tenant = &tenant
+	}
+	if c.IsSet("replacePath") {
+		scope := c.String("replacePath")
+		regProxyGlobal.scope = &scope
+	}
+	if c.IsSet("replaceURL") {
+		repalceURL := c.String("replaceURL")
+		regProxyGlobal.url = &repalceURL
 	}
 
 	mux := http.NewServeMux()
@@ -152,21 +168,38 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 			case "content-length", "user-agent":
 				continue
 			case "fiware-service", "ngsild-tenant":
-				tenant = r.Header.Get(k)
+				if regProxyGlobal.tenant != nil {
+					tenant = *regProxyGlobal.tenant
+				} else {
+					tenant = r.Header.Get(k)
+				}
+				headers[k] = tenant
+				continue
 			case "fiware-servicepath":
-				scope = r.Header.Get(k)
+				if regProxyGlobal.scope != nil {
+					scope = *regProxyGlobal.scope
+				} else {
+					scope = r.Header.Get(k)
+				}
+				headers[k] = scope
+				continue
 			}
 			headers[k] = r.Header.Get(k)
 		}
 
-		ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", r.URL.Path, tenant, scope))
+		uPath := r.URL.Path
+		if regProxyGlobal.url != nil {
+			uPath = *regProxyGlobal.url
+		}
+
+		ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", uPath, tenant, scope))
 
 		u, err := url.Parse(host)
 		if err != nil {
 			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 3, err.Error()))
 			break
 		}
-		u.Path = path.Join(u.Path, r.URL.Path)
+		u.Path = path.Join(u.Path, uPath)
 
 		regProxyGlobal.mutex.Lock()
 		key, token, err := ngsi.GetAuthHeader(client)

@@ -59,6 +59,23 @@ func TestRegProxy(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestRegProxyOptions(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+
+	gNetLib = &MockNetLib{}
+
+	setupFlagString(set, "host,rhost,port,url,replaceService,replacePath,replaceURL")
+	setupFlagBool(set, "verbose,https")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/", "--replaceService=fiware", "--replacePath=/orion", "--replaceURL=/v3/queryConxt"})
+
+	err := regProxy(c)
+
+	assert.NoError(t, err)
+}
+
 func TestRegProxyHTTPS(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
@@ -307,6 +324,68 @@ func TestRegProxyHanderPost(t *testing.T) {
 	mockHTTP := NewMockHTTP()
 	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
 	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+
+	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
+	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
+	req.Header.Set("User-Agent", "NGSI Go")
+	req.Header.Set("Fiware-Service", "iot")
+	req.Header.Set("Fiware-ServicePath", "/")
+	req.Header.Set("Authorization", "Basic 1234")
+	got := httptest.NewRecorder()
+
+	regProxyHandler(got, req)
+
+	expected := http.StatusOK
+
+	assert.Equal(t, expected, got.Code)
+}
+
+func TestRegProxyHanderPostOptions(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host,stderr")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion", "--stderr=info"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ResBody = []byte(`{"access_token":"c312d32a36a8a1df219a807a79323bb31941f462","expires_in":1156,"refresh_token":"7cb75b47782195839ecbc7c7457f18abed853fe1","scope":["bearer"],"token_type":"Bearer"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+	client.Server.IdmType = "tokenproxy"
+	client.Server.IdmHost = "/token"
+	client.Server.Username = "testuser"
+	client.Server.Password = "1234"
+
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+	reqRes2 := MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusOK
+	reqRes2.ResBody = []byte(`[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device","temperature":{"type":"Number","value":25.47,"metadata":{"TimeInstant":{"type":"DateTime","value":"2020-07-12T05:00:52.00Z"}}}}]`)
+	h := http.Header{}
+	h["Context-Length"] = []string{"0"}
+	reqRes2.ResHeader = h
+	mockHTTP := NewMockHTTP()
+	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
+	tenant := "fiware"
+	scope := "/orion"
+	url := "/v3/queryContext"
+	regProxyGlobal = &regProxyParam{
+		ngsi:    ngsi,
+		client:  client,
+		http:    mockHTTP,
+		verbose: true,
+		bearer:  true,
+		tenant:  &tenant,
+		scope:   &scope,
+		url:     &url,
+		mutex:   &sync.Mutex{}}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
