@@ -192,6 +192,7 @@ ngsi server add \
 | [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
 | Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
 | WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2                 |
+| Kong (client credentials)                                                  | idmHost, clientId, clientSecret                     | It provides auth token from Kong                 |
 
 ### FIWARE Service and FIWARE ServicePath
 
