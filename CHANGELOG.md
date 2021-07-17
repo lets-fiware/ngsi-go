@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Support Kong (#178)
 -   Hardening: Add insecureSkipVerify option (#177)
 -   Fix: Fix URL path join (#176)
 -   Fix: Fix EOF error when ngsi-go-config.json is empty (#175)

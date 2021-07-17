@@ -362,6 +362,12 @@ func TestCheckIdmParams(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestCheckIdmParamsKong(t *testing.T) {
+	err := checkIdmParams(CKong, "https://kong-service,http://kong-idm", "", "", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
+
+	assert.NoError(t, err)
+}
+
 func TestCheckIdmParamsNoIdm(t *testing.T) {
 	err := checkIdmParams("", "", "", "", "", "")
 
@@ -398,12 +404,22 @@ func TestCheckIdmParamsErrorNoIdmHost(t *testing.T) {
 	}
 }
 
+func TestCheckIdmParamsErrorIdmHostKong(t *testing.T) {
+	err := checkIdmParams(CKong, "kong", "", "", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost error: kong", ngsiErr.Message)
+	}
+}
+
 func TestCheckIdmParamsErrorIdmHost(t *testing.T) {
 	err := checkIdmParams(CKeyrock, "fiware", "keyrock001@fiware", "0123456789", "00000000-1111-2222-3333-444444444444", "55555555-6666-7777-8888-999999999999")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "idmHost error: fiware", ngsiErr.Message)
 	}
 }
@@ -413,7 +429,7 @@ func TestCheckIdmParamsErrorClientId(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "clientID and clientSecret are needed", ngsiErr.Message)
 	}
 }
@@ -423,7 +439,7 @@ func TestCheckIdmParamsErrorUserPassword(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "username is needed", ngsiErr.Message)
 	}
 }

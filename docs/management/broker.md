@@ -235,6 +235,21 @@ ngsi broker add \
 
 #### Example 8
 
+Orion with Kong (client credentials)
+
+```
+ngsi broker add \
+  --host kong \
+  --ngsiType v2 \
+  --brokerHost http://localhost:8000/ngsi \
+  --idmType kong \
+  --idmHost "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/" \
+  --clientId orion \
+  --clientSecret 1234
+```
+
+#### Example 9
+
 Orion with Basic authentication
 
 ```console
@@ -263,6 +278,7 @@ Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Brok
 | [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
 | Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
 | WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2                 |
+| Kong (client credentials)                                                  | idmHost, clientId, clientSecret                     | It provides auth token from Kong                 |
 
 ### FIWARE Service and FIWARE ServicePath
 
