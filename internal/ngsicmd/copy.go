@@ -86,6 +86,15 @@ func copy(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 7, "source and destination are same", nil}
 	}
 
+	if source.IsNgsiV2() && source.Scope == "" {
+		source.Scope = "/"
+		source.Headers["Fiware-ServicePath"] = "/"
+	}
+	if destination.IsNgsiV2() && destination.Scope == "" {
+		destination.Scope = "/"
+		destination.Headers["Fiware-ServicePath"] = "/"
+	}
+
 	if source.IsNgsiV2() && destination.IsNgsiV2() {
 		if c.Bool("ngsiV1") {
 			f = copyV1V1
