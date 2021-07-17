@@ -93,6 +93,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, sk
 		if err != nil {
 			return nil, &LibError{funcName, 6, "illegal url: " + name + ", " + host, nil}
 		}
+		client.Path = client.URL.Path
 	}
 
 	var tenant *string

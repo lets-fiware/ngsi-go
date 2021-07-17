@@ -33,6 +33,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -52,6 +53,7 @@ type Client struct {
 	XAuthToken    bool
 	Link          *string
 	HTTP          HTTPRequest
+	Path          string
 }
 
 const (
@@ -159,22 +161,30 @@ func (client *Client) SetAcceptGeoJSON() {
 }
 
 // SetPath is ...
-func (client *Client) SetPath(path string) {
+func (client *Client) SetPath(urlPath string) {
 	if client.Server.ServerType == "broker" {
-		if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/scorpio", "/v1"}, path) {
+		if !hasPrefix([]string{"/version", "/admin", "/log", "/statistics", "/cache", "/scorpio", "/v1"}, urlPath) {
 			if client.NgsiType == ngsiLd {
-				path = "/ngsi-ld/v1" + path
+				urlPath = "/ngsi-ld/v1" + urlPath
 			} else {
-				path = "/v2" + path
+				urlPath = "/v2" + urlPath
 			}
 		}
 	}
+	slash := false
+	if strings.HasSuffix(urlPath, "/") {
+		slash = true
+	}
+	urlPath = path.Join(client.Path, urlPath)
+	if slash {
+		urlPath += "/"
+	}
 	if client.APIPathBefore != "" {
-		if strings.HasPrefix(path, client.APIPathBefore) {
-			path = client.APIPathAfter + "/" + path[len(client.APIPathBefore):]
+		if strings.HasPrefix(urlPath, client.APIPathBefore) {
+			urlPath = client.APIPathAfter + "/" + urlPath[len(client.APIPathBefore):]
 		}
 	}
-	client.URL.Path = path
+	client.URL.Path = urlPath
 }
 
 func hasPrefix(prefixes []string, path string) bool {
