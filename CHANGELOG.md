@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Improve: Set default FIWARE Service Path to "/" in rm command (#179)
 -   Hardening: Support Kong (#178)
 -   Hardening: Add insecureSkipVerify option (#177)
 -   Fix: Fix URL path join (#176)

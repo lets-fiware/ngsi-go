@@ -67,6 +67,9 @@ func remove(c *cli.Context) error {
 		if c.IsSet("link") {
 			return &ngsiCmdError{funcName, 5, "can't specify --link option on NGSIv2", nil}
 		}
+		if client.Scope == "" {
+			client.Headers["Fiware-ServicePath"] = "/"
+		}
 		if c.Bool("ngsiV1") {
 			f = removeV1
 		} else {
