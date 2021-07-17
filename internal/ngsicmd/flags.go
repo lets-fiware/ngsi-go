@@ -82,6 +82,10 @@ var (
 		Name:   "cmdName",
 		Hidden: true,
 	}
+	insecureSkipVerifyFlag = &cli.BoolFlag{
+		Name:  "insecureSkipVerify",
+		Usage: "TLS/SSL skip certificate verification",
+	}
 )
 
 // Common flags

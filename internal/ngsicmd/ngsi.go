@@ -111,6 +111,7 @@ func getNgsiApp() *cli.App {
 			timeOutFlag,
 			maxCountFlag,
 			batchFlag,
+			insecureSkipVerifyFlag,
 			cmdNameFlag,
 		},
 		Commands: []*cli.Command{
