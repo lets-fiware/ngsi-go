@@ -46,31 +46,32 @@ type NGSI struct {
 	tokenList     tokenInfoList
 	contextList   ContextsInfo
 
-	LogLevel      int
-	ConfigFile    IoLib
-	CacheFile     IoLib
-	StdReader     io.Reader
-	StdWriter     io.Writer
-	LogWriter     io.Writer
-	FileReader    FileLib
-	JSONConverter JSONLib
-	FilePath      FilePathLib
-	Ioutil        IoutilLib
-	ZipLib        ZipLib
-	MultiPart     MultiPart
-	Host          string
-	Destination   string
-	Margin        int64
-	Maxsize       int
-	Timeout       time.Duration
-	PreviousArgs  *Settings
-	Updated       bool
-	HTTP          HTTPRequest
-	Stderr        io.Writer
-	OsType        string
-	SyslogLib     SyslogLib
-	TimeLib       TimeLib
-	BatchFlag     *bool
+	LogLevel           int
+	ConfigFile         IoLib
+	CacheFile          IoLib
+	StdReader          io.Reader
+	StdWriter          io.Writer
+	LogWriter          io.Writer
+	FileReader         FileLib
+	JSONConverter      JSONLib
+	FilePath           FilePathLib
+	Ioutil             IoutilLib
+	ZipLib             ZipLib
+	MultiPart          MultiPart
+	Host               string
+	Destination        string
+	Margin             int64
+	Maxsize            int
+	Timeout            time.Duration
+	PreviousArgs       *Settings
+	Updated            bool
+	HTTP               HTTPRequest
+	Stderr             io.Writer
+	OsType             string
+	SyslogLib          SyslogLib
+	TimeLib            TimeLib
+	BatchFlag          *bool
+	InsecureSkipVerify bool
 }
 
 // CmdFlags is ...
@@ -108,6 +109,7 @@ func NewNGSI() *NGSI {
 		gNGSI.SyslogLib = &syslogLib{}
 		gNGSI.PreviousArgs = &Settings{UsePreviousArgs: true}
 		gNGSI.TimeLib = &timeLib{}
+		gNGSI.InsecureSkipVerify = false
 		gNGSI.serverList = make(ServerList)
 		gNGSI.contextList = make(ContextsInfo)
 		gNGSI.contextList["etsi1.0"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"

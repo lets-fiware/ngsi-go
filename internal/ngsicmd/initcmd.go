@@ -124,6 +124,8 @@ func initCmd(c *cli.Context, cmdName string, requiredHost bool) (*ngsilib.NGSI, 
 		ngsi.Maxsize = maxsize
 	}
 
+	ngsi.InsecureSkipVerify = c.Bool("insecureSkipVerify")
+
 	c.App.Writer = ngsi.StdWriter
 	c.App.ErrWriter = ngsi.LogWriter
 

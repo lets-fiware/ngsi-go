@@ -92,13 +92,14 @@ COMMANDS:
      hget     get historical raw and aggregated time series context information
 
 GLOBAL OPTIONS:
-   --syslog LEVEL  specify logging LEVEL (off, err, info, debug)
-   --stderr LEVEL  specify logging LEVEL (off, err, info, debug)
-   --config FILE   specify configuration FILE
-   --cache FILE    specify cache FILE
-   --batch, -B     don't use previous args (batch) (default: false)
-   --help          show help (default: false)
-   --version, -v   print the version (default: false)
+   --syslog LEVEL        specify logging LEVEL (off, err, info, debug)
+   --stderr LEVEL        specify logging LEVEL (off, err, info, debug)
+   --config FILE         specify configuration FILE
+   --cache FILE          specify cache FILE
+   --batch, -B           don't use previous args (batch) (default: false)
+   --insecureSkipVerify  TLS/SSL skip certificate verification (default: false)
+   --help                show help (default: false)
+   --version, -v         print the version (default: false)
 
 COPYRIGHT:
    (c) 2020-2021 Kazuhito Suda

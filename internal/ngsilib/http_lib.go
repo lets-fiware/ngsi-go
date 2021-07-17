@@ -31,6 +31,7 @@ package ngsilib
 
 import (
 	"bytes"
+	"crypto/tls"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -78,7 +79,11 @@ func NewHTTPRequet() HTTPRequest {
 func (r *httpRequest) Request(method string, url *url.URL, headers map[string]string, body interface{}) (res *http.Response, b []byte, err error) {
 	const funcName = "Request"
 
-	client := &http.Client{Timeout: time.Duration(60 * time.Second)}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: gNGSI.InsecureSkipVerify},
+	}
+
+	client := &http.Client{Timeout: time.Duration(60 * time.Second), Transport: tr}
 
 	var reader io.Reader
 
