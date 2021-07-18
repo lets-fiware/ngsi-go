@@ -38,26 +38,21 @@ import (
 	"time"
 )
 
-// OauthToken is ...
-type OauthToken struct {
-	AccessToken  string   `json:"access_token"`
-	ExpiresIn    int64    `json:"expires_in"`
-	RefreshToken string   `json:"refresh_token"`
-	Scope        []string `json:"scope"`
-	TokenType    string   `json:"token_type"`
-}
-
+// TokenInfo is ...
 type TokenInfo struct {
-	Type         string         `json:"type"`
-	Token        string         `json:"token"`
-	RefreshToken string         `json:"refresh_token"`
-	Expires      time.Time      `json:"expires"`
-	Oauth        *OauthToken    `json:"Oauth,omitempty"`
-	Keyrock      *KeyrockToken  `json:"keyrock,omitempty"`
-	Keystone     *KeyStoneToken `json:"keystone,omitempty"`
-	Keycloak     *KeycloakToken `json:"keycloak,omitempty"`
-	WSO2         *WSO2Token     `json:"wso2,omitempty"`
-	Kong         *KongToken     `json:"kong,omitempty"`
+	Type          string           `json:"type"`
+	Token         string           `json:"token"`
+	RefreshToken  string           `json:"refresh_token"`
+	Expires       time.Time        `json:"expires"`
+	OAuth         *OAuthToken      `json:"oauth,omitempty"`
+	KeyrockIDM    *KeyrockIDMToken `json:"keyrock_idm,omitempty"`
+	Keyrock       *KeyrockToken    `json:"keyrock,omitempty"`
+	TokenProxy    *TokenProxy      `json:"tokenproxy,omitempty"`
+	TokenProvider *TokenProvider   `json:"tokenprovider,omitempty"`
+	Keystone      *KeyStoneToken   `json:"keystone,omitempty"`
+	Keycloak      *KeycloakToken   `json:"keycloak,omitempty"`
+	WSO2          *WSO2Token       `json:"wso2,omitempty"`
+	Kong          *KongToken       `json:"kong,omitempty"`
 }
 
 type tokenInfoList map[string]TokenInfo
@@ -67,13 +62,26 @@ type tokens struct {
 	Tokens  tokenInfoList `json:"tokens"`
 }
 
+// IdmParam is ...
+type IdmParams struct {
+	IdmType      string
+	IdmHost      string
+	Username     string
+	Password     string
+	ClientID     string
+	ClientSecret string
+}
+
 //
 // TokenPlugin interface
 //
+// TokenPlugin is ...
 type TokenPlugin interface {
 	requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error)
 	revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error
 	getAuthHeader(string) (string, string)
+	getTokenInfo(tokenInfo *TokenInfo) ([]byte, error)
+	checkIdmParams(idmParams *IdmParams) error
 }
 
 const (
@@ -81,6 +89,37 @@ const (
 	cAppXWwwFormUrlencoded = "application/x-www-form-urlencoded"
 	cAppJSON               = "application/json"
 )
+
+const (
+	CPasswordCredentials  = "password"
+	CKeyrock              = "keyrock"
+	CKeyrocktokenprovider = "keyrocktokenprovider"
+	CTokenproxy           = "tokenproxy"
+	CKeyrockIDM           = "idm"
+	CThinkingCities       = "thinkingcities"
+	CBasic                = "basic"
+	CKeycloak             = "keycloak"
+	CWSO2                 = "wso2"
+	CKong                 = "kong"
+)
+
+var idmTypes = []string{
+	CPasswordCredentials, CKeyrock, CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM,
+	CThinkingCities, CBasic, CKeycloak, CWSO2, CKong,
+}
+
+var tokenPlugins = map[string]TokenPlugin{
+	CKeyrock:              &idmKeyrock{},
+	CPasswordCredentials:  &idmPasswordCredentials{},
+	CKeyrocktokenprovider: &idmKeyrockTokenProvider{},
+	CTokenproxy:           &idmTokenProxy{},
+	CKeyrockIDM:           &idmKeyrockIDM{},
+	CThinkingCities:       &idmThinkingCities{},
+	CBasic:                &idmBasic{},
+	CKeycloak:             &idmKeycloak{},
+	CWSO2:                 &idmWSO2{},
+	CKong:                 &idmKong{},
+}
 
 const cacheFileName = "ngsi-go-token-cache.json"
 
@@ -245,17 +284,21 @@ func (ngsi *NGSI) RevokeToken(client *Client) error {
 	return nil
 }
 
-var tokenPlugins = map[string]TokenPlugin{
-	CKeyrock:              &idmKeyrock{},
-	CPasswordCredentials:  &idmPasswordCredentials{},
-	CKeyrocktokenprovider: &idmKeyrockTokenProvider{},
-	CTokenproxy:           &idmTokenProxy{},
-	CKeyrockIDM:           &idmKeyrockIDM{},
-	CThinkingCities:       &idmThinkingCities{},
-	CBasic:                &idmBasic{},
-	CKeycloak:             &idmKeycloak{},
-	CWSO2:                 &idmWSO2{},
-	CKong:                 &idmKong{},
+func (ngsi *NGSI) GetTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "GetTokenInfo"
+
+	idmType := tokenInfo.Type
+	idm, ok := tokenPlugins[idmType]
+	if !ok {
+		return nil, &LibError{funcName, 1, "unknown idm type: " + idmType, nil}
+	}
+
+	b, err := idm.getTokenInfo(tokenInfo)
+	if err != nil {
+		return nil, &LibError{funcName, 2, err.Error(), err}
+	}
+
+	return b, nil
 }
 
 func requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (string, error) {
@@ -339,9 +382,12 @@ func saveToken(file string, tokenList *tokenInfoList) error {
 }
 
 func getHash(client *Client) string {
-	s := client.Server.ServerHost + client.Server.Username
+	s := client.Server.ServerHost + client.Server.Username + client.Server.Password
 	if client.Server.IdmType == CThinkingCities {
 		s = s + client.Server.Tenant + client.Server.Scope
+	}
+	if client.Server.IdmType == CKeycloak {
+		s = s + client.Server.ClientID + client.Server.ClientSecret
 	}
 	r := sha1.Sum([]byte(s))
 	return hex.EncodeToString(r[:])
@@ -380,4 +426,33 @@ func getUserNamePassword(client *Client) (string, string, error) {
 	}
 
 	return username, password, nil
+}
+
+func checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParams"
+
+	idmType := strings.ToLower(idmParams.IdmType)
+
+	if idmType == "" {
+		if !(idmParams.IdmHost == "" &&
+			idmParams.Username == "" &&
+			idmParams.Password == "" &&
+			idmParams.ClientID == "" &&
+			idmParams.ClientSecret == "") {
+			return &LibError{funcName, 1, "required idmType not found", nil}
+		}
+		return nil
+	}
+
+	idm, ok := tokenPlugins[idmType]
+	if !ok {
+		return &LibError{funcName, 2, "unknown idm type: " + idmType, nil}
+	}
+
+	err := idm.checkIdmParams(idmParams)
+	if err != nil {
+		return &LibError{funcName, 3, err.Error(), err}
+	}
+
+	return nil
 }

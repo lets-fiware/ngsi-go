@@ -38,6 +38,11 @@ import (
 
 // https://github.com/FIWARE-Ops/KeyrockTokenProvider
 
+// TokenProvider is ...
+type TokenProvider struct {
+	AccessToken string `json:"access_token"`
+}
+
 type idmKeyrockTokenProvider struct {
 }
 
@@ -66,15 +71,14 @@ func (i *idmKeyrockTokenProvider) requestToken(ngsi *NGSI, client *Client, token
 
 	utime := ngsi.TimeLib.NowUnix()
 
-	var token OauthToken
-	token.AccessToken = string(body)
-	token.ExpiresIn = 3600
+	var tokenProvider TokenProvider
+	tokenProvider.AccessToken = string(body)
 
 	tokenInfo.Type = CKeyrocktokenprovider
-	tokenInfo.Token = token.AccessToken
-	tokenInfo.Expires = time.Unix(utime+token.ExpiresIn, 0)
+	tokenInfo.Token = tokenProvider.AccessToken
+	tokenInfo.Expires = time.Unix(utime+3600, 0)
 	tokenInfo.RefreshToken = ""
-	tokenInfo.Oauth = &token
+	tokenInfo.TokenProvider = &tokenProvider
 
 	return tokenInfo, nil
 }
@@ -85,4 +89,28 @@ func (i *idmKeyrockTokenProvider) revokeToken(ngsi *NGSI, client *Client, tokenI
 
 func (i *idmKeyrockTokenProvider) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
+}
+
+func (i *idmKeyrockTokenProvider) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoKeyrockTokenProvider"
+
+	b, err := JSONMarshal(tokenInfo.TokenProvider)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+
+	return b, nil
+}
+
+func (i *idmKeyrockTokenProvider) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsTokenProvider"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID == "" &&
+		idmParams.ClientSecret == "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, username and password are needed", nil}
 }

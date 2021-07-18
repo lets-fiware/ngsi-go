@@ -38,6 +38,15 @@ import (
 	"time"
 )
 
+// KeyrockToken is ...
+type KeyrockToken struct {
+	AccessToken  string   `json:"access_token"`
+	ExpiresIn    int64    `json:"expires_in"`
+	RefreshToken string   `json:"refresh_token"`
+	Scope        []string `json:"scope"`
+	TokenType    string   `json:"token_type"`
+}
+
 type idmKeyrock struct {
 }
 
@@ -84,18 +93,18 @@ func (i *idmKeyrock) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenIn
 		case http.StatusOK:
 			utime := ngsi.TimeLib.NowUnix()
 
-			var oToken OauthToken
-			err = JSONUnmarshal(body, &oToken)
+			var keyrockToken KeyrockToken
+			err = JSONUnmarshal(body, &keyrockToken)
 			if err != nil {
 				return nil, &LibError{funcName, 3, err.Error(), err}
 			}
 
 			tokenInfo := &TokenInfo{
 				Type:         CKeyrock,
-				Token:        oToken.AccessToken,
-				RefreshToken: oToken.RefreshToken,
-				Expires:      time.Unix(utime+oToken.ExpiresIn, 0),
-				Oauth:        &oToken,
+				Token:        keyrockToken.AccessToken,
+				RefreshToken: keyrockToken.RefreshToken,
+				Expires:      time.Unix(utime+keyrockToken.ExpiresIn, 0),
+				Keyrock:      &keyrockToken,
 			}
 			return tokenInfo, nil
 		}
@@ -131,4 +140,28 @@ func (i *idmKeyrock) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInf
 
 func (i *idmKeyrock) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
+}
+
+func (i *idmKeyrock) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoKeyrock"
+
+	b, err := JSONMarshal(tokenInfo.Keyrock)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+
+	return b, nil
+}
+
+func (i *idmKeyrock) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsKeyrock"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID != "" &&
+		idmParams.ClientSecret != "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil}
 }

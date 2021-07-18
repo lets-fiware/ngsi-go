@@ -62,7 +62,7 @@ func TestRequestTokenKeyrocktokenprovider(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, CKeyrocktokenprovider, actual.Type)
-		assert.Equal(t, "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", actual.Oauth.AccessToken)
+		assert.Equal(t, "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", actual.TokenProvider.AccessToken)
 	}
 }
 
@@ -171,4 +171,73 @@ func TestGetAuthHeaderKeyrocktokenprovider(t *testing.T) {
 
 	assert.Equal(t, "Authorization", key)
 	assert.Equal(t, "Bearer 9e7067026d0aac494e8fedf66b1f585e79f52935", value)
+}
+
+func TestGetTokenInfoKeyrocktokenprovider(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmKeyrockTokenProvider{}
+	tokenInfo := &TokenInfo{
+		TokenProvider: &TokenProvider{
+			AccessToken: "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+		},
+	}
+
+	actual, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.NoError(t, err) {
+		expected := "{\"access_token\":\"ad5252cd520cnaddacdc5d2e63899f0cdcf946f3\"}"
+
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestGetTokenInfoKeyrocktokenproviderError(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmKeyrockTokenProvider{}
+	tokenInfo := &TokenInfo{
+		TokenProvider: &TokenProvider{
+			AccessToken: "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+		},
+	}
+
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsKeyrocktokenprovider(t *testing.T) {
+	idm := &idmKeyrockTokenProvider{}
+	idmParams := &IdmParams{
+		IdmHost:  "https://tokenprovider",
+		Username: "keyrock001@letsfiware.jp",
+		Password: "1234",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsKeyrocktokenproviderError(t *testing.T) {
+	idm := &idmKeyrockTokenProvider{}
+	idmParams := &IdmParams{
+		IdmHost:  "https://tokenprovider",
+		Username: "keyrock001@letsfiware.jp",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost, username and password are needed", ngsiErr.Message)
+	}
 }

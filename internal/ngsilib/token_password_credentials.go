@@ -38,6 +38,15 @@ import (
 	"time"
 )
 
+// OauthToken is ...
+type OAuthToken struct {
+	AccessToken  string   `json:"access_token"`
+	ExpiresIn    int64    `json:"expires_in"`
+	RefreshToken string   `json:"refresh_token"`
+	Scope        []string `json:"scope"`
+	TokenType    string   `json:"token_type"`
+}
+
 type idmPasswordCredentials struct {
 }
 
@@ -69,7 +78,7 @@ func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, tokenI
 
 	utime := ngsi.TimeLib.NowUnix()
 
-	var token OauthToken
+	var token OAuthToken
 	err = JSONUnmarshal(body, &token)
 	if err != nil {
 		return nil, &LibError{funcName, 4, err.Error(), err}
@@ -79,7 +88,7 @@ func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, tokenI
 	tokenInfo.Token = token.AccessToken
 	tokenInfo.Expires = time.Unix(utime+token.ExpiresIn, 0)
 	tokenInfo.RefreshToken = token.RefreshToken
-	tokenInfo.Oauth = &token
+	tokenInfo.OAuth = &token
 
 	return tokenInfo, nil
 }
@@ -115,4 +124,28 @@ func (i *idmPasswordCredentials) revokeToken(ngsi *NGSI, client *Client, tokenIn
 
 func (i *idmPasswordCredentials) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
+}
+
+func (i *idmPasswordCredentials) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoPasswordCredentials"
+
+	b, err := JSONMarshal(tokenInfo.OAuth)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+
+	return b, nil
+}
+
+func (i *idmPasswordCredentials) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsPasswordCredentials"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID != "" &&
+		idmParams.ClientSecret != "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil}
 }

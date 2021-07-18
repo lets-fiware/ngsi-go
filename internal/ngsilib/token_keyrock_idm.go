@@ -37,7 +37,7 @@ import (
 )
 
 // KeyrockToken is ...
-type KeyrockToken struct {
+type KeyrockIDMToken struct {
 	Token struct {
 		Methods   []string `json:"methods"`
 		ExpiresAt string   `json:"expires_at"`
@@ -74,7 +74,7 @@ func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	var token KeyrockToken
+	var token KeyrockIDMToken
 	err = JSONUnmarshal(body, &token)
 	if err != nil {
 		return nil, &LibError{funcName, 4, err.Error(), err}
@@ -86,7 +86,7 @@ func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 	tokenInfo.Token = res.Header.Get("X-Subject-Token")
 	tokenInfo.Expires = t
 	tokenInfo.RefreshToken = ""
-	tokenInfo.Keyrock = &token
+	tokenInfo.KeyrockIDM = &token
 
 	return tokenInfo, nil
 }
@@ -115,4 +115,22 @@ func (i *idmKeyrockIDM) revokeToken(ngsi *NGSI, client *Client, tokenInfo *Token
 
 func (i *idmKeyrockIDM) getAuthHeader(token string) (string, string) {
 	return "X-Auth-Token", token
+}
+
+func (i *idmKeyrockIDM) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	// unused: ngsicmd/token.go
+	return nil, nil
+}
+
+func (i *idmKeyrockIDM) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsKeyIDM"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID == "" &&
+		idmParams.ClientSecret == "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "username and password are needed", nil}
 }

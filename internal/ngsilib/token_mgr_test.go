@@ -254,7 +254,7 @@ func TestGetTokenKeyrock(t *testing.T) {
 	ngsi.tokenList["token2"] = TokenInfo{}
 
 	token := "1234"
-	ngsi.tokenList["9e7067026d0aac494e8fedf66b1f585e79f52935"] = TokenInfo{Token: token, Expires: time.Unix(9613169598, 0)}
+	ngsi.tokenList["b3193239b2d60a2dac06044845650c3470fdb1d5"] = TokenInfo{Token: token, Expires: time.Unix(9613169598, 0)}
 
 	client := &Client{Server: &Server{ServerHost: "http://localhost:3000/", ServerType: "keyrock", IdmType: CKeyrockIDM, IdmHost: "http://localhost:3000/", Username: "admin@letsfiware.jp", Password: "1234"}}
 
@@ -402,7 +402,7 @@ func TestGetAuthHeaderErrorIdmType(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
-	ngsi.tokenList["583a5c111b603ff8925585f48503e343403115f9"] = TokenInfo{Token: "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", Expires: time.Unix(9999999999, 0)}
+	ngsi.tokenList["d40fc58b9c5fc05c623f7e046c5b447954901c02"] = TokenInfo{Token: "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3", Expires: time.Unix(9999999999, 0)}
 
 	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: "unknown", Username: "fiware", Password: "1234"}}
 
@@ -681,20 +681,30 @@ func TestSaveTokenErrorEncode(t *testing.T) {
 }
 
 func TestGetHash(t *testing.T) {
-	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", Username: "fiware", Password: "1234"}}
 
 	actual := getHash(client)
-	expected := "583a5c111b603ff8925585f48503e343403115f9"
+	expected := "d40fc58b9c5fc05c623f7e046c5b447954901c02"
 
 	assert.Equal(t, expected, actual)
 
 }
 
 func TestGetHashThinkingCities(t *testing.T) {
-	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CThinkingCities, Username: "fiware", Tenant: "smartcity", Scope: "/madrid"}}
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CThinkingCities, Username: "fiware", Password: "1234", Tenant: "smartcity", Scope: "/madrid"}}
 
 	actual := getHash(client)
-	expected := "a50ef2c09c126141f16967c62ef78a4c031bdb6f"
+	expected := "40b60171102fa5b505ef1929cf5f23267ba050d6"
+
+	assert.Equal(t, expected, actual)
+
+}
+
+func TestGetHashKeycloak(t *testing.T) {
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CKeycloak, Username: "fiware", Password: "1234", ClientID: "orion", ClientSecret: "1234"}}
+
+	actual := getHash(client)
+	expected := "0565444d5249dc3ceb130af73a8700dbf068485c"
 
 	assert.Equal(t, expected, actual)
 
@@ -864,5 +874,137 @@ func TestRevodeTokenErrorSaveToken(t *testing.T) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error file", ngsiErr.Message)
+	}
+}
+
+func TestGetTokenInfo(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	tokenInfo := &TokenInfo{
+		Type: CKeyrock,
+		Keyrock: &KeyrockToken{
+			AccessToken:  "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+			ExpiresIn:    3599,
+			RefreshToken: "03e33a311e03317b390956729bcac2794b695670",
+			Scope:        []string{"bearer"},
+			TokenType:    "Bearer",
+		},
+	}
+
+	actual, err := ngsi.GetTokenInfo(tokenInfo)
+
+	if assert.NoError(t, err) {
+		expected := "{\"access_token\":\"ad5252cd520cnaddacdc5d2e63899f0cdcf946f3\",\"expires_in\":3599,\"refresh_token\":\"03e33a311e03317b390956729bcac2794b695670\",\"scope\":[\"bearer\"],\"token_type\":\"Bearer\"}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestGetTokenInfoErrorUnkownType(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	tokenInfo := &TokenInfo{
+		Type: "unknown",
+	}
+
+	_, err := ngsi.GetTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
+	}
+}
+
+func TestGetTokenInfoErrorJSON(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	tokenInfo := &TokenInfo{
+		Type: CKeyrock,
+		Keyrock: &KeyrockToken{
+			AccessToken:  "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+			ExpiresIn:    3599,
+			RefreshToken: "03e33a311e03317b390956729bcac2794b695670",
+			Scope:        []string{"bearer"},
+			TokenType:    "Bearer",
+		},
+	}
+
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+
+	_, err := ngsi.GetTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParams(t *testing.T) {
+	idmParams := &IdmParams{
+		IdmType:      CKeyrock,
+		IdmHost:      "https://keyrock/oauth2/token",
+		Username:     "keyrock001@letsfiware.jp",
+		Password:     "1234",
+		ClientID:     "00000000-1111-2222-3333-444444444444",
+		ClientSecret: "55555555-6666-7777-8888-999999999999",
+	}
+
+	err := checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsNoIDM(t *testing.T) {
+	idmParams := &IdmParams{}
+
+	err := checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsErrorNoIDM(t *testing.T) {
+	idmParams := &IdmParams{
+		Username: "fiware",
+	}
+
+	err := checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "required idmType not found", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsErrorUnkownIDM(t *testing.T) {
+	idmParams := &IdmParams{
+		IdmType: "unknown",
+	}
+
+	err := checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsErrorParam(t *testing.T) {
+	idmParams := &IdmParams{
+		IdmType:  CKeyrock,
+		IdmHost:  "https://keyrock/oauth2/token",
+		Username: "keyrock001@letsfiware.jp",
+		Password: "1234",
+		ClientID: "00000000-1111-2222-3333-444444444444",
+	}
+
+	err := checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost, username, password, clientID and clientSecret are needed", ngsiErr.Message)
 	}
 }

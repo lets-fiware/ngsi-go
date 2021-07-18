@@ -181,7 +181,7 @@ func TestRequestTokenKeyrockIDMErrorUnmarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "json: cannot unmarshal string into Go value of type ngsilib.KeyrockToken Field: (8) \"tokens\":{\"9e7067026d0a", ngsiErr.Message)
+		assert.Equal(t, "json: cannot unmarshal string into Go value of type ngsilib.KeyrockIDMToken Field: (8) \"tokens\":{\"9e7067026d0a", ngsiErr.Message)
 	}
 }
 
@@ -256,4 +256,50 @@ func TestGetAuthHeaderKeyrockIDM(t *testing.T) {
 
 	assert.Equal(t, "X-Auth-Token", key)
 	assert.Equal(t, "9e7067026d0aac494e8fedf66b1f585e79f52935", value)
+}
+
+func TestGetTokenInfoKeyrockIDM(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmKeyrockIDM{}
+	tokenInfo := &TokenInfo{
+		KeyrockIDM: &KeyrockIDMToken{},
+	}
+	tokenInfo.KeyrockIDM.Token.Methods = []string{"password"}
+	tokenInfo.KeyrockIDM.Token.ExpiresAt = "2021-02-12T22:56:03.410Z"
+	tokenInfo.KeyrockIDM.IdmAuthorizationConfig.Level = "basic"
+	tokenInfo.KeyrockIDM.IdmAuthorizationConfig.Authzforce = false
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsKeyrockIDM(t *testing.T) {
+	idm := &idmKeyrockIDM{}
+	idmParams := &IdmParams{
+		IdmHost:  "https://idm.letsfiware.jp",
+		Username: "admin@letsfiware.jp",
+		Password: "1234",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsKeyrockIDMError(t *testing.T) {
+	idm := &idmKeyrockIDM{}
+	idmParams := &IdmParams{
+		IdmHost:  "https://idm.letsfiware.jp",
+		Username: "admin@letsfiware.jp",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "username and password are needed", ngsiErr.Message)
+	}
 }

@@ -318,3 +318,83 @@ func TestGetAuthHeaderWSO2(t *testing.T) {
 	assert.Equal(t, "Authorization", key)
 	assert.Equal(t, "Bearer 9e7067026d0aac494e8fedf66b1f585e79f52935", value)
 }
+
+func TestGetTokenInfoWSO2(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmWSO2{}
+	tokenInfo := &TokenInfo{
+		WSO2: &WSO2Token{
+			Scope:        "default",
+			TokenType:    "Bearer",
+			ExpiresIn:    3600,
+			RefreshToken: "a7d6bae2b1d36c041787e9c9e2d6cbf8",
+			AccessToken:  "cba95432f1f8227f5bc6cf4a20633cb3",
+		},
+	}
+
+	actual, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.NoError(t, err) {
+		expected := "{\"access_token\":\"cba95432f1f8227f5bc6cf4a20633cb3\",\"expires_in\":3600,\"refresh_token\":\"a7d6bae2b1d36c041787e9c9e2d6cbf8\",\"scope\":\"default\",\"token_type\":\"Bearer\"}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestGetTokenInfoWSO2Error(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmWSO2{}
+	tokenInfo := &TokenInfo{
+		WSO2: &WSO2Token{
+			Scope:        "default",
+			TokenType:    "Bearer",
+			ExpiresIn:    3600,
+			RefreshToken: "a7d6bae2b1d36c041787e9c9e2d6cbf8",
+			AccessToken:  "cba95432f1f8227f5bc6cf4a20633cb3",
+		},
+	}
+
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsWSO2(t *testing.T) {
+	idm := &idmWSO2{}
+	idmParams := &IdmParams{
+		IdmHost:      "http://wso2am:8243/token",
+		Username:     "fiware",
+		Password:     "1234",
+		ClientID:     "0000000000000000000000_A_ZZZ",
+		ClientSecret: "00000000-1111-2222-3333-444444444444",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsWSO2Error(t *testing.T) {
+	idm := &idmWSO2{}
+	idmParams := &IdmParams{
+		IdmHost:  "http://wso2am:8243/token",
+		Username: "fiware",
+		Password: "1234",
+		ClientID: "0000000000000000000000_A_ZZZ",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost, username, password, clientID and clientSecret are needed", ngsiErr.Message)
+	}
+}

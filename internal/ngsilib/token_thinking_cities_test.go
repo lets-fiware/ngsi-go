@@ -210,3 +210,104 @@ func TestGetAuthHeaderThinkingCities(t *testing.T) {
 	assert.Equal(t, "X-Auth-Token", key)
 	assert.Equal(t, "9e7067026d0aac494e8fedf66b1f585e79f52935", value)
 }
+
+func TestGetTokenInfoThinkingCities(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmThinkingCities{}
+	keystone := &KeyStoneToken{}
+	tokenInfo := &TokenInfo{
+		Keystone: keystone,
+	}
+
+	keystone.Token.Domain.ID = "9f60e700f04544379932d59a17985cff"
+	keystone.Token.Domain.Name = "smartcity"
+	keystone.Token.Methods = []string{"password"}
+	keystone.Token.ExpiresAt = "2021-04-16T11:30:47.000000Z"
+	keystone.Token.Extras.PasswordCreationTime = "2021-04-16T08:29:01Z"
+	keystone.Token.Extras.LastLoginAttemptTime = "2021-04-16T08:29:05.000000"
+	keystone.Token.Extras.PwdUserInBlacklist = false
+	keystone.Token.Extras.PasswordExpirationTime = "2022-04-16T08:29:01Z"
+	keystone.Token.User.PasswordExpiresAt = "2022-04-16T08:29:00.000000"
+	keystone.Token.User.Domain.ID = "9f60e700f04544379932d59a17985cff"
+	keystone.Token.User.Name = "smartcity"
+	keystone.Token.User.ID = "80e292b7dae445e7af66c284162ff049"
+	keystone.Token.User.Name = "usertest"
+	keystone.Token.AuditIds = []string{"6kJ9zBFCQaKRa7aCFc6bpw"}
+	keystone.Token.IssuedAt = "2021-04-16T08:30:47.000000Z"
+
+	actual, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.NoError(t, err) {
+		expected := "{\"token\":{\"domain\":{\"id\":\"9f60e700f04544379932d59a17985cff\",\"name\":\"smartcity\"},\"methods\":[\"password\"],\"roles\":null,\"expires_at\":\"2021-04-16T11:30:47.000000Z\",\"catalog\":null,\"extras\":{\"password_creation_time\":\"2021-04-16T08:29:01Z\",\"last_login_attempt_time\":\"2021-04-16T08:29:05.000000\",\"pwd_user_in_blacklist\":false,\"password_expiration_time\":\"2022-04-16T08:29:01Z\"},\"user\":{\"password_expires_at\":\"2022-04-16T08:29:00.000000\",\"domain\":{\"id\":\"9f60e700f04544379932d59a17985cff\",\"name\":\"\"},\"id\":\"80e292b7dae445e7af66c284162ff049\",\"name\":\"usertest\"},\"audit_ids\":[\"6kJ9zBFCQaKRa7aCFc6bpw\"],\"issued_at\":\"2021-04-16T08:30:47.000000Z\"}}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestGetTokenInfoThinkingCitiesError(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmThinkingCities{}
+	keystone := &KeyStoneToken{}
+	tokenInfo := &TokenInfo{
+		Keystone: keystone,
+	}
+
+	keystone.Token.Domain.ID = "9f60e700f04544379932d59a17985cff"
+	keystone.Token.Domain.Name = "smartcity"
+	keystone.Token.Methods = []string{"password"}
+	keystone.Token.ExpiresAt = "2021-04-16T11:30:47.000000Z"
+	keystone.Token.Extras.PasswordCreationTime = "2021-04-16T08:29:01Z"
+	keystone.Token.Extras.LastLoginAttemptTime = "2021-04-16T08:29:05.000000"
+	keystone.Token.Extras.PwdUserInBlacklist = false
+	keystone.Token.Extras.PasswordExpirationTime = "2022-04-16T08:29:01Z"
+	keystone.Token.User.PasswordExpiresAt = "2022-04-16T08:29:00.000000"
+	keystone.Token.User.Domain.ID = "9f60e700f04544379932d59a17985cff"
+	keystone.Token.User.Name = "smartcity"
+	keystone.Token.User.ID = "80e292b7dae445e7af66c284162ff049"
+	keystone.Token.User.Name = "usertest"
+	keystone.Token.AuditIds = []string{"6kJ9zBFCQaKRa7aCFc6bpw"}
+	keystone.Token.IssuedAt = "2021-04-16T08:30:47.000000Z"
+
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsThinkingCities(t *testing.T) {
+	idm := &idmThinkingCities{}
+	idmParams := &IdmParams{
+		IdmHost:  "http://localhost:5001/v3/auth/tokens",
+		Username: "fiware",
+		Password: "1234",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsThinkingCitiesError(t *testing.T) {
+	idm := &idmThinkingCities{}
+	idmParams := &IdmParams{
+		IdmHost:      "http://localhost:5001/v3/auth/tokens",
+		Username:     "fiware",
+		Password:     "1234",
+		ClientID:     "orion",
+		ClientSecret: "1234",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost, username and password are needed", ngsiErr.Message)
+	}
+}
