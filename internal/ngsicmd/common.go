@@ -30,6 +30,7 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 
@@ -78,4 +79,8 @@ func getDateTime(dateTime string) (string, error) {
 func getTime(ngsi *ngsilib.NGSI, v int64) string {
 	_ = ngsi.TimeLib.Unix(v/1000, 0)
 	return ngsi.TimeLib.Format("2006/01/02 15:04:05")
+}
+
+func humanizeUptime(t int64) string {
+	return fmt.Sprintf("%d d, %d h, %d m, %d s", (t/3600)/24, (t/3600)%24, (t/60)%60, t%60)
 }

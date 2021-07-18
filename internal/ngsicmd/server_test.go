@@ -47,7 +47,7 @@ func TestServersList(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "comet cygnus iota keyrock perseo perseo-core ql wirecloud\n"
+		expected := "comet cygnus iota keyrock perseo perseo-core ql regproxy wirecloud\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -83,7 +83,7 @@ func TestServersListJSON(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"https://comet\"},\"cygnus\":{\"serverType\":\"cygnus\",\"serverHost\":\"https://cygnus\"},\"iota\":{\"serverType\":\"iota\",\"serverHost\":\"https://iota\"},\"keyrock\":{\"serverType\":\"keyrock\",\"serverHost\":\"https://keyrock\"},\"perseo\":{\"serverType\":\"perseo\",\"serverHost\":\"https://perseo\"},\"perseo-core\":{\"serverType\":\"perseo-core\",\"serverHost\":\"https://perseo-core\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"https://quantumleap\"},\"wirecloud\":{\"serverType\":\"wirecloud\",\"serverHost\":\"https://wirecloud\"}}"
+		expected := "{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"https://comet\"},\"cygnus\":{\"serverType\":\"cygnus\",\"serverHost\":\"https://cygnus\"},\"iota\":{\"serverType\":\"iota\",\"serverHost\":\"https://iota\"},\"keyrock\":{\"serverType\":\"keyrock\",\"serverHost\":\"https://keyrock\"},\"perseo\":{\"serverType\":\"perseo\",\"serverHost\":\"https://perseo\"},\"perseo-core\":{\"serverType\":\"perseo-core\",\"serverHost\":\"https://perseo-core\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"https://quantumleap\"},\"regproxy\":{\"serverType\":\"regproxy\",\"serverHost\":\"https://regproxy\"},\"wirecloud\":{\"serverType\":\"wirecloud\",\"serverHost\":\"https://wirecloud\"}}"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()
@@ -101,7 +101,7 @@ func TestServersListJSONPretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"comet\": {\n    \"serverType\": \"comet\",\n    \"serverHost\": \"https://comet\"\n  },\n  \"cygnus\": {\n    \"serverType\": \"cygnus\",\n    \"serverHost\": \"https://cygnus\"\n  },\n  \"iota\": {\n    \"serverType\": \"iota\",\n    \"serverHost\": \"https://iota\"\n  },\n  \"keyrock\": {\n    \"serverType\": \"keyrock\",\n    \"serverHost\": \"https://keyrock\"\n  },\n  \"perseo\": {\n    \"serverType\": \"perseo\",\n    \"serverHost\": \"https://perseo\"\n  },\n  \"perseo-core\": {\n    \"serverType\": \"perseo-core\",\n    \"serverHost\": \"https://perseo-core\"\n  },\n  \"ql\": {\n    \"serverType\": \"quantumleap\",\n    \"serverHost\": \"https://quantumleap\"\n  },\n  \"wirecloud\": {\n    \"serverType\": \"wirecloud\",\n    \"serverHost\": \"https://wirecloud\"\n  }\n}\n"
+		expected := "{\n  \"comet\": {\n    \"serverType\": \"comet\",\n    \"serverHost\": \"https://comet\"\n  },\n  \"cygnus\": {\n    \"serverType\": \"cygnus\",\n    \"serverHost\": \"https://cygnus\"\n  },\n  \"iota\": {\n    \"serverType\": \"iota\",\n    \"serverHost\": \"https://iota\"\n  },\n  \"keyrock\": {\n    \"serverType\": \"keyrock\",\n    \"serverHost\": \"https://keyrock\"\n  },\n  \"perseo\": {\n    \"serverType\": \"perseo\",\n    \"serverHost\": \"https://perseo\"\n  },\n  \"perseo-core\": {\n    \"serverType\": \"perseo-core\",\n    \"serverHost\": \"https://perseo-core\"\n  },\n  \"ql\": {\n    \"serverType\": \"quantumleap\",\n    \"serverHost\": \"https://quantumleap\"\n  },\n  \"regproxy\": {\n    \"serverType\": \"regproxy\",\n    \"serverHost\": \"https://regproxy\"\n  },\n  \"wirecloud\": {\n    \"serverType\": \"wirecloud\",\n    \"serverHost\": \"https://wirecloud\"\n  }\n}\n"
 		assert.Equal(t, expected, actual)
 	} else {
 		t.FailNow()

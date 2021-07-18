@@ -109,6 +109,10 @@ var configData = `{
 		"ngsiType": "ld",
 		"serverType": "broker",
 		"brokerType": "scorpio"
+	  },
+	  "regproxy": {
+		"serverHost": "https://regproxy",
+		"serverType": "regproxy"
 	  }
 	},
 	"contexts": {

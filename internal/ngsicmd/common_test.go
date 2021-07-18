@@ -92,3 +92,25 @@ func TestGetTime(t *testing.T) {
 	actual := getTime(ngsi, 0)
 	assert.Equal(t, expected, actual)
 }
+
+func TestHumanizeUptime(t *testing.T) {
+	cases := []struct {
+		t        int64
+		expected string
+	}{
+		{t: 0, expected: "0 d, 0 h, 0 m, 0 s"},
+		{t: 10, expected: "0 d, 0 h, 0 m, 10 s"},
+		{t: 61, expected: "0 d, 0 h, 1 m, 1 s"},
+		{t: 3662, expected: "0 d, 1 h, 1 m, 2 s"},
+		{t: 86401, expected: "1 d, 0 h, 0 m, 1 s"},
+		{t: 86401 + 3662, expected: "1 d, 1 h, 1 m, 3 s"},
+		{t: 86400 - 1, expected: "0 d, 23 h, 59 m, 59 s"},
+		{t: 86401*10 + 3662, expected: "10 d, 1 h, 1 m, 12 s"},
+	}
+
+	for _, c := range cases {
+		actual := humanizeUptime(c.t)
+		assert.Equal(t, c.expected, actual)
+	}
+
+}

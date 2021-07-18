@@ -869,19 +869,30 @@ var (
 		Usage:   "cert file (only needed if https is enabled)",
 	}
 	regProxyReplaceTenantFlag = &cli.StringFlag{
-		Name:    "replaceService",
-		Aliases: []string{"S"},
-		Usage:   "replace FIWARE-Serivce",
+		Name:  "replaceService",
+		Usage: "replace FIWARE-Serivce",
 	}
 	regProxyReplaceScopeFlag = &cli.StringFlag{
-		Name:    "replacePath",
-		Aliases: []string{"P"},
-		Usage:   "replace FIWARE-SerivcePath",
+		Name:  "replacePath",
+		Usage: "replace FIWARE-SerivcePath",
+	}
+	regProxyAddScopeFlag = &cli.StringFlag{
+		Name:  "addPath",
+		Usage: "add path to FIWARE-SerivcePath",
 	}
 	regProxyReplaceURLFlag = &cli.StringFlag{
-		Name:    "replaceURL",
-		Aliases: []string{"U"},
-		Usage:   "replace URL of forwarding destination",
+		Name:  "replaceURL",
+		Usage: "replace URL of forwarding destination",
+	}
+	regProxyRegProxyHostFlag = &cli.StringFlag{
+		Name:    "host",
+		Aliases: []string{"h"},
+		Usage:   "regproxy host",
+	}
+	regProxyVerboseFlag = &cli.StringFlag{
+		Name:    "verbose",
+		Aliases: []string{"v"},
+		Usage:   "verbose log (on/off)",
 	}
 )
 

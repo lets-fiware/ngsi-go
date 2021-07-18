@@ -137,7 +137,7 @@ ngsi server add \
 
 ### Server type
 
-Specify the following value to `--serverType` option when you add an alias for FIWARE GE.
+Specify the following value to `--serverType` option when you add an alias for FIWARE GE and other servers.
 
 | FIWARE GE   | serverType  |
 | ----------- | ----------- |
@@ -148,6 +148,10 @@ Specify the following value to `--serverType` option when you add an alias for F
 | Perseo Core | perseo-core |
 | Keyrock     | keyrock     |
 | WireCloud   | wirecloud   |
+
+| NGSI Go           | serverType |
+| ----------------- | ---------- |
+| regstration proxy | regproxy   |
 
 #### Example 3
 

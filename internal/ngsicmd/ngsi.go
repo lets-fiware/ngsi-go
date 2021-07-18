@@ -443,21 +443,55 @@ var regProxyCmd = cli.Command{
 	Name:     "regproxy",
 	Category: "CONVENIENCE",
 	Usage:    "registration proxy",
-	Flags: []cli.Flag{
-		regProxyHostFlag,
-		regProxyRhostFlag,
-		regProxyPortFlag,
-		regProxyURLFlag,
-		regProxyReplaceTenantFlag,
-		regProxyReplaceScopeFlag,
-		regProxyReplaceURLFlag,
-		regProxyHTTPSFlag,
-		regProxyKeyFlag,
-		regProxyCertFlag,
-		verboseFlag,
-	},
-	Action: func(c *cli.Context) error {
-		return regProxy(c)
+	Subcommands: []*cli.Command{
+		{
+			Name:  "server",
+			Usage: "start up regproxy server",
+			Flags: []cli.Flag{
+				regProxyHostFlag,
+				regProxyRhostFlag,
+				regProxyPortFlag,
+				regProxyURLFlag,
+				regProxyReplaceTenantFlag,
+				regProxyReplaceScopeFlag,
+				regProxyAddScopeFlag,
+				regProxyReplaceURLFlag,
+				regProxyHTTPSFlag,
+				regProxyKeyFlag,
+				regProxyCertFlag,
+				verboseFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return regProxyServer(c)
+			},
+		},
+		{
+			Name:  "health",
+			Usage: "sanity check for regproxy server",
+			Flags: []cli.Flag{
+				regProxyRegProxyHostFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return regProxyHealthCmd(c)
+			},
+		},
+		{
+			Name:  "config",
+			Usage: "change configuration for regproxy server",
+			Flags: []cli.Flag{
+				regProxyRegProxyHostFlag,
+				regProxyVerboseFlag,
+				regProxyReplaceTenantFlag,
+				regProxyReplaceScopeFlag,
+				regProxyAddScopeFlag,
+				regProxyReplaceURLFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return regProxyConfigCmd(c)
+			},
+		},
 	},
 }
 

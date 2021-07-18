@@ -3,29 +3,118 @@
 This command allows you to start up a registration proxy server. It's put between a context broker and
 a Csource/CPr with a protected API endpoint.
 
+-   [Server](#server)
+-   [Sanity check](#sanity-check)
+-   [Configration](#config)
+
+<a name="server"></a>
+
+## Server
+
+This command allows you to start up a registration proxy server.
+
 ```console
-ngsi regproxy [options]
+ngsi regproxy server [options]
 ```
 
 ## Options
 
-| Options                          | Description                                      |
-| -------------------------------- | ------------------------------------------------ |
-| --host value, -h value           | context broker or csource host                   |
-| --rhost value                    | host for registration proxy (default: "0.0.0.0") |
-| --port value, -p value           | port for registration proxy (default: "1028")    |
-| --url value, -u value            | url for registration proxy (default: "/")        |
-| --replaceService value, -S value | replace FIWARE-Serivce                           |
-| --replacePath value, -P value    | replace FIWARE-SerivcePath                       |
-| --replaceURL value, -U value     | replace URL of forwarding destination            |
-| --https, -s                      | start in https (default: false)                  |
-| --key value, -k value            | key file (only needed if https is enabled)       |
-| --cert value, -c value           | cert file (only needed if https is enabled)      |
-| --verbose, -v                    | verbose (default: false)                         |
-| --help                           | show help (default: false)                       |
+| Options                | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| --host value, -h value | context broker or csource host                   |
+| --rhost value          | host for registration proxy (default: "0.0.0.0") |
+| --port value, -p value | port for registration proxy (default: "1028")    |
+| --url value, -u value  | url for registration proxy (default: "/")        |
+| --replaceService value | replace FIWARE-Serivce                           |
+| --replacePath value    | replace FIWARE-SerivcePath                       |
+| --addPath value        | add path to FIWARE-SerivcePath                   |
+| --replaceURL valuee    | replace URL of forwarding destination            |
+| --https, -s            | start in https (default: false)                  |
+| --key value, -k value  | key file (only needed if https is enabled)       |
+| --cert value, -c value | cert file (only needed if https is enabled)      |
+| --verbose, -v          | verbose (default: false)                         |
+| --help                 | show help (default: false)                       |
 
 ### Example
 
 ```console
-ngsi --stderr info regproxy --host orion-with-keyrock --verbose
+ngsi --stderr info regproxy server --host orion-with-keyrock --verbose
+```
+
+<a name="sanity-check"></a>
+
+## Sanity check
+
+This command allows you to check a regproxy server healthy.
+
+```console
+ngsi regproxy health [options]
+```
+
+## Options
+
+| Options                | Description                    |
+| ---------------------- | ------------------------------ |
+| --host value, -h value | regproxy host                  |
+| --pretty, -P           | pretty format (default: false) |
+| --help                 | show help (default: false)     |
+
+### Example
+
+```
+ngsi server add --host regproxy --serverType regproxy --serverHost http://localhost:1028/
+```
+
+```
+ngsi regproxy health --host regproxy --pretty
+```
+
+```
+{
+  "ngsi-go": "regproxy",
+  "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)",
+  "health": "OK",
+  "csource": "https://orion.letfiware.jp",
+  "verbose": false,
+  "uptime": "0 d, 1 h, 32 m, 44 s",
+  "timesent": 5,
+  "success": 4,
+  "failure": 1
+}
+```
+
+<a name="config"></a>
+
+## Configration
+
+This command allows you to change configration for a regproxy server.
+
+```console
+ngsi regproxy config [options]
+```
+
+## Options
+
+| Options                   | Description                           |
+| ------------------------- | --------------------------------------|
+| --host value, -h value    | regproxy host                         |
+| --verbose value, -v value | verbose log (on/off)                  |
+| --replaceService value    | replace FIWARE-Serivce                |
+| --replacePath value       | replace FIWARE-SerivcePath            |
+| --addPath value           | add path to FIWARE-SerivcePath        |
+| --replaceURL value        | replace URL of forwarding destination |
+| --pretty, -P              | pretty format (default: false)
+| --help                    | show help (default: false)
+
+### Example
+
+```
+ngsi regproxy config --host regproxy --verbose on --replacePath "/fiware" --replaceURL "" --pretty
+```
+
+```
+{
+  "verbose": true,
+  "path": "/fiware"
+}
 ```

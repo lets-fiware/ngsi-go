@@ -38,26 +38,55 @@ import (
 	"path"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/urfave/cli/v2"
 )
 
 type regProxyParam struct {
-	ngsi    *ngsilib.NGSI
-	client  *ngsilib.Client
-	http    ngsilib.HTTPRequest
-	verbose bool
-	bearer  bool
-	tenant  *string
-	scope   *string
-	url     *string
-	mutex   *sync.Mutex
+	ngsi     *ngsilib.NGSI
+	client   *ngsilib.Client
+	http     ngsilib.HTTPRequest
+	verbose  bool
+	bearer   bool
+	tenant   *string
+	scope    *string
+	addScope *string
+	url      *string
+	replace  bool
+	mutex    *sync.Mutex
+
+	startTime time.Time
+	timeSent  int64
+	success   int64
+	failure   int64
+}
+
+type regProxyReplace struct {
+	Verbose *bool   `json:"verbose,omitempty"`
+	Service *string `json:"service,omitempty"`
+	Path    *string `json:"path,omitempty"`
+	AddPath *string `json:"add_path,omitempty"`
+	URL     *string `json:"url,omitempty"`
+}
+
+type regProxyStat struct {
+	NgsiGo   string           `json:"ngsi-go"`
+	Version  string           `json:"version"`
+	Health   string           `json:"health"`
+	Csource  string           `json:"csource"`
+	Verbose  bool             `json:"verbose"`
+	Uptime   string           `json:"uptime"`
+	Timesent int64            `json:"timesent"`
+	Success  int64            `json:"success"`
+	Failure  int64            `json:"failure"`
+	Replace  *regProxyReplace `json:"replace,omitempty"`
 }
 
 var regProxyGlobal *regProxyParam
 
-func regProxy(c *cli.Context) error {
+func regProxyServer(c *cli.Context) error {
 	const funcName = "regProxy"
 
 	ngsi, err := initCmd(c, funcName, true)
@@ -90,24 +119,33 @@ func regProxy(c *cli.Context) error {
 	}
 
 	regProxyGlobal = &regProxyParam{
-		ngsi:    ngsi,
-		client:  client,
-		http:    ngsi.HTTP,
-		verbose: c.Bool("verbose"),
-		mutex:   &sync.Mutex{},
+		ngsi:      ngsi,
+		client:    client,
+		http:      ngsi.HTTP,
+		verbose:   c.Bool("verbose"),
+		mutex:     &sync.Mutex{},
+		startTime: time.Now(),
 	}
 
 	if c.IsSet("replaceService") {
 		tenant := c.String("replaceService")
 		regProxyGlobal.tenant = &tenant
+		regProxyGlobal.replace = true
 	}
 	if c.IsSet("replacePath") {
 		scope := c.String("replacePath")
 		regProxyGlobal.scope = &scope
+		regProxyGlobal.replace = true
+	}
+	if c.IsSet("addPath") {
+		addScope := c.String("addPath")
+		regProxyGlobal.addScope = &addScope
+		regProxyGlobal.replace = true
 	}
 	if c.IsSet("replaceURL") {
 		repalceURL := c.String("replaceURL")
 		regProxyGlobal.url = &repalceURL
+		regProxyGlobal.replace = true
 	}
 
 	mux := http.NewServeMux()
@@ -145,21 +183,37 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusMethodNotAllowed
 
 	case http.MethodGet:
-		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 2, r.URL.Path))
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 2, r.URL.Path)+"\n")
+		w.Header().Set("Content-Type", "Application/json")
 		if r.URL.Path == "/health" {
-			w.Header().Set("Content-Type", "Application/json")
 			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(fmt.Sprintf(`{"ngsi-go":{"version":"%s","csource":"%s"}}`, Version, host)))
+			_, _ = w.Write(regProxyGetStat(host))
 			return
 		} else {
-			status = http.StatusBadRequest
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(fmt.Sprintf(`{"error": "%s not found"}`, r.URL.Path)))
 		}
 	case http.MethodPost:
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 3, r.URL.Path)+"\n")
+
 		body := r.Body
 		defer func() { _ = body.Close() }()
 		buf := new(bytes.Buffer)
 		_, _ = io.Copy(buf, body)
+		b := buf.Bytes()
 
+		if r.URL.Path == "/config" {
+			w.Header().Set("Content-Type", "Application/json")
+			status, body := regProxyConfig(ngsi, b)
+			w.WriteHeader(status)
+			_, _ = w.Write(body)
+			return
+		}
+
+		regProxyGlobal.timeSent += 1
+
+		origTenant := ""
+		origScope := ""
 		tenant := ""
 		scope := ""
 		headers := map[string]string{}
@@ -168,18 +222,18 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 			case "content-length", "user-agent":
 				continue
 			case "fiware-service", "ngsild-tenant":
+				tenant = r.Header.Get(k)
+				origTenant = tenant
 				if regProxyGlobal.tenant != nil {
 					tenant = *regProxyGlobal.tenant
-				} else {
-					tenant = r.Header.Get(k)
 				}
 				headers[k] = tenant
 				continue
 			case "fiware-servicepath":
+				scope = r.Header.Get(k)
+				origScope = scope
 				if regProxyGlobal.scope != nil {
 					scope = *regProxyGlobal.scope
-				} else {
-					scope = r.Header.Get(k)
 				}
 				headers[k] = scope
 				continue
@@ -187,16 +241,23 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 			headers[k] = r.Header.Get(k)
 		}
 
+		if regProxyGlobal.addScope != nil {
+			scope = path.Join(*regProxyGlobal.addScope, scope)
+		}
+
 		uPath := r.URL.Path
 		if regProxyGlobal.url != nil {
 			uPath = *regProxyGlobal.url
 		}
 
-		ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", uPath, tenant, scope))
+		ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", r.URL.Path, origTenant, origScope))
+		if regProxyGlobal.replace {
+			ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", uPath, tenant, scope))
+		}
 
 		u, err := url.Parse(host)
 		if err != nil {
-			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 3, err.Error()))
+			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 4, err.Error()))
 			break
 		}
 		u.Path = path.Join(u.Path, uPath)
@@ -206,19 +267,20 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 		regProxyGlobal.mutex.Unlock()
 
 		if err != nil {
-			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 4, err.Error()))
+			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 5, err.Error()))
 			break
 		}
 
 		headers[key] = token
 
-		b := buf.Bytes()
 		if verbose {
 			ngsi.Logging(ngsilib.LogInfo, string(b)+"\n")
 		}
 
 		res, resBody, err := regProxyGlobal.http.Request("POST", u, headers, b)
 		if err == nil {
+			regProxyGlobal.success += 1
+
 			for k := range res.Header {
 				if strings.ToLower(k) != "content-length" {
 					w.Header().Set(k, res.Header.Get(k))
@@ -230,9 +292,223 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 				ngsi.Logging(ngsilib.LogInfo, string(resBody)+"\n")
 			}
 			return
+		} else {
+			regProxyGlobal.failure += 1
 		}
 
-		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 5, err.Error()))
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 6, err.Error()))
 	}
 	w.WriteHeader(status)
+}
+
+func regProxyGetStat(host string) []byte {
+	uptime := time.Now().Unix() - regProxyGlobal.startTime.Unix()
+
+	stat := regProxyStat{
+		NgsiGo:   "regproxy",
+		Version:  Version,
+		Health:   "OK",
+		Csource:  host,
+		Verbose:  regProxyGlobal.verbose,
+		Uptime:   humanizeUptime(uptime),
+		Timesent: regProxyGlobal.timeSent,
+		Success:  regProxyGlobal.success,
+		Failure:  regProxyGlobal.failure,
+	}
+
+	if regProxyGlobal.replace {
+		stat.Replace = &regProxyReplace{
+			Service: regProxyGlobal.tenant,
+			Path:    regProxyGlobal.scope,
+			AddPath: regProxyGlobal.addScope,
+			URL:     regProxyGlobal.url,
+		}
+	}
+
+	b, err := ngsilib.JSONMarshal(stat)
+	if err != nil {
+		return []byte(`{"ngsi-go":"regproxy","health":"NG"}`)
+	}
+
+	return b
+}
+
+func regProxyConfig(ngsi *ngsilib.NGSI, body []byte) (int, []byte) {
+	const funcName = "regProxyConfig"
+
+	req := &regProxyReplace{}
+
+	err := ngsilib.JSONUnmarshal(body, &req)
+	if err != nil {
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, err.Error()+"\n"))
+		return http.StatusBadRequest, []byte(`{"error":"` + err.Error() + `"}`)
+	}
+
+	if req.Verbose != nil {
+		regProxyGlobal.verbose = *req.Verbose
+	}
+	if req.Service != nil {
+		if *req.Service == "" {
+			regProxyGlobal.tenant = nil
+		} else {
+			regProxyGlobal.tenant = req.Service
+		}
+	}
+	if req.Path != nil {
+		if *req.Path == "" {
+			regProxyGlobal.scope = nil
+		} else {
+			regProxyGlobal.scope = req.Path
+		}
+	}
+	if req.AddPath != nil {
+		if *req.AddPath == "" {
+			regProxyGlobal.addScope = nil
+		} else {
+			regProxyGlobal.addScope = req.AddPath
+		}
+	}
+	if req.URL != nil {
+		if *req.URL == "" {
+			regProxyGlobal.url = nil
+		} else {
+			regProxyGlobal.url = req.URL
+		}
+	}
+
+	if regProxyGlobal.tenant == nil &&
+		regProxyGlobal.scope == nil &&
+		regProxyGlobal.addScope == nil &&
+		regProxyGlobal.url == nil {
+		regProxyGlobal.replace = false
+	} else {
+		regProxyGlobal.replace = true
+	}
+
+	req.Verbose = &regProxyGlobal.verbose
+	req.Service = regProxyGlobal.tenant
+	req.Path = regProxyGlobal.scope
+	req.AddPath = regProxyGlobal.addScope
+	req.URL = regProxyGlobal.url
+
+	b, err := ngsilib.JSONMarshal(req)
+	if err != nil {
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 2, err.Error()+"\n"))
+		return http.StatusBadRequest, []byte(`{"error":"` + err.Error() + `"}`)
+	}
+
+	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 3, string(b)+"\n"))
+
+	return http.StatusOK, b
+}
+
+func regProxyHealthCmd(c *cli.Context) error {
+	const funcName = "regProxyHealth"
+
+	ngsi, err := initCmd(c, funcName, true)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	client, err := newClient(ngsi, c, false, []string{"regproxy"})
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	client.SetPath("/health")
+
+	res, body, err := client.HTTPGet()
+	if err != nil {
+		return &ngsiCmdError{funcName, 3, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 5, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		return nil
+	}
+
+	fmt.Fprint(ngsi.StdWriter, string(body))
+	return nil
+}
+
+func regProxyConfigCmd(c *cli.Context) error {
+	const funcName = "regProxyConfig"
+
+	ngsi, err := initCmd(c, funcName, true)
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+
+	client, err := newClient(ngsi, c, false, []string{"regproxy"})
+	if err != nil {
+		return &ngsiCmdError{funcName, 2, err.Error(), err}
+	}
+
+	req := &regProxyReplace{}
+
+	if c.IsSet("verbose") {
+		verbose := strings.ToLower(c.String("verbose"))
+		switch verbose {
+		default:
+			return &ngsiCmdError{funcName, 3, "error: set on or off to --verbose option", err}
+		case "on", "true":
+			v := true
+			req.Verbose = &v
+		case "off", "false":
+			v := false
+			req.Verbose = &v
+		}
+	}
+	if c.IsSet("replaceService") {
+		service := c.String("replaceService")
+		req.Service = &service
+	}
+	if c.IsSet("replacePath") {
+		path := c.String("replacePath")
+		req.Path = &path
+	}
+	if c.IsSet("addPath") {
+		addPath := c.String("addPath")
+		req.AddPath = &addPath
+	}
+	if c.IsSet("replaceURL") {
+		url := c.String("replaceURL")
+		req.URL = &url
+	}
+
+	client.SetPath("/config")
+
+	b, err := ngsilib.JSONMarshal(req)
+	if err != nil {
+		return &ngsiCmdError{funcName, 4, err.Error(), err}
+	}
+
+	res, body, err := client.HTTPPost(b)
+	if err != nil {
+		return &ngsiCmdError{funcName, 5, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 6, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 7, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		return nil
+	}
+
+	fmt.Fprint(ngsi.StdWriter, string(body))
+	return nil
 }
