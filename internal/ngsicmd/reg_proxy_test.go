@@ -31,11 +31,13 @@ package ngsicmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 	"github.com/stretchr/testify/assert"
@@ -54,7 +56,7 @@ func TestRegProxy(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	assert.NoError(t, err)
 }
@@ -66,12 +68,13 @@ func TestRegProxyOptions(t *testing.T) {
 
 	gNetLib = &MockNetLib{}
 
-	setupFlagString(set, "host,rhost,port,url,replaceService,replacePath,replaceURL")
+	setupFlagString(set, "host,rhost,port,url,replaceService,replacePath,replaceURL,addPath")
 	setupFlagBool(set, "verbose,https")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/", "--replaceService=fiware", "--replacePath=/orion", "--replaceURL=/v3/queryConxt"})
+	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/",
+		"--replaceService=fiware", "--replacePath=/orion", "--replaceURL=/v3/queryConxt", "--addPath=/federation"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	assert.NoError(t, err)
 }
@@ -88,7 +91,7 @@ func TestRegProxyHTTPS(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/", "--https", "--key=test.key", "--cert=test.cert", "--verbose"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	assert.NoError(t, err)
 }
@@ -100,7 +103,7 @@ func TestRegProxyErrorHost(t *testing.T) {
 
 	c := cli.NewContext(app, set, nil)
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -118,7 +121,7 @@ func TestRegProxyErrorHostType(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=keyrock"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -138,7 +141,7 @@ func TestRegProxyErrorKey(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/", "--https"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -158,7 +161,7 @@ func TestRegProxyErrorCert(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/", "--https", "--key=test.key"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -179,7 +182,7 @@ func TestRegProxyErrorHTTPS(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/", "--https", "--key=test.key", "--cert=test.cert", "--verbose"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -200,7 +203,7 @@ func TestRegProxyErrorHTTP(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--rhost=0.0.0.0", "--port=1028", "--url=/"})
 
-	err := regProxy(c)
+	err := regProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -232,6 +235,33 @@ func TestRegProxyHanderGetHealth(t *testing.T) {
 	regProxyHandler(got, req)
 
 	expected := http.StatusOK
+
+	assert.Equal(t, expected, got.Code)
+}
+
+func TestRegProxyHanderPostConfig(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+	mockHTTP := NewMockHTTP()
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+
+	req := httptest.NewRequest(http.MethodPost, "http://regProxy/config", nil)
+	got := httptest.NewRecorder()
+
+	regProxyHandler(got, req)
+
+	expected := http.StatusBadRequest
 
 	assert.Equal(t, expected, got.Code)
 }
@@ -375,17 +405,20 @@ func TestRegProxyHanderPostOptions(t *testing.T) {
 	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
 	tenant := "fiware"
 	scope := "/orion"
+	addScope := "/federation"
 	url := "/v3/queryContext"
 	regProxyGlobal = &regProxyParam{
-		ngsi:    ngsi,
-		client:  client,
-		http:    mockHTTP,
-		verbose: true,
-		bearer:  true,
-		tenant:  &tenant,
-		scope:   &scope,
-		url:     &url,
-		mutex:   &sync.Mutex{}}
+		ngsi:     ngsi,
+		client:   client,
+		http:     mockHTTP,
+		verbose:  true,
+		bearer:   true,
+		tenant:   &tenant,
+		scope:    &scope,
+		addScope: &addScope,
+		replace:  true,
+		url:      &url,
+		mutex:    &sync.Mutex{}}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
@@ -581,4 +614,651 @@ func TestRegProxyHanderBadRequest(t *testing.T) {
 	expected := http.StatusBadRequest
 
 	assert.Equal(t, expected, got.Code)
+}
+
+func TestRegProxyGetStat(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	tenant := "fiware"
+	scope := "/orion"
+	addScope := "/federation"
+	url := "/v3/queryContext"
+	regProxyGlobal = &regProxyParam{
+		ngsi:      ngsi,
+		verbose:   true,
+		bearer:    true,
+		tenant:    &tenant,
+		scope:     &scope,
+		addScope:  &addScope,
+		replace:   true,
+		url:       &url,
+		startTime: time.Now(),
+		mutex:     &sync.Mutex{},
+	}
+
+	b := regProxyGetStat("http://orion")
+
+	stat := &regProxyStat{}
+	_ = json.Unmarshal(b, &stat)
+
+	assert.Equal(t, stat.Health, "OK")
+}
+
+func TestRegProxyGetStatError(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	tenant := "fiware"
+	scope := "/orion"
+	addScope := "/federation"
+	url := "/v3/queryContext"
+	regProxyGlobal = &regProxyParam{
+		ngsi:      ngsi,
+		verbose:   true,
+		bearer:    true,
+		tenant:    &tenant,
+		scope:     &scope,
+		addScope:  &addScope,
+		replace:   true,
+		url:       &url,
+		startTime: time.Now(),
+		mutex:     &sync.Mutex{},
+	}
+
+	setJSONEncodeErr(ngsi, 0)
+
+	b := regProxyGetStat("http://orion")
+
+	stat := &regProxyStat{}
+	_ = json.Unmarshal(b, &stat)
+
+	assert.Equal(t, stat.Health, "NG")
+}
+
+func TestRegProxyConfig(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	tenant := "fiware"
+	scope := "/orion"
+	addScope := "/federation"
+	url := "/v3/queryContext"
+	regProxyGlobal = &regProxyParam{
+		ngsi:      ngsi,
+		verbose:   true,
+		bearer:    true,
+		tenant:    &tenant,
+		scope:     &scope,
+		addScope:  &addScope,
+		replace:   true,
+		url:       &url,
+		startTime: time.Now(),
+		mutex:     &sync.Mutex{},
+	}
+
+	req := &regProxyReplace{}
+
+	b, _ := json.Marshal(req)
+
+	status, body := regProxyConfig(ngsi, b)
+
+	assert.Equal(t, http.StatusOK, status)
+	assert.Equal(t, "{\"verbose\":true,\"service\":\"fiware\",\"path\":\"/orion\",\"add_path\":\"/federation\",\"url\":\"/v3/queryContext\"}", string(body))
+}
+
+func TestRegProxyConfigValue(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	regProxyGlobal = &regProxyParam{
+		ngsi:      ngsi,
+		verbose:   true,
+		bearer:    true,
+		replace:   false,
+		startTime: time.Now(),
+		mutex:     &sync.Mutex{},
+	}
+
+	tenant := "fiware"
+	scope := "/orion"
+	addScope := "/federation"
+	url := "/v3/queryContext"
+
+	verbose := false
+	req := &regProxyReplace{
+		Verbose: &verbose,
+		Service: &tenant,
+		Path:    &scope,
+		AddPath: &addScope,
+		URL:     &url,
+	}
+
+	b, _ := json.Marshal(req)
+
+	status, body := regProxyConfig(ngsi, b)
+
+	assert.Equal(t, http.StatusOK, status)
+	assert.Equal(t, "{\"verbose\":false,\"service\":\"fiware\",\"path\":\"/orion\",\"add_path\":\"/federation\",\"url\":\"/v3/queryContext\"}", string(body))
+	assert.Equal(t, true, regProxyGlobal.replace)
+}
+
+func TestRegProxyConfigEmpty(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	tenant := "fiware"
+	scope := "/orion"
+	addScope := "/federation"
+	url := "/v3/queryContext"
+	regProxyGlobal = &regProxyParam{
+		ngsi:      ngsi,
+		verbose:   true,
+		bearer:    true,
+		tenant:    &tenant,
+		scope:     &scope,
+		addScope:  &addScope,
+		replace:   true,
+		url:       &url,
+		startTime: time.Now(),
+		mutex:     &sync.Mutex{},
+	}
+
+	empty := ""
+	req := &regProxyReplace{
+		Service: &empty,
+		Path:    &empty,
+		AddPath: &empty,
+		URL:     &empty,
+	}
+
+	b, _ := json.Marshal(req)
+
+	status, body := regProxyConfig(ngsi, b)
+
+	assert.Equal(t, http.StatusOK, status)
+	assert.Equal(t, "{\"verbose\":true}", string(body))
+	assert.Equal(t, false, regProxyGlobal.replace)
+}
+
+func TestRegProxyConfigErrorUnmarshal(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	tenant := "fiware"
+	scope := "/orion"
+	addScope := "/federation"
+	url := "/v3/queryContext"
+	regProxyGlobal = &regProxyParam{
+		ngsi:      ngsi,
+		verbose:   true,
+		bearer:    true,
+		tenant:    &tenant,
+		scope:     &scope,
+		addScope:  &addScope,
+		replace:   true,
+		url:       &url,
+		startTime: time.Now(),
+		mutex:     &sync.Mutex{},
+	}
+
+	setJSONDecodeErr(ngsi, 0)
+
+	req := &regProxyReplace{}
+
+	b, _ := json.Marshal(req)
+
+	status, body := regProxyConfig(ngsi, b)
+
+	assert.Equal(t, http.StatusBadRequest, status)
+	assert.Equal(t, "{\"error\":\"json error\"}", string(body))
+}
+
+func TestRegProxyConfigErrorMarshal(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+
+	tenant := "fiware"
+	scope := "/orion"
+	addScope := "/federation"
+	url := "/v3/queryContext"
+	regProxyGlobal = &regProxyParam{
+		ngsi:      ngsi,
+		verbose:   true,
+		bearer:    true,
+		tenant:    &tenant,
+		scope:     &scope,
+		addScope:  &addScope,
+		replace:   true,
+		url:       &url,
+		startTime: time.Now(),
+		mutex:     &sync.Mutex{},
+	}
+
+	setJSONEncodeErr(ngsi, 0)
+
+	req := &regProxyReplace{}
+
+	b, _ := json.Marshal(req)
+
+	status, body := regProxyConfig(ngsi, b)
+
+	assert.Equal(t, http.StatusBadRequest, status)
+	assert.Equal(t, "{\"error\":\"json error\"}", string(body))
+}
+
+func TestRegProxyHealthCmd(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/health"
+	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy"})
+
+	err := regProxyHealthCmd(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\"ngsi-go\": \"regproxy\", \"version\": \"0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)\", \"health\": \"OK\", \"csource\": \"https://orion.letsfiware.jp\", \"verbose\": false, \"uptime\": \"0 d, 0 h, 51 m, 51 s\", \"timesent\": 0, \"success\": 0, \"failure\": 0}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestRegProxyHealthCmdPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/health"
+	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--pretty"})
+
+	err := regProxyHealthCmd(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"ngsi-go\": \"regproxy\",\n  \"version\": \"0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)\",\n  \"health\": \"OK\",\n  \"csource\": \"https://orion.letsfiware.jp\",\n  \"verbose\": false,\n  \"uptime\": \"0 d, 0 h, 51 m, 51 s\",\n  \"timesent\": 0,\n  \"success\": 0,\n  \"failure\": 0\n}\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestRegProxyHealthCmdErrorInitCmd(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	c := cli.NewContext(app, set, nil)
+
+	err := regProxyHealthCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyHealthCmdErrorNewClient(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/health"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
+
+	err := regProxyHealthCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "abc not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyHealthCmdErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/health"
+	reqRes.Err = errors.New("error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy"})
+
+	err := regProxyHealthCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyHealthCmdErrorStatusCode(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/health"
+	reqRes.ResBody = []byte(`error`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy"})
+
+	err := regProxyHealthCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "error  error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyHealthCmdIotaErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/health"
+	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
+	err := regProxyHealthCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestRegProxyConfigCmd(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.ResBody = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=on", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext"})
+
+	err := regProxyConfigCmd(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := `{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestRegProxyConfigCmdVerboseOff(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":false,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.ResBody = []byte(`{"verbose":false,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=off", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext"})
+
+	err := regProxyConfigCmd(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := `{"verbose":false,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`
+		assert.Equal(t, expected, actual)
+	}
+}
+func TestRegProxyConfigCmdPretty(t *testing.T) {
+	ngsi, set, app, buf := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.ResBody = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=on", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext", "--pretty"})
+
+	err := regProxyConfigCmd(c)
+
+	if assert.NoError(t, err) {
+		actual := buf.String()
+		expected := "{\n  \"verbose\": true,\n  \"service\": \"federatin\",\n  \"path\": \"/fiware\",\n  \"add_path\": \"/orion\",\n  \"url\": \"/v3/queryContext\"\n}\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestRegProxyConfigCmdErrorInitCmd(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	c := cli.NewContext(app, set, nil)
+
+	err := regProxyConfigCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "required host not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyConfigCmdErrorNewClient(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/config"
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,link")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
+
+	err := regProxyConfigCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "abc not found", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyConfigCmdErrorVerbose(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.Err = errors.New("error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=unknown", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext"})
+
+	err := regProxyConfigCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "error: set on or off to --verbose option", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyConfigCmdErrorJSONMarshl(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.Err = errors.New("error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=on", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext"})
+
+	setJSONEncodeErr(ngsi, 2)
+
+	err := regProxyConfigCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyConfigCmdErrorHTTP(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.Err = errors.New("error")
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=on", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext"})
+
+	err := regProxyConfigCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, "error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyConfigCmdErrorStatusCode(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.ResBody = []byte(`error`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=on", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext"})
+
+	err := regProxyConfigCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "error  error", ngsiErr.Message)
+	} else {
+		t.FailNow()
+	}
+}
+
+func TestRegProxyConfigCmdIotaErrorPretty(t *testing.T) {
+	ngsi, set, app, _ := setupTest()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/config"
+	reqRes.ReqData = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	reqRes.ResBody = []byte(`{"verbose":true,"service":"federatin","path":"/fiware","add_path":"/orion","url":"/v3/queryContext"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	setupFlagString(set, "host,verbose,replaceService,replacePath,addPath,replaceURL")
+	setupFlagBool(set, "pretty")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=regproxy", "--verbose=on", "--replaceService=federatin", "--replacePath=/fiware", "--addPath=/orion", "--replaceURL=/v3/queryContext", "--pretty"})
+
+	setJSONIndentError(ngsi)
+
+	err := regProxyConfigCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsiCmdError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
 }
