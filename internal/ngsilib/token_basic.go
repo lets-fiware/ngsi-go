@@ -63,3 +63,22 @@ func (i *idmBasic) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 func (i *idmBasic) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Basic " + token
 }
+
+func (i *idmBasic) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoBasic"
+
+	return nil, &LibError{funcName, 1, "no information available", nil}
+}
+
+func (i *idmBasic) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsBasic"
+
+	if idmParams.IdmHost == "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID == "" &&
+		idmParams.ClientSecret == "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "username and password are needed", nil}
+}

@@ -86,3 +86,26 @@ func (i *idmThinkingCities) revokeToken(ngsi *NGSI, client *Client, tokenInfo *T
 func (i *idmThinkingCities) getAuthHeader(token string) (string, string) {
 	return "X-Auth-Token", token
 }
+
+func (i *idmThinkingCities) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoThinkingCities"
+
+	b, err := JSONMarshal(tokenInfo.Keystone)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+	return b, nil
+}
+
+func (i *idmThinkingCities) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsThinkingCities"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID == "" &&
+		idmParams.ClientSecret == "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, username and password are needed", nil}
+}

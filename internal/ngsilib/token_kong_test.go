@@ -293,3 +293,78 @@ func TestGetKongHostError(t *testing.T) {
 
 	assert.Equal(t, expected, actual)
 }
+
+func TestGetTokenInfoKong(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmKong{}
+	tokenInfo := &TokenInfo{
+		Kong: &KongToken{
+			ExpiresIn:   7200,
+			AccessToken: "G1y60yGbFE8OKXH6VHEOO1LGP0A5qyeO",
+			TokenType:   "bearer",
+		},
+	}
+
+	actual, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.NoError(t, err) {
+		expected := "{\"expires_in\":7200,\"access_token\":\"G1y60yGbFE8OKXH6VHEOO1LGP0A5qyeO\",\"token_type\":\"bearer\"}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestGetTokenInfoKongError(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmKong{}
+	tokenInfo := &TokenInfo{
+		Kong: &KongToken{
+			ExpiresIn:   7200,
+			AccessToken: "G1y60yGbFE8OKXH6VHEOO1LGP0A5qyeO",
+			TokenType:   "bearer",
+		},
+	}
+
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsKong(t *testing.T) {
+	idm := &idmKong{}
+	idmParams := &IdmParams{
+		IdmHost:      "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/",
+		ClientID:     "orion",
+		ClientSecret: "1234",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsKongError(t *testing.T) {
+	idm := &idmKong{}
+	idmParams := &IdmParams{
+		IdmHost:      "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/",
+		Username:     "fiware",
+		Password:     "1234",
+		ClientID:     "orion",
+		ClientSecret: "1234",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost, clientID and clientSecret are needed", ngsiErr.Message)
+	}
+}

@@ -241,7 +241,7 @@ Orion with Kong (client credentials)
 ngsi broker add \
   --host kong \
   --ngsiType v2 \
-  --brokerHost http://localhost:8000/ngsi \
+  --brokerHost http://localhost:8443/ngsi \
   --idmType kong \
   --idmHost "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/" \
   --clientId orion \

@@ -68,47 +68,22 @@ func tokenCommand(c *cli.Context) error {
 
 	if c.Bool("verbose") || c.Bool("pretty") {
 		var b []byte
-		switch token.Type {
-		default: // ngsilib.CKeyrock, ngsilib.CTokenproxy, ngsilib.CKeyrocktokenprovider
-			token.Oauth.ExpiresIn = time
-			b, err = ngsilib.JSONMarshal(token.Oauth)
+		if token.Type == ngsilib.CKeyrockIDM {
+			b, err = getKeyrockUserInfo(client, token.Token)
 			if err != nil {
 				return &ngsiCmdError{funcName, 4, err.Error(), err}
 			}
-		case ngsilib.CBasic:
-			fmt.Fprintln(ngsi.StdWriter, "no information available")
-			return nil
-		case ngsilib.CThinkingCities:
-			b, err = ngsilib.JSONMarshal(token.Keystone)
+		} else {
+			b, err = ngsi.GetTokenInfo(token)
 			if err != nil {
 				return &ngsiCmdError{funcName, 5, err.Error(), err}
-			}
-		case ngsilib.CKeycloak:
-			b, err = ngsilib.JSONMarshal(token.Keycloak)
-			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
-			}
-		case ngsilib.CWSO2:
-			b, err = ngsilib.JSONMarshal(token.WSO2)
-			if err != nil {
-				return &ngsiCmdError{funcName, 7, err.Error(), err}
-			}
-		case ngsilib.CKeyrockIDM:
-			b, err = getKeyrockUserInfo(client, token.Token)
-			if err != nil {
-				return &ngsiCmdError{funcName, 8, err.Error(), err}
-			}
-		case ngsilib.CKong:
-			b, err = ngsilib.JSONMarshal(token.Kong)
-			if err != nil {
-				return &ngsiCmdError{funcName, 9, err.Error(), err}
 			}
 		}
 		if c.Bool("pretty") {
 			newBuf := new(bytes.Buffer)
 			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 10, err.Error(), err}
+				return &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {

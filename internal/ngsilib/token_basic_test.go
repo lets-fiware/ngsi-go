@@ -86,3 +86,38 @@ func TestGetAuthHeaderBasic(t *testing.T) {
 	assert.Equal(t, "Authorization", key)
 	assert.Equal(t, "Basic b7308719683033900d37384e723c1660", value)
 }
+
+func TestGetTokenInfoBasic(t *testing.T) {
+	idm := &idmBasic{}
+	tokenInfo := &TokenInfo{}
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "no information available", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsBasic(t *testing.T) {
+	idm := &idmBasic{}
+	idmParams := &IdmParams{Username: "fiware", Password: "1234"}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsBasicError(t *testing.T) {
+	idm := &idmBasic{}
+	idmParams := &IdmParams{}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "username and password are needed", ngsiErr.Message)
+	}
+}

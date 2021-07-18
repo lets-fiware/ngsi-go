@@ -1,0 +1,793 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 Add Keyrock IDM
+#
+ngsi server add \
+  --host keyrock-idm \
+  --serverType keyrock \
+  --serverHost https://idm.letsfiware.jp \
+  --username admin@letsfiware.jp \
+  --password 1234567
+
+```
+```
+
+#
+# 0002 Get Keyrock IDM
+#
+ngsi server get --host keyrock-idm --clearText
+
+```
+serverType keyrock
+serverHost https://idm.letsfiware.jp
+IdmType idm
+IdmHost https://idm.letsfiware.jp/v1/auth/tokens
+Username admin@letsfiware.jp
+Password 1234567
+```
+
+#
+# 0003 Update Keyrock IDM
+#
+ngsi server update --host keyrock-idm --password 999999999
+
+```
+```
+
+#
+# 0004 Get Keyrock IDM
+#
+ngsi server get --host keyrock-idm --clearText
+
+```
+serverType keyrock
+serverHost https://idm.letsfiware.jp
+IdmType idm
+IdmHost https://idm.letsfiware.jp/v1/auth/tokens
+Username admin@letsfiware.jp
+Password 999999999
+```
+
+#
+# 0005 Delete Keyrock IDM
+#
+ngsi server delete --host keyrock-idm
+
+```
+```
+
+#
+# 0006 Add Error Keyrock IDM
+#
+ngsi server add \
+  --host keyrock-idm \
+  --serverType keyrock \
+  --serverHost https://idm.letsfiware.jp \
+  --username admin@letsfiware.jp
+
+```1
+serverAdd008 username and password are needed
+```
+
+#
+# 0011 Add Orion with Basic
+#
+ngsi broker add \
+  --host orion-with-basic \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType basic \
+  --username admin@letsfiware.jp \
+  --password 1234567
+
+```
+```
+
+#
+# 0012 Get Orion with Basic
+#
+ngsi broker get --host orion-with-basic --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType basic
+Username admin@letsfiware.jp
+Password 1234567
+```
+
+#
+# 0013 Update Orion with Basic
+#
+ngsi broker update --host orion-with-basic --password 999999999
+
+```
+```
+
+#
+# 0014 Get Orion with Basic
+#
+ngsi broker get --host orion-with-basic --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType basic
+Username admin@letsfiware.jp
+Password 999999999
+```
+
+#
+# 0015 Delete Orion with Basic
+#
+ngsi broker delete --host orion-with-basic
+
+```
+```
+
+#
+# 0016 Add Error Orion with Basic
+#
+ngsi broker add \
+  --host orion-with-basic \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType basic \
+  --username admin@letsfiware.jp
+
+```1
+brokersAdd008 username and password are needed
+```
+
+#
+# 0021 Add Orion with Keyrock
+#
+ngsi broker add \
+  --host orion-with-keyrock \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType keyrock \
+  --idmHost https://keyrock/oauth2/token \
+  --username keyrock001@letsfiware.jp \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444 \
+  --clientSecret 55555555-6666-7777-8888-999999999999
+
+```
+```
+
+#
+# 0022 Get Orion with Keyrock
+#
+ngsi broker get --host orion-with-keyrock --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType keyrock
+IdmHost https://keyrock/oauth2/token
+Username keyrock001@letsfiware.jp
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0023 Update Orion with Keyrock
+#
+ngsi broker update --host orion-with-keyrock --password 999999999
+
+```
+```
+
+#
+# 0024 Get Orion with Keyrock
+#
+ngsi broker get --host orion-with-keyrock --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType keyrock
+IdmHost https://keyrock/oauth2/token
+Username keyrock001@letsfiware.jp
+Password 999999999
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0025 Delete Orion with Keyrock
+#
+ngsi broker delete --host orion-with-keyrock
+
+```
+```
+
+#
+# 0026 Add Error Orion with Keyrock
+#
+ngsi broker add \
+  --host orion-with-keyrock \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType keyrock \
+  --idmHost https://keyrock/oauth2/token \
+  --username keyrock001@letsfiware.jp \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444
+
+```1
+brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0031 Add Orion with Thinking Cities (Keystone)
+#
+ngsi broker add \
+  --host orion-with-keystone \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType ThinkingCities \
+  --idmHost http://localhost:5001/v3/auth/tokens \
+  --username fiware \
+  --password 0123456789 \
+  --service smartcity
+
+```
+```
+
+#
+# 0032 Get Orion with Thinking Cities (Keystone)
+#
+ngsi broker get --host orion-with-keystone --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+FIWARE-Service smartcity
+IdmType thinkingcities
+IdmHost http://localhost:5001/v3/auth/tokens
+Username fiware
+Password 0123456789
+```
+
+#
+# 0033 Update Orion with Thinking Cities (Keystone)
+#
+ngsi broker update --host orion-with-keystone --password 999999999
+
+```
+```
+
+#
+# 0034 Get Orion with Thinking Cities (Keystone)
+#
+ngsi broker get --host orion-with-keystone --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+FIWARE-Service smartcity
+IdmType thinkingcities
+IdmHost http://localhost:5001/v3/auth/tokens
+Username fiware
+Password 999999999
+```
+
+#
+# 0035 Delete Orion with Thinking Cities (Keystone)
+#
+ngsi broker delete --host orion-with-keystone
+
+```
+```
+
+#
+# 0036 Add Error Orion with Thinking Cities (Keystone)
+#
+ngsi broker add \
+  --host orion-with-keystone \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType ThinkingCities \
+  --idmHost http://localhost:5001/v3/auth/tokens \
+  --username fiware
+
+```1
+brokersAdd008 idmHost, username and password are needed
+```
+
+#
+# 0041 Add Orion with Keycloak
+#
+ngsi broker add \
+  --host orion-with-keycloak \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType keycloak \
+  --idmHost http://keycloak:8080/auth/realms/fiware_service \
+  --username fiware \
+  --password 1234 \
+  --clientId ngsi_api \
+  --clientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
+
+```
+```
+
+#
+# 0042 Get Orion with Keycloak
+#
+ngsi broker get --host orion-with-keycloak --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType keycloak
+IdmHost http://keycloak:8080/auth/realms/fiware_service
+Username fiware
+Password 1234
+ClientID ngsi_api
+ClientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
+```
+
+#
+# 0043 Update Orion with Keycloak
+#
+ngsi broker update --host orion-with-keycloak --password 999999999
+
+```
+```
+
+#
+# 0044 Get Orion with Keycloak
+#
+ngsi broker get --host orion-with-keycloak --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType keycloak
+IdmHost http://keycloak:8080/auth/realms/fiware_service
+Username fiware
+Password 999999999
+ClientID ngsi_api
+ClientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
+```
+
+#
+# 0045 Delete Orion with Keycloak
+#
+ngsi broker delete --host orion-with-keycloak
+
+```
+```
+
+#
+# 0046 Add Error Orion with Keycloak
+#
+ngsi broker add \
+  --host orion-with-keycloak \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType keycloak \
+  --idmHost http://keycloak:8080/auth/realms/fiware_service \
+  --username fiware \
+  --password 1234 \
+  --clientId ngsi_api
+
+```1
+brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0051 Add Orion with WSO2
+#
+ngsi broker add \
+  --host orion-with-wso2 \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType wso2 \
+  --idmHost http://wso2am:8243/token \
+  --username fiware \
+  --password 1234 \
+  --clientId 0000000000000000000000_A_ZZZ \
+  --clientSecret 00000000-1111-2222-3333-444444444444
+
+```
+```
+
+#
+# 0052 Get Orion with WSO2
+#
+ngsi broker get --host orion-with-wso2 --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType wso2
+IdmHost http://wso2am:8243/token
+Username fiware
+Password 1234
+ClientID 0000000000000000000000_A_ZZZ
+ClientSecret 00000000-1111-2222-3333-444444444444
+```
+
+#
+# 0053 Update Orion with WSO2
+#
+ngsi broker update --host orion-with-wso2 --password 999999999
+
+```
+```
+
+#
+# 0054 Get Orion with WSO2
+#
+ngsi broker get --host orion-with-wso2 --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType wso2
+IdmHost http://wso2am:8243/token
+Username fiware
+Password 999999999
+ClientID 0000000000000000000000_A_ZZZ
+ClientSecret 00000000-1111-2222-3333-444444444444
+```
+
+#
+# 0055 Delete Orion with WSO2
+#
+ngsi broker delete --host orion-with-wso2
+
+```
+```
+
+#
+# 0056 Add Error Orion with WSO2
+#
+ngsi broker add \
+  --host orion-with-wso2 \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType wso2 \
+  --idmHost http://wso2am:8243/token \
+  --username fiware \
+  --password 1234 \
+  --clientId 0000000000000000000000_A_ZZZ
+
+```1
+brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0061 Add Orion with Kong
+#
+ngsi broker add \
+  --host orion-with-kong \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType kong \
+  --idmHost "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/" \
+  --clientId orion \
+  --clientSecret 1234
+
+```
+```
+
+#
+# 0062 Get Orion with Kong
+#
+ngsi broker get --host orion-with-kong --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType kong
+IdmHost https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/
+ClientID orion
+ClientSecret 1234
+```
+
+#
+# 0063 Update Orion with Kong
+#
+ngsi broker update --host orion-with-kong --clientSecret 999999999
+
+```
+```
+
+#
+# 0064 Get Orion with Kong
+#
+ngsi broker get --host orion-with-kong --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType kong
+IdmHost https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/
+ClientID orion
+ClientSecret 999999999
+```
+
+#
+# 0065 Delete Orion with Kong
+#
+ngsi broker delete --host orion-with-kong
+
+```
+```
+
+#
+# 0066 Add Error Orion with Kong
+#
+ngsi broker add \
+  --host orion-with-kong \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType kong \
+  --idmHost "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/" \
+  --clientId orion
+
+```1
+brokersAdd008 idmHost, clientID and clientSecret are needed
+```
+
+#
+# 0071 Add Orion with Password Credentials
+#
+ngsi broker add \
+  --host orion-with-password-credentials \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType password \
+  --idmHost https://password-credentials/ \
+  --username admin \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444 \
+  --clientSecret 55555555-6666-7777-8888-999999999999
+
+```
+```
+
+#
+# 0072 Get Orion with Password Credentials
+#
+ngsi broker get --host orion-with-password-credentials --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType password
+IdmHost https://password-credentials/
+Username admin
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0073 Update Orion with Password Credentials
+#
+ngsi broker update --host orion-with-password-credentials --clientSecret 999999999
+
+```
+```
+
+#
+# 0074 Get Orion with Password Credentials
+#
+ngsi broker get --host orion-with-password-credentials --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType password
+IdmHost https://password-credentials/
+Username admin
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 999999999
+```
+
+#
+# 0075 Delete Orion with Password Credentials
+#
+ngsi broker delete --host orion-with-password-credentials
+
+```
+```
+
+#
+# 0076 Add Error Orion with Password Credentials
+#
+ngsi broker add \
+  --host orion-with-password-credentials \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType password \
+  --idmHost https://password-credentials/ \
+  --username admin \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444
+
+```1
+brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0081 Add Orion with KeyrockTokenProvider
+#
+ngsi broker add \
+  --host orion-with-token-providers \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType keyrocktokenprovider \
+  --idmHost https://KeyrockTokenProvider/ \
+  --username admin \
+  --password 0123456789
+
+
+```
+```
+
+#
+# 0082 Get Orion with KeyrockTokenProvider
+#
+ngsi broker get --host orion-with-token-providers --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType keyrocktokenprovider
+IdmHost https://KeyrockTokenProvider/
+Username admin
+Password 0123456789
+```
+
+#
+# 0083 Update Orion with KeyrockTokenProvider
+#
+ngsi broker update --host orion-with-token-providers --password 999999999
+
+```
+```
+
+#
+# 0084 Get Orion with KeyrockTokenProvider
+#
+ngsi broker get --host orion-with-token-providers --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType keyrocktokenprovider
+IdmHost https://KeyrockTokenProvider/
+Username admin
+Password 999999999
+```
+
+#
+# 0085 Delete Orion with KeyrockTokenProvider
+#
+ngsi broker delete --host orion-with-token-providers
+
+```
+```
+
+#
+# 0086 Add Error Orion with KeyrockTokenProvider
+#
+ngsi broker add \
+  --host orion-with-token-providers \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType keyrocktokenprovider \
+  --idmHost https://KeyrockTokenProvider/ \
+  --username admin
+
+```1
+brokersAdd008 idmHost, username and password are needed
+```
+
+#
+# 0091 Add Orion with TokenProxy
+#
+ngsi broker add \
+  --host orion-with-token-proxy \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType tokenproxy \
+  --idmHost https://tokenproxy/ \
+  --username admin \
+  --password 0123456789
+
+```
+```
+
+#
+# 0092 Get Orion with TokenProxy
+#
+ngsi broker get --host orion-with-token-proxy --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType tokenproxy
+IdmHost https://tokenproxy/
+Username admin
+Password 0123456789
+```
+
+#
+# 0093 Update Orion with TokenProxy
+#
+ngsi broker update --host orion-with-token-proxy --password 999999999
+
+```
+```
+
+#
+# 0094 Get Orion with TokenProxy
+#
+ngsi broker get --host orion-with-token-proxy --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType tokenproxy
+IdmHost https://tokenproxy/
+Username admin
+Password 999999999
+```
+
+#
+# 0095 Delete Orion with TokenProxy
+#
+ngsi broker delete --host orion-with-token-proxy
+
+```
+```
+
+#
+# 0096 Add Error Orion with TokenProxy
+#
+ngsi broker add \
+  --host orion-with-token-proxy \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType tokenproxy \
+  --idmHost https://tokenproxy/ \
+  --username admin
+
+```1
+brokersAdd008 idmHost, username and password are needed
+```

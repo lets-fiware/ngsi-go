@@ -353,9 +353,9 @@ func TestServersAdd(t *testing.T) {
 func TestServersAddKeyrock(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,ngsiType,serverHost,serverType")
+	setupFlagString(set, "host,ngsiType,serverHost,serverType,username,password")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=idm", "--serverHost=http://keyrock", "--serverType=keyrock"})
+	_ = set.Parse([]string{"--host=idm", "--serverHost=http://keyrock", "--serverType=keyrock", "--username=fiware", "--password=1234"})
 
 	err := serverAdd(c)
 
@@ -623,7 +623,7 @@ func TestServersUpdateErrorCreateBroker(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "idmType error: fiware", ngsiErr.Message)
+		assert.Equal(t, "unknown idm type: fiware", ngsiErr.Message)
 	} else {
 		t.FailNow()
 	}

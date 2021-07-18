@@ -130,6 +130,29 @@ func (i *idmKong) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
 }
 
+func (i *idmKong) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoKong"
+
+	b, err := JSONMarshal(tokenInfo.Kong)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+	return b, nil
+}
+
+func (i *idmKong) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsKeyrock"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username == "" &&
+		idmParams.Password == "" &&
+		idmParams.ClientID != "" &&
+		idmParams.ClientSecret != "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, clientID and clientSecret are needed", nil}
+}
+
 func getKongHost(idm string, i int) string {
 	hosts := strings.Split(idm, ",")
 	if len(hosts) <= i {

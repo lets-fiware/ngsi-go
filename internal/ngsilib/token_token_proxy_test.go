@@ -38,7 +38,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRequestTokenTokenproxy(t *testing.T) {
+func TestRequestTokenTokenProxy(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	ngsi.tokenList = tokenInfoList{}
@@ -63,11 +63,11 @@ func TestRequestTokenTokenproxy(t *testing.T) {
 	if assert.NoError(t, err) {
 		assert.Equal(t, CTokenproxy, actual.Type)
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
-		assert.Equal(t, expected, actual.Oauth.AccessToken)
+		assert.Equal(t, expected, actual.TokenProxy.AccessToken)
 	}
 }
 
-func TestRequestTokenTokenproxyRefresh(t *testing.T) {
+func TestRequestTokenTokenProxyRefresh(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	ngsi.tokenList = tokenInfoList{}
@@ -92,11 +92,11 @@ func TestRequestTokenTokenproxyRefresh(t *testing.T) {
 	if assert.NoError(t, err) {
 		assert.Equal(t, CTokenproxy, actual.Type)
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
-		assert.Equal(t, expected, actual.Oauth.AccessToken)
+		assert.Equal(t, expected, actual.TokenProxy.AccessToken)
 	}
 }
 
-func TestRequestTokenTokenproxyErrorUser(t *testing.T) {
+func TestRequestTokenTokenProxyErrorUser(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	ngsi.tokenList = tokenInfoList{}
@@ -125,7 +125,7 @@ func TestRequestTokenTokenproxyErrorUser(t *testing.T) {
 	}
 }
 
-func TestRequestTokenTokenproxyErrorHTTP(t *testing.T) {
+func TestRequestTokenTokenProxyErrorHTTP(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	ngsi.tokenList = tokenInfoList{}
@@ -155,7 +155,7 @@ func TestRequestTokenTokenproxyErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestRequestTokenTokenproxyErrorUnmarshal(t *testing.T) {
+func TestRequestTokenTokenProxyErrorUnmarshal(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	ngsi.tokenList = tokenInfoList{}
@@ -180,12 +180,12 @@ func TestRequestTokenTokenproxyErrorUnmarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		actual := "json: cannot unmarshal string into Go value of type ngsilib.OauthToken Field: (14) \"access_token\": \"ad5252cd520c"
+		actual := "json: cannot unmarshal string into Go value of type ngsilib.TokenProxy Field: (14) \"access_token\": \"ad5252cd520c"
 		assert.Equal(t, actual, ngsiErr.Message)
 	}
 }
 
-func TestRequestTokenTokenproxyErrorHTTPStatus(t *testing.T) {
+func TestRequestTokenTokenProxyErrorHTTPStatus(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	ngsi.tokenList = tokenInfoList{}
@@ -214,7 +214,7 @@ func TestRequestTokenTokenproxyErrorHTTPStatus(t *testing.T) {
 	}
 }
 
-func TestRequestTokenTokenproxyErrorHTTPStatusUnauthorized(t *testing.T) {
+func TestRequestTokenTokenProxyErrorHTTPStatusUnauthorized(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	ngsi.tokenList = tokenInfoList{}
@@ -243,7 +243,7 @@ func TestRequestTokenTokenproxyErrorHTTPStatusUnauthorized(t *testing.T) {
 	}
 }
 
-func TestRevokeTokenproxy(t *testing.T) {
+func TestRevokeTokenProxy(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	reqRes := MockHTTPReqRes{}
@@ -262,7 +262,7 @@ func TestRevokeTokenproxy(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestRevokeTokenproxyErrorHTTP(t *testing.T) {
+func TestRevokeTokenProxyErrorHTTP(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	reqRes := MockHTTPReqRes{}
@@ -286,7 +286,7 @@ func TestRevokeTokenproxyErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestRevokeTokenproxyErrorHTTPStatus(t *testing.T) {
+func TestRevokeTokenProxyErrorHTTPStatus(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	reqRes := MockHTTPReqRes{}
@@ -309,11 +309,89 @@ func TestRevokeTokenproxyErrorHTTPStatus(t *testing.T) {
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
 }
-func TestGetAuthHeaderTokenproxy(t *testing.T) {
+func TestGetAuthHeaderTokenProxy(t *testing.T) {
 	idm := &idmTokenProxy{}
 
 	key, value := idm.getAuthHeader("9e7067026d0aac494e8fedf66b1f585e79f52935")
 
 	assert.Equal(t, "Authorization", key)
 	assert.Equal(t, "Bearer 9e7067026d0aac494e8fedf66b1f585e79f52935", value)
+}
+
+func TestGetTokenInfoTokenProxy(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{
+		TokenProxy: &TokenProxy{
+			AccessToken:  "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+			ExpiresIn:    3599,
+			RefreshToken: "03e33a311e03317b390956729bcac2794b695670",
+			Scope:        []string{"bearer"},
+			TokenType:    "Bearer",
+		},
+	}
+
+	actual, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.NoError(t, err) {
+		expected := "{\"access_token\":\"ad5252cd520cnaddacdc5d2e63899f0cdcf946f3\",\"expires_in\":3599,\"refresh_token\":\"03e33a311e03317b390956729bcac2794b695670\",\"scope\":[\"bearer\"],\"token_type\":\"Bearer\"}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestGetTokenInfoTokenProxyError(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{
+		TokenProxy: &TokenProxy{
+			AccessToken:  "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+			ExpiresIn:    3599,
+			RefreshToken: "03e33a311e03317b390956729bcac2794b695670",
+			Scope:        []string{"bearer"},
+			TokenType:    "Bearer",
+		},
+	}
+
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsTokenProxy(t *testing.T) {
+	idm := &idmTokenProxy{}
+	idmParams := &IdmParams{
+		IdmHost:  "https://keyrock/oauth2/token",
+		Username: "keyrock001@letsfiware.jp",
+		Password: "1234",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsTokenProxyError(t *testing.T) {
+	idm := &idmTokenProxy{}
+	idmParams := &IdmParams{
+		IdmHost:  "https://keyrock/oauth2/token",
+		Username: "keyrock001@letsfiware.jp",
+		Password: "1234",
+		ClientID: "00000000-1111-2222-3333-444444444444",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost, username and password are needed", ngsiErr.Message)
+	}
 }

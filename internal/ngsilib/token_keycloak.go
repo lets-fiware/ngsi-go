@@ -150,3 +150,26 @@ func (i *idmKeycloak) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenIn
 func (i *idmKeycloak) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
 }
+
+func (i *idmKeycloak) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoKeycloak"
+
+	b, err := JSONMarshal(tokenInfo.Keycloak)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+	return b, nil
+}
+
+func (i *idmKeycloak) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsKeycloak"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID != "" &&
+		idmParams.ClientSecret != "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil}
+}

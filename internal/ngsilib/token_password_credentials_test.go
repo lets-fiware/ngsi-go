@@ -63,7 +63,7 @@ func TestRequestTokenPasswordCredentials(t *testing.T) {
 	if assert.NoError(t, err) {
 		assert.Equal(t, CPasswordCredentials, actual.Type)
 		expected := "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3"
-		assert.Equal(t, expected, actual.Oauth.AccessToken)
+		assert.Equal(t, expected, actual.OAuth.AccessToken)
 	}
 }
 
@@ -180,7 +180,7 @@ func TestRequestTokenPasswordCredentialsErrorUnmarshal(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*LibError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		actual := "json: cannot unmarshal string into Go value of type ngsilib.OauthToken Field: (14) \"access_token\": \"ad5252cd520c"
+		actual := "json: cannot unmarshal string into Go value of type ngsilib.OAuthToken Field: (14) \"access_token\": \"ad5252cd520c"
 		assert.Equal(t, actual, ngsiErr.Message)
 	}
 }
@@ -259,4 +259,84 @@ func TestGetAuthHeaderPasswordCredentials(t *testing.T) {
 
 	assert.Equal(t, "Authorization", key)
 	assert.Equal(t, "Bearer 9e7067026d0aac494e8fedf66b1f585e79f52935", value)
+}
+
+func TestGetTokenInfoPasswordCredentials(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{
+		OAuth: &OAuthToken{
+			AccessToken:  "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+			ExpiresIn:    3599,
+			RefreshToken: "03e33a311e03317b390956729bcac2794b695670",
+			Scope:        []string{"bearer"},
+			TokenType:    "Bearer",
+		},
+	}
+
+	actual, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.NoError(t, err) {
+		expected := "{\"access_token\":\"ad5252cd520cnaddacdc5d2e63899f0cdcf946f3\",\"expires_in\":3599,\"refresh_token\":\"03e33a311e03317b390956729bcac2794b695670\",\"scope\":[\"bearer\"],\"token_type\":\"Bearer\"}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestGetTokenInfoPasswordCredentialsError(t *testing.T) {
+	testNgsiLibInit()
+
+	idm := &idmPasswordCredentials{}
+	tokenInfo := &TokenInfo{
+		OAuth: &OAuthToken{
+			AccessToken:  "ad5252cd520cnaddacdc5d2e63899f0cdcf946f3",
+			ExpiresIn:    3599,
+			RefreshToken: "03e33a311e03317b390956729bcac2794b695670",
+			Scope:        []string{"bearer"},
+			TokenType:    "Bearer",
+		},
+	}
+
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+
+	_, err := idm.getTokenInfo(tokenInfo)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestCheckIdmParamsPasswordCredentials(t *testing.T) {
+	idm := &idmPasswordCredentials{}
+	idmParams := &IdmParams{
+		IdmHost:      "https://keyrock/oauth2/token",
+		Username:     "keyrock001@letsfiware.jp",
+		Password:     "1234",
+		ClientID:     "00000000-1111-2222-3333-444444444444",
+		ClientSecret: "55555555-6666-7777-8888-999999999999",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	assert.NoError(t, err)
+}
+
+func TestCheckIdmParamsPasswordCredentialsError(t *testing.T) {
+	idm := &idmPasswordCredentials{}
+	idmParams := &IdmParams{
+		IdmHost:  "https://keyrock/oauth2/token",
+		Username: "keyrock001@letsfiware.jp",
+		Password: "1234",
+		ClientID: "00000000-1111-2222-3333-444444444444",
+	}
+
+	err := idm.checkIdmParams(idmParams)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*LibError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "idmHost, username, password, clientID and clientSecret are needed", ngsiErr.Message)
+	}
 }

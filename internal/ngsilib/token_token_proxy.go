@@ -37,6 +37,14 @@ import (
 )
 
 // Token proxy is a proxy for Keyrock
+// TokenProxy is ...
+type TokenProxy struct {
+	AccessToken  string   `json:"access_token"`
+	ExpiresIn    int64    `json:"expires_in"`
+	RefreshToken string   `json:"refresh_token"`
+	Scope        []string `json:"scope"`
+	TokenType    string   `json:"token_type"`
+}
 
 type idmTokenProxy struct {
 }
@@ -78,18 +86,18 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 		case http.StatusOK:
 			utime := ngsi.TimeLib.NowUnix()
 
-			var oToken OauthToken
-			err = JSONUnmarshal(body, &oToken)
+			var tokenProxy TokenProxy
+			err = JSONUnmarshal(body, &tokenProxy)
 			if err != nil {
 				return nil, &LibError{funcName, 3, err.Error(), err}
 			}
 
 			tokenInfo := &TokenInfo{
 				Type:         CTokenproxy,
-				Token:        oToken.AccessToken,
-				Expires:      time.Unix(utime+oToken.ExpiresIn, 0),
-				RefreshToken: oToken.RefreshToken,
-				Oauth:        &oToken,
+				Token:        tokenProxy.AccessToken,
+				Expires:      time.Unix(utime+tokenProxy.ExpiresIn, 0),
+				RefreshToken: tokenProxy.RefreshToken,
+				TokenProxy:   &tokenProxy,
 			}
 			return tokenInfo, nil
 		}
@@ -122,4 +130,27 @@ func (i *idmTokenProxy) revokeToken(ngsi *NGSI, client *Client, tokenInfo *Token
 
 func (i *idmTokenProxy) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
+}
+
+func (i *idmTokenProxy) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoTokenProxy"
+
+	b, err := JSONMarshal(tokenInfo.TokenProxy)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+	return b, nil
+}
+
+func (i *idmTokenProxy) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsTokenProxy"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID == "" &&
+		idmParams.ClientSecret == "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, username and password are needed", nil}
 }

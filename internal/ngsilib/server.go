@@ -78,19 +78,6 @@ const (
 )
 
 const (
-	CPasswordCredentials  = "password"
-	CKeyrock              = "keyrock"
-	CKeyrocktokenprovider = "keyrocktokenprovider"
-	CTokenproxy           = "tokenproxy"
-	CKeyrockIDM           = "idm"
-	CThinkingCities       = "thinkingcities"
-	CBasic                = "basic"
-	CKeycloak             = "keycloak"
-	CWSO2                 = "wso2"
-	CKong                 = "kong"
-)
-
-const (
 	cNgsiV2     = "ngsi-v2"
 	cNgsiv2     = "ngsiv2"
 	cV2         = "v2"
@@ -121,10 +108,7 @@ var (
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
 	brokerTypeArgs = []string{cOrionLD, cScorpio, cStellio}
 	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud}
-	idmTypes       = []string{
-		CPasswordCredentials, CKeyrock, CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM,
-		CThinkingCities, CBasic, CKeycloak, CWSO2, CKong,
-	}
+
 	ngsiV2Types = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes = []string{cNgsiLd, cLd}
 	apiPaths    = []string{cPathRoot, cPathV2, cPathNgsiLd}
@@ -177,8 +161,15 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 		}
 	}
 
-	err := checkIdmParams(host.IdmType, host.IdmHost, host.Username, host.Password,
-		host.ClientID, host.ClientSecret)
+	idmParams := &IdmParams{
+		IdmType:      host.IdmType,
+		IdmHost:      host.IdmHost,
+		Username:     host.Username,
+		Password:     host.Password,
+		ClientID:     host.ClientID,
+		ClientSecret: host.ClientSecret,
+	}
+	err := checkIdmParams(idmParams)
 	if err != nil {
 		return &LibError{funcName, 7, err.Error(), err}
 	}
@@ -224,56 +215,6 @@ func getAPIPath(apiPath string) (string, string, error) {
 		return "", "", &LibError{funcName, 4, fmt.Sprintf("trailing '/' is not required: %s", pathAfter), nil}
 	}
 	return pathBefore, pathAfter, nil
-}
-
-func checkIdmParams(idmType string, idmHost string, username string, password string,
-	clientID string, clientSecret string) error {
-	const funcName = "checkIdmParams"
-
-	idmType = strings.ToLower(idmType)
-
-	if idmType == "" {
-		if !(idmHost == "" && username == "" && password == "" && clientID == "" && clientSecret == "") {
-			return &LibError{funcName, 1, "required idmType not found", nil}
-		}
-		return nil
-	}
-	if !isIdmType(idmType) {
-		return &LibError{funcName, 2, fmt.Sprintf("idmType error: %s", idmType), nil}
-	}
-
-	if idmType != CBasic {
-		if idmHost == "" {
-			return &LibError{funcName, 3, "required idmHost not found", nil}
-		}
-
-		if idmType == CKong {
-			hosts := strings.Split(idmHost, ",")
-			if !(len(hosts) == 2 && IsHTTP(hosts[0]) && IsHTTP(hosts[1])) {
-				return &LibError{funcName, 4, fmt.Sprintf("idmHost error: %s", idmHost), nil}
-			}
-		} else {
-			if !(IsHTTP(idmHost) || strings.HasPrefix(idmHost, "/")) {
-				return &LibError{funcName, 5, fmt.Sprintf("idmHost error: %s", idmHost), nil}
-			}
-		}
-	}
-
-	switch idmType {
-	case CKeyrock, CPasswordCredentials, CKeycloak, CWSO2, CKong:
-		if clientID == "" || clientSecret == "" {
-			return &LibError{funcName, 6, "clientID and clientSecret are needed", nil}
-		}
-		if idmType == CKong {
-			return nil
-		}
-		fallthrough
-	case CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM, CThinkingCities, CBasic:
-		if username == "" && password != "" {
-			return &LibError{funcName, 7, "username is needed", nil}
-		}
-	}
-	return nil
 }
 
 // ExistsBrokerHost is ...

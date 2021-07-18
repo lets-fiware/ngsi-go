@@ -147,3 +147,26 @@ func (i *idmWSO2) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) 
 func (i *idmWSO2) getAuthHeader(token string) (string, string) {
 	return "Authorization", "Bearer " + token
 }
+
+func (i *idmWSO2) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoWSO2"
+
+	b, err := JSONMarshal(tokenInfo.WSO2)
+	if err != nil {
+		return nil, &LibError{funcName, 1, err.Error(), err}
+	}
+	return b, nil
+}
+
+func (i *idmWSO2) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsWSO2"
+
+	if idmParams.IdmHost != "" &&
+		idmParams.Username != "" &&
+		idmParams.Password != "" &&
+		idmParams.ClientID != "" &&
+		idmParams.ClientSecret != "" {
+		return nil
+	}
+	return &LibError{funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil}
+}

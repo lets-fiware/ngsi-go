@@ -101,9 +101,9 @@ ngsi broker delete --host orion-v2
 # 0006 Add broker
 #
 ngsi broker add \
---host idm \
+--host orion-with-keyrock \
 --brokerHost https://orion-ld \
---ngsiType ld \
+--ngsiType ld 
 
 ```
 ```
@@ -112,8 +112,8 @@ ngsi broker add \
 # 0007 Update broker with keyrock
 #
 ngsi broker update \
---host idm \
---idmType idm \
+--host orion-with-keyrock \
+--idmType keyrock \
 --idmHost https://keyrock \
 --username keyrock001@letsfiware.jp \
 --password 0123456789 \
@@ -126,13 +126,13 @@ ngsi broker update \
 #
 # 0008 Check broker info
 # 
-ngsi broker get --host idm --clearText
+ngsi broker get --host orion-with-keyrock --clearText
 
 ```
 brokerHost https://orion-ld
 ngsiType ld
 brokerType orion-ld
-IdmType idm
+IdmType keyrock
 IdmHost https://keyrock
 Username keyrock001@letsfiware.jp
 Password 0123456789
@@ -143,7 +143,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 #
 # 0009 Delete broker
 #
-ngsi broker delete --host idm 
+ngsi broker delete --host orion-with-keyrock
 
 ```
 ```
