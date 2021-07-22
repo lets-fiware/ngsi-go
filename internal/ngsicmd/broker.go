@@ -75,7 +75,7 @@ func brokersList(c *cli.Context) error {
 		}
 	} else {
 		info := ngsi.AllServersList().BrokerList()
-		list := info.List()
+		list := info.List(c.Bool("singleLine"))
 		fmt.Fprintln(ngsi.StdWriter, list)
 	}
 

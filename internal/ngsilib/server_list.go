@@ -48,8 +48,12 @@ func InitServerList() {
 }
 
 // List is ...
-func (info *ServerList) List() string {
+func (info *ServerList) List(singleLine bool) string {
 	list := ""
+	next := " "
+	if singleLine {
+		next = "\n"
+	}
 
 	keys := make([]string, len(*info))
 	i := 0
@@ -59,7 +63,7 @@ func (info *ServerList) List() string {
 	}
 	sort.Strings(keys)
 	for _, key := range keys {
-		list += key + " "
+		list += key + next
 	}
 
 	if len(list) != 0 {

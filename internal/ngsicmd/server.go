@@ -73,7 +73,7 @@ func serverList(c *cli.Context) error {
 			}
 		} else {
 			info := ngsi.AllServersList().ServerList(gCmdMode, c.Bool("all"))
-			list := info.List()
+			list := info.List(c.Bool("singleLine"))
 			fmt.Fprintln(ngsi.StdWriter, list)
 		}
 	}

@@ -664,6 +664,12 @@ var (
 		Usage:  "url to be invoked when a notification is generated (v2)",
 		Hidden: true,
 	}
+	singleLineFlag = &cli.BoolFlag{
+		Name:    "singleLine",
+		Aliases: []string{"1"},
+		Usage:   "list one file per line",
+		Value:   false,
+	}
 )
 
 // flag for server config

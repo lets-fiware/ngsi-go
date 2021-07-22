@@ -68,8 +68,24 @@ func TestList(t *testing.T) {
 	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
 	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual := gNGSI.serverList.List()
+	actual := gNGSI.serverList.List(false)
 	expected := "orion orion-ld"
+
+	assert.Equal(t, expected, actual)
+
+}
+
+func TestListSingleLine(t *testing.T) {
+	testNgsiLibInit()
+
+	gNGSI.serverList = nil
+	InitServerList()
+
+	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+
+	actual := gNGSI.serverList.List(true)
+	expected := "orion\norion-ld"
 
 	assert.Equal(t, expected, actual)
 
