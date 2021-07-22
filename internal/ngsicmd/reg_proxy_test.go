@@ -212,7 +212,7 @@ func TestRegProxyErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestRegProxyHanderGetHealth(t *testing.T) {
+func TestRegProxyRootHandler(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host")
@@ -227,19 +227,46 @@ func TestRegProxyHanderGetHealth(t *testing.T) {
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
-	req := httptest.NewRequest(http.MethodGet, "http://regProxy/health", nil)
+	req := httptest.NewRequest(http.MethodGet, "http://regProxy/", nil)
 	got := httptest.NewRecorder()
 
-	regProxyHandler(got, req)
+	regProxyRootHandler(got, req)
+
+	expected := http.StatusBadRequest
+
+	assert.Equal(t, expected, got.Code)
+}
+
+func TestRegProxyHealthHandler(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+	mockHTTP := NewMockHTTP()
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
+
+	req := httptest.NewRequest(http.MethodGet, "http://regProxy/", nil)
+	got := httptest.NewRecorder()
+
+	regProxyHealthHandler(got, req)
 
 	expected := http.StatusOK
 
 	assert.Equal(t, expected, got.Code)
 }
 
-func TestRegProxyHanderPostConfig(t *testing.T) {
+func TestRegProxyHealthHandlerError(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host")
@@ -254,14 +281,69 @@ func TestRegProxyHanderPostConfig(t *testing.T) {
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
-	req := httptest.NewRequest(http.MethodPost, "http://regProxy/config", nil)
+	req := httptest.NewRequest(http.MethodPost, "http://regProxy/", nil)
 	got := httptest.NewRecorder()
 
-	regProxyHandler(got, req)
+	regProxyHealthHandler(got, req)
 
-	expected := http.StatusBadRequest
+	expected := http.StatusMethodNotAllowed
+
+	assert.Equal(t, expected, got.Code)
+}
+
+func TestRegProxyConfigHandler(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+	mockHTTP := NewMockHTTP()
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
+
+	b := bytes.NewReader([]byte(`{"verbose":false}`))
+	req := httptest.NewRequest(http.MethodPost, "http://regProxy/", b)
+	got := httptest.NewRecorder()
+
+	regProxyConfigHandler(got, req)
+
+	expected := http.StatusOK
+
+	assert.Equal(t, expected, got.Code)
+}
+
+func TestRegProxyConfigHandlerError(t *testing.T) {
+	_, set, app, _ := setupTest()
+
+	setupFlagString(set, "host")
+	c := cli.NewContext(app, set, nil)
+	_ = set.Parse([]string{"--host=orion"})
+
+	ngsi, err := initCmd(c, "", true)
+	assert.NoError(t, err)
+	client, err := newClient(ngsi, c, false, []string{"broker"})
+	assert.NoError(t, err)
+
+	buf := new(bytes.Buffer)
+	ngsi.Stderr = buf
+	mockHTTP := NewMockHTTP()
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
+
+	req := httptest.NewRequest(http.MethodGet, "http://regProxy/", nil)
+	got := httptest.NewRecorder()
+
+	regProxyConfigHandler(got, req)
+
+	expected := http.StatusMethodNotAllowed
 
 	assert.Equal(t, expected, got.Code)
 }
@@ -281,14 +363,14 @@ func TestRegProxyHanderErrorGet(t *testing.T) {
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
 	req := httptest.NewRequest(http.MethodGet, "http://regProxy/", nil)
 	got := httptest.NewRecorder()
 
 	regProxyHandler(got, req)
 
-	expected := http.StatusBadRequest
+	expected := http.StatusMethodNotAllowed
 
 	assert.Equal(t, expected, got.Code)
 }
@@ -308,7 +390,7 @@ func TestRegProxyHanderErrorMethod(t *testing.T) {
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
 	req := httptest.NewRequest(http.MethodDelete, "http://regProxy/", nil)
 	got := httptest.NewRecorder()
@@ -353,7 +435,7 @@ func TestRegProxyHanderPost(t *testing.T) {
 	reqRes2.ResHeader = h
 	mockHTTP := NewMockHTTP()
 	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
@@ -418,7 +500,9 @@ func TestRegProxyHanderPostOptions(t *testing.T) {
 		addScope: &addScope,
 		replace:  true,
 		url:      &url,
-		mutex:    &sync.Mutex{}}
+		mutex:    &sync.Mutex{},
+		gLock:    &sync.Mutex{},
+	}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
@@ -464,7 +548,7 @@ func TestRegProxyHanderPostXAuth(t *testing.T) {
 	reqRes2.ResBody = []byte(`[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device","temperature":{"type":"Number","value":25.47,"metadata":{"TimeInstant":{"type":"DateTime","value":"2020-07-12T05:00:52.00Z"}}}}]`)
 	mockHTTP := NewMockHTTP()
 	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: false, bearer: false, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: false, bearer: false, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
@@ -511,7 +595,7 @@ func TestRegProxyHanderErrorHost(t *testing.T) {
 	reqRes2.ResBody = []byte(`[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device","temperature":{"type":"Number","value":25.47,"metadata":{"TimeInstant":{"type":"DateTime","value":"2020-07-12T05:00:52.00Z"}}}}]`)
 	mockHTTP := NewMockHTTP()
 	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
@@ -553,7 +637,7 @@ func TestRegProxyHanderErrorToken(t *testing.T) {
 	reqRes2.ResBody = []byte(`[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device","temperature":{"type":"Number","value":25.47,"metadata":{"TimeInstant":{"type":"DateTime","value":"2020-07-12T05:00:52.00Z"}}}}]`)
 	mockHTTP := NewMockHTTP()
 	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
@@ -600,7 +684,7 @@ func TestRegProxyHanderBadRequest(t *testing.T) {
 	reqRes2.ResBody = []byte(`[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device","temperature":{"type":"Number","value":25.47,"metadata":{"TimeInstant":{"type":"DateTime","value":"2020-07-12T05:00:52.00Z"}}}}]`)
 	mockHTTP := NewMockHTTP()
 	mockHTTP.ReqRes = append(mockHTTP.ReqRes, reqRes2)
-	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}}
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, client: client, http: mockHTTP, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
 
 	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
 	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
@@ -614,6 +698,24 @@ func TestRegProxyHanderBadRequest(t *testing.T) {
 	expected := http.StatusBadRequest
 
 	assert.Equal(t, expected, got.Code)
+}
+
+func TestGetRequestBody(t *testing.T) {
+	reqBody := bytes.NewBufferString(`{"entities":[{"id":"urn:ngsi-ld:Device:uDr8vgsJ0Xbe","type":"Device"}],"attrs":["temperature"]}`)
+	req := httptest.NewRequest(http.MethodPost, "http://regProxy/v2/op/query", reqBody)
+
+	b := getRequestBody(req.Body)
+
+	assert.Equal(t, "{\"entities\":[{\"id\":\"urn:ngsi-ld:Device:uDr8vgsJ0Xbe\",\"type\":\"Device\"}],\"attrs\":[\"temperature\"]}", string(b))
+}
+
+func TestRegProxyFailureUp(t *testing.T) {
+	ngsi, _, _, _ := setupTest()
+	regProxyGlobal = &regProxyParam{ngsi: ngsi, verbose: true, bearer: true, mutex: &sync.Mutex{}, gLock: &sync.Mutex{}}
+
+	regProxyFailureUp()
+
+	assert.Equal(t, int64(1), regProxyGlobal.failure)
 }
 
 func TestRegProxyGetStat(t *testing.T) {
@@ -634,6 +736,7 @@ func TestRegProxyGetStat(t *testing.T) {
 		url:       &url,
 		startTime: time.Now(),
 		mutex:     &sync.Mutex{},
+		gLock:     &sync.Mutex{},
 	}
 
 	b := regProxyGetStat("http://orion")
