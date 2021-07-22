@@ -746,6 +746,18 @@ var (
 		Name:  "all",
 		Usage: "ail itmes",
 	}
+	headerNameFlag = &cli.StringFlag{
+		Name:  "headerName",
+		Usage: "specify header name for apikey",
+	}
+	headerValueFlag = &cli.StringFlag{
+		Name:  "headerValue",
+		Usage: "specify header value for apikey",
+	}
+	headerEnvValueFlag = &cli.StringFlag{
+		Name:  "headerEnvValue",
+		Usage: "specify name of environment variable for apikey",
+	}
 )
 
 // flag for server

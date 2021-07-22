@@ -78,6 +78,10 @@ func (client *Client) InitHeader() error {
 			client.Headers["Authorization"] = "Bearer " + client.Token
 		}
 	}
+	if client.Server.IdmType == CApikey {
+		key, value := GetApikeyHeader(client)
+		client.Headers[key] = value
+	}
 	if client.Tenant != "" {
 		if err := client.CheckTenant(client.Tenant); err != nil {
 			return &LibError{funcName, 1, err.Error(), err}

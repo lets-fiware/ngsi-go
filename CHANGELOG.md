@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Suuport APIKEY (#184)
 -   Improve: Refactor regproxy and update regproxy example (#183)
 -   Improve: Add server, health and config sub-cmd to regproxy cmd (#182)
 -   Improve: Refactor token manager (#181)

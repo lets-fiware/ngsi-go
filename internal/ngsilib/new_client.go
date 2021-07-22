@@ -152,7 +152,9 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, sk
 	}
 	if token != "" {
 		client.Token = token
-	} else if client.Server.IdmType != "" && !skipGetToken {
+	} else if client.Server.IdmType != "" &&
+		client.Server.IdmType != CApikey &&
+		!skipGetToken {
 		token, err := ngsi.GetToken(client)
 		if err != nil {
 			return nil, &LibError{funcName, 8, err.Error(), err}

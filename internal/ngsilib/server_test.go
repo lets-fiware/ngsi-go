@@ -428,6 +428,10 @@ func TestCopyBrokerInfo(t *testing.T) {
 	param[cContext] = "http://context"
 	param[cFiwareService] = "iot"
 	param[cFiwareServicePath] = "/iot"
+	param[cHeaderName] = "apikey"
+	param[cHeaderValue] = "1234"
+	param[cTokenScope] = "openid"
+	param[cHeaderEnvValue] = "TOKEN"
 	param[cSafeString] = "off"
 	param[cXAuthToken] = "on"
 	_ = setServerParam(&broker, param)

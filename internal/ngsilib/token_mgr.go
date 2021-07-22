@@ -64,12 +64,16 @@ type tokens struct {
 
 // IdmParam is ...
 type IdmParams struct {
-	IdmType      string
-	IdmHost      string
-	Username     string
-	Password     string
-	ClientID     string
-	ClientSecret string
+	IdmType        string
+	IdmHost        string
+	Username       string
+	Password       string
+	ClientID       string
+	ClientSecret   string
+	HeaderName     string
+	HeaderValue    string
+	HeaderEnvValue string
+	TokenScope     string
 }
 
 //
@@ -101,11 +105,12 @@ const (
 	CKeycloak             = "keycloak"
 	CWSO2                 = "wso2"
 	CKong                 = "kong"
+	CApikey               = "apikey"
 )
 
 var idmTypes = []string{
 	CPasswordCredentials, CKeyrock, CKeyrocktokenprovider, CTokenproxy, CKeyrockIDM,
-	CThinkingCities, CBasic, CKeycloak, CWSO2, CKong,
+	CThinkingCities, CBasic, CKeycloak, CWSO2, CKong, CApikey,
 }
 
 var tokenPlugins = map[string]TokenPlugin{
@@ -119,6 +124,7 @@ var tokenPlugins = map[string]TokenPlugin{
 	CKeycloak:             &idmKeycloak{},
 	CWSO2:                 &idmWSO2{},
 	CKong:                 &idmKong{},
+	CApikey:               &idmApikey{},
 }
 
 const cacheFileName = "ngsi-go-token-cache.json"
@@ -438,7 +444,11 @@ func checkIdmParams(idmParams *IdmParams) error {
 			idmParams.Username == "" &&
 			idmParams.Password == "" &&
 			idmParams.ClientID == "" &&
-			idmParams.ClientSecret == "") {
+			idmParams.ClientSecret == "" &&
+			idmParams.HeaderName == "" &&
+			idmParams.HeaderValue == "" &&
+			idmParams.HeaderEnvValue == "" &&
+			idmParams.TokenScope == "") {
 			return &LibError{funcName, 1, "required idmType not found", nil}
 		}
 		return nil

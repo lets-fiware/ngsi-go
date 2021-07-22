@@ -85,24 +85,27 @@ ngsi server add [options]
 
 ### Options
 
-| Options                        | Description                    |
-| ------------------------------ | ------------------------------ |
-| --host value, -h value         | specify host or alias          |
-| --serverHost value, -b value   | specify context server host    |
-| --serverType value             | specify FIWARE GE Type         |
-| --idmType value, -t value      | specify token type             |
-| --idmHost value, -m value      | specify identity manager host  |
-| --apiPath value, -a value      | specify API path               |
-| --username value, -U value     | specify username               |
-| --password value, -P value     | specify password               |
-| --clientId value, -I value     | specify client id              |
-| --clientSecret value, -S value | specify client secret          |
-| --tokenScope value             | specify scope for token        |
-| --token value                  | specify oauth token            |
-| --service value, -s value      | specify FIWARE Service         |
-| --path value, -p value         | specify FIWARE ServicePath     |
-| --safeString value             | Use safe string: `off` or `on` |
-| --help                         | show help (default: false)     |
+| Options                        | Description                                     |
+| ------------------------------ | ----------------------------------------------- |
+| --host value, -h value         | specify host or alias                           |
+| --serverHost value, -b value   | specify context server host                     |
+| --serverType value             | specify FIWARE GE Type                          |
+| --idmType value, -t value      | specify token type                              |
+| --idmHost value, -m value      | specify identity manager host                   |
+| --apiPath value, -a value      | specify API path                                |
+| --username value, -U value     | specify username                                |
+| --password value, -P value     | specify password                                |
+| --clientId value, -I value     | specify client id                               |
+| --clientSecret value, -S value | specify client secret                           |
+| --headerName value             | specify header name for apikey                  |
+| --headerValue value            | specify header value for apikey                 | 
+| --headerEnvValue value         | specify name of environment variable for apikey |
+| --tokenScope value             | specify scope for token                         |
+| --token value                  | specify oauth token                             |
+| --service value, -s value      | specify FIWARE Service                          |
+| --path value, -p value         | specify FIWARE ServicePath                      |
+| --safeString value             | Use safe string: `off` or `on`                  |
+| --help                         | show help (default: false)                      |
 
 > **Note:** Orion interprets the FIWARE Service name (tenant name) in lowercase. To use a coherent FIWARE Service name,
 > NGSI Go allows only lowercase letters in FIWARE Service name. Please have a look at
@@ -186,17 +189,18 @@ ngsi server add \
 
 ### Parameters for Identity Managers
 
-| idmType                                                                    | Required parameters                                 | Description                                      |
-| -------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
-| basic                                                                      | username, password                                  | Basic authentication                             |
-| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials            |
-| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock |
-| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock              |
-| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock              |
-| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
-| Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
-| WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2                 |
-| Kong (client credentials)                                                  | idmHost, clientId, clientSecret                     | It provides auth token from Kong                 |
+| idmType                                                                    | Required parameters                                 | Description                                            |
+| -------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| basic                                                                      | username, password                                  | Basic authentication                                   |
+| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials.                 |
+| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock.      |
+| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock.                   |
+| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock.                   |
+| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone.                  |
+| Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak.                  |
+| WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2.                      |
+| Kong (client credentials)                                                  | idmHost, clientId, clientSecret                     | It provides auth token from Kong.                      |
+| apikey                                                                     | headerName, either headerValue or headerEnvValue    | It allows you to set a header name and a header value. |
 
 ### FIWARE Service and FIWARE ServicePath
 
@@ -270,23 +274,26 @@ ngsi server upadte [options]
 
 ### Options
 
-| Options                        | Description                      |
-| ------------------------------ | -------------------------------- |
-| --host value, -h value         | specify host or alias (Required) |
-| --serverHost value, -b value   | specify context server host      |
-| --idmType value, -t value      | specify token type               |
-| --idmHost value, -m value      | specify identity manager host    |
-| --apiPath value, -a value      | specify API path                 |
-| --username value, -U value     | specify username                 |
-| --password value, -P value     | specify password                 |
-| --clientId value, -I value     | specify client id                |
-| --clientSecret value, -S value | specify client secret            |
-| --tokenScope value             | specify scope for token          |
-| --token value                  | specify oauth token              |
-| --service value, -s value      | specify FIWARE Service           |
-| --path value, -p value         | specify FIWARE ServicePath       |
-| --safeString value             | Use safe string: `off` or `on`   |
-| --help                         | show help (default: false)       |
+| Options                        | Description                                     |
+| ------------------------------ | ----------------------------------------------- |
+| --host value, -h value         | specify host or alias (Required)                |
+| --serverHost value, -b value   | specify context server host                     |
+| --idmType value, -t value      | specify token type                              |
+| --idmHost value, -m value      | specify identity manager host                   |
+| --apiPath value, -a value      | specify API path                                |
+| --username value, -U value     | specify username                                |
+| --password value, -P value     | specify password                                |
+| --clientId value, -I value     | specify client id                               |
+| --clientSecret value, -S value | specify client secret                           |
+| --headerName value             | specify header name for apikey                  |
+| --headerValue value            | specify header value for apikey                 | 
+| --headerEnvValue value         | specify name of environment variable for apikey |
+| --tokenScope value             | specify scope for token                         |
+| --token value                  | specify oauth token                             |
+| --service value, -s value      | specify FIWARE Service                          |
+| --path value, -p value         | specify FIWARE ServicePath                      |
+| --safeString value             | Use safe string: `off` or `on`                  |
+| --help                         | show help (default: false)                      |
 
 #### Example 1
 

@@ -48,6 +48,9 @@ OPTIONS:
    --password value, -P value      specify password
    --clientId value, -I value      specify client id
    --clientSecret value, -S value  specify client secret
+   --headerName value              specify header name for apikey
+   --headerValue value             specify header value for apikey
+   --headerEnvValue value          specify name of environment variable for apikey
    --tokenScope value              specify scope for token
    --token value                   oauth token
    --service value, -s value       FIWARE Service
