@@ -22,6 +22,7 @@ ngsi server list [options]
 | --json, -j             | print JSON format (default: false)                   |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
+| --singleLine, -1       | list one file per line (default: false)              |
 | --help                 | show help (default: false)                           |
 
 #### Example 1
