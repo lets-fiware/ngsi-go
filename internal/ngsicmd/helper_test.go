@@ -113,6 +113,10 @@ var configData = `{
 	  "regproxy": {
 		"serverHost": "https://regproxy",
 		"serverType": "regproxy"
+	  },
+	  "tokenproxy": {
+		"serverHost": "https://tokenproxy",
+		"serverType": "tokenproxy"
 	  }
 	},
 	"contexts": {
