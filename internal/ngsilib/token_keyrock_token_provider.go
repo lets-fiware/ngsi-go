@@ -109,7 +109,10 @@ func (i *idmKeyrockTokenProvider) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.Username != "" &&
 		idmParams.Password != "" &&
 		idmParams.ClientID == "" &&
-		idmParams.ClientSecret == "" {
+		idmParams.ClientSecret == "" &&
+		idmParams.HeaderName == "" &&
+		idmParams.HeaderValue == "" &&
+		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
 	return &LibError{funcName, 1, "idmHost, username and password are needed", nil}

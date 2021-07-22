@@ -25,77 +25,7 @@
 # SOFTWARE.
 
 #
-# 0001 Add Keyrock IDM
-#
-ngsi server add \
-  --host keyrock-idm \
-  --serverType keyrock \
-  --serverHost https://idm.letsfiware.jp \
-  --username admin@letsfiware.jp \
-  --password 1234567
-
-```
-```
-
-#
-# 0002 Get Keyrock IDM
-#
-ngsi server get --host keyrock-idm --clearText
-
-```
-serverType keyrock
-serverHost https://idm.letsfiware.jp
-IdmType idm
-IdmHost https://idm.letsfiware.jp/v1/auth/tokens
-Username admin@letsfiware.jp
-Password 1234567
-```
-
-#
-# 0003 Update Keyrock IDM
-#
-ngsi server update --host keyrock-idm --password 999999999
-
-```
-```
-
-#
-# 0004 Get Keyrock IDM
-#
-ngsi server get --host keyrock-idm --clearText
-
-```
-serverType keyrock
-serverHost https://idm.letsfiware.jp
-IdmType idm
-IdmHost https://idm.letsfiware.jp/v1/auth/tokens
-Username admin@letsfiware.jp
-Password 999999999
-```
-
-#
-# 0005 Delete Keyrock IDM
-#
-ngsi server delete --host keyrock-idm
-
-```
-```
-
-#
-# 0006 Add Error Keyrock IDM
-#
-ngsi server add \
-  --host keyrock-idm \
-  --serverType keyrock \
-  --serverHost https://idm.letsfiware.jp \
-  --username admin@letsfiware.jp
-
-```1
-serverAdd008 username and password are needed
-```
-
-#
-# 0011 Add Orion with Basic
+# 0011 Broker add Orion with Basic
 #
 ngsi broker add \
   --host orion-with-basic \
@@ -122,7 +52,7 @@ Password 1234567
 ```
 
 #
-# 0013 Update Orion with Basic
+# 0013 Broker update Orion with Basic
 #
 ngsi broker update --host orion-with-basic --password 999999999
 
@@ -143,7 +73,7 @@ Password 999999999
 ```
 
 #
-# 0015 Delete Orion with Basic
+# 0015 Broker delete Orion with Basic
 #
 ngsi broker delete --host orion-with-basic
 
@@ -165,7 +95,7 @@ brokersAdd008 username and password are needed
 ```
 
 #
-# 0021 Add Orion with Keyrock
+# 0021 Broker add Orion with Keyrock
 #
 ngsi broker add \
   --host orion-with-keyrock \
@@ -198,7 +128,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 ```
 
 #
-# 0023 Update Orion with Keyrock
+# 0023 Broker update Orion with Keyrock
 #
 ngsi broker update --host orion-with-keyrock --password 999999999
 
@@ -222,7 +152,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 ```
 
 #
-# 0025 Delete Orion with Keyrock
+# 0025 Broker delete Orion with Keyrock
 #
 ngsi broker delete --host orion-with-keyrock
 
@@ -247,7 +177,7 @@ brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
-# 0031 Add Orion with Thinking Cities (Keystone)
+# 0031 Broker add Orion with Thinking Cities (Keystone)
 #
 ngsi broker add \
   --host orion-with-keystone \
@@ -278,7 +208,7 @@ Password 0123456789
 ```
 
 #
-# 0033 Update Orion with Thinking Cities (Keystone)
+# 0033 Broker update Orion with Thinking Cities (Keystone)
 #
 ngsi broker update --host orion-with-keystone --password 999999999
 
@@ -301,7 +231,7 @@ Password 999999999
 ```
 
 #
-# 0035 Delete Orion with Thinking Cities (Keystone)
+# 0035 Broker delete Orion with Thinking Cities (Keystone)
 #
 ngsi broker delete --host orion-with-keystone
 
@@ -324,7 +254,7 @@ brokersAdd008 idmHost, username and password are needed
 ```
 
 #
-# 0041 Add Orion with Keycloak
+# 0041 Broker add Orion with Keycloak
 #
 ngsi broker add \
   --host orion-with-keycloak \
@@ -357,7 +287,7 @@ ClientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
 ```
 
 #
-# 0043 Update Orion with Keycloak
+# 0043 Broker update Orion with Keycloak
 #
 ngsi broker update --host orion-with-keycloak --password 999999999
 
@@ -381,7 +311,7 @@ ClientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
 ```
 
 #
-# 0045 Delete Orion with Keycloak
+# 0045 Broker delete Orion with Keycloak
 #
 ngsi broker delete --host orion-with-keycloak
 
@@ -406,7 +336,7 @@ brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
-# 0051 Add Orion with WSO2
+# 0051 Broker add Orion with WSO2
 #
 ngsi broker add \
   --host orion-with-wso2 \
@@ -439,7 +369,7 @@ ClientSecret 00000000-1111-2222-3333-444444444444
 ```
 
 #
-# 0053 Update Orion with WSO2
+# 0053 Broker update Orion with WSO2
 #
 ngsi broker update --host orion-with-wso2 --password 999999999
 
@@ -463,7 +393,7 @@ ClientSecret 00000000-1111-2222-3333-444444444444
 ```
 
 #
-# 0055 Delete Orion with WSO2
+# 0055 Broker delete Orion with WSO2
 #
 ngsi broker delete --host orion-with-wso2
 
@@ -488,7 +418,7 @@ brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
-# 0061 Add Orion with Kong
+# 0061 Broker add Orion with Kong
 #
 ngsi broker add \
   --host orion-with-kong \
@@ -517,7 +447,7 @@ ClientSecret 1234
 ```
 
 #
-# 0063 Update Orion with Kong
+# 0063 Broker update Orion with Kong
 #
 ngsi broker update --host orion-with-kong --clientSecret 999999999
 
@@ -539,7 +469,7 @@ ClientSecret 999999999
 ```
 
 #
-# 0065 Delete Orion with Kong
+# 0065 Broker delete Orion with Kong
 #
 ngsi broker delete --host orion-with-kong
 
@@ -562,7 +492,7 @@ brokersAdd008 idmHost, clientID and clientSecret are needed
 ```
 
 #
-# 0071 Add Orion with Password Credentials
+# 0071 Broker add Orion with Password Credentials
 #
 ngsi broker add \
   --host orion-with-password-credentials \
@@ -595,7 +525,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 ```
 
 #
-# 0073 Update Orion with Password Credentials
+# 0073 Broker update Orion with Password Credentials
 #
 ngsi broker update --host orion-with-password-credentials --clientSecret 999999999
 
@@ -619,7 +549,7 @@ ClientSecret 999999999
 ```
 
 #
-# 0075 Delete Orion with Password Credentials
+# 0075 Broker delete Orion with Password Credentials
 #
 ngsi broker delete --host orion-with-password-credentials
 
@@ -644,7 +574,7 @@ brokersAdd008 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
-# 0081 Add Orion with KeyrockTokenProvider
+# 0081 Broker add Orion with KeyrockTokenProvider
 #
 ngsi broker add \
   --host orion-with-token-providers \
@@ -674,7 +604,7 @@ Password 0123456789
 ```
 
 #
-# 0083 Update Orion with KeyrockTokenProvider
+# 0083 Broker update Orion with KeyrockTokenProvider
 #
 ngsi broker update --host orion-with-token-providers --password 999999999
 
@@ -696,7 +626,7 @@ Password 999999999
 ```
 
 #
-# 0085 Delete Orion with KeyrockTokenProvider
+# 0085 Broker delete Orion with KeyrockTokenProvider
 #
 ngsi broker delete --host orion-with-token-providers
 
@@ -719,7 +649,7 @@ brokersAdd008 idmHost, username and password are needed
 ```
 
 #
-# 0091 Add Orion with TokenProxy
+# 0091 Broker add Orion with TokenProxy
 #
 ngsi broker add \
   --host orion-with-token-proxy \
@@ -748,7 +678,7 @@ Password 0123456789
 ```
 
 #
-# 0093 Update Orion with TokenProxy
+# 0093 Broker update Orion with TokenProxy
 #
 ngsi broker update --host orion-with-token-proxy --password 999999999
 
@@ -770,7 +700,7 @@ Password 999999999
 ```
 
 #
-# 0095 Delete Orion with TokenProxy
+# 0095 Broker delete Orion with TokenProxy
 #
 ngsi broker delete --host orion-with-token-proxy
 
@@ -790,4 +720,144 @@ ngsi broker add \
 
 ```1
 brokersAdd008 idmHost, username and password are needed
+```
+
+#
+# 0101 Broker add Orion with APIKEY
+#
+ngsi broker add \
+  --host orion-with-apikey \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType apikey \
+  --headerName Authorization \
+  --headerValue "Bearer magic1234"
+
+```
+```
+
+#
+# 0102 Get Orion with APIKEY
+#
+ngsi broker get --host orion-with-apikey --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType apikey
+HeaderName Authorization
+HeaderValue Bearer magic1234
+```
+
+#
+# 0103 Broker update Orion with APIKEY
+#
+ngsi broker update --host orion-with-apikey --headerValue 999999999
+
+```
+```
+
+#
+# 0104 Get Orion with APIKEY
+#
+ngsi broker get --host orion-with-apikey --clearText
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType apikey
+HeaderName Authorization
+HeaderValue 999999999
+```
+
+#
+# 0105 Broker delete Orion with APIKEY
+#
+ngsi broker delete --host orion-with-apikey
+
+```
+```
+
+#
+# 0106 Add Error Orion with APIKEY
+#
+ngsi broker add \
+  --host orion-with-apikey \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType apikey \
+  --username admin
+
+```1
+brokersAdd008 headerName and either headerValue or headerEnvValue
+```
+
+#
+# 0111 Broker add Orion with APIKEY (ENV)
+#
+ngsi broker add \
+  --host orion-with-apikey-env \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType apikey \
+  --headerName Authorization \
+  --headerEnvValue TOKEN
+
+```
+```
+
+#
+# 0112 Get Orion with APIKEY (ENV)
+#
+ngsi broker get --host orion-with-apikey-env
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType apikey
+HeaderName Authorization
+HeaderEnvValue TOKEN
+```
+
+#
+# 0113 Broker update Orion with APIKEY (ENV)
+#
+ngsi broker update --host orion-with-apikey-env --headerEnvValue MAGIC
+
+```
+```
+
+#
+# 0114 Get Orion with APIKEY (ENV)
+#
+ngsi broker get --host orion-with-apikey-env
+
+```
+brokerHost https://orion
+ngsiType v2
+IdmType apikey
+HeaderName Authorization
+HeaderEnvValue MAGIC
+```
+
+#
+# 0115 Broker delete Orion with APIKEY (ENV)
+#
+ngsi broker delete --host orion-with-apikey-env
+
+```
+```
+
+#
+# 0116 Add Error Orion with APIKEY (ENV)
+#
+ngsi broker add \
+  --host orion-with-apikey-env \
+  --ngsiType v2 \
+  --brokerHost https://orion \
+  --idmType apikey \
+  --username admin
+
+```1
+brokersAdd008 headerName and either headerValue or headerEnvValue
 ```

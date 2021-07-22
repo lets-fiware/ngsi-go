@@ -49,6 +49,10 @@ type Server struct {
 	Password             string `json:"password,omitempty"`
 	ClientID             string `json:"clientId,omitempty"`
 	ClientSecret         string `json:"clientSecret,omitempty"`
+	HeaderName           string `json:"headerName,omitempty"`
+	HeaderValue          string `json:"headerValue,omitempty"`
+	HeaderEnvValue       string `json:"headerEnvValue,omitempty"`
+	TokenScope           string `json:"tokenScope,omitempty"`
 	Context              string `json:"context,omitempty"`
 	Tenant               string `json:"tenant,omitempty"`
 	Scope                string `json:"scope,omitempty"`
@@ -70,6 +74,10 @@ const (
 	cPassword          = "password"
 	cClientID          = "clientId"
 	cClientSecret      = "clientSecret"
+	cHeaderName        = "headerName"
+	cHeaderValue       = "headerValue"
+	cHeaderEnvValue    = "headerEnvValue"
+	cTokenScope        = "tokenScope"
 	cContext           = "context"
 	cFiwareService     = "service"
 	cFiwareServicePath = "path"
@@ -105,7 +113,7 @@ const (
 
 var (
 	brokerArgs = []string{cServerType, cServerHost, cBrokerHost, cBrokerType, cNgsiType, cAPIPath,
-		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret,
+		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret, cHeaderName, cHeaderValue, cHeaderEnvValue, cTokenScope,
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
 	brokerTypeArgs = []string{cOrionLD, cScorpio, cStellio}
 	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud, cRegProxy}
@@ -163,12 +171,16 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 	}
 
 	idmParams := &IdmParams{
-		IdmType:      host.IdmType,
-		IdmHost:      host.IdmHost,
-		Username:     host.Username,
-		Password:     host.Password,
-		ClientID:     host.ClientID,
-		ClientSecret: host.ClientSecret,
+		IdmType:        host.IdmType,
+		IdmHost:        host.IdmHost,
+		Username:       host.Username,
+		Password:       host.Password,
+		ClientID:       host.ClientID,
+		ClientSecret:   host.ClientSecret,
+		HeaderName:     host.HeaderName,
+		HeaderValue:    host.HeaderValue,
+		HeaderEnvValue: host.HeaderEnvValue,
+		TokenScope:     host.TokenScope,
 	}
 	err := checkIdmParams(idmParams)
 	if err != nil {
@@ -276,6 +288,18 @@ func copyServerInfo(from *Server, to *Server) {
 	if from.ClientSecret != "" && to.ClientSecret == "" {
 		to.ClientSecret = from.ClientSecret
 	}
+	if from.HeaderName != "" && to.HeaderName == "" {
+		to.HeaderName = from.HeaderName
+	}
+	if from.HeaderValue != "" && to.HeaderValue == "" {
+		to.HeaderValue = from.HeaderValue
+	}
+	if from.HeaderEnvValue != "" && to.HeaderEnvValue == "" {
+		to.HeaderEnvValue = from.HeaderEnvValue
+	}
+	if from.TokenScope != "" && to.TokenScope == "" {
+		to.TokenScope = from.TokenScope
+	}
 	if from.Context != "" && to.Context == "" {
 		to.Context = from.Context
 	}
@@ -325,6 +349,14 @@ func setServerParam(broker *Server, param map[string]string) error {
 			broker.ClientID = value
 		case cClientSecret:
 			broker.ClientSecret = value
+		case cHeaderName:
+			broker.HeaderName = value
+		case cHeaderValue:
+			broker.HeaderValue = value
+		case cHeaderEnvValue:
+			broker.HeaderEnvValue = value
+		case cTokenScope:
+			broker.TokenScope = value
 		case cContext:
 			broker.Context = value
 		case cFiwareService:

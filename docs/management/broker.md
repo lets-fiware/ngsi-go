@@ -118,6 +118,9 @@ ngsi broker add [options]
 | --password value, -P value     | specify password                                          |
 | --clientId value, -I value     | specify client id                                         |
 | --clientSecret value, -S value | specify client secret                                     |
+| --headerName value             | specify header name for apikey                            |
+| --headerValue value            | specify header value for apikey                           |
+| --headerEnvValue value         | specify name of environment variable for apikey           |
 | --tokenScope value             | specify scope for token                                   |
 | --token value                  | specify oauth token                                       |
 | --service value, -s value      | specify FIWARE Service                                    |
@@ -262,23 +265,51 @@ ngsi broker add \
   --password 1234
 ```
 
+#### Example 11
+
+Orion with APIKEY
+
+```console
+ngsi broker add --host orion-with-apikey \
+  --ngsiType v2 \
+  --brokerHost http://localhost:1026/ \
+  --idmType apikey \
+  --headerName Authorization \
+  --headerValue "Bearer magic1234"
+```
+
+#### Example 12
+
+Orion with APIKEY (environment value)
+
+```console
+export TOKEN="Bearer magic1234"
+ngsi broker add --host orion-with-apikey-env \
+  --ngsiType v2 \
+  --brokerHost http://localhost:1026/ \
+  --idmType apikey \
+  --headerName Authorization \
+  --headerEnvValue TOKEN
+```
+
 ### NGSI type
 
 Specify `v2` to `--ngsiType` when you add an alias for FIWARE Orion Context Broker.
 
 ### Parameters for Identity Managers
 
-| idmType                                                                    | Required parameters                                 | Description                                      |
-| -------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
-| basic                                                                      | username, password                                  | Basic authentication                             |
-| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials            |
-| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock |
-| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock              |
-| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock              |
-| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone             |
-| Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak             |
-| WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2                 |
-| Kong (client credentials)                                                  | idmHost, clientId, clientSecret                     | It provides auth token from Kong                 |
+| idmType                                                                    | Required parameters                                 | Description                                            |
+| -------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| basic                                                                      | username, password                                  | Basic authentication                                   |
+| password                                                                   | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials.                 |
+| [keyrock](https://fiware-idm.readthedocs.io/)                              | idmHost, username, password, clientId, clientSecret | This type is for Password Credentials of Keyrock.      |
+| [KeyrockTokenProvider](https://github.com/FIWARE-Ops/KeyrockTokenProvider) | idmHost, username, password                         | It provides auth token from Keyrock.                   |
+| tokenproxy                                                                 | idmHost, username, password                         | It provides auth token from Keyrock.                   |
+| [ThinkingCities](https://thinking-cities.readthedocs.io/)                  | idmHost, username, password                         | It provides auth token from Keystone.                  |
+| Keycloak                                                                   | idmHost, username, password, clientId, clientSecret | It provides auth token from Keycloak.                  |
+| WSO2                                                                       | idmHost, username, password, clientId, clientSecret | It provides auth token from WSO2.                      |
+| Kong (client credentials)                                                  | idmHost, clientId, clientSecret                     | It provides auth token from Kong.                      |
+| apikey                                                                     | headerName, either headerValue or headerEnvValue    | It allows you to set a header name and a header value. |
 
 ### FIWARE Service and FIWARE ServicePath
 
@@ -365,6 +396,9 @@ ngsi broker upadte [options]
 | --password value, -P value     | specify password                                          |
 | --clientId value, -I value     | specify client id                                         |
 | --clientSecret value, -S value | specify client secret                                     |
+| --headerName value             | specify header name for apikey                            |
+| --headerValue value            | specify header value for apikey                           |
+| --headerEnvValue value         | specify name of environment variable for apikey           |
 | --tokenScope value             | specify scope for token                                   |
 | --token value                  | specify oauth token                                       |
 | --service value, -s value      | specify FIWARE Service                                    |

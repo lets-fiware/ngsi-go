@@ -94,6 +94,23 @@ func TestInitHeaderAuthorization(t *testing.T) {
 	}
 }
 
+func TestInitHeaderApikey(t *testing.T) {
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client.Server = &Server{ServerType: "broker"}
+	client.Server.IdmType = CApikey
+	client.Server.HeaderName = "apikey"
+	client.Server.HeaderValue = "1234"
+
+	err := client.InitHeader()
+
+	actual := client.Headers["apikey"]
+	expected := "1234"
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestInitHeaderTenant(t *testing.T) {
 	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
 	client.Server = &Server{ServerType: "broker"}
@@ -182,7 +199,7 @@ func TestInitHeaderNgsiV2Scope(t *testing.T) {
 }
 
 func TestInitHeaderErrorNgsiV2Scope(t *testing.T) {
-	client := &Client{URL: &url.URL{}, Headers: map[string]string{}}
+	client := &Client{URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{}}
 	client.NgsiType = ngsiV2
 	client.Scope = "iot"
 

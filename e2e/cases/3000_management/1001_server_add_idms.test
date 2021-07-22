@@ -1,0 +1,933 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 Add Keyrock IDM
+#
+ngsi server add \
+  --host keyrock-idm \
+  --serverType keyrock \
+  --serverHost https://idm.letsfiware.jp \
+  --username admin@letsfiware.jp \
+  --password 1234567
+
+```
+```
+
+#
+# 0002 Get Keyrock IDM
+#
+ngsi server get --host keyrock-idm --clearText
+
+```
+serverType keyrock
+serverHost https://idm.letsfiware.jp
+IdmType idm
+IdmHost https://idm.letsfiware.jp/v1/auth/tokens
+Username admin@letsfiware.jp
+Password 1234567
+```
+
+#
+# 0003 Update Keyrock IDM
+#
+ngsi server update --host keyrock-idm --password 999999999
+
+```
+```
+
+#
+# 0004 Get Keyrock IDM
+#
+ngsi server get --host keyrock-idm --clearText
+
+```
+serverType keyrock
+serverHost https://idm.letsfiware.jp
+IdmType idm
+IdmHost https://idm.letsfiware.jp/v1/auth/tokens
+Username admin@letsfiware.jp
+Password 999999999
+```
+
+#
+# 0005 Delete Keyrock IDM
+#
+ngsi server delete --host keyrock-idm
+
+```
+```
+
+#
+# 0006 Add Error Keyrock IDM
+#
+ngsi server add \
+  --host keyrock-idm \
+  --serverType keyrock \
+  --serverHost https://idm.letsfiware.jp \
+  --username admin@letsfiware.jp
+
+```1
+serverAdd008 username and password are needed
+```
+
+#
+# 0011 Server add comet with Basic
+#
+ngsi server add \
+  --host comet-with-basic \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType basic \
+  --username admin@letsfiware.jp \
+  --password 1234567
+
+```
+```
+
+#
+# 0012 Server get comet with Basic
+#
+ngsi server get --host comet-with-basic --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType basic
+Username admin@letsfiware.jp
+Password 1234567
+```
+
+#
+# 0013 Server update comet with Basic
+#
+ngsi server update --host comet-with-basic --password 999999999
+
+```
+```
+
+#
+# 0014 Server get comet with Basic
+#
+ngsi server get --host comet-with-basic --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType basic
+Username admin@letsfiware.jp
+Password 999999999
+```
+
+#
+# 0015 Server delete comet with Basic
+#
+ngsi server delete --host comet-with-basic
+
+```
+```
+
+#
+# 0016 Server add error comet with Basic
+#
+ngsi server add \
+  --host comet-with-basic \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType basic \
+  --username admin@letsfiware.jp
+
+```1
+serverAdd008 username and password are needed
+```
+
+#
+# 0021 Server add comet with Keyrock
+#
+ngsi server add \
+  --host comet-with-keyrock \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType keyrock \
+  --idmHost https://keyrock/oauth2/token \
+  --username keyrock001@letsfiware.jp \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444 \
+  --clientSecret 55555555-6666-7777-8888-999999999999
+
+```
+```
+
+#
+# 0022 Server get comet with Keyrock
+#
+ngsi server get --host comet-with-keyrock --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType keyrock
+IdmHost https://keyrock/oauth2/token
+Username keyrock001@letsfiware.jp
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0023 Server update comet with Keyrock
+#
+ngsi server update --host comet-with-keyrock --password 999999999
+
+```
+```
+
+#
+# 0024 Server get comet with Keyrock
+#
+ngsi server get --host comet-with-keyrock --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType keyrock
+IdmHost https://keyrock/oauth2/token
+Username keyrock001@letsfiware.jp
+Password 999999999
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0025 Server delete comet with Keyrock
+#
+ngsi server delete --host comet-with-keyrock
+
+```
+```
+
+#
+# 0026 Server add error comet with Keyrock
+#
+ngsi server add \
+  --host comet-with-keyrock \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType keyrock \
+  --idmHost https://keyrock/oauth2/token \
+  --username keyrock001@letsfiware.jp \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444
+
+```1
+serverAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0031 Server add comet with Thinking Cities (Keystone)
+#
+ngsi server add \
+  --host comet-with-keystone \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType ThinkingCities \
+  --idmHost http://localhost:5001/v3/auth/tokens \
+  --username fiware \
+  --password 0123456789 \
+  --service smartcity
+
+```
+```
+
+#
+# 0032 Server get comet with Thinking Cities (Keystone)
+#
+ngsi server get --host comet-with-keystone --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+FIWARE-Service smartcity
+IdmType thinkingcities
+IdmHost http://localhost:5001/v3/auth/tokens
+Username fiware
+Password 0123456789
+```
+
+#
+# 0033 Server update comet with Thinking Cities (Keystone)
+#
+ngsi server update --host comet-with-keystone --password 999999999
+
+```
+```
+
+#
+# 0034 Server get comet with Thinking Cities (Keystone)
+#
+ngsi server get --host comet-with-keystone --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+FIWARE-Service smartcity
+IdmType thinkingcities
+IdmHost http://localhost:5001/v3/auth/tokens
+Username fiware
+Password 999999999
+```
+
+#
+# 0035 Server delete comet with Thinking Cities (Keystone)
+#
+ngsi server delete --host comet-with-keystone
+
+```
+```
+
+#
+# 0036 Server add error comet with Thinking Cities (Keystone)
+#
+ngsi server add \
+  --host comet-with-keystone \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType ThinkingCities \
+  --idmHost http://localhost:5001/v3/auth/tokens \
+  --username fiware
+
+```1
+serverAdd008 idmHost, username and password are needed
+```
+
+#
+# 0041 Server add comet with Keycloak
+#
+ngsi server add \
+  --host comet-with-keycloak \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType keycloak \
+  --idmHost http://keycloak:8080/auth/realms/fiware_service \
+  --username fiware \
+  --password 1234 \
+  --clientId ngsi_api \
+  --clientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
+
+```
+```
+
+#
+# 0042 Server get comet with Keycloak
+#
+ngsi server get --host comet-with-keycloak --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType keycloak
+IdmHost http://keycloak:8080/auth/realms/fiware_service
+Username fiware
+Password 1234
+ClientID ngsi_api
+ClientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
+```
+
+#
+# 0043 Server update comet with Keycloak
+#
+ngsi server update --host comet-with-keycloak --password 999999999
+
+```
+```
+
+#
+# 0044 Server get comet with Keycloak
+#
+ngsi server get --host comet-with-keycloak --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType keycloak
+IdmHost http://keycloak:8080/auth/realms/fiware_service
+Username fiware
+Password 999999999
+ClientID ngsi_api
+ClientSecret 8eb5d01d-d155-4b73-9414-a3c28ee4aba6
+```
+
+#
+# 0045 Server delete comet with Keycloak
+#
+ngsi server delete --host comet-with-keycloak
+
+```
+```
+
+#
+# 0046 Server add error comet with Keycloak
+#
+ngsi server add \
+  --host comet-with-keycloak \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType keycloak \
+  --idmHost http://keycloak:8080/auth/realms/fiware_service \
+  --username fiware \
+  --password 1234 \
+  --clientId ngsi_api
+
+```1
+serverAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0051 Server add comet with WSO2
+#
+ngsi server add \
+  --host comet-with-wso2 \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType wso2 \
+  --idmHost http://wso2am:8243/token \
+  --username fiware \
+  --password 1234 \
+  --clientId 0000000000000000000000_A_ZZZ \
+  --clientSecret 00000000-1111-2222-3333-444444444444
+
+```
+```
+
+#
+# 0052 Server get comet with WSO2
+#
+ngsi server get --host comet-with-wso2 --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType wso2
+IdmHost http://wso2am:8243/token
+Username fiware
+Password 1234
+ClientID 0000000000000000000000_A_ZZZ
+ClientSecret 00000000-1111-2222-3333-444444444444
+```
+
+#
+# 0053 Server update comet with WSO2
+#
+ngsi server update --host comet-with-wso2 --password 999999999
+
+```
+```
+
+#
+# 0054 Server get comet with WSO2
+#
+ngsi server get --host comet-with-wso2 --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType wso2
+IdmHost http://wso2am:8243/token
+Username fiware
+Password 999999999
+ClientID 0000000000000000000000_A_ZZZ
+ClientSecret 00000000-1111-2222-3333-444444444444
+```
+
+#
+# 0055 Server delete comet with WSO2
+#
+ngsi server delete --host comet-with-wso2
+
+```
+```
+
+#
+# 0056 Server add error comet with WSO2
+#
+ngsi server add \
+  --host comet-with-wso2 \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType wso2 \
+  --idmHost http://wso2am:8243/token \
+  --username fiware \
+  --password 1234 \
+  --clientId 0000000000000000000000_A_ZZZ
+
+```1
+serverAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0061 Server add comet with Kong
+#
+ngsi server add \
+  --host comet-with-kong \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType kong \
+  --idmHost "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/" \
+  --clientId orion \
+  --clientSecret 1234
+
+```
+```
+
+#
+# 0062 Server get comet with Kong
+#
+ngsi server get --host comet-with-kong --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType kong
+IdmHost https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/
+ClientID orion
+ClientSecret 1234
+```
+
+#
+# 0063 Server update comet with Kong
+#
+ngsi server update --host comet-with-kong --clientSecret 999999999
+
+```
+```
+
+#
+# 0064 Server get comet with Kong
+#
+ngsi server get --host comet-with-kong --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType kong
+IdmHost https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/
+ClientID orion
+ClientSecret 999999999
+```
+
+#
+# 0065 Server delete comet with Kong
+#
+ngsi server delete --host comet-with-kong
+
+```
+```
+
+#
+# 0066 Server add error comet with Kong
+#
+ngsi server add \
+  --host comet-with-kong \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType kong \
+  --idmHost "https://localhost:8443/ngsi/oauth2/token,http://localhost:8001/" \
+  --clientId orion
+
+```1
+serverAdd008 idmHost, clientID and clientSecret are needed
+```
+
+#
+# 0071 Server add comet with Password Credentials
+#
+ngsi server add \
+  --host comet-with-password-credentials \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType password \
+  --idmHost https://password-credentials/ \
+  --username admin \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444 \
+  --clientSecret 55555555-6666-7777-8888-999999999999
+
+```
+```
+
+#
+# 0072 Server get comet with Password Credentials
+#
+ngsi server get --host comet-with-password-credentials --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType password
+IdmHost https://password-credentials/
+Username admin
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 55555555-6666-7777-8888-999999999999
+```
+
+#
+# 0073 Server update comet with Password Credentials
+#
+ngsi server update --host comet-with-password-credentials --clientSecret 999999999
+
+```
+```
+
+#
+# 0074 Server get comet with Password Credentials
+#
+ngsi server get --host comet-with-password-credentials --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType password
+IdmHost https://password-credentials/
+Username admin
+Password 0123456789
+ClientID 00000000-1111-2222-3333-444444444444
+ClientSecret 999999999
+```
+
+#
+# 0075 Server delete comet with Password Credentials
+#
+ngsi server delete --host comet-with-password-credentials
+
+```
+```
+
+#
+# 0076 Server add error comet with Password Credentials
+#
+ngsi server add \
+  --host comet-with-password-credentials \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType password \
+  --idmHost https://password-credentials/ \
+  --username admin \
+  --password 0123456789 \
+  --clientId 00000000-1111-2222-3333-444444444444
+
+```1
+serverAdd008 idmHost, username, password, clientID and clientSecret are needed
+```
+
+#
+# 0081 Server add comet with KeyrockTokenProvider
+#
+ngsi server add \
+  --host comet-with-token-providers \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType keyrocktokenprovider \
+  --idmHost https://KeyrockTokenProvider/ \
+  --username admin \
+  --password 0123456789
+
+
+```
+```
+
+#
+# 0082 Server get comet with KeyrockTokenProvider
+#
+ngsi server get --host comet-with-token-providers --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType keyrocktokenprovider
+IdmHost https://KeyrockTokenProvider/
+Username admin
+Password 0123456789
+```
+
+#
+# 0083 Server update comet with KeyrockTokenProvider
+#
+ngsi server update --host comet-with-token-providers --password 999999999
+
+```
+```
+
+#
+# 0084 Server get comet with KeyrockTokenProvider
+#
+ngsi server get --host comet-with-token-providers --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType keyrocktokenprovider
+IdmHost https://KeyrockTokenProvider/
+Username admin
+Password 999999999
+```
+
+#
+# 0085 Server delete comet with KeyrockTokenProvider
+#
+ngsi server delete --host comet-with-token-providers
+
+```
+```
+
+#
+# 0086 Server add error comet with KeyrockTokenProvider
+#
+ngsi server add \
+  --host comet-with-token-providers \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType keyrocktokenprovider \
+  --idmHost https://KeyrockTokenProvider/ \
+  --username admin
+
+```1
+serverAdd008 idmHost, username and password are needed
+```
+
+#
+# 0091 Server add comet with TokenProxy
+#
+ngsi server add \
+  --host comet-with-token-proxy \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType tokenproxy \
+  --idmHost https://tokenproxy/ \
+  --username admin \
+  --password 0123456789
+
+```
+```
+
+#
+# 0092 Server get comet with TokenProxy
+#
+ngsi server get --host comet-with-token-proxy --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType tokenproxy
+IdmHost https://tokenproxy/
+Username admin
+Password 0123456789
+```
+
+#
+# 0093 Server update comet with TokenProxy
+#
+ngsi server update --host comet-with-token-proxy --password 999999999
+
+```
+```
+
+#
+# 0094 Server get comet with TokenProxy
+#
+ngsi server get --host comet-with-token-proxy --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType tokenproxy
+IdmHost https://tokenproxy/
+Username admin
+Password 999999999
+```
+
+#
+# 0095 Server delete comet with TokenProxy
+#
+ngsi server delete --host comet-with-token-proxy
+
+```
+```
+
+#
+# 0096 Server add error comet with TokenProxy
+#
+ngsi server add \
+  --host comet-with-token-proxy \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType tokenproxy \
+  --idmHost https://tokenproxy/ \
+  --username admin
+
+```1
+serverAdd008 idmHost, username and password are needed
+```
+
+#
+# 0101 Server add comet with APIKEY
+#
+ngsi server add \
+  --host comet-with-apikey \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType apikey \
+  --headerName Authorization \
+  --headerValue "Bearer magic1234"
+
+```
+```
+
+#
+# 0102 Server get comet with APIKEY
+#
+ngsi server get --host comet-with-apikey --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType apikey
+HeaderName Authorization
+HeaderValue Bearer magic1234
+```
+
+#
+# 0103 Server update comet with APIKEY
+#
+ngsi server update --host comet-with-apikey --headerValue 999999999
+
+```
+```
+
+#
+# 0104 Server get comet with APIKEY
+#
+ngsi server get --host comet-with-apikey --clearText
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType apikey
+HeaderName Authorization
+HeaderValue 999999999
+```
+
+#
+# 0105 Server delete comet with APIKEY
+#
+ngsi server delete --host comet-with-apikey
+
+```
+```
+
+#
+# 0106 Server add error comet with APIKEY
+#
+ngsi server add \
+  --host comet-with-apikey \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType apikey \
+  --username admin
+
+```1
+serverAdd008 headerName and either headerValue or headerEnvValue
+```
+
+#
+# 0111 Server add comet with APIKEY (ENV)
+#
+ngsi server add \
+  --host comet-with-apikey-env \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType apikey \
+  --headerName Authorization \
+  --headerEnvValue TOKEN
+
+```
+```
+
+#
+# 0112 Server get comet with APIKEY (ENV)
+#
+ngsi server get --host comet-with-apikey-env
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType apikey
+HeaderName Authorization
+HeaderEnvValue TOKEN
+```
+
+#
+# 0113 Server update comet with APIKEY (ENV)
+#
+ngsi server update --host comet-with-apikey-env --headerEnvValue MAGIC
+
+```
+```
+
+#
+# 0114 Server get comet with APIKEY (ENV)
+#
+ngsi server get --host comet-with-apikey-env
+
+```
+serverType comet
+serverHost http://comet:8666
+IdmType apikey
+HeaderName Authorization
+HeaderEnvValue MAGIC
+```
+
+#
+# 0115 Server delete comet with APIKEY (ENV)
+#
+ngsi server delete --host comet-with-apikey-env
+
+```
+```
+
+#
+# 0116 Server add error comet with APIKEY (ENV)
+#
+ngsi server add \
+  --host comet-with-apikey-env \
+  --serverType comet \
+  --serverHost http://comet:8666 \
+  --idmType apikey \
+  --username admin
+
+```1
+serverAdd008 headerName and either headerValue or headerEnvValue
+```

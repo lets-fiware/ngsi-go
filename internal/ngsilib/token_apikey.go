@@ -29,59 +29,53 @@ SOFTWARE.
 
 package ngsilib
 
-import (
-	"encoding/base64"
-	"time"
-)
+import "os"
 
-type idmBasic struct {
+type idmApikey struct {
 }
 
-func (i *idmBasic) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
-	const funcName = "requestTokenBasic"
-
-	username, password, err := getUserNamePassword(client)
-	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
-	}
-
-	token := base64.URLEncoding.EncodeToString([]byte(username + ":" + password))
-	utime := ngsi.TimeLib.NowUnix()
-
-	tokenInfo.Type = CBasic
-	tokenInfo.Token = token
-	tokenInfo.RefreshToken = ""
-	tokenInfo.Expires = time.Unix(utime+3600, 0)
-
-	return tokenInfo, nil
+func (i *idmApikey) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (*TokenInfo, error) {
+	return nil, nil
 }
 
-func (i *idmBasic) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
+func (i *idmApikey) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
 	return nil
 }
 
-func (i *idmBasic) getAuthHeader(token string) (string, string) {
-	return "Authorization", "Basic " + token
+func (i *idmApikey) getAuthHeader(token string) (string, string) {
+	return "", ""
 }
 
-func (i *idmBasic) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
-	const funcName = "getTokenInfoBasic"
+func (i *idmApikey) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
+	const funcName = "getTokenInfoApikey"
 
 	return nil, &LibError{funcName, 1, "no information available", nil}
 }
 
-func (i *idmBasic) checkIdmParams(idmParams *IdmParams) error {
-	const funcName = "checkIdmParamsBasic"
+func (i *idmApikey) checkIdmParams(idmParams *IdmParams) error {
+	const funcName = "checkIdmParamsApikey"
 
 	if idmParams.IdmHost == "" &&
-		idmParams.Username != "" &&
-		idmParams.Password != "" &&
+		idmParams.Username == "" &&
+		idmParams.Password == "" &&
 		idmParams.ClientID == "" &&
 		idmParams.ClientSecret == "" &&
-		idmParams.HeaderName == "" &&
-		idmParams.HeaderValue == "" &&
-		idmParams.HeaderEnvValue == "" {
+		idmParams.HeaderName != "" &&
+		((idmParams.HeaderValue == "") != (idmParams.HeaderEnvValue == "")) {
 		return nil
 	}
-	return &LibError{funcName, 1, "username and password are needed", nil}
+	return &LibError{funcName, 1, "headerName and either headerValue or headerEnvValue", nil}
+}
+
+func GetApikeyHeader(client *Client) (string, string) {
+	n := client.Server.HeaderName
+	v := client.Server.HeaderValue
+	if v != "" {
+		return n, v
+	}
+	v = client.Server.HeaderEnvValue
+	if v != "" {
+		return n, os.Getenv(v)
+	}
+	return n, ""
 }

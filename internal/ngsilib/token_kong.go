@@ -147,7 +147,10 @@ func (i *idmKong) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.Username == "" &&
 		idmParams.Password == "" &&
 		idmParams.ClientID != "" &&
-		idmParams.ClientSecret != "" {
+		idmParams.ClientSecret != "" &&
+		idmParams.HeaderName == "" &&
+		idmParams.HeaderValue == "" &&
+		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
 	return &LibError{funcName, 1, "idmHost, clientID and clientSecret are needed", nil}
