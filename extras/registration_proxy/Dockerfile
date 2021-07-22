@@ -24,17 +24,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM alpine:3.14 AS builder
+FROM golang:1.16.0-alpine3.13 AS builder
 
 RUN \
+    cd / && \
     apk update && \
-    apk add --no-cache tar curl && \
-    curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.8.4/ngsi-v0.8.4-linux-amd64.tar.gz && \
-    tar zxvf ngsi-v0.8.4-linux-amd64.tar.gz -C /usr/local/bin
+    apk add --no-cache git make && \
+    git clone https://github.com/lets-fiware/ngsi-go.git && \
+    cd /ngsi-go && \
+    make bin/ngsi
+    
 
 FROM alpine:3.14 AS runner
 
-COPY --from=builder /usr/local/bin/ngsi /usr/local/bin/ngsi
+COPY --from=builder /ngsi-go/bin/ngsi /usr/local/bin/ngsi
 COPY ./ngsi-go-config.json /opt/ngsi-go/ngsi-go-config.json
 
 WORKDIR /opt/ngsi-go/
@@ -44,4 +47,4 @@ RUN chown -R nobody:nobody /opt/ngsi-go
 USER nobody 
 
 ENTRYPOINT ["/usr/local/bin/ngsi"]
-CMD ["--stderr", "info", "--config", "./ngsi-go-config.json", "--cache", "ngsi-go-token-cache.json", "regproxy", "--host", "remote-orion", "--verbose"]
+CMD ["--stderr", "info", "--config", "./ngsi-go-config.json", "--cache", "./ngsi-go-token-cache.json", "regproxy", "server", "--host", "remote-orion", "--verbose"]

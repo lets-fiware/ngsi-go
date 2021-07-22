@@ -56,6 +56,7 @@ type regProxyParam struct {
 	url      *string
 	replace  bool
 	mutex    *sync.Mutex
+	gLock    *sync.Mutex
 
 	startTime time.Time
 	timeSent  int64
@@ -94,7 +95,7 @@ func regProxyServer(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"broker", "csource"})
+	client, err := newClientSkipGetToken(ngsi, c, false, []string{"broker", "csource"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
@@ -124,6 +125,7 @@ func regProxyServer(c *cli.Context) error {
 		http:      ngsi.HTTP,
 		verbose:   c.Bool("verbose"),
 		mutex:     &sync.Mutex{},
+		gLock:     &sync.Mutex{},
 		startTime: time.Now(),
 	}
 
@@ -149,7 +151,11 @@ func regProxyServer(c *cli.Context) error {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc(path, http.HandlerFunc(regProxyHandler))
+	mux.HandleFunc("/", http.HandlerFunc(regProxyRootHandler))
+	mux.HandleFunc("/v1/", http.HandlerFunc(regProxyHandler))
+	mux.HandleFunc("/v2/", http.HandlerFunc(regProxyHandler))
+	mux.HandleFunc("/health", http.HandlerFunc(regProxyHealthHandler))
+	mux.HandleFunc("/config", http.HandlerFunc(regProxyConfigHandler))
 
 	ngsi.Logging(ngsilib.LogInfo, "Start registration proxy: "+url+"\n")
 
@@ -168,6 +174,47 @@ func regProxyServer(c *cli.Context) error {
 	return nil
 }
 
+func regProxyRootHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "regProxyRootHandler"
+
+	ngsi := regProxyGlobal.ngsi
+	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, r.URL.Path)+"\n")
+	w.Header().Set("Content-Type", "Application/json")
+	w.WriteHeader(http.StatusBadRequest)
+	_, _ = w.Write([]byte(fmt.Sprintf(`{"error": "%s not found"}`, r.URL.Path)))
+}
+
+func regProxyHealthHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "regProxyHealthHandler"
+
+	ngsi := regProxyGlobal.ngsi
+
+	if r.Method != http.MethodGet {
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, "Method not allowed"))
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	} else {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(regProxyGetStat(regProxyGlobal.client.Server.ServerHost))
+	}
+}
+
+func regProxyConfigHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "regProxyConfigHandler"
+
+	ngsi := regProxyGlobal.ngsi
+
+	if r.Method != http.MethodPost {
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, "Method not allowed"))
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	} else {
+		w.Header().Set("Content-Type", "Application/json")
+		b := getRequestBody(r.Body)
+		status, body := regProxyConfig(ngsi, b)
+		w.WriteHeader(status)
+		_, _ = w.Write(body)
+	}
+}
+
 func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 	const funcName = "regProxyHandler"
 
@@ -177,128 +224,127 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 	client := regProxyGlobal.client
 	host := client.Server.ServerHost
 
-	switch r.Method {
-	default:
+	if r.Method != http.MethodPost {
 		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, "Method not allowed"))
-		status = http.StatusMethodNotAllowed
-
-	case http.MethodGet:
-		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 2, r.URL.Path)+"\n")
-		w.Header().Set("Content-Type", "Application/json")
-		if r.URL.Path == "/health" {
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write(regProxyGetStat(host))
-			return
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-			_, _ = w.Write([]byte(fmt.Sprintf(`{"error": "%s not found"}`, r.URL.Path)))
-		}
-	case http.MethodPost:
-		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 3, r.URL.Path)+"\n")
-
-		body := r.Body
-		defer func() { _ = body.Close() }()
-		buf := new(bytes.Buffer)
-		_, _ = io.Copy(buf, body)
-		b := buf.Bytes()
-
-		if r.URL.Path == "/config" {
-			w.Header().Set("Content-Type", "Application/json")
-			status, body := regProxyConfig(ngsi, b)
-			w.WriteHeader(status)
-			_, _ = w.Write(body)
-			return
-		}
-
-		regProxyGlobal.timeSent += 1
-
-		origTenant := ""
-		origScope := ""
-		tenant := ""
-		scope := ""
-		headers := map[string]string{}
-		for k := range r.Header {
-			switch strings.ToLower(k) {
-			case "content-length", "user-agent":
-				continue
-			case "fiware-service", "ngsild-tenant":
-				tenant = r.Header.Get(k)
-				origTenant = tenant
-				if regProxyGlobal.tenant != nil {
-					tenant = *regProxyGlobal.tenant
-				}
-				headers[k] = tenant
-				continue
-			case "fiware-servicepath":
-				scope = r.Header.Get(k)
-				origScope = scope
-				if regProxyGlobal.scope != nil {
-					scope = *regProxyGlobal.scope
-				}
-				headers[k] = scope
-				continue
-			}
-			headers[k] = r.Header.Get(k)
-		}
-
-		if regProxyGlobal.addScope != nil {
-			scope = path.Join(*regProxyGlobal.addScope, scope)
-		}
-
-		uPath := r.URL.Path
-		if regProxyGlobal.url != nil {
-			uPath = *regProxyGlobal.url
-		}
-
-		ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", r.URL.Path, origTenant, origScope))
-		if regProxyGlobal.replace {
-			ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", uPath, tenant, scope))
-		}
-
-		u, err := url.Parse(host)
-		if err != nil {
-			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 4, err.Error()))
-			break
-		}
-		u.Path = path.Join(u.Path, uPath)
-
-		regProxyGlobal.mutex.Lock()
-		key, token, err := ngsi.GetAuthHeader(client)
-		regProxyGlobal.mutex.Unlock()
-
-		if err != nil {
-			ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 5, err.Error()))
-			break
-		}
-
-		headers[key] = token
-
-		if verbose {
-			ngsi.Logging(ngsilib.LogInfo, string(b)+"\n")
-		}
-
-		res, resBody, err := regProxyGlobal.http.Request("POST", u, headers, b)
-		if err == nil {
-			regProxyGlobal.success += 1
-
-			for k := range res.Header {
-				if strings.ToLower(k) != "content-length" {
-					w.Header().Set(k, res.Header.Get(k))
-				}
-			}
-			w.WriteHeader(res.StatusCode)
-			_, _ = w.Write(resBody)
-			if verbose {
-				ngsi.Logging(ngsilib.LogInfo, string(resBody)+"\n")
-			}
-			return
-		} else {
-			regProxyGlobal.failure += 1
-		}
-
-		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 6, err.Error()))
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
+
+	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, r.URL.Path)+"\n")
+
+	regProxyGlobal.gLock.Lock()
+	regProxyGlobal.timeSent += 1
+	regProxyGlobal.gLock.Unlock()
+
+	b := getRequestBody(r.Body)
+
+	origTenant := ""
+	origScope := ""
+	tenant := ""
+	scope := ""
+	headers := map[string]string{}
+
+	for k := range r.Header {
+		switch strings.ToLower(k) {
+		case "content-length", "user-agent":
+			continue
+		case "fiware-service", "ngsild-tenant":
+			tenant = r.Header.Get(k)
+			origTenant = tenant
+			if regProxyGlobal.tenant != nil {
+				tenant = *regProxyGlobal.tenant
+			}
+			headers[k] = tenant
+			continue
+		case "fiware-servicepath":
+			scope = r.Header.Get(k)
+			origScope = scope
+			if regProxyGlobal.scope != nil {
+				scope = *regProxyGlobal.scope
+			}
+			headers[k] = scope
+			continue
+		}
+		headers[k] = r.Header.Get(k)
+	}
+
+	if regProxyGlobal.addScope != nil {
+		scope = path.Join(*regProxyGlobal.addScope, scope)
+	}
+
+	uPath := r.URL.Path
+	if regProxyGlobal.url != nil {
+		uPath = *regProxyGlobal.url
+	}
+
+	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", r.URL.Path, origTenant, origScope))
+	if regProxyGlobal.replace {
+		ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("Path:%s, Tenant: %s, Scope: %s\n", uPath, tenant, scope))
+	}
+
+	u, err := url.Parse(host)
+	if err != nil {
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 4, err.Error()))
+		regProxyFailureUp()
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	u.Path = path.Join(u.Path, uPath)
+
+	regProxyGlobal.mutex.Lock()
+	key, token, err := ngsi.GetAuthHeader(client)
+	regProxyGlobal.mutex.Unlock()
+
+	if err != nil {
+		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 5, err.Error()))
+		regProxyFailureUp()
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	headers[key] = token
+
+	if verbose {
+		ngsi.Logging(ngsilib.LogInfo, string(b)+"\n")
+	}
+
+	res, resBody, err := regProxyGlobal.http.Request("POST", u, headers, b)
+	if err == nil {
+		regProxyGlobal.gLock.Lock()
+		regProxyGlobal.success += 1
+		regProxyGlobal.gLock.Unlock()
+
+		for k := range res.Header {
+			if strings.ToLower(k) != "content-length" {
+				w.Header().Set(k, res.Header.Get(k))
+			}
+		}
+		w.WriteHeader(res.StatusCode)
+		_, _ = w.Write(resBody)
+		if verbose {
+			ngsi.Logging(ngsilib.LogInfo, string(resBody)+"\n")
+		}
+		return
+	} else {
+		regProxyFailureUp()
+	}
+
+	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 6, err.Error()))
+
 	w.WriteHeader(status)
+}
+
+func getRequestBody(body io.ReadCloser) []byte {
+	defer func() { _ = body.Close() }()
+	buf := new(bytes.Buffer)
+	_, _ = io.Copy(buf, body)
+	return buf.Bytes()
+}
+
+func regProxyFailureUp() {
+	regProxyGlobal.gLock.Lock()
+	regProxyGlobal.failure += 1
+	regProxyGlobal.gLock.Unlock()
 }
 
 func regProxyGetStat(host string) []byte {
