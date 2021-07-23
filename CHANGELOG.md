@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Improve: Update e2e test (#189)
 -   Update: Update documentatin (#188)
 -   Hardening: Add geoproxy command (#187)
 -   Hardening: Add tokenproxy command (#186)
