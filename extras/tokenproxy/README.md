@@ -41,7 +41,7 @@ tokenproxy_tokenproxy_1    /usr/local/bin/ngsi --stde ...   Up               0.0
 Check Tokenproxy is ready by executing the following command.
 
 ```
-ngsi server add --host tokenproxy --serverType tokenproxy --serverHost http://0.0.0.0:1029
+ngsi server add --host tokenproxy --serverType tokenproxy --serverHost http://localhost:1029
 ```
 
 ```
