@@ -72,6 +72,7 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | -------------------------- | --------------------- |
 | GET /version               | version               |
 | GET /ngsi-ld/ex/v1/version | (not yet implemented) |
+| POST /ngsi-ld/ex/v1/notify | (not yet implemented) |
 
 ### Scorpio broker API
 

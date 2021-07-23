@@ -1,9 +1,9 @@
 # Registration proxy
 
-This documentation explains how to get remote entities from a remote broker that is protected
+This documentation describes how to get remote entities from a remote broker that is protected
 by a security policy enforce point by accessing a local broker with registration.
 
-## Prepair
+## Prepare
 
 Clone the NGSI Go repository and move to `ngsi-go/extras/registration_proxy` directory.
 
@@ -12,7 +12,7 @@ git clone https://github.com/lets-fiware/ngsi-go.git
 cd ngsi-go/extras/registration_proxy
 ```
 
-## Add a remote broker
+## Add remote broker
 
 Add a remote broker to NGSI Go configuration. The host name should be `remote-orion:`.
 The `ngsi-go-config.json` will be created in current directory.
@@ -39,7 +39,7 @@ Start up a local broker and a regproxy.
 docker-compose up --build -d
 ```
 
-You can see three containers.
+You can see eight containers.
 
 ```
 docker-compose ps
@@ -86,7 +86,7 @@ ngsi regproxy health --host regproxy --pretty
 }
 ```
 
-## Add a remote orion
+## Add a remote broker
 
 ```
 ngsi broker add --host remote-orion \
@@ -100,7 +100,7 @@ ngsi broker add --host remote-orion \
   --clientSecret e4cc0147-e38f-4211-b8ad-8ae5e6a107f9
 ```
 
-## Create a remote entity in the remote orion
+## Create a remote entity in the remote broker
 
 ```
 ngsi create --host remote-orion \
@@ -110,7 +110,7 @@ ngsi create --host remote-orion \
    --data '{"id":"urn:ngsi-ld:Device:device001","type":"Device","temperature":30}'
 ```
 
-## Add registration in a loca broker
+## Add registration in a local broker
 
 ```
 curl -sS http://localhost:1026/v2/registrations \
@@ -139,9 +139,9 @@ curl -sS http://localhost:1026/v2/registrations \
 EOF
 ```
 
-## Get remote entities from remote orion
+## Get remote entities from the remote broker
 
-You can get remote entities from remote orion by accessing a local broker as shown:
+You can get remote entities from the remote broker by accessing the local broker as shown:
 
 ```
 curl -sS http://localhost:1026/v2/entities?type=Device -H 'Fiware-Service: federation' -H 'Fiware-Servicepath: /iot'

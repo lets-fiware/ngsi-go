@@ -1,9 +1,9 @@
 # Access a broker with Keyrock
 
-This documentation explains how to access an Orion Context Broker that the endpoints of NGSI API
+This documentation describes how to access an Orion Context Broker that the endpoints of NGSI API
 are protected by Keyrock.
 
-## Prepair
+## Prepare
 
 Clone the NGSI Go repository and move to `ngsi-go/extras/keyrock` directory.
 
@@ -20,7 +20,7 @@ Start up an Orion context broker and Keyrock.
 docker-compose up -d
 ```
 
-You can see seven containers.
+You can see five containers.
 
 ```
 docker-compose ps

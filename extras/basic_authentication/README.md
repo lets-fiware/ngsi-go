@@ -1,9 +1,9 @@
 # Access a broker with Basic authentication
 
-This documentation explains how to access an Orion Context Broker that the endpoints of NGSI API
+This documentation describes how to access an Orion Context Broker that the endpoints of NGSI API
 are protected by Basic Authentication.
 
-## Prepair
+## Prepare
 
 Clone the NGSI Go repository and move to `ngsi-go/extras/basic_authentication` directory.
 

@@ -2,11 +2,11 @@
 
 This documentation describes the geoproxy server that provides POST-based Query API Endpoint.
 
-If you request too long URL, then it may give “414 Request URI too large” error message. The reason for those
-"really long URLs" are the URI parameters such as `coords`, `q`, `attrs` for GET /v2/entities. The command
+If you request too long URL, then it may give `414 Request URI too large` error message. The reason for those
+"Really long URLs" are the URI parameters such as `coords`, `q`, `attrs` for GET /v2/entities. The command
 solves this problem by POST-based Query `POST /v2/ex/entities`.
 
-## Prepair
+## Prepare
 
 Clone the NGSI Go repository and move to `ngsi-go/extras/geoproxy` directory.
 
