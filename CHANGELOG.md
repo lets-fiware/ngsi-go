@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Add geoproxy command (#187)
 -   Hardening: Add tokenproxy command (#186)
 -   Hardening: Add singleLine option to broker and server cmd (#185)
 -   Hardening: Suuport APIKEY (#184)

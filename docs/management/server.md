@@ -32,7 +32,7 @@ ngsi server list
 ```
 
 ```text
-comet 
+comet
 ```
 
 <a name="get-server"></a>
@@ -99,7 +99,7 @@ ngsi server add [options]
 | --clientId value, -I value     | specify client id                               |
 | --clientSecret value, -S value | specify client secret                           |
 | --headerName value             | specify header name for apikey                  |
-| --headerValue value            | specify header value for apikey                 | 
+| --headerValue value            | specify header value for apikey                 |
 | --headerEnvValue value         | specify name of environment variable for apikey |
 | --tokenScope value             | specify scope for token                         |
 | --token value                  | specify oauth token                             |
@@ -157,6 +157,7 @@ Specify the following value to `--serverType` option when you add an alias for F
 | ----------------- | ---------- |
 | regstration proxy | regproxy   |
 | token proxy       | tokenproxy |
+| geo proxy         | geoproxy   |
 
 #### Example 3
 
@@ -288,7 +289,7 @@ ngsi server upadte [options]
 | --clientId value, -I value     | specify client id                               |
 | --clientSecret value, -S value | specify client secret                           |
 | --headerName value             | specify header name for apikey                  |
-| --headerValue value            | specify header value for apikey                 | 
+| --headerValue value            | specify header value for apikey                 |
 | --headerEnvValue value         | specify name of environment variable for apikey |
 | --tokenScope value             | specify scope for token                         |
 | --token value                  | specify oauth token                             |

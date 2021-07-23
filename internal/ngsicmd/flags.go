@@ -964,6 +964,53 @@ var (
 	}
 )
 
+// flag for geoproxy
+var (
+	geoProxyHostFlag = &cli.StringFlag{
+		Name:    "host",
+		Aliases: []string{"h"},
+		Usage:   "context broker",
+	}
+	getPorxyReplaceURLFlag = &cli.StringFlag{
+		Name:    "replaceURL",
+		Aliases: []string{"u"},
+		Usage:   "replace URL",
+		Value:   "/v2/ex/entities",
+	}
+	geoProxyGHostFlag = &cli.StringFlag{
+		Name:  "ghost",
+		Value: "0.0.0.0",
+		Usage: "host for geoproxy",
+	}
+	geoProxyPortFlag = &cli.StringFlag{
+		Name:    "port",
+		Aliases: []string{"p"},
+		Value:   "1030",
+		Usage:   "port for geoproxy",
+	}
+	geoProxyHTTPSFlag = &cli.BoolFlag{
+		Name:    "https",
+		Aliases: []string{"s"},
+		Value:   false,
+		Usage:   "start in https",
+	}
+	geoProxyKeyFlag = &cli.StringFlag{
+		Name:    "key",
+		Aliases: []string{"k"},
+		Usage:   "key file (only needed if https is enabled)",
+	}
+	geoProxyCertFlag = &cli.StringFlag{
+		Name:    "cert",
+		Aliases: []string{"c"},
+		Usage:   "cert file (only needed if https is enabled)",
+	}
+	geoProxyGeoProxyHostFlag = &cli.StringFlag{
+		Name:    "host",
+		Aliases: []string{"h"},
+		Usage:   "specify geoproxy server",
+	}
+)
+
 // flag for context
 var (
 	nameFlag = &cli.StringFlag{
