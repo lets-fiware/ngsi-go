@@ -33,6 +33,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path"
+	"strings"
 	"time"
 )
 
@@ -68,6 +70,9 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 	for _, payload := range payloads {
 		headers := make(map[string]string)
 		u, _ := url.Parse(client.idmURL())
+		if !strings.HasSuffix(u.Path, "/token") {
+			u.Path = path.Join(u.Path, "/token")
+		}
 		idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
 
 		idm.SetHeader(cContentType, cAppJSON)
@@ -112,6 +117,11 @@ func (i *idmTokenProxy) revokeToken(ngsi *NGSI, client *Client, tokenInfo *Token
 	headers := make(map[string]string)
 
 	u, _ := url.Parse(client.idmURL())
+	if strings.HasSuffix(u.Path, "/token") {
+		u.Path = u.Path[:len(u.Path)-6] + "/revoke"
+	} else if !strings.HasSuffix(u.Path, "/revoke") {
+		u.Path = path.Join(u.Path, "/revoke")
+	}
 	idm := Client{URL: u, Headers: headers, HTTP: ngsi.HTTP}
 
 	idm.SetHeader(cContentType, cAppJSON)

@@ -47,18 +47,19 @@ COMMANDS:
      workspaces   manage workspaces for WireCloud
      tabs         manage tabs for WireCloud
    CONVENIENCE:
-     admin     admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
-     apis      print endpoints of API
-     cp        copy entities
-     wc        print number of entities, subscriptions, registrations or types
-     man       print urls of document
-     health    print health status
-     ls        list entities
-     rm        remove entities
-     receiver  notification receiver
-     regproxy  registration proxy
-     template  create template of subscription or registration
-     version   print the version
+     admin       admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
+     apis        print endpoints of API
+     cp          copy entities
+     wc          print number of entities, subscriptions, registrations or types
+     man         print urls of document
+     health      print health status
+     ls          list entities
+     rm          remove entities
+     receiver    notification receiver
+     regproxy    registration proxy
+     template    create template of subscription or registration
+     tokenproxy  token proxy
+     version     print the version
    Context-Aware CEP:
      rules  rules command for PERSEO
    IoT Agent:

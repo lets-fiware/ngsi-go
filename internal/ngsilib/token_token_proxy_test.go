@@ -262,6 +262,25 @@ func TestRevokeTokenProxy(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestRevokeTokenProxyPath(t *testing.T) {
+	ngsi := testNgsiLibInit()
+
+	reqRes := MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.ReqData = []byte(`{"token":"1a8346b8df2881c8b3407b0f39c80d1374204b93","token_type_hint":"refresh_token"}`)
+	mock := NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	ngsi.HTTP = mock
+
+	client := &Client{Server: &Server{ServerHost: "http://orion/", IdmType: CBasic, IdmHost: "http://idm/token", Username: "fiware", ClientID: "0000", ClientSecret: "1111"}}
+	idm := &idmTokenProxy{}
+	tokenInfo := &TokenInfo{RefreshToken: "1a8346b8df2881c8b3407b0f39c80d1374204b93"}
+
+	err := idm.revokeToken(ngsi, client, tokenInfo)
+
+	assert.NoError(t, err)
+}
+
 func TestRevokeTokenProxyErrorHTTP(t *testing.T) {
 	ngsi := testNgsiLibInit()
 

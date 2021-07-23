@@ -44,7 +44,7 @@ func healthCheck(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"quantumleap", "broker"})
+	client, err := newClient(ngsi, c, false, []string{"quantumleap", "broker", "regproxy", "tokenproxy"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

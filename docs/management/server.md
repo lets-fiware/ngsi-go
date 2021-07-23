@@ -156,6 +156,7 @@ Specify the following value to `--serverType` option when you add an alias for F
 | NGSI Go           | serverType |
 | ----------------- | ---------- |
 | regstration proxy | regproxy   |
+| token proxy       | tokenproxy |
 
 #### Example 3
 

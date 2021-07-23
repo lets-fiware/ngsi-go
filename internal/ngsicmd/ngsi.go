@@ -143,6 +143,7 @@ func getNgsiApp() *cli.App {
 			&servicesCmd,
 			&templateCmd,
 			&tokenCmd,
+			&tokenProxyCmd,
 			&updateCmd,
 			&upsertCmd,
 			&versionCmd,
@@ -490,6 +491,43 @@ var regProxyCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return regProxyConfigCmd(c)
+			},
+		},
+	},
+}
+
+var tokenProxyCmd = cli.Command{
+	Name:     "tokenproxy",
+	Category: "CONVENIENCE",
+	Usage:    "token proxy",
+	Subcommands: []*cli.Command{
+		{
+			Name:  "server",
+			Usage: "start up regproxy server",
+			Flags: []cli.Flag{
+				tokenProxyHostFlag,
+				tokenProxyPortFlag,
+				tokenProxyHTTPSFlag,
+				tokenProxyKeyFlag,
+				tokenProxyCertFlag,
+				tokenProxyIdmHostTenantFlag,
+				tokenProxyClientIDFlag,
+				tokeProxyClientSecretFlag,
+				verboseFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return tokenProxyServer(c)
+			},
+		},
+		{
+			Name:  "health",
+			Usage: "sanity check for regproxy server",
+			Flags: []cli.Flag{
+				tokeProxyTokenProxyHostFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return tokenProxyHealthCmd(c)
 			},
 		},
 	},

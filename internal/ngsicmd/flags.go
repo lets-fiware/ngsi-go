@@ -914,6 +914,56 @@ var (
 	}
 )
 
+// flag for tokenproxy
+var (
+	tokenProxyHostFlag = &cli.StringFlag{
+		Name:  "host",
+		Value: "0.0.0.0",
+		Usage: "host for tokenproxy",
+	}
+	tokenProxyPortFlag = &cli.StringFlag{
+		Name:    "port",
+		Aliases: []string{"p"},
+		Value:   "1029",
+		Usage:   "port for tokenproxy",
+	}
+	tokenProxyHTTPSFlag = &cli.BoolFlag{
+		Name:    "https",
+		Aliases: []string{"s"},
+		Value:   false,
+		Usage:   "start in https",
+	}
+	tokenProxyKeyFlag = &cli.StringFlag{
+		Name:    "key",
+		Aliases: []string{"k"},
+		Usage:   "key file (only needed if https is enabled)",
+	}
+	tokenProxyCertFlag = &cli.StringFlag{
+		Name:    "cert",
+		Aliases: []string{"c"},
+		Usage:   "cert file (only needed if https is enabled)",
+	}
+	tokenProxyIdmHostTenantFlag = &cli.StringFlag{
+		Name:  "idmHost",
+		Usage: "host for Keyrock",
+	}
+	tokenProxyClientIDFlag = &cli.StringFlag{
+		Name:    "clientId",
+		Aliases: []string{"I"},
+		Usage:   "specify client id for Keyrock",
+	}
+	tokeProxyClientSecretFlag = &cli.StringFlag{
+		Name:    "clientSecret",
+		Aliases: []string{"S"},
+		Usage:   "specify client secret for Keyrock",
+	}
+	tokeProxyTokenProxyHostFlag = &cli.StringFlag{
+		Name:    "host",
+		Aliases: []string{"h"},
+		Usage:   "specify tokenproxy server",
+	}
+)
+
 // flag for context
 var (
 	nameFlag = &cli.StringFlag{
