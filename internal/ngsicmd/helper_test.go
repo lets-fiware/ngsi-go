@@ -117,6 +117,10 @@ var configData = `{
 	  "tokenproxy": {
 		"serverHost": "https://tokenproxy",
 		"serverType": "tokenproxy"
+	  },
+	  "geoproxy": {
+		"serverHost": "https://geoproxy",
+		"serverType": "geoproxy"
 	  }
 	},
 	"contexts": {

@@ -66,6 +66,8 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"regproxy", "config"}, rc: 1},
 		{args: []string{"tokenproxy", "server"}, rc: 1},
 		{args: []string{"tokenproxy", "health"}, rc: 1},
+		{args: []string{"geoproxy", "server"}, rc: 1},
+		{args: []string{"geoproxy", "health"}, rc: 1},
 		{args: []string{"template", "registration"}, rc: 1},
 		{args: []string{"template", "subscription", "--url", "abc"}, rc: 1},
 		{args: []string{"version"}, rc: 1},

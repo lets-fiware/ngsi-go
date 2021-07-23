@@ -110,6 +110,7 @@ const (
 	cStellio       = "stellio"
 	cRegProxy      = "regproxy"
 	cTokenProxy    = "tokenproxy"
+	cGeoProxy      = "geoproxy"
 )
 
 var (
@@ -117,7 +118,7 @@ var (
 		cIdmType, cIdmHost, cToken, cUsername, cPassword, cClientID, cClientSecret, cHeaderName, cHeaderValue, cHeaderEnvValue, cTokenScope,
 		cContext, cFiwareService, cFiwareServicePath, cSafeString, cXAuthToken}
 	brokerTypeArgs = []string{cOrionLD, cScorpio, cStellio}
-	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud, cRegProxy, cTokenProxy}
+	serverTypeArgs = []string{cComet, cCygnus, cQuantumLeap, cIota, cfiwareKeyrock, cPerseo, cPerseoCore, cWireCloud, cRegProxy, cTokenProxy, cGeoProxy}
 
 	ngsiV2Types = []string{cNgsiV2, cNgsiv2, cV2}
 	ngsiLdTypes = []string{cNgsiLd, cLd}
