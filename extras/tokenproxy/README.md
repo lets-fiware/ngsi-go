@@ -1,8 +1,8 @@
 # Tokenproxy
 
-This documentation explains tokenproxy that provides auth token from Keyrock.
+This documentation describes tokenproxy that provides auth token from Keyrock.
 
-## Prepair
+## Prepare
 
 Clone the NGSI Go repository and move to `ngsi-go/extras/tokenproxy` directory.
 
@@ -19,7 +19,7 @@ Start up Tokenproxy, Keyrock and Orion context broker.
 docker-compose up -d
 ```
 
-You can see seven containers.
+You can see six containers.
 
 ```
 docker-compose ps

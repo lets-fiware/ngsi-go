@@ -1,9 +1,9 @@
 # Access a broker with Telefónica security stack
 
-This documentation explains how to access an Orion Context Broker that the endpoints of NGSI API
+This documentation describes how to access an Orion Context Broker that the endpoints of NGSI API
 are protected by Telefónica security stack (Keystone).
 
-## Prepair
+## Prepare
 
 Clone the NGSI Go repository and move to `ngsi-go/extras/telefonica.security-stack` directory.
 
@@ -50,9 +50,9 @@ curl localhost:1026/version
 {"name":"MISSING_HEADERS","message":"Some headers were missing from the request: [\"fiware-service\",\"fiware-servicepath\",\"x-auth-token\"]"}
 ```
 
-## Add a broker
+## Add an Orion context broker
 
-Add a broker to NGSI Go configuration.
+Add an Orion context broker to NGSI Go configuration.
 
 ```
 ngsi broker add \
@@ -66,7 +66,7 @@ ngsi broker add \
   --password 2HNzujGZ60NIyGs9 \
 ```
 
-## Access the broker
+## Access the Orion context broker
 
 The following commands allow you to create and get a entity in an Orion context broker
 
