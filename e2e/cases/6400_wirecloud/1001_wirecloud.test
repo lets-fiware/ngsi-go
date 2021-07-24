@@ -25,20 +25,51 @@
 # SOFTWARE.
 
 #
-# 0001 version --host wirecloud
+# 0001 Add wirecloud-with-keyrock
 #
-ngsi version --host wirecloud --pretty
+ngsi server add \
+  --host wirecloud-with-keyrock \
+  --serverType wirecloud \
+  --serverHost http://wirecloud:8000 \
+  --idmType keyrock \
+  --idmHost http://keyrock:3000/oauth2/token \
+  --username keyrock@letsfiware.jp \
+  --password 1234 \
+  --clientId b5cd60de-2d85-4969-95c0-d0e1df392963 \
+  --clientSecret ec7392a4-5163-4d84-a64c-d9e0b7dfb309
 
 ```
-{
-  "ApplicationMashup": "REGEX(.*)",
-  "ComponentManagement": "REGEX(.*)",
-  "DashboardManagement": "REGEX(.*)",
-  "FIWARE": "REGEX(.*)",
-  "FullscreenWidget": "REGEX(.*)",
-  "NGSI": "REGEX(.*)",
-  "ObjectStorage": "REGEX(.*)",
-  "StyledElements": "REGEX(.*)",
-  "Wirecloud": "REGEX(.*)"
-}
+```
+
+#
+# 0002 Get wirecloud-with-keyrock
+#
+ngsi server get --host wirecloud-with-keyrock
+
+```
+serverType wirecloud
+serverHost http://wirecloud:8000
+IdmType keyrock
+IdmHost http://keyrock:3000/oauth2/token
+Username keyrock@letsfiware.jp
+Password ****
+ClientID ************************************
+ClientSecret ************************************
+```
+
+#
+# 0003 Get token for wirecloud-with-keyrock
+#
+ngsi token --host wirecloud-with-keyrock
+
+```
+REGEX(.*)
+```
+
+#
+# 0003 Delete wirecloud-with-keyrock
+#
+ngsi server delete --host wirecloud-with-keyrock
+
+```
 ```

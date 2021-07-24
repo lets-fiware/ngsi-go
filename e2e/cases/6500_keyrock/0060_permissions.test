@@ -31,7 +31,52 @@ ngsi applications --host keyrock list --pretty
 
 ```
 {
-  "applications": []
+  "applications": [
+    {
+      "id": "de95b7b2-2be4-46c8-89da-0aa633cd594c",
+      "name": "Orion",
+      "description": "Orion context broker",
+      "image": "default",
+      "url": "http://pep-proxy",
+      "redirect_uri": null,
+      "redirect_sign_out_uri": "",
+      "grant_type": "authorization_code,implicit,password,client_credentials,refresh_token,hybrid",
+      "response_type": "code,token",
+      "token_types": null,
+      "jwt_secret": null,
+      "client_type": null,
+      "urls": {
+        "permissions_url": "/v1/applications/de95b7b2-2be4-46c8-89da-0aa633cd594c/permissions",
+        "roles_url": "/v1/applications/de95b7b2-2be4-46c8-89da-0aa633cd594c/roles",
+        "users_url": "/v1/applications/de95b7b2-2be4-46c8-89da-0aa633cd594c/users",
+        "pep_proxies_url": "/v1/applications/de95b7b2-2be4-46c8-89da-0aa633cd594c/pep_proxies",
+        "iot_agents_url": "/v1/applications/de95b7b2-2be4-46c8-89da-0aa633cd594c/iot_agents",
+        "trusted_applications_url": "/v1/applications/de95b7b2-2be4-46c8-89da-0aa633cd594c/trusted_applications"
+      }
+    },
+    {
+      "id": "b5cd60de-2d85-4969-95c0-d0e1df392963",
+      "name": "WireCloud",
+      "description": "FIWARE WireCloud",
+      "image": "default",
+      "url": "http://wirecloud:8000/",
+      "redirect_uri": "http://wirecloud:8000/complete/fiware/",
+      "redirect_sign_out_uri": "",
+      "grant_type": "authorization_code,implicit,password,client_credentials,refresh_token,hybrid",
+      "response_type": "code,token",
+      "token_types": null,
+      "jwt_secret": null,
+      "client_type": null,
+      "urls": {
+        "permissions_url": "/v1/applications/b5cd60de-2d85-4969-95c0-d0e1df392963/permissions",
+        "roles_url": "/v1/applications/b5cd60de-2d85-4969-95c0-d0e1df392963/roles",
+        "users_url": "/v1/applications/b5cd60de-2d85-4969-95c0-d0e1df392963/users",
+        "pep_proxies_url": "/v1/applications/b5cd60de-2d85-4969-95c0-d0e1df392963/pep_proxies",
+        "iot_agents_url": "/v1/applications/b5cd60de-2d85-4969-95c0-d0e1df392963/iot_agents",
+        "trusted_applications_url": "/v1/applications/b5cd60de-2d85-4969-95c0-d0e1df392963/trusted_applications"
+      }
+    }
+  ]
 }
 ```
 
@@ -82,6 +127,8 @@ ngsi applications permissions --aid $aid list --pretty
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
       "xml": null
     },
     {
@@ -90,6 +137,8 @@ ngsi applications permissions --aid $aid list --pretty
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
       "xml": null
     },
     {
@@ -98,6 +147,8 @@ ngsi applications permissions --aid $aid list --pretty
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
       "xml": null
     },
     {
@@ -106,6 +157,8 @@ ngsi applications permissions --aid $aid list --pretty
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
       "xml": null
     },
     {
@@ -114,6 +167,8 @@ ngsi applications permissions --aid $aid list --pretty
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
       "xml": null
     },
     {
@@ -122,6 +177,8 @@ ngsi applications permissions --aid $aid list --pretty
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
       "xml": null
     }
   ]
@@ -142,6 +199,8 @@ ngsi applications permissions --aid $aid get --pid 1 --pretty
     "is_internal": true,
     "action": null,
     "resource": null,
+    "authorization_service_header": null,
+    "use_authorization_service_header": 0,
     "is_regex": 0,
     "xml": null,
     "oauth_client_id": "idm_admin_app"
@@ -181,8 +240,10 @@ ngsi applications permissions --aid $aid get --pid $pid --pretty
     "is_internal": false,
     "action": "GET",
     "resource": "login",
-    "is_regex": 0,
-    "xml": null,
+    "authorization_service_header": REGEX(.*),
+    "use_authorization_service_header": REGEX(.*),
+    "is_regex": REGEX(.*),
+    "xml": REGEX(.*),
     "oauth_client_id": "REGEX(.*)"
   }
 }
@@ -211,8 +272,10 @@ ngsi applications permissions --aid $aid get --pid $pid --pretty
     "is_internal": false,
     "action": "GET",
     "resource": "login",
-    "is_regex": 0,
-    "xml": null,
+    "authorization_service_header": REGEX(.*),
+    "use_authorization_service_header": REGEX(.*),
+    "is_regex": REGEX(.*),
+    "xml": REGEX(.*),
     "oauth_client_id": "REGEX(.*)"
   }
 }

@@ -42,6 +42,11 @@ wait ${cygnus}/v1/version
 wait ${wirecloud}/api/features
 
 #
-# 0002 check health status
+# 0002 check quantumleap health status
 #
 wait ${quantumleap}/health --retry 600 --status pass
+
+#
+# 0003 check Keyrock
+#
+wait ${keyrock}/oauth2/token --retry 600 --verb POST --statuscode 400

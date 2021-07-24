@@ -24,21 +24,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#
-# 0001 version --host wirecloud
-#
-ngsi version --host wirecloud --pretty
+FROM alpine:3.14 AS runner
 
-```
-{
-  "ApplicationMashup": "REGEX(.*)",
-  "ComponentManagement": "REGEX(.*)",
-  "DashboardManagement": "REGEX(.*)",
-  "FIWARE": "REGEX(.*)",
-  "FullscreenWidget": "REGEX(.*)",
-  "NGSI": "REGEX(.*)",
-  "ObjectStorage": "REGEX(.*)",
-  "StyledElements": "REGEX(.*)",
-  "Wirecloud": "REGEX(.*)"
-}
-```
+WORKDIR /opt/ngsi-go/
+
+RUN chown -R nobody:nobody /opt/ngsi-go
+
+USER nobody 
+
+ENTRYPOINT ["/usr/local/bin/ngsi"]
+CMD ["--stderr", "info", "--config", "./ngsi-go-config.json", "--cache", "./ngsi-go-token-cache.json", "tokenproxy", "server", "--idmHost", "http://keyrock:3000", "--clientId", "de95b7b2-2be4-46c8-89da-0aa633cd594c", "--clientSecret", "33b387a5-8926-448f-bb9e-644775cd0f74", "--verbose"]
