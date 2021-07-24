@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Improve: Add test case to wait for Wilma to be ready (#190)
 -   Improve: Update e2e test (#189)
 -   Update: Update documentatin (#188)
 -   Hardening: Add geoproxy command (#187)
