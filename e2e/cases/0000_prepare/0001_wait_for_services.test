@@ -50,3 +50,8 @@ wait ${quantumleap}/health --retry 600 --status pass
 # 0003 check Keyrock
 #
 wait ${keyrock}/oauth2/token --retry 600 --verb POST --statuscode 400
+
+#
+# 0003 check Wilma
+#
+wait ${pep-proxy}/version --retry 600 --statuscode 401

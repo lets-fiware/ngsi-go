@@ -9,6 +9,7 @@
     "perseo": "http://perseo:9090",
     "perseo-core": "http://perseo-core:8080",
     "keyrock": "http://keyrock:3000",
+    "pep-proxy": "http://pep-proxy:1026",
     "wirecloud": "http://wirecloud:8000",
     "accumulator": "http://accumulator:8000",
     "atcontext": "http://atcontext:8000",
