@@ -37,7 +37,6 @@ ngsi version --host wirecloud --pretty
   "FIWARE": "REGEX(.*)",
   "FullscreenWidget": "REGEX(.*)",
   "NGSI": "REGEX(.*)",
-  "OAuth2Provider": "REGEX(.*)",
   "ObjectStorage": "REGEX(.*)",
   "StyledElements": "REGEX(.*)",
   "Wirecloud": "REGEX(.*)"
