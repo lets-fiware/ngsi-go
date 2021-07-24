@@ -226,7 +226,7 @@ func waitCmd(line int, args []string) (err error) {
 		if !isHTTP(args[1]) {
 			return &ngsiCmdError{funcName, 1, "url error: " + args[1], nil}
 		}
-		opts, err := getOpts(args[2:], []string{"retry", "status"})
+		opts, err := getOpts(args[2:], []string{"retry", "status", "statuscode", "verb"})
 		if err != nil {
 			return &ngsiCmdError{funcName, 2, err.Error(), nil}
 		}
@@ -237,11 +237,23 @@ func waitCmd(line int, args []string) (err error) {
 			}
 		}
 		status = opts["status"]
+		statusCode := 0
+		if opts["statuscode"] != "" {
+			statusCode, err = strconv.Atoi(opts["statuscode"])
+			if err != nil {
+				statusCode = 0
+			}
+		}
+		verb := strings.ToUpper(opts["verb"])
 
 		fmt.Printf("Waiting for response from %s\n", args[1])
 		for {
 			var res *http.Response
-			res, err = http.Get(args[1])
+			if verb == "POST" {
+				res, err = http.Post(args[1], "", nil)
+			} else {
+				res, err = http.Get(args[1])
+			}
 			if err != nil {
 				retry--
 				if retry == 0 {
@@ -271,7 +283,9 @@ func waitCmd(line int, args []string) (err error) {
 				}
 
 			}
-			if res.StatusCode == http.StatusOK || res.StatusCode == http.StatusNoContent {
+			if res.StatusCode == http.StatusOK ||
+				res.StatusCode == http.StatusNoContent ||
+				(statusCode != 0 && res.StatusCode == statusCode) {
 				return nil
 			}
 		}
