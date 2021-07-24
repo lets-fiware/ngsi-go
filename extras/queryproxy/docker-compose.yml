@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  geoproxy:
-    image: letsfiware/geoproxy:1.0
+  queryproxy:
+    image: letsfiware/queryproxy:1.0
     build: ./
     depends_on:
       - nginx

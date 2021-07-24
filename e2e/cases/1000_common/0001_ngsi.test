@@ -52,9 +52,9 @@ COMMANDS:
      cp          copy entities
      wc          print number of entities, subscriptions, registrations or types
      man         print urls of document
-     geoproxy    geo proxy
      health      print health status
      ls          list entities
+     queryproxy  query proxy
      rm          remove entities
      receiver    notification receiver
      regproxy    registration proxy

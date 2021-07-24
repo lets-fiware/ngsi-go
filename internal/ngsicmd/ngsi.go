@@ -128,12 +128,12 @@ func getNgsiApp() *cli.App {
 			&devicesCmd,
 			&documentsCmd,
 			&getCmd,
-			&geoProxyCmd,
 			&hDeleteCmd,
 			&hGetCmd,
 			&healthCmd,
 			&listCmd,
 			&lsCmd,
+			&queryProxyCmd,
 			&removeCmd,
 			&receiverCmd,
 			&regProxyCmd,
@@ -534,37 +534,37 @@ var tokenProxyCmd = cli.Command{
 	},
 }
 
-var geoProxyCmd = cli.Command{
-	Name:     "geoproxy",
+var queryProxyCmd = cli.Command{
+	Name:     "queryproxy",
 	Category: "CONVENIENCE",
-	Usage:    "geo proxy",
+	Usage:    "query proxy",
 	Subcommands: []*cli.Command{
 		{
 			Name:  "server",
-			Usage: "start up geoproxy server",
+			Usage: "start up queryproxy server",
 			Flags: []cli.Flag{
-				geoProxyHostFlag,
+				queryProxyHostFlag,
 				getPorxyReplaceURLFlag,
-				geoProxyGHostFlag,
-				geoProxyPortFlag,
-				geoProxyHTTPSFlag,
-				geoProxyKeyFlag,
-				geoProxyCertFlag,
+				queryProxyGHostFlag,
+				queryProxyPortFlag,
+				queryProxyHTTPSFlag,
+				queryProxyKeyFlag,
+				queryProxyCertFlag,
 				verboseFlag,
 			},
 			Action: func(c *cli.Context) error {
-				return geoProxyServer(c)
+				return queryProxyServer(c)
 			},
 		},
 		{
 			Name:  "health",
-			Usage: "sanity check for geoproxy server",
+			Usage: "sanity check for queryproxy server",
 			Flags: []cli.Flag{
-				geoProxyGeoProxyHostFlag,
+				queryProxyQueryProxyHostFlag,
 				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {
-				return geoProxyHealthCmd(c)
+				return queryProxyHealthCmd(c)
 			},
 		},
 	},

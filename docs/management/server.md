@@ -157,7 +157,7 @@ Specify the following value to `--serverType` option when you add an alias for F
 | ----------------- | ---------- |
 | regstration proxy | regproxy   |
 | token proxy       | tokenproxy |
-| geo proxy         | geoproxy   |
+| geo proxy         | queryproxy |
 
 #### Example 3
 
