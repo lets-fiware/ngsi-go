@@ -43,7 +43,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type geoProxyParam struct {
+type queryProxyParam struct {
 	ngsi    *ngsilib.NGSI
 	url     *url.URL
 	client  *ngsilib.Client
@@ -58,7 +58,7 @@ type geoProxyParam struct {
 	failure   int64
 }
 
-type geoProxyStat struct {
+type queryProxyStat struct {
 	NgsiGo   string `json:"ngsi-go"`
 	Version  string `json:"version"`
 	Health   string `json:"health"`
@@ -70,10 +70,10 @@ type geoProxyStat struct {
 	Failure  int64  `json:"failure"`
 }
 
-var geoProxyGlobal *geoProxyParam
+var queryProxyGlobal *queryProxyParam
 
-func geoProxyServer(c *cli.Context) error {
-	const funcName = "geoProxy"
+func queryProxyServer(c *cli.Context) error {
+	const funcName = "queryProxy"
 
 	ngsi, err := initCmd(c, funcName, false)
 	if err != nil {
@@ -105,7 +105,7 @@ func geoProxyServer(c *cli.Context) error {
 	u, _ := url.Parse(client.URL.String())
 	u.Path = path.Join(u.Path, "/v2/entities")
 
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:      ngsi,
 		url:       u,
 		client:    client,
@@ -122,9 +122,9 @@ func geoProxyServer(c *cli.Context) error {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", http.HandlerFunc(geoProxyRootHandler))
-	mux.HandleFunc(proxyPath, http.HandlerFunc(geoProxyHandler))
-	mux.HandleFunc("/health", http.HandlerFunc(geoProxyHealthHandler))
+	mux.HandleFunc("/", http.HandlerFunc(queryProxyRootHandler))
+	mux.HandleFunc(proxyPath, http.HandlerFunc(queryProxyHandler))
+	mux.HandleFunc("/health", http.HandlerFunc(queryProxyHealthHandler))
 
 	ngsi.Logging(ngsilib.LogErr, "Start geo proxy: "+proxyUrl+"\n")
 
@@ -143,37 +143,37 @@ func geoProxyServer(c *cli.Context) error {
 	return nil
 }
 
-func geoProxyRootHandler(w http.ResponseWriter, r *http.Request) {
-	const funcName = "geoProxyRootHandler"
+func queryProxyRootHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "queryProxyRootHandler"
 
-	ngsi := geoProxyGlobal.ngsi
+	ngsi := queryProxyGlobal.ngsi
 	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, r.URL.Path)+"\n")
 	w.Header().Set("Content-Type", "Application/json")
 	w.WriteHeader(http.StatusBadRequest)
 	_, _ = w.Write([]byte(fmt.Sprintf(`{"error": "%s not found"}`, r.URL.Path)))
 }
 
-func geoProxyHealthHandler(w http.ResponseWriter, r *http.Request) {
-	const funcName = "geoProxyHealthHandler"
+func queryProxyHealthHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "queryProxyHealthHandler"
 
-	ngsi := geoProxyGlobal.ngsi
+	ngsi := queryProxyGlobal.ngsi
 
 	if r.Method != http.MethodGet {
 		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, "Method not allowed"))
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write(geoProxyGetStat())
+		_, _ = w.Write(queryProxyGetStat())
 	}
 }
 
-func geoProxyHandler(w http.ResponseWriter, r *http.Request) {
-	const funcName = "geoProxyHandler"
+func queryProxyHandler(w http.ResponseWriter, r *http.Request) {
+	const funcName = "queryProxyHandler"
 
 	status := http.StatusBadRequest
-	ngsi := geoProxyGlobal.ngsi
-	client := geoProxyGlobal.client
-	verbose := geoProxyGlobal.verbose
+	ngsi := queryProxyGlobal.ngsi
+	client := queryProxyGlobal.client
+	verbose := queryProxyGlobal.verbose
 
 	if r.Method != http.MethodPost {
 		ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, "Method not allowed"))
@@ -183,9 +183,9 @@ func geoProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 2, r.URL.Path)+"\n")
 
-	u, err := url.Parse(geoProxyGlobal.url.String())
+	u, err := url.Parse(queryProxyGlobal.url.String())
 	if err != nil {
-		geoProxyResposeError(ngsi, w, status, &ngsiCmdError{funcName, 3, err.Error(), err})
+		queryProxyResposeError(ngsi, w, status, &ngsiCmdError{funcName, 3, err.Error(), err})
 		return
 	}
 
@@ -209,28 +209,28 @@ func geoProxyHandler(w http.ResponseWriter, r *http.Request) {
 		headers[k] = r.Header.Get(k)
 	}
 	if client.Server.IdmType != "" {
-		geoProxyGlobal.mutex.Lock()
+		queryProxyGlobal.mutex.Lock()
 		key, token, err := ngsi.GetAuthHeader(client)
-		geoProxyGlobal.mutex.Unlock()
+		queryProxyGlobal.mutex.Unlock()
 		if err != nil {
-			geoProxyResposeError(ngsi, w, status, &ngsiCmdError{funcName, 4, err.Error(), err})
+			queryProxyResposeError(ngsi, w, status, &ngsiCmdError{funcName, 4, err.Error(), err})
 			return
 		}
 		headers[key] = token
 	}
 
-	err = geoProxySetQueryParam(ngsi, r, u)
+	err = queryProxySetQueryParam(ngsi, r, u)
 	if err != nil {
-		geoProxyResposeError(ngsi, w, status, err)
+		queryProxyResposeError(ngsi, w, status, err)
 		return
 	}
 
-	res, resBody, err := geoProxyGlobal.http.Request("GET", u, headers, nil)
+	res, resBody, err := queryProxyGlobal.http.Request("GET", u, headers, nil)
 	if err == nil {
-		geoProxyGlobal.gLock.Lock()
-		geoProxyGlobal.timeSent += 1
-		geoProxyGlobal.success += 1
-		geoProxyGlobal.gLock.Unlock()
+		queryProxyGlobal.gLock.Lock()
+		queryProxyGlobal.timeSent += 1
+		queryProxyGlobal.success += 1
+		queryProxyGlobal.gLock.Unlock()
 
 		for k := range res.Header {
 			if strings.ToLower(k) != "content-length" {
@@ -244,15 +244,15 @@ func geoProxyHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	} else {
-		geoProxyResposeError(ngsi, w, status, &ngsiCmdError{funcName, 6, err.Error(), err})
+		queryProxyResposeError(ngsi, w, status, &ngsiCmdError{funcName, 6, err.Error(), err})
 	}
 }
 
-func geoProxyResposeError(ngsi *ngsilib.NGSI, w http.ResponseWriter, status int, err error) {
-	geoProxyGlobal.gLock.Lock()
-	geoProxyGlobal.timeSent += 1
-	geoProxyGlobal.failure += 1
-	geoProxyGlobal.gLock.Unlock()
+func queryProxyResposeError(ngsi *ngsilib.NGSI, w http.ResponseWriter, status int, err error) {
+	queryProxyGlobal.gLock.Lock()
+	queryProxyGlobal.timeSent += 1
+	queryProxyGlobal.failure += 1
+	queryProxyGlobal.gLock.Unlock()
 
 	msg := message(err)
 	ngsi.Logging(ngsilib.LogErr, msg+"\n")
@@ -263,7 +263,7 @@ func geoProxyResposeError(ngsi *ngsilib.NGSI, w http.ResponseWriter, status int,
 	_, _ = w.Write(body)
 }
 
-func geoProxySetQueryParam(ngsi *ngsilib.NGSI, r *http.Request, u *url.URL) error {
+func queryProxySetQueryParam(ngsi *ngsilib.NGSI, r *http.Request, u *url.URL) error {
 	const funcName = "tokeProxyRequestToken"
 
 	ctype := r.Header["Content-Type"]
@@ -290,40 +290,40 @@ func geoProxySetQueryParam(ngsi *ngsilib.NGSI, r *http.Request, u *url.URL) erro
 	return nil
 }
 
-func geoProxyGetStat() []byte {
-	uptime := time.Now().Unix() - geoProxyGlobal.startTime.Unix()
+func queryProxyGetStat() []byte {
+	uptime := time.Now().Unix() - queryProxyGlobal.startTime.Unix()
 
-	geoProxyGlobal.gLock.Lock()
-	stat := geoProxyStat{
-		NgsiGo:   "geoproxy",
+	queryProxyGlobal.gLock.Lock()
+	stat := queryProxyStat{
+		NgsiGo:   "queryproxy",
 		Version:  Version,
 		Health:   "OK",
-		Orion:    geoProxyGlobal.url.String(),
-		Verbose:  geoProxyGlobal.verbose,
+		Orion:    queryProxyGlobal.url.String(),
+		Verbose:  queryProxyGlobal.verbose,
 		Uptime:   humanizeUptime(uptime),
-		Timesent: geoProxyGlobal.timeSent,
-		Success:  geoProxyGlobal.success,
-		Failure:  geoProxyGlobal.failure,
+		Timesent: queryProxyGlobal.timeSent,
+		Success:  queryProxyGlobal.success,
+		Failure:  queryProxyGlobal.failure,
 	}
-	geoProxyGlobal.gLock.Unlock()
+	queryProxyGlobal.gLock.Unlock()
 
 	b, err := ngsilib.JSONMarshal(stat)
 	if err != nil {
-		return []byte(`{"ngsi-go":"geoproxy","health":"NG"}`)
+		return []byte(`{"ngsi-go":"queryproxy","health":"NG"}`)
 	}
 
 	return b
 }
 
-func geoProxyHealthCmd(c *cli.Context) error {
-	const funcName = "geoProxyHealth"
+func queryProxyHealthCmd(c *cli.Context) error {
+	const funcName = "queryProxyHealth"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 
-	client, err := newClient(ngsi, c, false, []string{"geoproxy"})
+	client, err := newClient(ngsi, c, false, []string{"queryproxy"})
 	if err != nil {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}

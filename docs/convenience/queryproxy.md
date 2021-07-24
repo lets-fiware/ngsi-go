@@ -1,6 +1,6 @@
 # georoxy - Convenience command
 
-This command allows you to manage geoproxy server that provides POST-based Query API Endpoint.
+This command allows you to manage queryproxy server that provides POST-based Query API Endpoint.
 
 If you request too long URL, then it may give “414 Request URI too large” error message. The reason for those
 "really long URLs" are the URI parameters such as `coords`, `q`, `attrs` for GET /v2/entities. The command
@@ -13,10 +13,10 @@ solves this problem by POST-based Query `POST /v2/ex/entities`.
 
 ## Server
 
-This command allows you to start up a geoproxy server.
+This command allows you to start up a queryproxy server.
 
 ```console
-ngsi geoproxy server [options]
+ngsi queryproxy server [options]
 ```
 
 ### Options
@@ -25,8 +25,8 @@ ngsi geoproxy server [options]
 | ---------------------------- | ------------------------------------------- |
 | --host value, -h value       | context broker                              |
 | --replaceURL value, -u value | replace URL (default: "/v2/ex/entities")    |
-| --ghost value                | host for geoproxy (default: "0.0.0.0")      |
-| --port value, -p value       | port for geoproxy (default: "1030")         |
+| --qhost value                | host for queryproxy (default: "0.0.0.0")    |
+| --port value, -p value       | port for queryproxy (default: "1030")       |
 | --https, -s                  | start in https (default: false)             |
 | --key value, -k value        | key file (only needed if https is enabled)  |
 | --cert value, -c value       | cert file (only needed if https is enabled) |
@@ -36,7 +36,7 @@ ngsi geoproxy server [options]
 ### Example
 
 ```console
-ngsi --stderr info geoproxy server \
+ngsi --stderr info queryproxy server \
  --host orion \
  --verbose
 ```
@@ -49,10 +49,10 @@ curl http://localhost:1030/v2/ex/entities --data "type=Device"
 
 ## Sanity check
 
-This command allows you to check a geoproxy server healthy.
+This command allows you to check a queryproxy server healthy.
 
 ```console
-ngsi geoproxy health [options]
+ngsi queryproxy health [options]
 ```
 
 ### Options
@@ -67,16 +67,16 @@ ngsi geoproxy health [options]
 ### Example
 
 ```
-ngsi server add --host geoproxy --serverType geoproxy --serverHost http://localhost:1030
+ngsi server add --host queryproxy --serverType queryproxy --serverHost http://localhost:1030
 ```
 
 ```
-ngsi geoproxy health --host geoproxy
+ngsi queryproxy health --host queryproxy
 ```
 
 ```
 {
-  "ngsi-go": "geoproxy",
+  "ngsi-go": "queryproxy",
   "version": "0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)",
   "health": "OK",
   "orion": "http://orion:1026/v2/entities",

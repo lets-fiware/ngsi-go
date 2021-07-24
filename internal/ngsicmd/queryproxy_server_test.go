@@ -44,58 +44,58 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func TestGeoProxy(t *testing.T) {
+func TestQueryProxy(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
 	gNetLib = &MockNetLib{}
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--ghost=0.0.0.0", "--port=1028"})
+	_ = set.Parse([]string{"--host=orion", "--qhost=0.0.0.0", "--port=1028"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	assert.NoError(t, err)
 }
 
-func TestGeoProxyOptions(t *testing.T) {
+func TestQueryProxyOptions(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
 	gNetLib = &MockNetLib{}
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--ghost=0.0.0.0", "--port=1028", "-replaceURL=/v3/entities"})
+	_ = set.Parse([]string{"--host=orion", "--qhost=0.0.0.0", "--port=1028", "-replaceURL=/v3/entities"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	assert.NoError(t, err)
 }
 
-func TestGeoProxyHTTPS(t *testing.T) {
+func TestQueryProxyHTTPS(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
 	gNetLib = &MockNetLib{}
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--ghost=0.0.0.0", "--port=1028", "--https", "--key=test.key", "--cert=test.cert", "--verbose"})
+	_ = set.Parse([]string{"--host=orion", "--qhost=0.0.0.0", "--port=1028", "--https", "--key=test.key", "--cert=test.cert", "--verbose"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	assert.NoError(t, err)
 }
 
-func TestGeoProxyError(t *testing.T) {
+func TestQueryProxyError(t *testing.T) {
 	ngsilib.Reset()
 
 	_, set, app, _ := setupTest()
@@ -113,38 +113,38 @@ func TestGeoProxyError(t *testing.T) {
 	}
 }
 
-func TestGeoProxyErrorServerType(t *testing.T) {
+func TestQueryProxyErrorServerType(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=geoproxy", "--ghost=0.0.0.0", "--port=1028", "--https"})
+	_ = set.Parse([]string{"--host=queryproxy", "--qhost=0.0.0.0", "--port=1028", "--https"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "not supported by geoproxy", ngsiErr.Message)
+		assert.Equal(t, "not supported by queryproxy", ngsiErr.Message)
 	}
 }
 
-func TestGeoProxyErrorKey(t *testing.T) {
+func TestQueryProxyErrorKey(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--ghost=0.0.0.0", "--port=1028", "--https"})
+	_ = set.Parse([]string{"--host=orion", "--qhost=0.0.0.0", "--port=1028", "--https"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -153,18 +153,18 @@ func TestGeoProxyErrorKey(t *testing.T) {
 	}
 }
 
-func TestGeoProxyErrorCert(t *testing.T) {
+func TestQueryProxyErrorCert(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--ghost=0.0.0.0", "--port=1028", "--https", "--key=test.key"})
+	_ = set.Parse([]string{"--host=orion", "--qhost=0.0.0.0", "--port=1028", "--https", "--key=test.key"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -173,19 +173,19 @@ func TestGeoProxyErrorCert(t *testing.T) {
 	}
 }
 
-func TestGeoProxyErrorHTTPS(t *testing.T) {
+func TestQueryProxyErrorHTTPS(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
 	gNetLib = &MockNetLib{ListenAndServeTLSErr: errors.New("ListenAndServeTLS error")}
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion", "--port=1028", "--https", "--key=test.key", "--cert=test.cert", "--verbose"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -194,19 +194,19 @@ func TestGeoProxyErrorHTTPS(t *testing.T) {
 	}
 }
 
-func TestGeoProxyErrorHTTP(t *testing.T) {
+func TestQueryProxyErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 
 	gNetLib = &MockNetLib{ListenAndServeErr: errors.New("ListenAndServe error")}
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--ghost=0.0.0.0", "--port=1028"})
+	_ = set.Parse([]string{"--host=orion", "--qhost=0.0.0.0", "--port=1028"})
 
-	err := geoProxyServer(c)
+	err := queryProxyServer(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -215,10 +215,10 @@ func TestGeoProxyErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestGeoProxyRootHandler(t *testing.T) {
+func TestQueryProxyRootHandler(t *testing.T) {
 	_, set, app, _ := setupTest()
 
-	setupFlagString(set, "host,replaceURL,ghost,port,key,cert")
+	setupFlagString(set, "host,replaceURL,qhost,port,key,cert")
 	setupFlagBool(set, "verbose,https")
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion"})
@@ -229,19 +229,19 @@ func TestGeoProxyRootHandler(t *testing.T) {
 	buf := new(bytes.Buffer)
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
-	geoProxyGlobal = &geoProxyParam{ngsi: ngsi, http: mockHTTP, verbose: true, gLock: &sync.Mutex{}}
+	queryProxyGlobal = &queryProxyParam{ngsi: ngsi, http: mockHTTP, verbose: true, gLock: &sync.Mutex{}}
 
-	req := httptest.NewRequest(http.MethodGet, "http://geoProxy/", nil)
+	req := httptest.NewRequest(http.MethodGet, "http://queryProxy/", nil)
 	got := httptest.NewRecorder()
 
-	geoProxyRootHandler(got, req)
+	queryProxyRootHandler(got, req)
 
 	expected := http.StatusBadRequest
 
 	assert.Equal(t, expected, got.Code)
 }
 
-func TestGeoProxyHealthHandler(t *testing.T) {
+func TestQueryProxyHealthHandler(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host")
@@ -257,7 +257,7 @@ func TestGeoProxyHealthHandler(t *testing.T) {
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
 	u, _ := url.Parse("http://orion:1026")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -267,17 +267,17 @@ func TestGeoProxyHealthHandler(t *testing.T) {
 		gLock:   &sync.Mutex{},
 	}
 
-	req := httptest.NewRequest(http.MethodGet, "http://geoProxy/", nil)
+	req := httptest.NewRequest(http.MethodGet, "http://queryProxy/", nil)
 	got := httptest.NewRecorder()
 
-	geoProxyHealthHandler(got, req)
+	queryProxyHealthHandler(got, req)
 
 	expected := http.StatusOK
 
 	assert.Equal(t, expected, got.Code)
 }
 
-func TestGeoProxyHealthHandlerError(t *testing.T) {
+func TestQueryProxyHealthHandlerError(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host")
@@ -293,7 +293,7 @@ func TestGeoProxyHealthHandlerError(t *testing.T) {
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
 	u, _ := url.Parse("http://orion:1026")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -303,17 +303,17 @@ func TestGeoProxyHealthHandlerError(t *testing.T) {
 		gLock:   &sync.Mutex{},
 	}
 
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/", nil)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/", nil)
 	got := httptest.NewRecorder()
 
-	geoProxyHealthHandler(got, req)
+	queryProxyHealthHandler(got, req)
 
 	expected := http.StatusMethodNotAllowed
 
 	assert.Equal(t, expected, got.Code)
 }
 
-func TestGeoProxyHanderPost(t *testing.T) {
+func TestQueryProxyHanderPost(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,stderr")
@@ -340,7 +340,7 @@ func TestGeoProxyHanderPost(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 
 	u, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -351,7 +351,7 @@ func TestGeoProxyHanderPost(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options=keyValues&type=Deivce`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("FIWARE-Service", "fiware")
 	req.Header.Set("FIWARE-ServicePath", "/iot")
@@ -359,14 +359,14 @@ func TestGeoProxyHanderPost(t *testing.T) {
 
 	got := httptest.NewRecorder()
 
-	geoProxyHandler(got, req)
+	queryProxyHandler(got, req)
 
 	expected := http.StatusOK
 
 	assert.Equal(t, expected, got.Code)
 }
 
-func TestGeoProxyHanderPostIDM(t *testing.T) {
+func TestQueryProxyHanderPostIDM(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,stderr")
@@ -395,7 +395,7 @@ func TestGeoProxyHanderPostIDM(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 
 	u, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -406,20 +406,20 @@ func TestGeoProxyHanderPostIDM(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options=keyValues&type=Deivce`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("FIWARE-Service", "fiware")
 	req.Header.Set("FIWARE-ServicePath", "/iot")
 	got := httptest.NewRecorder()
 
-	geoProxyHandler(got, req)
+	queryProxyHandler(got, req)
 
 	expected := http.StatusOK
 
 	assert.Equal(t, expected, got.Code)
 }
 
-func TestGeoProxyHanderErrorMethod(t *testing.T) {
+func TestQueryProxyHanderErrorMethod(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host")
@@ -435,7 +435,7 @@ func TestGeoProxyHanderErrorMethod(t *testing.T) {
 	ngsi.Stderr = buf
 	mockHTTP := NewMockHTTP()
 	u, _ := url.Parse("http://orion:1026")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -445,17 +445,17 @@ func TestGeoProxyHanderErrorMethod(t *testing.T) {
 		gLock:   &sync.Mutex{},
 	}
 
-	req := httptest.NewRequest(http.MethodGet, "http://geoProxy/", nil)
+	req := httptest.NewRequest(http.MethodGet, "http://queryProxy/", nil)
 	got := httptest.NewRecorder()
 
-	geoProxyHandler(got, req)
+	queryProxyHandler(got, req)
 
 	expected := http.StatusMethodNotAllowed
 
 	assert.Equal(t, expected, got.Code)
 }
 
-func TestGeoProxyHanderPostErrorURL(t *testing.T) {
+func TestQueryProxyHanderPostErrorURL(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,stderr")
@@ -480,7 +480,7 @@ func TestGeoProxyHanderPostErrorURL(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 
 	u := &url.URL{Scheme: ":"}
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -491,21 +491,21 @@ func TestGeoProxyHanderPostErrorURL(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options=keyValues&type=Deivce`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("FIWARE-Service", "fiware")
 	req.Header.Set("FIWARE-ServicePath", "/iot")
 	got := httptest.NewRecorder()
 
-	geoProxyHandler(got, req)
+	queryProxyHandler(got, req)
 
 	expected := http.StatusBadRequest
 
 	assert.Equal(t, expected, got.Code)
-	assert.Equal(t, "{\"error\":\"geoProxyHandler003 parse \"::\": missing protocol scheme\"}", got.Body.String())
+	assert.Equal(t, "{\"error\":\"queryProxyHandler003 parse \"::\": missing protocol scheme\"}", got.Body.String())
 }
 
-func TestGeoProxyHanderPostErrorIDM(t *testing.T) {
+func TestQueryProxyHanderPostErrorIDM(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,stderr")
@@ -532,7 +532,7 @@ func TestGeoProxyHanderPostErrorIDM(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 
 	u, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -543,21 +543,21 @@ func TestGeoProxyHanderPostErrorIDM(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options=keyValues&type=Deivce`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("FIWARE-Service", "fiware")
 	req.Header.Set("FIWARE-ServicePath", "/iot")
 	got := httptest.NewRecorder()
 
-	geoProxyHandler(got, req)
+	queryProxyHandler(got, req)
 
 	expected := http.StatusBadRequest
 
 	assert.Equal(t, expected, got.Code)
-	assert.Equal(t, "{\"error\":\"geoProxyHandler004 unknown idm type: unknown\"}", got.Body.String())
+	assert.Equal(t, "{\"error\":\"queryProxyHandler004 unknown idm type: unknown\"}", got.Body.String())
 }
 
-func TestGeoProxyHanderPostErrorParam(t *testing.T) {
+func TestQueryProxyHanderPostErrorParam(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,stderr")
@@ -584,7 +584,7 @@ func TestGeoProxyHanderPostErrorParam(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 
 	u, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -595,12 +595,12 @@ func TestGeoProxyHanderPostErrorParam(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/json")
 
 	got := httptest.NewRecorder()
 
-	geoProxyHandler(got, req)
+	queryProxyHandler(got, req)
 
 	expected := http.StatusBadRequest
 
@@ -608,7 +608,7 @@ func TestGeoProxyHanderPostErrorParam(t *testing.T) {
 	assert.Equal(t, "{\"error\":\"tokeProxyRequestToken003 Content-Type error\"}", got.Body.String())
 }
 
-func TestGeoProxyHanderPostErrorHTTP(t *testing.T) {
+func TestQueryProxyHanderPostErrorHTTP(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	setupFlagString(set, "host,stderr")
@@ -636,7 +636,7 @@ func TestGeoProxyHanderPostErrorHTTP(t *testing.T) {
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 
 	u, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     u,
 		client:  client,
@@ -647,7 +647,7 @@ func TestGeoProxyHanderPostErrorHTTP(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options=keyValues&type=Deivce`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("FIWARE-Service", "fiware")
 	req.Header.Set("FIWARE-ServicePath", "/iot")
@@ -655,34 +655,34 @@ func TestGeoProxyHanderPostErrorHTTP(t *testing.T) {
 
 	got := httptest.NewRecorder()
 
-	geoProxyHandler(got, req)
+	queryProxyHandler(got, req)
 
 	expected := http.StatusBadRequest
 
 	assert.Equal(t, expected, got.Code)
-	assert.Equal(t, "{\"error\":\"geoProxyHandler006 http error\"}", got.Body.String())
+	assert.Equal(t, "{\"error\":\"queryProxyHandler006 http error\"}", got.Body.String())
 }
 
-func TestGeoProxyResposeError(t *testing.T) {
+func TestQueryProxyResposeError(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		failure: 1,
 		gLock:   &sync.Mutex{},
 	}
 	got := httptest.NewRecorder()
 
-	geoProxyResposeError(ngsi, got, http.StatusBadRequest, errors.New("test"))
+	queryProxyResposeError(ngsi, got, http.StatusBadRequest, errors.New("test"))
 
-	assert.Equal(t, int64(2), geoProxyGlobal.failure)
+	assert.Equal(t, int64(2), queryProxyGlobal.failure)
 	assert.Equal(t, "{\"error\":\"test\"}", got.Body.String())
 }
 
-func TestGeoProxySetQueryParam(t *testing.T) {
+func TestQueryProxySetQueryParam(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
 	uHost, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     uHost,
 		verbose: true,
@@ -691,22 +691,22 @@ func TestGeoProxySetQueryParam(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options=keyValues&type=Deivce`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("FIWARE-Service", "fiware")
 	req.Header.Set("FIWARE-ServicePath", "/iot")
 	u := &url.URL{}
 
-	err := geoProxySetQueryParam(ngsi, req, u)
+	err := queryProxySetQueryParam(ngsi, req, u)
 
 	assert.NoError(t, err)
 }
 
-func TestGeoProxySetQueryParamErrorContentTypeMissing(t *testing.T) {
+func TestQueryProxySetQueryParamErrorContentTypeMissing(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
 	uHost, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     uHost,
 		verbose: true,
@@ -715,10 +715,10 @@ func TestGeoProxySetQueryParamErrorContentTypeMissing(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`{}`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	u := &url.URL{}
 
-	err := geoProxySetQueryParam(ngsi, req, u)
+	err := queryProxySetQueryParam(ngsi, req, u)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -727,11 +727,11 @@ func TestGeoProxySetQueryParamErrorContentTypeMissing(t *testing.T) {
 	}
 }
 
-func TestGeoProxySetQueryParamErrorParseForm(t *testing.T) {
+func TestQueryProxySetQueryParamErrorParseForm(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
 	uHost, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     uHost,
 		verbose: true,
@@ -740,13 +740,13 @@ func TestGeoProxySetQueryParamErrorParseForm(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`options=keyValues&type=Deivce`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Body = nil
 	req.Form = nil
 	u := &url.URL{}
 
-	err := geoProxySetQueryParam(ngsi, req, u)
+	err := queryProxySetQueryParam(ngsi, req, u)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -755,11 +755,11 @@ func TestGeoProxySetQueryParamErrorParseForm(t *testing.T) {
 	}
 }
 
-func TestGeoProxySetQueryParamErrorContentType(t *testing.T) {
+func TestQueryProxySetQueryParamErrorContentType(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
 	uHost, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     uHost,
 		verbose: true,
@@ -768,13 +768,13 @@ func TestGeoProxySetQueryParamErrorContentType(t *testing.T) {
 	}
 
 	reqBody := bytes.NewBufferString(`{}`)
-	req := httptest.NewRequest(http.MethodPost, "http://geoProxy/v2/ex/entities", reqBody)
+	req := httptest.NewRequest(http.MethodPost, "http://queryProxy/v2/ex/entities", reqBody)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("FIWARE-Service", "fiware")
 	req.Header.Set("FIWARE-ServicePath", "/iot")
 	u := &url.URL{}
 
-	err := geoProxySetQueryParam(ngsi, req, u)
+	err := queryProxySetQueryParam(ngsi, req, u)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -783,11 +783,11 @@ func TestGeoProxySetQueryParamErrorContentType(t *testing.T) {
 	}
 }
 
-func TestGeoProxyGetStat(t *testing.T) {
+func TestQueryProxyGetStat(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
 	uHost, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     uHost,
 		verbose: true,
@@ -795,19 +795,19 @@ func TestGeoProxyGetStat(t *testing.T) {
 		gLock:   &sync.Mutex{},
 	}
 
-	b := geoProxyGetStat()
+	b := queryProxyGetStat()
 
-	stat := &geoProxyStat{}
+	stat := &queryProxyStat{}
 	_ = json.Unmarshal(b, &stat)
 
 	assert.Equal(t, stat.Health, "OK")
 }
 
-func TestGeoProxyGetStatError(t *testing.T) {
+func TestQueryProxyGetStatError(t *testing.T) {
 	ngsi, _, _, _ := setupTest()
 
 	uHost, _ := url.Parse("http://orion:1026/v2/ex/entities")
-	geoProxyGlobal = &geoProxyParam{
+	queryProxyGlobal = &queryProxyParam{
 		ngsi:    ngsi,
 		url:     uHost,
 		verbose: true,
@@ -817,45 +817,45 @@ func TestGeoProxyGetStatError(t *testing.T) {
 
 	setJSONEncodeErr(ngsi, 0)
 
-	b := geoProxyGetStat()
+	b := queryProxyGetStat()
 
-	stat := &geoProxyStat{}
+	stat := &queryProxyStat{}
 	_ = json.Unmarshal(b, &stat)
 
 	assert.Equal(t, stat.Health, "NG")
 }
 
-func TestGeoProxyHealthCmd(t *testing.T) {
+func TestQueryProxyHealthCmd(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"geoproxy","version":"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
 
 	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=geoproxy"})
+	_ = set.Parse([]string{"--host=queryproxy"})
 
-	err := geoProxyHealthCmd(c)
+	err := queryProxyHealthCmd(c)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"ngsi-go\":\"geoproxy\",\"version\":\"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)\",\"health\":\"OK\",\"orion\":\"http://orion:1026/v2/entities\",\"verbose\":true,\"uptime\":\"0 d, 2 h, 49 m, 1 s\",\"timesent\":3,\"success\":3,\"failure\":0}"
+		expected := "{\"ngsi-go\":\"queryproxy\",\"version\":\"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)\",\"health\":\"OK\",\"orion\":\"http://orion:1026/v2/entities\",\"verbose\":true,\"uptime\":\"0 d, 2 h, 49 m, 1 s\",\"timesent\":3,\"success\":3,\"failure\":0}"
 		assert.Equal(t, expected, actual)
 	}
 }
 
-func TestGeoProxyHealthCmdPretty(t *testing.T) {
+func TestQueryProxyHealthCmdPretty(t *testing.T) {
 	ngsi, set, app, buf := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"geoproxy","version":"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -863,23 +863,23 @@ func TestGeoProxyHealthCmdPretty(t *testing.T) {
 	setupFlagString(set, "host")
 	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=geoproxy", "--pretty"})
+	_ = set.Parse([]string{"--host=queryproxy", "--pretty"})
 
-	err := geoProxyHealthCmd(c)
+	err := queryProxyHealthCmd(c)
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"ngsi-go\": \"geoproxy\",\n  \"version\": \"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)\",\n  \"health\": \"OK\",\n  \"orion\": \"http://orion:1026/v2/entities\",\n  \"verbose\": true,\n  \"uptime\": \"0 d, 2 h, 49 m, 1 s\",\n  \"timesent\": 3,\n  \"success\": 3,\n  \"failure\": 0\n}\n"
+		expected := "{\n  \"ngsi-go\": \"queryproxy\",\n  \"version\": \"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)\",\n  \"health\": \"OK\",\n  \"orion\": \"http://orion:1026/v2/entities\",\n  \"verbose\": true,\n  \"uptime\": \"0 d, 2 h, 49 m, 1 s\",\n  \"timesent\": 3,\n  \"success\": 3,\n  \"failure\": 0\n}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
-func TestGeoProxyHealthCmdErrorInitCmd(t *testing.T) {
+func TestQueryProxyHealthCmdErrorInitCmd(t *testing.T) {
 	_, set, app, _ := setupTest()
 
 	c := cli.NewContext(app, set, nil)
 
-	err := geoProxyHealthCmd(c)
+	err := queryProxyHealthCmd(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -890,7 +890,7 @@ func TestGeoProxyHealthCmdErrorInitCmd(t *testing.T) {
 	}
 }
 
-func TestGeoProxyHealthCmdErrorNewClient(t *testing.T) {
+func TestQueryProxyHealthCmdErrorNewClient(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -904,7 +904,7 @@ func TestGeoProxyHealthCmdErrorNewClient(t *testing.T) {
 	c := cli.NewContext(app, set, nil)
 	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
 
-	err := geoProxyHealthCmd(c)
+	err := queryProxyHealthCmd(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -915,7 +915,7 @@ func TestGeoProxyHealthCmdErrorNewClient(t *testing.T) {
 	}
 }
 
-func TestGeoProxyHealthCmdErrorHTTP(t *testing.T) {
+func TestQueryProxyHealthCmdErrorHTTP(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -928,9 +928,9 @@ func TestGeoProxyHealthCmdErrorHTTP(t *testing.T) {
 
 	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=geoproxy"})
+	_ = set.Parse([]string{"--host=queryproxy"})
 
-	err := geoProxyHealthCmd(c)
+	err := queryProxyHealthCmd(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -941,7 +941,7 @@ func TestGeoProxyHealthCmdErrorHTTP(t *testing.T) {
 	}
 }
 
-func TestGeoProxyHealthCmdErrorStatusCode(t *testing.T) {
+func TestQueryProxyHealthCmdErrorStatusCode(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
@@ -954,9 +954,9 @@ func TestGeoProxyHealthCmdErrorStatusCode(t *testing.T) {
 
 	setupFlagString(set, "host")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=geoproxy"})
+	_ = set.Parse([]string{"--host=queryproxy"})
 
-	err := geoProxyHealthCmd(c)
+	err := queryProxyHealthCmd(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)
@@ -967,13 +967,13 @@ func TestGeoProxyHealthCmdErrorStatusCode(t *testing.T) {
 	}
 }
 
-func TestGeoProxyHealthCmdIotaErrorPretty(t *testing.T) {
+func TestQueryProxyHealthCmdIotaErrorPretty(t *testing.T) {
 	ngsi, set, app, _ := setupTest()
 
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"geoproxy","version":"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -981,11 +981,11 @@ func TestGeoProxyHealthCmdIotaErrorPretty(t *testing.T) {
 	setupFlagString(set, "host")
 	setupFlagBool(set, "pretty")
 	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=geoproxy", "--pretty"})
+	_ = set.Parse([]string{"--host=queryproxy", "--pretty"})
 
 	setJSONIndentError(ngsi)
 
-	err := geoProxyHealthCmd(c)
+	err := queryProxyHealthCmd(c)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsiCmdError)

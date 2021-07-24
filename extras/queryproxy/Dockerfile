@@ -47,4 +47,4 @@ RUN chown -R nobody:nobody /opt/ngsi-go
 USER nobody 
 
 ENTRYPOINT ["/usr/local/bin/ngsi"]
-CMD ["--stderr", "info", "--config", "./ngsi-go-config.json", "--cache", "./ngsi-go-token-cache.json", "geoproxy", "server", "--host", "orion", "--verbose"]
+CMD ["--stderr", "info", "--config", "./ngsi-go-config.json", "--cache", "./ngsi-go-token-cache.json", "queryproxy", "server", "--host", "orion", "--verbose"]

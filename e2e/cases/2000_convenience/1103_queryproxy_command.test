@@ -25,20 +25,20 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi geoproxy --help
+# 0001 ngsi queryproxy --help
 #
-ngsi geoproxy --help
+ngsi queryproxy --help
 
 ```
 NAME:
-   ngsi geoproxy - geo proxy
+   ngsi queryproxy - query proxy
 
 USAGE:
-   ngsi geoproxy command [command options] [arguments...]
+   ngsi queryproxy command [command options] [arguments...]
 
 COMMANDS:
-   server   start up geoproxy server
-   health   sanity check for geoproxy server
+   server   start up queryproxy server
+   health   sanity check for queryproxy server
    help, h  Shows a list of commands or help for one command
 
 OPTIONS:
@@ -48,22 +48,22 @@ OPTIONS:
 ```
 
 #
-# 0002 ngsi geoproxy server --help
+# 0002 ngsi queryproxy server --help
 #
-ngsi geoproxy server --help
+ngsi queryproxy server --help
 
 ```
 NAME:
-   ngsi geoproxy server - start up geoproxy server
+   ngsi queryproxy server - start up queryproxy server
 
 USAGE:
-   ngsi geoproxy server [command options] [arguments...]
+   ngsi queryproxy server [command options] [arguments...]
 
 OPTIONS:
    --host value, -h value        context broker
    --replaceURL value, -u value  replace URL (default: "/v2/ex/entities")
-   --ghost value                 host for geoproxy (default: "0.0.0.0")
-   --port value, -p value        port for geoproxy (default: "1030")
+   --qhost value                 host for queryproxy (default: "0.0.0.0")
+   --port value, -p value        port for queryproxy (default: "1030")
    --https, -s                   start in https (default: false)
    --key value, -k value         key file (only needed if https is enabled)
    --cert value, -c value        cert file (only needed if https is enabled)
@@ -73,19 +73,19 @@ OPTIONS:
 ```
 
 #
-# 0003 ngsi geoproxy health --help
+# 0003 ngsi queryproxy health --help
 #
-ngsi geoproxy health --help
+ngsi queryproxy health --help
 
 ```
 NAME:
-   ngsi geoproxy health - sanity check for geoproxy server
+   ngsi queryproxy health - sanity check for queryproxy server
 
 USAGE:
-   ngsi geoproxy health [command options] [arguments...]
+   ngsi queryproxy health [command options] [arguments...]
 
 OPTIONS:
-   --host value, -h value  specify geoproxy server
+   --host value, -h value  specify queryproxy server
    --pretty, -P            pretty format (default: false)
    --help                  show help (default: false)
    
