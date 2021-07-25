@@ -35,6 +35,8 @@ services:
 
   orion-ld:
     image: fiware/orion-ld:0.8-PRE-265
+    ports:
+      - 1026:1026
     depends_on:
       - mongo
     command: -dbhost mongo -db orionld

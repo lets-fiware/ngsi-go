@@ -32,12 +32,13 @@ ngsi list --help
 
 ```
 NAME:
-   ngsi list - list types, entities, subscriptions or registrations
+   ngsi list - list types, attributes, entities, tentities, subscriptions or registrations
 
 USAGE:
    ngsi list command [command options] [arguments...]
 
 COMMANDS:
+   attributes     list attributes
    types          list types
    entities       list entities
    tentities      list temporal entities

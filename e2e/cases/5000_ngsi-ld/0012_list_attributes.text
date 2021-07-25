@@ -1,0 +1,349 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-LD
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0000 Clean up
+#
+ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
+
+```
+REGEX(.*)
+```
+
+#
+# 0001 Create entities with link
+#
+
+ngsi create --host orion-ld entities --link ctx \
+--data '[
+{"id":"urn:ngsi-ld:TemperatureSensor:001","type":"TemperatureSensor","category":{"type":"Property","value":"sensor"},"temperature":{"type":"Property","value":25,"unitCode":"CEL"}},
+{"id":"urn:ngsi-ld:TemperatureSensor:002","type":"TemperatureSensor","category":{"type":"Property","value":"sensor"},"temperature":{"type":"Property","value":26,"unitCode":"CEL"}},
+{"id":"urn:ngsi-ld:TemperatureSensor:003","type":"TemperatureSensor","category":{"type":"Property","value":"sensor"},"temperature":{"type":"Property","value":27,"unitCode":"CEL"}}
+]'
+
+```
+["urn:ngsi-ld:TemperatureSensor:001","urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"]
+```
+
+#
+# 0002 Create New Attributes
+#
+ngsi append attrs --link ctx --id urn:ngsi-ld:TemperatureSensor:001 \
+--data '{
+       "batteryLevel": {
+            "type": "Property",
+            "value": 0.9,
+            "unitCode": "C62"
+      },
+      "controlledAsset": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Building:barn002"
+      }
+}'
+
+```
+```
+
+#
+# 0003 List entities with link
+#
+ngsi list entities --pretty
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:001",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://uri.fiware.org/ns/data-models#batteryLevel": {
+      "type": "Property",
+      "value": 0.9,
+      "unitCode": "C62"
+    },
+    "https://uri.fiware.org/ns/data-models#category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "https://uri.fiware.org/ns/data-models#controlledAsset": {
+      "type": "Relationship",
+      "object": "urn:ngsi-ld:Building:barn002"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 25,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:002",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://uri.fiware.org/ns/data-models#category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 26,
+      "unitCode": "CEL"
+    }
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "urn:ngsi-ld:TemperatureSensor:003",
+    "type": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "https://uri.fiware.org/ns/data-models#category": {
+      "type": "Property",
+      "value": "sensor"
+    },
+    "https://w3id.org/saref#temperature": {
+      "type": "Property",
+      "value": 27,
+      "unitCode": "CEL"
+    }
+  }
+]
+```
+
+#
+# 0011 List attributes
+#
+ngsi list attributes --pretty
+
+```
+{
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "id": "urn:ngsi-ld:EntityAttributeList:REGEX(.*)",
+  "type": "EntityAttributeList",
+  "attributeList": [
+    "https://uri.fiware.org/ns/data-models#batteryLevel",
+    "https://uri.fiware.org/ns/data-models#category",
+    "https://uri.fiware.org/ns/data-models#controlledAsset",
+    "https://w3id.org/saref#temperature"
+  ]
+}
+```
+
+#
+# 0012 List attributes --link ctx
+#
+ngsi list attributes --pretty --link ctx
+
+```
+{
+  "@context": "http://atcontext:8000/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:EntityAttributeList:REGEX(.*)",
+  "type": "EntityAttributeList",
+  "attributeList": [
+    "batteryLevel",
+    "category",
+    "controlledAsset",
+    "temperature"
+  ]
+}
+```
+
+#
+# 0021 List attirbutes --details
+#
+ngsi list attributes --pretty --details
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#category",
+    "type": "Attribute",
+    "attributeCount": 3,
+    "attributeTypes": [
+      "Property"
+    ],
+    "typeNames": [
+      "https://uri.fiware.org/ns/data-models#TemperatureSensor"
+    ]
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "https://w3id.org/saref#temperature",
+    "type": "Attribute",
+    "attributeCount": 3,
+    "attributeTypes": [
+      "Property"
+    ],
+    "typeNames": [
+      "https://uri.fiware.org/ns/data-models#TemperatureSensor"
+    ]
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#batteryLevel",
+    "type": "Attribute",
+    "attributeCount": 1,
+    "attributeTypes": [
+      "Property"
+    ],
+    "typeNames": [
+      "https://uri.fiware.org/ns/data-models#TemperatureSensor"
+    ]
+  },
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#controlledAsset",
+    "type": "Attribute",
+    "attributeCount": 1,
+    "attributeTypes": [
+      "Relationship"
+    ],
+    "typeNames": [
+      "https://uri.fiware.org/ns/data-models#TemperatureSensor"
+    ]
+  }
+]
+```
+
+#
+# 0022 List attirbutes --details --link ctx
+#
+ngsi list attributes --pretty --details --link ctx
+
+```
+[
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#category",
+    "type": "Attribute",
+    "attributeCount": 3,
+    "attributeTypes": [
+      "Property"
+    ],
+    "typeNames": [
+      "TemperatureSensor"
+    ],
+    "attributeName": "category"
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "https://w3id.org/saref#temperature",
+    "type": "Attribute",
+    "attributeCount": 3,
+    "attributeTypes": [
+      "Property"
+    ],
+    "typeNames": [
+      "TemperatureSensor"
+    ],
+    "attributeName": "temperature"
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#batteryLevel",
+    "type": "Attribute",
+    "attributeCount": 1,
+    "attributeTypes": [
+      "Property"
+    ],
+    "typeNames": [
+      "TemperatureSensor"
+    ],
+    "attributeName": "batteryLevel"
+  },
+  {
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "@context": "http://atcontext:8000/ngsi-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#controlledAsset",
+    "type": "Attribute",
+    "attributeCount": 1,
+    "attributeTypes": [
+      "Relationship"
+    ],
+    "typeNames": [
+      "TemperatureSensor"
+    ],
+    "attributeName": "controlledAsset"
+  }
+]
+```
+
+#
+# 0031 List attributes with attrid
+#
+ngsi list attributes --pretty --attr "https://w3id.org/saref#temperature"
+
+```
+{
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "id": "https://w3id.org/saref#temperature",
+  "type": "Attribute",
+  "attributeCount": 3,
+  "attributeTypes": [
+    "Property"
+  ],
+  "typeNames": [
+    "https://uri.fiware.org/ns/data-models#TemperatureSensor"
+  ]
+}
+```
+
+#
+# 0032 List attributes with attrId --link ctx
+#
+ngsi list attributes --pretty --attr temperature --link ctx
+
+```
+{
+  "@context": "http://atcontext:8000/ngsi-context.jsonld",
+  "@context": "http://atcontext:8000/ngsi-context.jsonld",
+  "id": "https://w3id.org/saref#temperature",
+  "type": "Attribute",
+  "attributeCount": 3,
+  "attributeTypes": [
+    "Property"
+  ],
+  "typeNames": [
+    "TemperatureSensor"
+  ],
+  "attributeName": "temperature"
+}
+```
+
+#
+# 9999 Clean up
+#
+ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
+
+```
+REGEX(.*)
+```

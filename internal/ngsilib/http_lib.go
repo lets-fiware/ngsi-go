@@ -97,8 +97,13 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 		}
 	}
 
+	u := url.String()
+	if p := strings.Index(u, "/ngsi-ld/v1/attributes/"); p > 0 {
+		u = u[:p] + url.Path
+	}
+
 	var req *http.Request
-	req, err = http.NewRequest(method, url.String(), reader)
+	req, err = http.NewRequest(method, u, reader)
 	if err != nil {
 		return nil, nil, &LibError{funcName, 2, err.Error(), err}
 	}

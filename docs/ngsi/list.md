@@ -3,6 +3,7 @@
 This command lists types, entities, subscriptions or registrations.
 
 -   [List multiple types](#list-multiple-types)
+-   [List multiple attributes](#list-multiple-attributes)
 -   [List multiple entities](#list-multiple-entities)
 -   [List multipletemporal entities](#list-multiple-temporal-entities)
 -   [List multiple subscriptions](#list-multiple-subscriptions)
@@ -61,6 +62,44 @@ ngsi list types --json
 
 ```json
 ["InventoryItem","Product","Shelf","Store"]
+```
+
+<a name="list-multiple-attributes"></a>
+
+## List multiple attributes
+
+This command lists attributes.
+
+```console
+ngsi list [common options] attributes [options]
+```
+
+### Options
+
+| Options                | Description                                     |
+| ---------------------- | ----------------------------------------------- |
+| --attr value           | attribute name                                  |
+| --details, -d          | detailed attribute information (default: false) |
+| --pretty, -P           | pretty format (default: false)                  |
+| --link value, -L value | specify @context                                |
+| --help                 | show help (default: false)                      |
+
+### Examples
+
+```
+ngsi list --host orion-ld attributes
+```
+
+```
+ngsi list --host orion-ld attributes --link ctx
+```
+
+```
+ngsi list --host orion-ld attributes --attr "https://w3id.org/saref#temperature"
+```
+
+```
+ngsi list --host orion-ld attributes --attr temperature --link ctx
 ```
 
 <a name="list-multiple-entities"></a>

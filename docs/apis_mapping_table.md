@@ -39,8 +39,8 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | DELETE /ngsi-ld/v1/subscriptions/{subscriptionId}                           | delete subscription --id {subscriptionId}                                  |
 | GET /ngsi-ld/v1/types/                                                      | list types                                                                 |
 | GET /ngsi-ld/v1/types/{type}                                                | (not yet implemented)                                                      |
-| GET /ngsi-ld/v1/attributes/                                                 | (not yet implemented)                                                      |
-| GET /ngsi-ld/v1/attributes/{attrId}                                         | (not yet implemented)                                                      |
+| GET /ngsi-ld/v1/attributes/                                                 | list attributes                                                            |
+| GET /ngsi-ld/v1/attributes/{attrId}                                         | list attributes --attr {attrId}                                            |
 | POST /ngsi-ld/v1/csourceRegistrations/                                      | create registration                                                        |
 | GET /ngsi-ld/v1/csourceRegistrations/                                       | list registrations                                                         |
 | GET /ngsi-ld/v1/csourceRegistrations/{registrationId}                       | get registration --id {registrationId}                                     |
