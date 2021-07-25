@@ -65,6 +65,10 @@ These tables show the mapping from FIWARE Open APIs to NGSI Go commands.
 | PATCH /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}  | update tattr --id {entityId} --attr {attrId} --instanceId {instanceId}     |
 | DELETE /ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId} | delete tattr --id {entityId} --attr {attrId} --instanceId {instanceId}     |
 | POST /ngsi-ld/v1/temporal/entityOperations/query                            | (not yet implemented)                                                      |
+| GET /ngsi-ld/v1/jsonldContexts                                              | list ldContexts                                                            |
+| GET /ngsi-ld/v1/jsonldContexts/{contextId}                                  | get ldContext --id {contextId}                                             |
+| POST /ngsi-ld/v1/jsonldContexts                                             | create ldContext --data {jsonldContext}                                    |
+| DELETE /ngsi-ld/v1/jsonldContexts/{contextId}                               | delete ldContext --id {contextId}                                          |
 
 ### Orion-LD API
 

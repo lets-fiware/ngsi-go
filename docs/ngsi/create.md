@@ -5,6 +5,7 @@
 -   [create temporal entity](#create-temporal-entity)
 -   [Create a subscription](#create-a-subscription)
 -   [Create a registration](#create-a-registration)
+-   [Create a JSON-LD context](#create-a-json-ld-context)
 
 ## Common Options
 
@@ -350,4 +351,37 @@ ngsi create registration --data @registration.json
 
 ```text
 urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0
+```
+
+-   [Create a JSON-LD context](#create-a-json-ld-context)
+<a name="create-a-json-ld-context"></a>
+
+## Create a JSON-LD context
+
+This command create a JSON-LD context.
+
+```console
+ngsi create [command options] ldContext [options]
+```
+
+### Options
+
+| Options                | Description                |
+| ---------------------- | -------------------------- |
+| --data value, -d value | jsonldContexts data        |
+| --help                 | show help (default: false) |
+
+### Example
+
+#### Request:
+
+```console
+ngsi create --host orion-ld ldContext \
+  --data '["https://fiware.github.io/data-models/context.jsonld","https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"]'
+```
+
+#### Response:
+
+```console
+d42e7ffe-ed21-11eb-bc92-0242c0a8a010
 ```

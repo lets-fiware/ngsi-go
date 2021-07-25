@@ -85,6 +85,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | [tentity](./ngsi/create.md#create-temporal-entity)                        | create temporal entity                       |
 |                              | [subscription](./ngsi/create.md#create-a-subscription)                    | create subscription                          |
 |                              | [registration](./ngsi/create.md#create-a-registration)                    | create registration                          |
+|                              | [ldContext](./ngsi/create.md#create-a-json-ld-context)                    | create JSON-LD context                       |
 | [delete](./ngsi/delete.md)   | [entity](./ngsi/delete.md#delete-an-entity)                               | delete entity                                |
 |                              | [entities](./ngsi/delete.md#delete-multiple-entities)                     | delete entities                              |
 |                              | [tentity](./ngsi/delete.md#delete-temporal-entity)                        | delete temporal entity                       |
@@ -92,6 +93,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | [tattr](./ngsi/delete.md#delete-an-attribute-from-a-temporal-entity)      | delete attribute of temporal entity          |
 |                              | [subscription](./ngsi/delete.md#delete-a-subscription)                    | delete subscription                          |
 |                              | [registration](./ngsi/delete.md#delete-a-registration)                    | delete registration                          |
+|                              | [ldContext](./ngsi/delete.md#delete-a-json-ld-context)                    | delete JSON-LD context                       |
 | [get](./ngsi/get.md)         | [entity](./ngsi/get.md#get-an-entity)                                     | get entity                                   |
 |                              | [entities](./ngsi/get.md#get-an-entities)                                 | get entities                                 |
 |                              | [tentity](./ngsi/get.md#get-temporal-entity)                              | get temporal entity                          |
@@ -99,12 +101,14 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | [attrs](./ngsi/get.md#get-multiple-attributes)                            | get attributes                               |
 |                              | [subscription](./ngsi/get.md#get-a-subscription)                          | get subscription                             |
 |                              | [registration](./ngsi/get.md#get-a-registration)                          | get registration                             |
+|                              | [ldContext](./ngsi/get.md#get-a-json-ld-context)                          | get JSON-LD context                          |
 | [list](./ngsi/list.md)       | [types](./ngsi/list.md#list-multiple-types)                               | list types                                   |
 |                              | [attributes](./ngsi/list.md#list-multiple-attributes)                     | list attributes                              |
 |                              | [entities](./ngsi/list.md#list-multiple-entities)                         | list entties                                 |
 |                              | [tentities](./ngsi/list.md#list-multiple-temporal-entities)               | List temporal entities                       |
-|                              | [subscription](./ngsi/list.md#list-multiple-subscriptions)                | list subscription                            |
-|                              | [registration](./ngsi/list.md#list-multiple-registrations)                | list registration                            |
+|                              | [subscription](./ngsi/list.md#list-multiple-subscriptions)                | list subscriptions                           |
+|                              | [registration](./ngsi/list.md#list-multiple-registrations)                | list registrations                           |
+|                              | [ldContexts](./ngsi/list.md#list-json-ld-contexts)                        | list JSON-LD contexts                        |
 | [replace](./ngsi/replace.md) | [entities](./ngsi/replace.md#replace-multiple-entities)                   | replace entities                             |
 |                              | [attrs](./ngsi/replace.md#replace-multiple-attributes)                    | replace attrs                                |
 | [update](./ngsi/update.md)   | [entities](./ngsi/update.md#update-multiple-entities)                     | update entities                              |
