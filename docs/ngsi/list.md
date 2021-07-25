@@ -86,19 +86,19 @@ ngsi list [common options] attributes [options]
 
 ### Examples
 
-```
+```console
 ngsi list --host orion-ld attributes
 ```
 
-```
+```console
 ngsi list --host orion-ld attributes --link ctx
 ```
 
-```
+```console
 ngsi list --host orion-ld attributes --attr "https://w3id.org/saref#temperature"
 ```
 
-```
+```console
 ngsi list --host orion-ld attributes --attr temperature --link ctx
 ```
 

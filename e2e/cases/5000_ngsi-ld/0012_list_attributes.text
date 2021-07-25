@@ -177,7 +177,6 @@ ngsi list attributes --pretty --details
 [
   {
     "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
-    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
     "id": "https://uri.fiware.org/ns/data-models#category",
     "type": "Attribute",
     "attributeCount": 3,
@@ -189,7 +188,6 @@ ngsi list attributes --pretty --details
     ]
   },
   {
-    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
     "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
     "id": "https://w3id.org/saref#temperature",
     "type": "Attribute",
@@ -203,7 +201,6 @@ ngsi list attributes --pretty --details
   },
   {
     "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
-    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
     "id": "https://uri.fiware.org/ns/data-models#batteryLevel",
     "type": "Attribute",
     "attributeCount": 1,
@@ -215,7 +212,6 @@ ngsi list attributes --pretty --details
     ]
   },
   {
-    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
     "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
     "id": "https://uri.fiware.org/ns/data-models#controlledAsset",
     "type": "Attribute",
@@ -239,7 +235,6 @@ ngsi list attributes --pretty --details --link ctx
 [
   {
     "@context": "http://atcontext:8000/ngsi-context.jsonld",
-    "@context": "http://atcontext:8000/ngsi-context.jsonld",
     "id": "https://uri.fiware.org/ns/data-models#category",
     "type": "Attribute",
     "attributeCount": 3,
@@ -252,7 +247,6 @@ ngsi list attributes --pretty --details --link ctx
     "attributeName": "category"
   },
   {
-    "@context": "http://atcontext:8000/ngsi-context.jsonld",
     "@context": "http://atcontext:8000/ngsi-context.jsonld",
     "id": "https://w3id.org/saref#temperature",
     "type": "Attribute",
@@ -267,7 +261,6 @@ ngsi list attributes --pretty --details --link ctx
   },
   {
     "@context": "http://atcontext:8000/ngsi-context.jsonld",
-    "@context": "http://atcontext:8000/ngsi-context.jsonld",
     "id": "https://uri.fiware.org/ns/data-models#batteryLevel",
     "type": "Attribute",
     "attributeCount": 1,
@@ -280,7 +273,6 @@ ngsi list attributes --pretty --details --link ctx
     "attributeName": "batteryLevel"
   },
   {
-    "@context": "http://atcontext:8000/ngsi-context.jsonld",
     "@context": "http://atcontext:8000/ngsi-context.jsonld",
     "id": "https://uri.fiware.org/ns/data-models#controlledAsset",
     "type": "Attribute",
@@ -297,13 +289,12 @@ ngsi list attributes --pretty --details --link ctx
 ```
 
 #
-# 0031 List attributes with attrid
+# 0031 List attributes with attrId
 #
 ngsi list attributes --pretty --attr "https://w3id.org/saref#temperature"
 
 ```
 {
-  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
   "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
   "id": "https://w3id.org/saref#temperature",
   "type": "Attribute",
@@ -324,7 +315,6 @@ ngsi list attributes --pretty --attr temperature --link ctx
 
 ```
 {
-  "@context": "http://atcontext:8000/ngsi-context.jsonld",
   "@context": "http://atcontext:8000/ngsi-context.jsonld",
   "id": "https://w3id.org/saref#temperature",
   "type": "Attribute",
