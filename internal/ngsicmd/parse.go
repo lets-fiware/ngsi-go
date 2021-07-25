@@ -139,6 +139,8 @@ func parseOptions(c *cli.Context, args []string, opts []string) *url.Values {
 					if b := c.Bool(("device")); b {
 						v.Set(key, "true")
 					}
+				case "details":
+					v.Set(key, "true")
 				}
 			}
 		}

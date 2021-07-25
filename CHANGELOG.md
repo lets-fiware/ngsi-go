@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Hardening: Add attributes sub-cmd in list command (#192)
 -   Update: Change command name from geoproxy to queryproxy (#191)
 -   Improve: Add test case to wait for Wilma to be ready (#190)
 -   Improve: Update e2e test (#189)

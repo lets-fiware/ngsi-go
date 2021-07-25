@@ -100,6 +100,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | [subscription](./ngsi/get.md#get-a-subscription)                          | get subscription                             |
 |                              | [registration](./ngsi/get.md#get-a-registration)                          | get registration                             |
 | [list](./ngsi/list.md)       | [types](./ngsi/list.md#list-multiple-types)                               | list types                                   |
+|                              | [attributes](./ngsi/list.md#list-multiple-attributes)                     | list attributes                              |
 |                              | [entities](./ngsi/list.md#list-multiple-entities)                         | list entties                                 |
 |                              | [tentities](./ngsi/list.md#list-multiple-temporal-entities)               | List temporal entities                       |
 |                              | [subscription](./ngsi/list.md#list-multiple-subscriptions)                | list subscription                            |

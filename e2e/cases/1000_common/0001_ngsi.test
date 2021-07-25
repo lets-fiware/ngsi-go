@@ -82,7 +82,7 @@ COMMANDS:
      create   create entity(ies), subscription or registration
      delete   delete entity(ies), attribute, subscription or registration
      get      get entity(ies), attribute(s), subscription, registration or type
-     list     list types, entities, subscriptions or registrations
+     list     list types, attributes, entities, tentities, subscriptions or registrations
      replace  replace entities or attributes
      update   update entities, attribute(s) or subscription
      upsert   upsert entity or entities

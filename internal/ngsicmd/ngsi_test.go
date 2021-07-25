@@ -114,6 +114,7 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"list", "registrations"}, rc: 1},
 		{args: []string{"list", "subscriptions"}, rc: 1},
 		{args: []string{"list", "types"}, rc: 1},
+		{args: []string{"list", "attributes"}, rc: 1},
 		{args: []string{"replace", "entities"}, rc: 1},
 		{args: []string{"replace", "attrs", "--id", "abc"}, rc: 1},
 		{args: []string{"update", "entities"}, rc: 1},

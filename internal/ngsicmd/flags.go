@@ -159,6 +159,15 @@ var (
 	}
 )
 
+// flags for NGSI-LD
+var (
+	attrsDetailFlag = &cli.BoolFlag{
+		Name:    "details",
+		Aliases: []string{"d"},
+		Usage:   "detailed attribute information",
+	}
+)
+
 // Common flags for copy command
 var (
 	destinationFlag = &cli.StringFlag{

@@ -1337,7 +1337,7 @@ var getCmd = cli.Command{
 
 var listCmd = cli.Command{
 	Name:     "list",
-	Usage:    "list types, entities, subscriptions or registrations",
+	Usage:    "list types, attributes, entities, tentities, subscriptions or registrations",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1346,6 +1346,19 @@ var listCmd = cli.Command{
 		scopeFlag,
 	},
 	Subcommands: []*cli.Command{
+		{
+			Name:  "attributes",
+			Usage: "list attributes",
+			Flags: []cli.Flag{
+				attrFlag,
+				attrsDetailFlag,
+				prettyFlag,
+				linkFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return attributesList(c)
+			},
+		},
 		{
 			Name:  "types",
 			Usage: "list types",
