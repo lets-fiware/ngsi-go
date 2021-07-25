@@ -9,6 +9,7 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 -   [Get multiple attributes](#get-multiple-attributes)
 -   [Get a subscription](#get-a-subscription)
 -   [Get a registration](#get-a-registration)
+-   [Get a JSON-LD context](#get-a-json-ld-context)
 
 ## Common Options
 
@@ -411,4 +412,35 @@ ngsi get registration --id urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb6
     }
   ]
 }
+```
+
+<a name="get-a-json-ld-context"></a>
+
+## Get a JSON-LD context
+
+This command gets a JSON-LD context.
+
+```console
+ngsi get [common options] ldContext [options]
+```
+
+### Options
+
+| Options      | Description                        |
+| ------------ | ---------------------------------- |
+| --id, -i     | jsonldContexts id (default: false) |
+| --pretty, -P |  pretty format (default: false)    |
+| --help       | show help (default: false)         |
+
+### Example
+
+#### Request:
+
+```console
+ngsi get --host orion-ld ldContext --id 2fa4dbc4-ece8-11eb-a645-0242c0a8a010
+```
+#### Response:
+
+```json
+{"@context":["https://fiware.github.io/data-models/context.jsonld","https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"]}
 ```

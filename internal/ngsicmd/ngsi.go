@@ -964,7 +964,7 @@ var appendCmd = cli.Command{
 
 var createCmd = cli.Command{
 	Name:     "create",
-	Usage:    "create entity(ies), subscription or registration",
+	Usage:    "create entity(ies), subscription, registration or ldContext",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1090,12 +1090,22 @@ var createCmd = cli.Command{
 				return registrationsCreate(c)
 			},
 		},
+		{
+			Name:  "ldContext",
+			Usage: "create jsonldContext",
+			Flags: []cli.Flag{
+				ldContextsDataFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return jsonldContextCreate(c)
+			},
+		},
 	},
 }
 
 var deleteCmd = cli.Command{
 	Name:     "delete",
-	Usage:    "delete entity(ies), attribute, subscription or registration",
+	Usage:    "delete entity(ies), attribute, subscription, registration or ldContext",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1187,12 +1197,22 @@ var deleteCmd = cli.Command{
 				return registrationsDelete(c)
 			},
 		},
+		{
+			Name:  "ldContext",
+			Usage: "delete jsonldContext",
+			Flags: []cli.Flag{
+				ldContextsIDFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return jsonldContextDelete(c)
+			},
+		},
 	},
 }
 
 var getCmd = cli.Command{
 	Name:     "get",
-	Usage:    "get entity(ies), attribute(s), subscription, registration or type",
+	Usage:    "get entity(ies), attribute(s), subscription, registration type or ldContext",
 	Category: "NGSI",
 	Flags: []cli.Flag{
 		hostFlag,
@@ -1332,6 +1352,17 @@ var getCmd = cli.Command{
 				return typeGet(c)
 			},
 		},
+		{
+			Name:  "ldContext",
+			Usage: "get jsonldContext",
+			Flags: []cli.Flag{
+				ldContextsIDFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return jsonldContextGet(c)
+			},
+		},
 	},
 }
 
@@ -1466,6 +1497,18 @@ var listCmd = cli.Command{
 			},
 			Action: func(c *cli.Context) error {
 				return registrationsList(c)
+			},
+		},
+		{
+			Name:  "ldContexts",
+			Usage: "list jsonldContexts",
+			Flags: []cli.Flag{
+				ldContextsDetailsFlag,
+				jsonFlag,
+				prettyFlag,
+			},
+			Action: func(c *cli.Context) error {
+				return jsonldContextsList(c)
 			},
 		},
 	},

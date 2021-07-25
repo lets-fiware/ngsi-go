@@ -166,6 +166,21 @@ var (
 		Aliases: []string{"d"},
 		Usage:   "detailed attribute information",
 	}
+	ldContextsIDFlag = &cli.StringFlag{
+		Name:    "id",
+		Aliases: []string{"i"},
+		Usage:   "jsonldContexts id",
+	}
+	ldContextsDetailsFlag = &cli.BoolFlag{
+		Name:    "details",
+		Aliases: []string{"d"},
+		Usage:   "detailed jsonldContexts information",
+	}
+	ldContextsDataFlag = &cli.StringFlag{
+		Name:    "data",
+		Aliases: []string{"d"},
+		Usage:   "jsonldContexts data",
+	}
 )
 
 // Common flags for copy command

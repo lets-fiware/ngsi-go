@@ -1,0 +1,251 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-LD
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi list ldContexts --help
+#
+ngsi list ldContexts --help
+
+```
+NAME:
+   ngsi list ldContexts - list jsonldContexts
+
+USAGE:
+   ngsi list ldContexts [command options] [arguments...]
+
+OPTIONS:
+   --details, -d  detailed jsonldContexts information (default: false)
+   --json, -j     JSON format (default: false)
+   --pretty, -P   pretty format (default: false)
+   --help         show help (default: false)
+   
+```
+
+#
+# 0002 ngsi get ldContext --help
+#
+ngsi get ldContext --help
+
+```
+NAME:
+   ngsi get ldContext - get jsonldContext
+
+USAGE:
+   ngsi get ldContext [command options] [arguments...]
+
+OPTIONS:
+   --id value, -i value  jsonldContexts id
+   --pretty, -P          pretty format (default: false)
+   --help                show help (default: false)
+   
+```
+
+#
+# 0003 ngsi create ldContext --help
+#
+ngsi create ldContext --help
+
+```
+NAME:
+   ngsi create ldContext - create jsonldContext
+
+USAGE:
+   ngsi create ldContext [command options] [arguments...]
+
+OPTIONS:
+   --data value, -d value  jsonldContexts data
+   --help                  show help (default: false)
+   
+```
+   
+#
+# 0004 ngsi delete ldContext --help
+#
+ngsi delete ldContext --help
+
+```
+NAME:
+   ngsi delete ldContext - delete jsonldContext
+
+USAGE:
+   ngsi delete ldContext [command options] [arguments...]
+
+OPTIONS:
+   --id value, -i value  jsonldContexts id
+   --help                show help (default: false)
+   
+```
+
+#
+# 0011 ngsi list ldContexts
+#
+ngsi list --host orion-ld ldContexts
+
+```
+REGEX(.*) https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld
+REGEX(.*) http://atcontext:8000/ngsi-context.jsonld
+REGEX(.*) http://atcontext:8000/test-context.jsonld
+```
+
+#
+# 0012 ngsi list ldContexts --json --pretty
+#
+ngsi list --host orion-ld ldContexts --json --pretty
+
+```
+[
+  "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "http://atcontext:8000/ngsi-context.jsonld",
+  "http://atcontext:8000/test-context.jsonld"
+]
+```
+
+#
+# 0013 ngsi list ldContexts --details --pretty
+#
+ngsi list --host orion-ld ldContexts --details --pretty
+
+```
+[
+  {
+    "url": "REGEX(.*)",
+    "id": "REGEX(.*)",
+    "type": "hash-table",
+    "origin": "Downloaded",
+    "createdAt": "REGEX(.*)",
+    "hash-table": {
+      "instanceId": "https://uri.etsi.org/ngsi-ld/instanceId",
+      "notifiedAt": "https://uri.etsi.org/ngsi-ld/notifiedAt",
+      "observedAt": "https://uri.etsi.org/ngsi-ld/observedAt",
+      "attributes": "https://uri.etsi.org/ngsi-ld/attributes",
+      "properties": "https://uri.etsi.org/ngsi-ld/properties"
+    }
+  },
+  {
+    "url": "REGEX(.*)",
+    "id": "REGEX(.*)",
+    "type": "hash-table",
+    "origin": "Downloaded",
+    "createdAt": "REGEX(.*)",
+    "lastUse": "REGEX(.*)",
+    "lookups": REGEX(.*),
+    "hash-table": {
+      "familyName": "https://schema.org/familyName",
+      "observedAt": "https://uri.etsi.org/ngsi-ld/observedAt",
+      "providedBy": "https://uri.fiware.org/ns/data-models#providedBy",
+      "irrSection": "https://w3id.org/saref#irrSection",
+      "multimedia": "https://w3id.org/saref#multimedia"
+    }
+  },
+  {
+    "url": "REGEX(.*)",
+    "id": "REGEX(.*)",
+    "type": "hash-table",
+    "origin": "Downloaded",
+    "createdAt": "REGEX(.*)",
+    "lastUse": "REGEX(.*)",
+    "lookups": REGEX(.*),
+    "hash-table": {
+      "letsfiware": "https://context.lab.letsfiware.jp/dataset#",
+      "temperature": "https://w3id.org/saref#temperature",
+      "id": "@id",
+      "ｎａｍｅ": "https://context.lab.letsfiware.jp/dataset#ｎａｍｅ",
+      "name": "https://context.lab.letsfiware.jp/dataset#name"
+    }
+  }
+]
+```
+
+#
+# 0021 ngsi create ldCOntexts
+#
+ngsi create --host orion-ld ldContext \
+  --data '["https://fiware.github.io/data-models/context.jsonld","https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"]'
+
+```
+REGEX(.*)
+```
+$id=$$
+
+#
+# 0022 ngsi get ldCOntexts
+#
+ngsi get ldContext --id $id --pretty
+
+```
+{
+  "@context": [
+    "https://fiware.github.io/data-models/context.jsonld",
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+  ]
+}
+```
+
+#
+# 0023 ngsi delete ldCOntexts
+#
+ngsi delete ldContext --id $id
+
+```
+```
+
+#
+# 1001 ngsi list ldCOntexts error
+#
+ngsi list --host orion ldContexts
+
+```1
+jsonldContextsList003 only available on NGSI-LD
+```
+
+#
+# 1002 ngsi get ldCOntext error
+#
+ngsi get --host orion ldContext
+
+```1
+jsonldContextGet003 only available on NGSI-LD
+```
+
+#
+# 1003 ngsi create ldCOntext error
+#
+ngsi create --host orion ldContext
+
+```1
+jsonldContextCreate003 only available on NGSI-LD
+```
+
+#
+# 1002 ngsi delete ldCOntext error
+#
+ngsi delete --host orion ldContext
+
+```1
+jsonldContextDelete003 only available on NGSI-LD
+```

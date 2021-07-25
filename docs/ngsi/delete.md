@@ -7,6 +7,7 @@
 -   [Delete an attribute from a temporal entity](#delete-an-attribute-from-a-temporal-entity)
 -   [Delete a subscription](#delete-a-subscription)
 -   [Delete a registration](#delete-a-registration)
+-   [Delete a JSON-LD context](#delete-a-json-ld-context)
 
 ## Common Options
 
@@ -195,7 +196,7 @@ ngsi delete subscription --id urn:ngsi-ld:Subscription:5f680822ef40bb66fe006dcf
 
 ## Delete a registration
 
-This command deletes registrations.
+This command deletes registration.
 
 ```console
 ngsi delete [common options] registration [options]
@@ -214,4 +215,29 @@ ngsi delete [common options] registration [options]
 
 ```console
 ngsi delete registration --id urn:ngsi-ld:ContextSourceRegistration:5f6840e6ef40bb66fe006dd0
+```
+
+<a name="delete-a-json-ld-context"></a>
+
+## Delete a JSON-LD context
+
+This command deletes a JSON-LD context.
+
+```console
+ngsi delete [common options] ldContext [options]
+```
+
+### Options
+
+| Options              | Description                |
+| -------------------- | -------------------------- |
+| --id value, -i value | jsonldContexts id          |
+| --help               | show help (default: false) |
+
+### Example
+
+#### Request:
+
+```console
+ngsi delete --host orion-ld ldContext --id d42e7ffe-ed21-11eb-bc92-0242c0a8a010
 ```

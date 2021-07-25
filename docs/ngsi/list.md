@@ -8,6 +8,7 @@ This command lists types, entities, subscriptions or registrations.
 -   [List multipletemporal entities](#list-multiple-temporal-entities)
 -   [List multiple subscriptions](#list-multiple-subscriptions)
 -   [List multiple registrations](#list-multiple-registrations)
+-   [List JSON-LD contexts](#list-json-ld-contexts)
 
 ## Common Options
 
@@ -570,4 +571,42 @@ ngsi list registrations -j --pretty
     "type": "ContextSourceRegistration"
   }
 ]
+```
+
+<a name="list-json-ld-contexts"></a>
+
+## List JSON-LD contexts
+
+This command lists JSON-LD contexts.
+
+```console
+ngsi list [common options] ldContexts [options]
+```
+
+### Options
+
+| Options       | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| --details, -d | detailed jsonldContexts information (default: false) |
+| --json, -j    | JSON format (default: false)                         |
+| --pretty, -P  | pretty format (default: false)                       |
+| --help        | show help (default: false)                           |
+
+### Examples
+
+#### Request:
+
+```console
+ngsi list --host orion-ld ldContexts
+```
+
+#### Response:
+
+```console
+fd564040-ece7-11eb-8e4a-0242c0a8a010 https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld
+08d25d00-ece8-11eb-8d65-0242c0a8a010 http://atcontext:8000/ngsi-context.jsonld
+0c6484d4-ece8-11eb-a312-0242c0a8a010 http://atcontext:8000/test-context.jsonld
+30abb6fa-ece8-11eb-a645-0242c0a8a010 https://fiware.github.io/data-models/context.jsonld
+31443434-ece8-11eb-a645-0242c0a8a010 https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld
+2fa4dbc4-ece8-11eb-a645-0242c0a8a010 http://58dac41cd926:1026/ngsi-ld/v1/jsonldContexts/2fa4dbc4-ece8-11eb-a645-0242c0a8a010
 ```
