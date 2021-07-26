@@ -143,13 +143,26 @@ func TestRequestHeaders(t *testing.T) {
 	}
 }
 
-func TestRequestNGSILD(t *testing.T) {
+func TestRequestNGSILDAttrs(t *testing.T) {
 	ts := httptest.NewServer(Route())
 	defer ts.Close()
 
 	r := NewHTTPRequet()
 	u, _ := url.Parse(ts.URL)
 	u.Path = "/ngsi-ld/v1/attributes/A"
+	res, _, err := r.Request("GET", u, nil, nil)
+	if assert.NoError(t, err) {
+		assert.Equal(t, http.StatusOK, res.StatusCode)
+	}
+}
+
+func TestRequestNGSILDTypes(t *testing.T) {
+	ts := httptest.NewServer(Route())
+	defer ts.Close()
+
+	r := NewHTTPRequet()
+	u, _ := url.Parse(ts.URL)
+	u.Path = "/ngsi-ld/v1/types/T"
 	res, _, err := r.Request("GET", u, nil, nil)
 	if assert.NoError(t, err) {
 		assert.Equal(t, http.StatusOK, res.StatusCode)

@@ -166,6 +166,11 @@ var (
 		Aliases: []string{"d"},
 		Usage:   "detailed attribute information",
 	}
+	typeDetailFlag = &cli.BoolFlag{
+		Name:    "details",
+		Aliases: []string{"d"},
+		Usage:   "detailed entity type information (LD)",
+	}
 	ldContextsIDFlag = &cli.StringFlag{
 		Name:    "id",
 		Aliases: []string{"i"},
@@ -221,12 +226,6 @@ var (
 		Name:    "type",
 		Aliases: []string{"t"},
 		Usage:   "Entity Type",
-	}
-	typeRFlag = &cli.StringFlag{
-		Name:     "type",
-		Aliases:  []string{"t"},
-		Required: true,
-		Usage:    "Entity Type",
 	}
 	idPatternFlag = &cli.StringFlag{
 		Name:  "idPattern",

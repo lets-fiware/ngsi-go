@@ -142,6 +142,12 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 
 	client.SetPath("/types")
 
+	if c.IsSet("details") {
+		v := &url.Values{}
+		v.Set("details", "true")
+		client.SetQuery(v)
+	}
+
 	res, body, err := client.HTTPGet()
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
@@ -150,15 +156,17 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
-	if c.Bool("pretty") {
-		newBuf := new(bytes.Buffer)
-		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
-		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
+	if isSetOR(c, []string{"json", "details", "pretty"}) {
+		if c.Bool("pretty") {
+			newBuf := new(bytes.Buffer)
+			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+			if err != nil {
+				return &ngsiCmdError{funcName, 3, err.Error(), err}
+			}
+			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+		} else {
+			fmt.Fprintln(ngsi.StdWriter, string(body))
 		}
-		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
-	} else if c.IsSet("json") {
-		fmt.Fprintln(ngsi.StdWriter, string(body))
 	} else {
 		var list entityTypeList
 		err := ngsilib.JSONUnmarshal(body, &list)
@@ -174,7 +182,7 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 }
 
 func typeGet(c *cli.Context) error {
-	const funcName = "typeGet"
+	const funcName = "typesGet"
 
 	ngsi, err := initCmd(c, funcName, true)
 	if err != nil {
@@ -185,25 +193,66 @@ func typeGet(c *cli.Context) error {
 		return &ngsiCmdError{funcName, 2, err.Error(), err}
 	}
 
-	if client.IsNgsiLd() {
-		return &ngsiCmdError{funcName, 3, "Only available on NGSIv2", nil}
+	t := ""
+	if c.IsSet("type") && c.Args().Len() == 0 {
+		t = c.String("type")
+	} else if !c.IsSet("type") && c.Args().Len() == 1 {
+		t = c.Args().Get(0)
+	} else {
+		return &ngsiCmdError{funcName, 3, "missing entity type", nil}
 	}
 
-	client.SetPath("/types/" + c.String("type"))
+	if client.IsNgsiV2() {
+		return typeGetV2(c, ngsi, client, t)
+	}
+	return typeGetLd(c, ngsi, client, t)
+}
+
+func typeGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t string) error {
+	const funcName = "typeGetV2"
+
+	client.SetPath("/types/" + t)
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
 	}
 
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return &ngsiCmdError{funcName, 3, err.Error(), err}
+		}
+		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
+	} else {
+		fmt.Fprintln(ngsi.StdWriter, string(body))
+	}
+
+	return nil
+}
+
+func typeGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t string) error {
+	const funcName = "typeGetLd"
+
+	client.SetPath("/types/" + url.QueryEscape(t))
+
+	res, body, err := client.HTTPGet()
+	if err != nil {
+		return &ngsiCmdError{funcName, 1, err.Error(), err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	}
+
+	if c.Bool("pretty") {
+		newBuf := new(bytes.Buffer)
+		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
+		if err != nil {
+			return &ngsiCmdError{funcName, 3, err.Error(), err}
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 	} else {

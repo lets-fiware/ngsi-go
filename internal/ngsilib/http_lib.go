@@ -100,6 +100,8 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 	u := url.String()
 	if p := strings.Index(u, "/ngsi-ld/v1/attributes/"); p > 0 {
 		u = u[:p] + url.Path
+	} else if p := strings.Index(u, "/ngsi-ld/v1/types/"); p > 0 {
+		u = u[:p] + url.Path
 	}
 
 	var req *http.Request

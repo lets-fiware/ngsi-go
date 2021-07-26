@@ -32,20 +32,20 @@ ngsi list [common options] types [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --verbose, -v          | verbose (default: false)       |
-| --json, -j             | JSON format (default: false)   |
-| --pretty, -P           | pretty format (default: false) |
-| --link value, -L value | specify @context               |
-| --help                 | show help (default: false)     |
+| Options                | Description                                            |
+| ---------------------- | ------------------------------------------------------ |
+| --details, -d          | detailed entity type information (LD) (default: false) |
+| --json, -j             | JSON format (default: false)                           |
+| --pretty, -P           | pretty format (default: false)                         |
+| --link value, -L value | specify @context                                       |
+| --help                 | show help (default: false)                             |
 
-### Examples
+### Examples for NGSIv2
 
 #### Request:
 
 ```console
-ngsi list types
+ngsi list --host orion types
 ```
 
 ```text
@@ -58,11 +58,33 @@ Store
 #### Request:
 
 ```console
-ngsi list types --json
+ngsi list --host orion types --json
 ```
 
 ```json
 ["InventoryItem","Product","Shelf","Store"]
+```
+### Examples for NGSI-LD
+
+#### Request:
+
+```console
+ngsi list --host orion-ld types --details --pretty
+```
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "type": "EntityType",
+    "typeName": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "attributeNames": [
+      "https://uri.fiware.org/ns/data-models#category",
+      "https://w3id.org/saref#temperature"
+    ]
+  }
+]
 ```
 
 <a name="list-multiple-attributes"></a>
