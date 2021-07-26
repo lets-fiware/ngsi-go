@@ -36,7 +36,28 @@ REGEX(.*)
 ```
 
 #
-# 0001 list types
+# 0001 list types --help
+#
+ngsi list types --help
+
+```
+NAME:
+   ngsi list types - list types
+
+USAGE:
+   ngsi list types [command options] [arguments...]
+
+OPTIONS:
+   --details, -d           detailed entity type information (LD) (default: false)
+   --json, -j              JSON format (default: false)
+   --pretty, -P            pretty format (default: false)
+   --link value, -L value  @context (LD)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0002 list types
 #
 ngsi list types
 
@@ -44,7 +65,7 @@ ngsi list types
 ```
 
 #
-# 0002 list types
+# 0003 list types
 #
 #  Related issues:
 #    https://github.com/FIWARE/context.Orion-LD/issues/732
@@ -129,6 +150,26 @@ ngsi list types --pretty
 ```
 
 #
+# 0015 list types --details --pretty
+#
+ngsi list types --details --pretty
+
+```
+[
+  {
+    "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "id": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "type": "EntityType",
+    "typeName": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+    "attributeNames": [
+      "https://uri.fiware.org/ns/data-models#category",
+      "https://w3id.org/saref#temperature"
+    ]
+  }
+]
+```
+
+#
 # 9999 Clean up
 #
 ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
@@ -136,4 +177,3 @@ ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
 ```
 REGEX(.*)
 ```
-

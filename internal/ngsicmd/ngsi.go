@@ -1345,8 +1345,9 @@ var getCmd = cli.Command{
 			Name:  "type",
 			Usage: "get type",
 			Flags: []cli.Flag{
-				typeRFlag,
+				typeFlag,
 				prettyFlag,
+				linkFlag,
 			},
 			Action: func(c *cli.Context) error {
 				return typeGet(c)
@@ -1394,6 +1395,7 @@ var listCmd = cli.Command{
 			Name:  "types",
 			Usage: "list types",
 			Flags: []cli.Flag{
+				typeDetailFlag,
 				jsonFlag,
 				prettyFlag,
 				linkFlag,

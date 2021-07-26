@@ -7,6 +7,7 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 -   [Get temporal entity](#get-temporal-entity)
 -   [Get an attribute](#get-an-attribute)
 -   [Get multiple attributes](#get-multiple-attributes)
+-   [Get a type](#get-a-type)
 -   [Get a subscription](#get-a-subscription)
 -   [Get a registration](#get-a-registration)
 -   [Get a JSON-LD context](#get-a-json-ld-context)
@@ -229,6 +230,92 @@ ngsi get attrs --type Product --id urn:ngsi-ld:Product:001 --attrs name,price --
 
 ```json
 ["Beer",99]
+```
+
+<a name="get-a-type"></a>
+
+## Get a type
+
+This command gets type.
+
+```console
+ngsi get [common options] type [options]
+```
+
+### Options
+
+| Options                | Description                    |
+| ---------------------- | ------------------------------ |
+| --type value, -t value | Entity Type                    |
+| --pretty, -P           | pretty format (default: false) |
+| --link value, -L value | @context (LD)                  |
+| --help                 | show help (default: false)     |
+
+### Examples for NGSIv2
+
+#### Request:
+
+```console
+ngsi get --host orion type --type Product --pretty
+```
+
+```json
+{
+  "attrs": {
+    "name": {
+      "types": [
+        "Text"
+      ]
+    },
+    "price": {
+      "types": [
+        "Integer"
+      ]
+    },
+    "size": {
+      "types": [
+        "Text"
+      ]
+    }
+  },
+  "count": 1
+}
+```
+
+### Examples for NGSI-LD
+
+#### Request:
+
+```console
+ngsi get --host orion-ld type --pretty https://uri.fiware.org/ns/data-models#TemperatureSensor
+```
+
+```json
+{
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "id": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "type": "EntityTypeInformation",
+  "typeName": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "entityCount": 1,
+  "attributeDetails": [
+    {
+      "id": "https://uri.fiware.org/ns/data-models#category",
+      "type": "Attribute",
+      "attributeName": "https://uri.fiware.org/ns/data-models#category",
+      "attributeTypes": [
+        "Property"
+      ]
+    },
+    {
+      "id": "https://w3id.org/saref#temperature",
+      "type": "Attribute",
+      "attributeName": "https://w3id.org/saref#temperature",
+      "attributeTypes": [
+        "Property"
+      ]
+    }
+  ]
+}
 ```
 
 <a name="get-a-subscription"></a>

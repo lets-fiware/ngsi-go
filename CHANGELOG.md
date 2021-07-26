@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   hardening: Add get type command for NGSI-LD (#194)
 -   Hardening: Add management command for jsonldContexts (#193)
 -   Hardening: Add attributes sub-cmd in list command (#192)
 -   Update: Change command name from geoproxy to queryproxy (#191)

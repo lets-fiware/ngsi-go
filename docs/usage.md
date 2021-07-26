@@ -99,6 +99,7 @@ ngsi [global options] command [common options] sub-command [options]
 |                              | [tentity](./ngsi/get.md#get-temporal-entity)                              | get temporal entity                          |
 |                              | [attr](./ngsi/get.md#get-an-attribute)                                    | get attribute                                |
 |                              | [attrs](./ngsi/get.md#get-multiple-attributes)                            | get attributes                               |
+|                              | [type](./ngsi/get.md#get-a-type)                                          | get type                                     |
 |                              | [subscription](./ngsi/get.md#get-a-subscription)                          | get subscription                             |
 |                              | [registration](./ngsi/get.md#get-a-registration)                          | get registration                             |
 |                              | [ldContext](./ngsi/get.md#get-a-json-ld-context)                          | get JSON-LD context                          |

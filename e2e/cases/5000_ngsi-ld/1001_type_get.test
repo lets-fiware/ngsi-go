@@ -1,0 +1,248 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/FIWARE/tutorials.CRUD-Operations/tree/NGSI-LD
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0000 Clean up
+#
+ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
+
+```
+REGEX(.*)
+```
+
+#
+# 0001 get type
+#
+ngsi get type --help
+
+```
+NAME:
+   ngsi get type - get type
+
+USAGE:
+   ngsi get type [command options] [arguments...]
+
+OPTIONS:
+   --type value, -t value  Entity Type
+   --pretty, -P            pretty format (default: false)
+   --link value, -L value  @context (LD)
+   --help                  show help (default: false)
+   
+```
+
+#
+# 0002 list types
+#
+ngsi list types
+
+```
+```
+
+#
+# 0011 Create entity
+#
+ngsi create --host orion-ld entity --link ctx \
+--data '{
+      "id": "urn:ngsi-ld:TemperatureSensor:001",
+      "type": "TemperatureSensor",
+      "category": {
+            "type": "Property",
+            "value": "sensor"
+      },
+      "temperature": {
+            "type": "Property",
+            "value": 25,
+            "unitCode": "CEL"
+      }
+}'
+
+```
+```
+#
+# 0012 Get Entity
+#
+ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
+
+```
+{
+  "@context": "http://REGEX(.*)/ngsi-context.jsonld",
+  "id": "urn:ngsi-ld:TemperatureSensor:001",
+  "type": "TemperatureSensor",
+  "category": {
+    "type": "Property",
+    "value": "sensor"
+  },
+  "temperature": {
+    "type": "Property",
+    "value": 25,
+    "unitCode": "CEL"
+  }
+}
+```
+
+#
+# 0013 get type --type TemperatureSensor --link ctx
+#
+ngsi get type --type TemperatureSensor --link ctx --pretty
+
+```
+{
+  "@context": "http://atcontext:8000/ngsi-context.jsonld",
+  "id": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "type": "EntityTypeInformation",
+  "typeName": "TemperatureSensor",
+  "entityCount": 1,
+  "attributeDetails": [
+    {
+      "id": "https://uri.fiware.org/ns/data-models#category",
+      "type": "Attribute",
+      "attributeName": "category",
+      "attributeTypes": [
+        "Property"
+      ]
+    },
+    {
+      "id": "https://w3id.org/saref#temperature",
+      "type": "Attribute",
+      "attributeName": "temperature",
+      "attributeTypes": [
+        "Property"
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0014 get type --type https://uri.fiware.org/ns/data-models#TemperatureSensor
+#
+ngsi get type --type https://uri.fiware.org/ns/data-models#TemperatureSensor --pretty
+
+```
+{
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "id": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "type": "EntityTypeInformation",
+  "typeName": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "entityCount": 1,
+  "attributeDetails": [
+    {
+      "id": "https://uri.fiware.org/ns/data-models#category",
+      "type": "Attribute",
+      "attributeName": "https://uri.fiware.org/ns/data-models#category",
+      "attributeTypes": [
+        "Property"
+      ]
+    },
+    {
+      "id": "https://w3id.org/saref#temperature",
+      "type": "Attribute",
+      "attributeName": "https://w3id.org/saref#temperature",
+      "attributeTypes": [
+        "Property"
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0015 get type --link ctx TemperatureSensor
+#
+ngsi get type --link ctx --pretty TemperatureSensor
+
+```
+{
+  "@context": "http://atcontext:8000/ngsi-context.jsonld",
+  "id": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "type": "EntityTypeInformation",
+  "typeName": "TemperatureSensor",
+  "entityCount": 1,
+  "attributeDetails": [
+    {
+      "id": "https://uri.fiware.org/ns/data-models#category",
+      "type": "Attribute",
+      "attributeName": "category",
+      "attributeTypes": [
+        "Property"
+      ]
+    },
+    {
+      "id": "https://w3id.org/saref#temperature",
+      "type": "Attribute",
+      "attributeName": "temperature",
+      "attributeTypes": [
+        "Property"
+      ]
+    }
+  ]
+}
+```
+
+#
+# 0016 get type https://uri.fiware.org/ns/data-models#TemperatureSensor
+#
+ngsi get type --pretty https://uri.fiware.org/ns/data-models#TemperatureSensor
+
+```
+{
+  "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+  "id": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "type": "EntityTypeInformation",
+  "typeName": "https://uri.fiware.org/ns/data-models#TemperatureSensor",
+  "entityCount": 1,
+  "attributeDetails": [
+    {
+      "id": "https://uri.fiware.org/ns/data-models#category",
+      "type": "Attribute",
+      "attributeName": "https://uri.fiware.org/ns/data-models#category",
+      "attributeTypes": [
+        "Property"
+      ]
+    },
+    {
+      "id": "https://w3id.org/saref#temperature",
+      "type": "Attribute",
+      "attributeName": "https://w3id.org/saref#temperature",
+      "attributeTypes": [
+        "Property"
+      ]
+    }
+  ]
+}
+```
+
+#
+# 9999 Clean up
+#
+ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
+
+```
+REGEX(.*)
+```
+
