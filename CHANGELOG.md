@@ -1,5 +1,6 @@
 ## NGSI Go v0.8.4-next
 
+-   Improve: Refactor tokenproxy (#196)
 -   Improve: Refactor regproxy (#195)
 -   hardening: Add get type command for NGSI-LD (#194)
 -   Hardening: Add management command for jsonldContexts (#193)
