@@ -975,12 +975,12 @@ var (
 		Aliases: []string{"I"},
 		Usage:   "specify client id for Keyrock",
 	}
-	tokeProxyClientSecretFlag = &cli.StringFlag{
+	tokenProxyClientSecretFlag = &cli.StringFlag{
 		Name:    "clientSecret",
 		Aliases: []string{"S"},
 		Usage:   "specify client secret for Keyrock",
 	}
-	tokeProxyTokenProxyHostFlag = &cli.StringFlag{
+	tokenProxyTokenProxyHostFlag = &cli.StringFlag{
 		Name:    "host",
 		Aliases: []string{"h"},
 		Usage:   "specify tokenproxy server",
