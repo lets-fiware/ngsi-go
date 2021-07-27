@@ -513,7 +513,7 @@ var tokenProxyCmd = cli.Command{
 				tokenProxyCertFlag,
 				tokenProxyIdmHostTenantFlag,
 				tokenProxyClientIDFlag,
-				tokeProxyClientSecretFlag,
+				tokenProxyClientSecretFlag,
 				verboseFlag,
 			},
 			Action: func(c *cli.Context) error {
@@ -524,7 +524,7 @@ var tokenProxyCmd = cli.Command{
 			Name:  "health",
 			Usage: "sanity check for regproxy server",
 			Flags: []cli.Flag{
-				tokeProxyTokenProxyHostFlag,
+				tokenProxyTokenProxyHostFlag,
 				prettyFlag,
 			},
 			Action: func(c *cli.Context) error {

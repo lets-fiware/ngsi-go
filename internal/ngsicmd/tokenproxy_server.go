@@ -204,10 +204,6 @@ func tokenProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 2, r.URL.Path)+"\n")
 
-	tokenProxyGlobal.gLock.Lock()
-	tokenProxyGlobal.timeSent += 1
-	tokenProxyGlobal.gLock.Unlock()
-
 	var body []byte
 	var err error
 	var u *url.URL
@@ -236,6 +232,7 @@ func tokenProxyHandler(w http.ResponseWriter, r *http.Request) {
 	res, resBody, err := tokenProxyGlobal.http.Request("POST", u, headers, body)
 	if err == nil {
 		tokenProxyGlobal.gLock.Lock()
+		tokenProxyGlobal.timeSent += 1
 		if revoke {
 			tokenProxyGlobal.revoke += 1
 		} else {
@@ -257,6 +254,7 @@ func tokenProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 func tokenProxyResposeError(ngsi *ngsilib.NGSI, w http.ResponseWriter, status int, err error) {
 	tokenProxyGlobal.gLock.Lock()
+	tokenProxyGlobal.timeSent += 1
 	tokenProxyGlobal.failure += 1
 	tokenProxyGlobal.gLock.Unlock()
 
@@ -387,6 +385,7 @@ func tokenProxyRevokeToken(ngsi *ngsilib.NGSI, r *http.Request) ([]byte, error) 
 func tokenProxyGetStat() []byte {
 	uptime := time.Now().Unix() - tokenProxyGlobal.startTime.Unix()
 
+	tokenProxyGlobal.gLock.Lock()
 	stat := tokenProxyStat{
 		NgsiGo:       "tokenproxy",
 		Version:      Version,
@@ -401,6 +400,7 @@ func tokenProxyGetStat() []byte {
 		Revoke:       tokenProxyGlobal.revoke,
 		Failure:      tokenProxyGlobal.failure,
 	}
+	tokenProxyGlobal.gLock.Unlock()
 
 	b, err := ngsilib.JSONMarshal(stat)
 	if err != nil {
