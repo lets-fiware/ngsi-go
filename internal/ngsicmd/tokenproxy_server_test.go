@@ -1050,7 +1050,7 @@ func TestTokenProxyHealthCmd(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"tokenproxy","version":"0.8.4-next (git_hash:a88cc05223803d680a94722564245d8d19bc71ef)","health":"OK","idm":"http://keyrock:3000/oauth2/token","clientId":"a1a6048b-df1d-4d4f-9a08-5cf836041d14","clientSecret":"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9","verbose":true,"uptime":"0 d, 1 h, 55 m, 39 s","timesent":3,"success":1,"revoke":1,"failure":1}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"tokenproxy","version":"0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)","health":"OK","idm":"http://keyrock:3000/oauth2/token","clientId":"a1a6048b-df1d-4d4f-9a08-5cf836041d14","clientSecret":"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9","verbose":true,"uptime":"0 d, 1 h, 55 m, 39 s","timesent":3,"success":1,"revoke":1,"failure":1}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -1063,7 +1063,7 @@ func TestTokenProxyHealthCmd(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"ngsi-go\":\"tokenproxy\",\"version\":\"0.8.4-next (git_hash:a88cc05223803d680a94722564245d8d19bc71ef)\",\"health\":\"OK\",\"idm\":\"http://keyrock:3000/oauth2/token\",\"clientId\":\"a1a6048b-df1d-4d4f-9a08-5cf836041d14\",\"clientSecret\":\"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9\",\"verbose\":true,\"uptime\":\"0 d, 1 h, 55 m, 39 s\",\"timesent\":3,\"success\":1,\"revoke\":1,\"failure\":1}"
+		expected := "{\"ngsi-go\":\"tokenproxy\",\"version\":\"0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)\",\"health\":\"OK\",\"idm\":\"http://keyrock:3000/oauth2/token\",\"clientId\":\"a1a6048b-df1d-4d4f-9a08-5cf836041d14\",\"clientSecret\":\"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9\",\"verbose\":true,\"uptime\":\"0 d, 1 h, 55 m, 39 s\",\"timesent\":3,\"success\":1,\"revoke\":1,\"failure\":1}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1074,7 +1074,7 @@ func TestTokenProxyHealthCmdPretty(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"tokenproxy","version":"0.8.4-next (git_hash:a88cc05223803d680a94722564245d8d19bc71ef)","health":"OK","idm":"http://keyrock:3000/oauth2/token","clientId":"a1a6048b-df1d-4d4f-9a08-5cf836041d14","clientSecret":"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9","verbose":true,"uptime":"0 d, 1 h, 55 m, 39 s","timesent":3,"success":1,"revoke":1,"failure":1}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"tokenproxy","version":"0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)","health":"OK","idm":"http://keyrock:3000/oauth2/token","clientId":"a1a6048b-df1d-4d4f-9a08-5cf836041d14","clientSecret":"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9","verbose":true,"uptime":"0 d, 1 h, 55 m, 39 s","timesent":3,"success":1,"revoke":1,"failure":1}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -1088,7 +1088,7 @@ func TestTokenProxyHealthCmdPretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"ngsi-go\": \"tokenproxy\",\n  \"version\": \"0.8.4-next (git_hash:a88cc05223803d680a94722564245d8d19bc71ef)\",\n  \"health\": \"OK\",\n  \"idm\": \"http://keyrock:3000/oauth2/token\",\n  \"clientId\": \"a1a6048b-df1d-4d4f-9a08-5cf836041d14\",\n  \"clientSecret\": \"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9\",\n  \"verbose\": true,\n  \"uptime\": \"0 d, 1 h, 55 m, 39 s\",\n  \"timesent\": 3,\n  \"success\": 1,\n  \"revoke\": 1,\n  \"failure\": 1\n}\n"
+		expected := "{\n  \"ngsi-go\": \"tokenproxy\",\n  \"version\": \"0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)\",\n  \"health\": \"OK\",\n  \"idm\": \"http://keyrock:3000/oauth2/token\",\n  \"clientId\": \"a1a6048b-df1d-4d4f-9a08-5cf836041d14\",\n  \"clientSecret\": \"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9\",\n  \"verbose\": true,\n  \"uptime\": \"0 d, 1 h, 55 m, 39 s\",\n  \"timesent\": 3,\n  \"success\": 1,\n  \"revoke\": 1,\n  \"failure\": 1\n}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1192,7 +1192,7 @@ func TestTokenProxyHealthCmdIotaErrorPretty(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"tokenproxy","version":"0.8.4-next (git_hash:a88cc05223803d680a94722564245d8d19bc71ef)","health":"OK","idm":"http://keyrock:3000/oauth2/token","clientId":"a1a6048b-df1d-4d4f-9a08-5cf836041d14","clientSecret":"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9","verbose":true,"uptime":"0 d, 1 h, 55 m, 39 s","timesent":3,"success":1,"revoke":1,"failure":1}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"tokenproxy","version":"0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)","health":"OK","idm":"http://keyrock:3000/oauth2/token","clientId":"a1a6048b-df1d-4d4f-9a08-5cf836041d14","clientSecret":"e4cc0147-e38f-4211-b8ad-8ae5e6a107f9","verbose":true,"uptime":"0 d, 1 h, 55 m, 39 s","timesent":3,"success":1,"revoke":1,"failure":1}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock

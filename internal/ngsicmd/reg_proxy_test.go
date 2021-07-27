@@ -950,7 +950,7 @@ func TestRegProxyHealthCmd(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -963,7 +963,7 @@ func TestRegProxyHealthCmd(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\"ngsi-go\": \"regproxy\", \"version\": \"0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)\", \"health\": \"OK\", \"csource\": \"https://orion.letsfiware.jp\", \"verbose\": false, \"uptime\": \"0 d, 0 h, 51 m, 51 s\", \"timesent\": 0, \"success\": 0, \"failure\": 0}"
+		expected := "{\"ngsi-go\": \"regproxy\", \"version\": \"0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)\", \"health\": \"OK\", \"csource\": \"https://orion.letsfiware.jp\", \"verbose\": false, \"uptime\": \"0 d, 0 h, 51 m, 51 s\", \"timesent\": 0, \"success\": 0, \"failure\": 0}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -974,7 +974,7 @@ func TestRegProxyHealthCmdPretty(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock
@@ -988,7 +988,7 @@ func TestRegProxyHealthCmdPretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := buf.String()
-		expected := "{\n  \"ngsi-go\": \"regproxy\",\n  \"version\": \"0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)\",\n  \"health\": \"OK\",\n  \"csource\": \"https://orion.letsfiware.jp\",\n  \"verbose\": false,\n  \"uptime\": \"0 d, 0 h, 51 m, 51 s\",\n  \"timesent\": 0,\n  \"success\": 0,\n  \"failure\": 0\n}\n"
+		expected := "{\n  \"ngsi-go\": \"regproxy\",\n  \"version\": \"0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)\",\n  \"health\": \"OK\",\n  \"csource\": \"https://orion.letsfiware.jp\",\n  \"verbose\": false,\n  \"uptime\": \"0 d, 0 h, 51 m, 51 s\",\n  \"timesent\": 0,\n  \"success\": 0,\n  \"failure\": 0\n}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -1092,7 +1092,7 @@ func TestRegProxyHealthCmdIotaErrorPretty(t *testing.T) {
 	reqRes := MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go": "regproxy", "version": "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)", "health": "OK", "csource": "https://orion.letsfiware.jp", "verbose": false, "uptime": "0 d, 0 h, 51 m, 51 s", "timesent": 0, "success": 0, "failure": 0}`)
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	ngsi.HTTP = mock

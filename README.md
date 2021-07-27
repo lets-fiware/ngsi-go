@@ -139,23 +139,30 @@ USAGE:
    ngsi [global options] command [command options] [arguments...]
 
 VERSION:
-   0.8.4 (git_hash:35ee7560911b403029880242789039f2532c817b)
+   0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
+   APPLICATION MASHUP:
+     preferences  manage preferences for WireCloud
+     macs         manage mashable application components for WireCloud
+     workspaces   manage workspaces for WireCloud
+     tabs         manage tabs for WireCloud
    CONVENIENCE:
-     admin     admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
-     apis      print endpoints of API
-     cp        copy entities
-     wc        print number of entities, subscriptions, registrations or types
-     man       print urls of document
-     health    print health status
-     ls        list entities
-     rm        remove entities
-     receiver  notification receiver
-     regproxy  registration proxy
-     template  create template of subscription or registration
-     version   print the version
+     admin       admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
+     apis        print endpoints of API
+     cp          copy entities
+     wc          print number of entities, subscriptions, registrations or types
+     man         print urls of document
+     health      print health status
+     ls          list entities
+     queryproxy  query proxy
+     rm          remove entities
+     receiver    notification receiver
+     regproxy    registration proxy
+     template    create template of subscription or registration
+     tokenproxy  token proxy
+     version     print the version
    Context-Aware CEP:
      rules  rules command for PERSEO
    IoT Agent:
@@ -174,10 +181,10 @@ COMMANDS:
      token     manage token
    NGSI:
      append   append attributes
-     create   create entity(ies), subscription or registration
-     delete   delete entity(ies), attribute, subscription or registration
-     get      get entity(ies), attribute(s), subscription, registration or type
-     list     list types, entities, subscriptions or registrations
+     create   create entity(ies), subscription, registration or ldContext
+     delete   delete entity(ies), attribute, subscription, registration or ldContext
+     get      get entity(ies), attribute(s), subscription, registration type or ldContext
+     list     list types, attributes, entities, tentities, subscriptions or registrations
      replace  replace entities or attributes
      update   update entities, attribute(s) or subscription
      upsert   upsert entity or entities
@@ -189,13 +196,14 @@ COMMANDS:
      hget     get historical raw and aggregated time series context information
 
 GLOBAL OPTIONS:
-   --syslog LEVEL  specify logging LEVEL (off, err, info, debug)
-   --stderr LEVEL  specify logging LEVEL (off, err, info, debug)
-   --config FILE   specify configuration FILE
-   --cache FILE    specify cache FILE
-   --batch, -B     don't use previous args (batch) (default: false)
-   --help          show help (default: false)
-   --version, -v   print the version (default: false)
+   --syslog LEVEL        specify logging LEVEL (off, err, info, debug)
+   --stderr LEVEL        specify logging LEVEL (off, err, info, debug)
+   --config FILE         specify configuration FILE
+   --cache FILE          specify cache FILE
+   --batch, -B           don't use previous args (batch) (default: false)
+   --insecureSkipVerify  TLS/SSL skip certificate verification (default: false)
+   --help                show help (default: false)
+   --version, -v         print the version (default: false)
 
 COPYRIGHT:
    (c) 2020-2021 Kazuhito Suda
@@ -215,20 +223,20 @@ The NGSI Go binary is installed in `/usr/local/bin`.
 #### Installation on Linux
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.8.4/ngsi-v0.8.4-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.8.4-linux-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.9.0/ngsi-v0.9.0-linux-amd64.tar.gz
+sudo tar zxvf ngsi-v0.9.0-linux-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.8.4-linux-arm.tar.gz` and `ngsi-v0.8.4-linux-arm64.tar.gz` binaries are also available.
+`ngsi-v0.9.0-linux-arm.tar.gz` and `ngsi-v0.9.0-linux-arm64.tar.gz` binaries are also available.
 
 #### Installation on Mac
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.8.4/ngsi-v0.8.4-darwin-amd64.tar.gz
-sudo tar zxvf ngsi-v0.8.4-darwin-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.9.0/ngsi-v0.9.0-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.9.0-darwin-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.8.4-darwin-arm64.tar.gz` binary is also available.
+`ngsi-v0.9.0-darwin-arm64.tar.gz` binary is also available.
 
 ### Install bash autocomplete file for NGSI Go
 

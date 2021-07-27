@@ -77,7 +77,7 @@ ngsi queryproxy health --host queryproxy
 ```
 {
   "ngsi-go": "queryproxy",
-  "version": "0.8.4-next (git_hash:445dfc6166004baf512cad612df05fe137ce5e61)",
+  "version": "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)",
   "health": "OK",
   "orion": "http://orion:1026/v2/entities",
   "verbose": true,
