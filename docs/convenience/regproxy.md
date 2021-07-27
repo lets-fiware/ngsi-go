@@ -72,7 +72,7 @@ ngsi regproxy health --host regproxy --pretty
 ```
 {
   "ngsi-go": "regproxy",
-  "version": "0.8.4-next (git_hash:7392ed9962f42c6eca1f894465b6f7450d65958a)",
+  "version": "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)",
   "health": "OK",
   "csource": "https://orion.letfiware.jp",
   "verbose": false,
