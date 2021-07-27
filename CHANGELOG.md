@@ -1,4 +1,4 @@
-## NGSI Go v0.8.4-next
+## NGSI Go v0.9.0  (FIWARE Release 8.1.0) - July 27, 2021
 
 -   Improve: Refactor tokenproxy (#196)
 -   Improve: Refactor regproxy (#195)
