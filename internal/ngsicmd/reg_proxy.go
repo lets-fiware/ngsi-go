@@ -232,10 +232,6 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	ngsi.Logging(ngsilib.LogErr, sprintMsg(funcName, 1, r.URL.Path)+"\n")
 
-	regProxyGlobal.gLock.Lock()
-	regProxyGlobal.timeSent += 1
-	regProxyGlobal.gLock.Unlock()
-
 	b := getRequestBody(r.Body)
 
 	origTenant := ""
@@ -311,6 +307,7 @@ func regProxyHandler(w http.ResponseWriter, r *http.Request) {
 	res, resBody, err := regProxyGlobal.http.Request("POST", u, headers, b)
 	if err == nil {
 		regProxyGlobal.gLock.Lock()
+		regProxyGlobal.timeSent += 1
 		regProxyGlobal.success += 1
 		regProxyGlobal.gLock.Unlock()
 
@@ -343,6 +340,7 @@ func getRequestBody(body io.ReadCloser) []byte {
 
 func regProxyFailureUp() {
 	regProxyGlobal.gLock.Lock()
+	regProxyGlobal.timeSent += 1
 	regProxyGlobal.failure += 1
 	regProxyGlobal.gLock.Unlock()
 }
@@ -350,6 +348,7 @@ func regProxyFailureUp() {
 func regProxyGetStat(host string) []byte {
 	uptime := time.Now().Unix() - regProxyGlobal.startTime.Unix()
 
+	regProxyGlobal.gLock.Lock()
 	stat := regProxyStat{
 		NgsiGo:   "regproxy",
 		Version:  Version,
@@ -370,6 +369,7 @@ func regProxyGetStat(host string) []byte {
 			URL:     regProxyGlobal.url,
 		}
 	}
+	regProxyGlobal.gLock.Unlock()
 
 	b, err := ngsilib.JSONMarshal(stat)
 	if err != nil {
