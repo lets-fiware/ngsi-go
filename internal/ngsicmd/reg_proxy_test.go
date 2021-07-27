@@ -765,6 +765,7 @@ func TestRegProxyGetStatError(t *testing.T) {
 		url:       &url,
 		startTime: time.Now(),
 		mutex:     &sync.Mutex{},
+		gLock:     &sync.Mutex{},
 	}
 
 	setJSONEncodeErr(ngsi, 0)
