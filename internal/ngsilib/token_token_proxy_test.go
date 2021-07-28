@@ -35,6 +35,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -119,7 +120,7 @@ func TestRequestTokenTokenProxyErrorUser(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -149,7 +150,7 @@ func TestRequestTokenTokenProxyErrorHTTP(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -178,7 +179,7 @@ func TestRequestTokenTokenProxyErrorUnmarshal(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		actual := "json: cannot unmarshal string into Go value of type ngsilib.TokenProxy Field: (14) \"access_token\": \"ad5252cd520c"
 		assert.Equal(t, actual, ngsiErr.Message)
@@ -208,7 +209,7 @@ func TestRequestTokenTokenProxyErrorHTTPStatus(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -237,7 +238,7 @@ func TestRequestTokenTokenProxyErrorHTTPStatusUnauthorized(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "error  Unauthorized", ngsiErr.Message)
 	}
@@ -299,7 +300,7 @@ func TestRevokeTokenProxyErrorHTTP(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -323,7 +324,7 @@ func TestRevokeTokenProxyErrorHTTPStatus(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -373,12 +374,12 @@ func TestGetTokenInfoTokenProxyError(t *testing.T) {
 		},
 	}
 
-	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}}
 
 	_, err := idm.getTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
@@ -409,7 +410,7 @@ func TestCheckIdmParamsTokenProxyError(t *testing.T) {
 	err := idm.checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "idmHost, username and password are needed", ngsiErr.Message)
 	}

@@ -25,26 +25,11 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi services create --help
+# 0001 ngsi settings clear
 #
-ngsi services create --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi services create - create a configuration group
-
-USAGE:
-   ngsi services create [command options] [arguments...]
-
-OPTIONS:
-   --data value            data body (payload)
-   --apikey value          a key used for devices belonging to this service
-   --token value           token obtained from the authentication system
-   --cbroker value         url of context broker or broker alias
-   --type value, -t value  Entity Type
-   --resource value        uri for the iotagent
-   --help                  show help (default: false)
-   
 ```
 
 #

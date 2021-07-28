@@ -26,44 +26,11 @@
 #
 
 #
-# 0001 ngsi list entities --help
+# 0001 ngsi settings clear
 #
-ngsi list entities --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi list entities - list entities
-
-USAGE:
-   ngsi list entities [command options] [arguments...]
-
-OPTIONS:
-   --type value, -t value   Entity Type
-   --idPattern value        idPattern
-   --typePattern value      typePattern (v2)
-   --query value, -q value  filtering by attribute value
-   --mq value, -m value     filtering by metadata (v2)
-   --georel value           georel
-   --geometry value         geometry
-   --coords value           coords
-   --attrs value            attributes
-   --metadata value         metadata (v2)
-   --orderBy value          orderBy
-   --count, -C              count (default: false)
-   --keyValues, -K          keyValues (default: false)
-   --values, -V             values (default: false)
-   --unique, -U             unique (default: false)
-   --id value, -i value     id
-   --skipForwarding         skip forwarding to CPrs (v2) (default: false)
-   --link value, -L value   @context (LD)
-   --acceptJson             set accecpt header to application/json (LD) (default: false)
-   --acceptGeoJson          set accecpt header to application/geo+json (LD) (default: false)
-   --verbose, -v            verbose (default: false)
-   --lines, -1              lines (default: false)
-   --pretty, -P             pretty format (default: false)
-   --safeString value       use safe string (value: on/off)
-   --help                   show help (default: false)
-   
 ```
 
 #

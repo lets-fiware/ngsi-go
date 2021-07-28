@@ -29,23 +29,25 @@ SOFTWARE.
 
 package ngsilib
 
+import "github.com/lets-fiware/ngsi-go/internal/ngsierr"
+
 // CreateServer is ...
 func (ngsi *NGSI) CreateServer(name string, brokerParam map[string]string) error {
 	const funcName = "CreateServer"
 
 	broker := new(Server)
 	if err := setServerParam(broker, brokerParam); err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if err := ngsi.checkAllParams(broker); err != nil {
-		return &LibError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
-	ngsi.serverList[name] = broker
+	ngsi.ServerList[name] = broker
 
 	if err := ngsi.saveConfigFile(); err != nil {
-		return &LibError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	return nil
@@ -55,18 +57,18 @@ func (ngsi *NGSI) CreateServer(name string, brokerParam map[string]string) error
 func (ngsi *NGSI) UpdateServer(host string, brokerParam map[string]string) error {
 	const funcName = "UpdateServer"
 
-	if broker, ok := ngsi.serverList[host]; ok {
+	if broker, ok := ngsi.ServerList[host]; ok {
 		if err := setServerParam(broker, brokerParam); err != nil {
-			return &LibError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		if err := ngsi.checkAllParams(broker); err != nil {
-			return &LibError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 		if err := ngsi.saveConfigFile(); err != nil {
-			return &LibError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	} else {
-		return &LibError{funcName, 4, host + " not found", nil}
+		return ngsierr.New(funcName, 4, host+" not found", nil)
 	}
 	return nil
 }
@@ -75,13 +77,13 @@ func (ngsi *NGSI) UpdateServer(host string, brokerParam map[string]string) error
 func (ngsi *NGSI) DeleteServer(host string) error {
 	const funcName = "DeleteServer"
 
-	if _, ok := ngsi.serverList[host]; ok {
-		delete(ngsi.serverList, host)
+	if _, ok := ngsi.ServerList[host]; ok {
+		delete(ngsi.ServerList, host)
 		if err := ngsi.saveConfigFile(); err != nil {
-			return &LibError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 	} else {
-		return &LibError{funcName, 2, host + " not found", nil}
+		return ngsierr.New(funcName, 2, host+" not found", nil)
 	}
 	return nil
 }

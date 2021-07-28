@@ -36,9 +36,9 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-
-	"github.com/urfave/cli/v2"
 )
 
 // 4.7 GeoJSON geometry
@@ -79,7 +79,7 @@ type timeInterval struct {
 	EndAt   string `json:"endAt,omitempty"`
 }
 
-func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsListLd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registratinsListLd"
 
 	page := 0
@@ -100,21 +100,21 @@ func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, "ResultsCount error", err}
+			return ngsierr.New(funcName, 3, "ResultsCount error", err)
 		}
 		if count == 0 {
 			break
 		}
 		var subs []cSourceRegistration
 		if err := ngsilib.JSONUnmarshalDecode(body, &subs, client.IsSafeString()); err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 		registrations = append(registrations, subs...)
 
@@ -131,13 +131,13 @@ func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		if len(registrations) > 0 {
 			b, err := ngsilib.JSONMarshal(registrations)
 			if err != nil {
-				return &ngsiCmdError{funcName, 5, err.Error(), err}
+				return ngsierr.New(funcName, 5, err.Error(), err)
 			}
 			if c.Bool("pretty") {
 				newBuf := new(bytes.Buffer)
 				err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 				if err != nil {
-					return &ngsiCmdError{funcName, 6, err.Error(), err}
+					return ngsierr.New(funcName, 6, err.Error(), err)
 				}
 				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			} else {
@@ -161,7 +161,7 @@ func registrationsListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	return nil
 }
 
-func registrationsGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsGetLd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsGetLd"
 
 	id := c.String("id")
@@ -169,15 +169,15 @@ func registrationsGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil)
 	}
 
 	var r cSourceRegistration
 	if err := ngsilib.JSONUnmarshalDecode(body, &r, client.IsSafeString()); err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	if c.IsSet("localTime") {
@@ -185,13 +185,13 @@ func registrationsGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 	}
 	b, err := ngsilib.JSONMarshal(&r)
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -201,7 +201,7 @@ func registrationsGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 	return nil
 }
 
-func registrationsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsCreateLd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsCreateLd"
 
 	client.SetPath("/csourceRegistrations")
@@ -211,20 +211,20 @@ func registrationsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	var r cSourceRegistration
 
 	if err := setRegistrationsValuleLd(c, ngsi, &r); err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	b, err := ngsilib.JSONMarshalEncode(&r, true)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	location := res.Header.Get("Location")
@@ -238,7 +238,7 @@ func registrationsCreateLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	return nil
 }
 
-func registrationsDeleteLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsDeleteLd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsDeleteLd"
 
 	id := c.String("id")
@@ -248,10 +248,10 @@ func registrationsDeleteLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil)
 	}
 
 	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is deleted, FIWARE-Service: %s, FIWARE-ServicePath: %s",
@@ -260,25 +260,25 @@ func registrationsDeleteLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	return nil
 }
 
-func registrationsTemplateLd(c *cli.Context, ngsi *ngsilib.NGSI) error {
+func registrationsTemplateLd(c *ngsicli.Context, ngsi *ngsilib.NGSI) error {
 	const funcName = "registrationsTemplateLd"
 
 	var r cSourceRegistration
 
 	err := setRegistrationsValuleLd(c, ngsi, &r)
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	b, err := ngsilib.JSONMarshal(r)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -289,17 +289,17 @@ func registrationsTemplateLd(c *cli.Context, ngsi *ngsilib.NGSI) error {
 	return nil
 }
 
-func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegistration) error {
+func setRegistrationsValuleLd(c *ngsicli.Context, ngsi *ngsilib.NGSI, r *cSourceRegistration) error {
 	const funcName = "setRegistrationsValuleLd"
 
 	if c.IsSet("data") {
-		b, err := readAll(c, ngsi)
+		b, err := ngsi.ReadAll(c.String("data"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		err = ngsilib.JSONUnmarshal(b, r)
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
@@ -307,7 +307,7 @@ func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegi
 		r.Description = c.String("description")
 	}
 
-	if isSetOR(c, []string{"type", "providedId", "idPattern", "properties", "relationships"}) {
+	if c.IsSetOR([]string{"type", "providedId", "idPattern", "properties", "relationships"}) {
 		if len(r.Information) == 0 {
 			r.Information = append(r.Information, *new(registrationInfo))
 		}
@@ -339,7 +339,7 @@ func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegi
 			var err error
 			s, err = ngsilib.GetExpirationDate(s)
 			if err != nil {
-				return &ngsiCmdError{funcName, 4, err.Error(), err}
+				return ngsierr.New(funcName, 3, err.Error(), err)
 			}
 		}
 		r.Expires = s
@@ -351,16 +351,16 @@ func setRegistrationsValuleLd(c *cli.Context, ngsi *ngsilib.NGSI, r *cSourceRegi
 			r.Endpoint = s
 		} else {
 			e := fmt.Sprintf("provider url error: %s", s)
-			return &ngsiCmdError{funcName, 5, e, nil}
+			return ngsierr.New(funcName, 4, e, nil)
 		}
 	}
 
 	if c.IsSet("context") {
 		context := c.String("context")
 		var atContext interface{}
-		atContext, err := getAtContext(ngsi, context)
+		atContext, err := ngsi.GetAtContext(context)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		r.AtContext = atContext
 	}

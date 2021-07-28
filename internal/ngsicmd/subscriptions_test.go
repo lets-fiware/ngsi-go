@@ -30,672 +30,343 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 )
 
-// initCmd() Error: no host
-func TestSubscriptionsListErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := subscriptionsList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsListErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
-	err := subscriptionsList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestSubscriptionsListErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionsList(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsList(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsListErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion-ld"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := subscriptionsList(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsList(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionGetErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := subscriptionGet(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionGetErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
-	err := subscriptionGet(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsGetErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "0000"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionGet(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionGet(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsGetErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion-ld", "--id", "0000"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := subscriptionGet(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionGet(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsCreateErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := subscriptionsCreate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsCreateErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
-	err := subscriptionsCreate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCreateErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "subscription", "--host", "orion"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionsCreate(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCreateErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "subscription", "--host", "orion-ld"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "data")
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-	err := subscriptionsCreate(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsUpdateErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := subscriptionsUpdate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsUpdateErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
-	err := subscriptionsUpdate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsUpdateErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "3ea2e78f675f2d199d3025ff"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionsUpdate(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsUpdateErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion-ld", "--id", "3ea2e78f675f2d199d3025ff"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := subscriptionsUpdate(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsDeleteErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := subscriptionsDelete(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsDeleteErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
-	err := subscriptionsDelete(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsDeleteErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "subscription", "--host", "orion", "--id", "3ea2e78f675f2d199d3025ff"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionsDelete(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsDelete(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsDeleteErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "subscription", "--host", "orion-ld", "--id", "3ea2e78f675f2d199d3025ff"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := subscriptionsDelete(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsDelete(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsTemplateNgsiTypeV2(t *testing.T) {
-	_, set, app, buf := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--data", "{}"})
 
-	setupFlagString(set, "ngsiType")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--ngsiType=v2"})
-	err := subscriptionsTemplate(c)
+	err := subscriptionsTemplate(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsTemplateNgsiTypeLd(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "ld", "--data", "{}"})
 
-	setupFlagString(set, "ngsiType")
+	err := subscriptionsTemplate(c, c.Ngsi, c.Client)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--ngsiType=ld"})
-	err := subscriptionsTemplate(c)
-
-	assert.NoError(t, err)
-}
-
-func TestSubscriptionsTemplateErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "syslog")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--syslog="})
-	err := subscriptionsTemplate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := "{\"type\":\"Subscription\"}"
+		assert.Equal(t, expected, actual)
 	}
 }
 
-func TestSubscriptionsTemplateErrorNgsiTypeNotFound(t *testing.T) {
-	_, set, app, _ := setupTest()
+func TestSubscriptionsTemplateErrorNgsiTypeMissing(t *testing.T) {
+	c := setupTest([]string{"template", "subscription", "--host", "orion"})
 
-	c := cli.NewContext(app, set, nil)
-	err := subscriptionsTemplate(c)
+	err := subscriptionsTemplate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "Required ngsiType not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsTemplateErrorNgsiType(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v1", "--data", "{}"})
 
-	setupFlagString(set, "ngsiType")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--ngsiType=v1"})
-	err := subscriptionsTemplate(c)
+	err := subscriptionsTemplate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "ngsiType error v1", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsCountErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := subscriptionsCount(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestSubscriptionsCountErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--link=abc"})
-	err := subscriptionsCount(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "ngsiType error v1", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCountErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"wc", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/v2//subscription"
-	reqRes.ResBody = []byte(`error`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
+	reqRes.Path = "/v2/subscriptions"
+	reqRes.Err = errors.New("http error")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCount(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, ngsiErr.Message, "url error")
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCountErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"wc", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResBody = []byte(`error`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=AirQualityObserved"})
-	err := subscriptionsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCount(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCountErrorResultsCount(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"wc", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCount(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCountV2(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"wc", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"12"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := subscriptionsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCount(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "12\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsCountLD(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"wc", "subscriptions", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/subscriptions"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"21"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := subscriptionsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCount(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "21\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }

@@ -36,6 +36,7 @@ ngsi append [common options] attrs [options]
 | --data value, -d value    | specify data                       |
 | --link value, -L value    | specify @context                   |
 | --context value, -C value | specify @context (LD)              |
+| --safeString value        | use safe string (value: on/off)    |
 | --help                    | show help (default: false)         |
 
 ### Example
@@ -74,4 +75,5 @@ ngsi append [common options] tattrs [options]
 | --data value, -d value    | data                               |
 | --link value, -L value    | @context (LD)                      |
 | --context value, -C value | @context (LD)                      |
+| --safeString value        | use safe string (value: on/off)    |
 | --help                    | show help (default: false)         |

@@ -32,6 +32,8 @@ package ngsilib
 import (
 	"net/http"
 	"net/url"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 type opUpdateBody struct {
@@ -57,7 +59,7 @@ func (client *Client) OpUpdate(entities interface{}, actionType string, keyValue
 
 	b, err := JSONMarshalEncode(&body, safeString)
 	if err != nil {
-		return nil, nil, &LibError{funcName, 1, "json.Marshal error", err}
+		return nil, nil, ngsierr.New(funcName, 1, "json.Marshal error", err)
 	}
 
 	return client.HTTPPost(b)

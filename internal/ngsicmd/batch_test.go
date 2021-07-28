@@ -30,860 +30,488 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 )
 
 func TestBatchCreateLd(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := batch(c, "create")
+	err := batch(c, c.Ngsi, c.Client, "create")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpdateLd(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := batch(c, "update")
+	err := batch(c, c.Ngsi, c.Client, "update")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUsertLd(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-	err := batch(c, "upsert")
+	err := batch(c, c.Ngsi, c.Client, "upsert")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchDeleteLd(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := batch(c, "delete")
+	err := batch(c, c.Ngsi, c.Client, "delete")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchCreateV2(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := batch(c, "create")
+	err := batch(c, c.Ngsi, c.Client, "create")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpdateV2(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := batch(c, "update")
+	err := batch(c, c.Ngsi, c.Client, "update")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchAppendV2(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := batch(c, "upsert")
+	err := batch(c, c.Ngsi, c.Client, "upsert")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 func TestBatchReplaceV2(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"replace", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
-
-	err := batch(c, "replace")
+	err := batch(c, c.Ngsi, c.Client, "replace")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchDeleteV2(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := batch(c, "delete")
+	err := batch(c, c.Ngsi, c.Client, "delete")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestBatchErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "append,keyValues")
-
-	c := cli.NewContext(app, set, nil)
-	err := batch(c, "create")
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestBatchErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,data,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion-ld"})
-	err := batch(c, "create")
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchErrorModeV2(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := batch(c, "get")
+	err := batch(c, c.Ngsi, c.Client, "get")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error: get", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestBatchErrorModeLD(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := batch(c, "get")
+	err := batch(c, c.Ngsi, c.Client, "get")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error: get", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestBatchCreate(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion-ld", "--data", testData})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ResBody = []byte(testData)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/create"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchCreate(c, ngsi, client)
+	err := batchCreate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestBatchCreateContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion-ld", "--data", testData, "--context", "[\"http://context\"]"})
 
-	setupFlagString(set, "host,data,link,context")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`[{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:002","temperature":{"type":"Property","unitCode":"CEL","value":21},"type":"TemperatureSensor"},{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:003","temperature":{"type":"Property","unitCode":"CEL","value":27},"type":"TemperatureSensor"}]`)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/create"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\"]"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchCreate(c, ngsi, client)
+	err := batchCreate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestBatchCreateErrorReadAll(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchCreate(c, ngsi, client)
+	err := batchCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchCreateErrorContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion-ld", "--data", testData, "--context", "[\"http://context\""})
 
-	setupFlagString(set, "host,data,link,context")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ReqData = []byte(`[{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:002","temperature":{"type":"Property","unitCode":"CEL","value":21},"type":"TemperatureSensor"},{"@context":["http:/context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:003","temperature":{"type":"Property","unitCode":"CEL","value":27},"type":"TemperatureSensor"}]`)
-	reqRes.Path = "/ngsi-ld/v1/entityOperations/create"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\""})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchCreate(c, ngsi, client)
+	err := batchCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestBatchCreateErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/entityOperations/create"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.Path = "/ngsi-ld/v1/entityOperations/create"
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchCreate(c, ngsi, client)
+	err := batchCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestBatchCreateErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/create"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchCreate(c, ngsi, client)
+	err := batchCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpdate(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion-ld", "--data", testData})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(testData)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpdate(c, ngsi, client)
+	err := batchUpdate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestBatchUpdateContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion-ld", "--data", testData, "--context", "[\"http://context\"]"})
 
-	setupFlagString(set, "host,data,link,context")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`[{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:002","temperature":{"type":"Property","unitCode":"CEL","value":21},"type":"TemperatureSensor"},{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:003","temperature":{"type":"Property","unitCode":"CEL","value":27},"type":"TemperatureSensor"}]`)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\"]"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpdate(c, ngsi, client)
+	err := batchUpdate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestBatchUpdateErrorReadAll(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpdate(c, ngsi, client)
+	err := batchUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpdateErrorContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion-ld", "--data", testData, "--context", "[\"http://context\""})
 
-	setupFlagString(set, "host,data,link,context")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.ReqData = []byte(`[{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:002","temperature":{"type":"Property","unitCode":"CEL","value":21},"type":"TemperatureSensor"},{"@context":["http:/context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:003","temperature":{"type":"Property","unitCode":"CEL","value":27},"type":"TemperatureSensor"}]`)
-	reqRes.Path = "/ngsi-ld/v1/entityOperations/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\""})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpdate(c, ngsi, client)
+	err := batchUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestBatchUpdateErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/entityOperations/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpdate(c, ngsi, client)
+	err := batchUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpdateErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpdate(c, ngsi, client)
+	err := batchUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpsertNoContent(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", testData})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(testData)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/upsert"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpsert(c, ngsi, client)
+	err := batchUpsert(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestBatchUpsertCreateted(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", testData})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(testData)
 	reqRes.ResBody = []byte(`["urn:ngsi-ld:TemperatureSensor:002","urn:ngsi-ld:TemperatureSensor:003"]`)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/upsert"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpsert(c, ngsi, client)
+	err := batchUpsert(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[\"urn:ngsi-ld:TemperatureSensor:002\",\"urn:ngsi-ld:TemperatureSensor:003\"]\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestBatchUpsertContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", testData, "--context", "[\"http://context\"]"})
 
-	setupFlagString(set, "host,data,link,context")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`[{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:002","temperature":{"type":"Property","unitCode":"CEL","value":21},"type":"TemperatureSensor"},{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:003","temperature":{"type":"Property","unitCode":"CEL","value":27},"type":"TemperatureSensor"}]`)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/upsert"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\"]"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpsert(c, ngsi, client)
+	err := batchUpsert(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestBatchUpsertErrorReadAll(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpsert(c, ngsi, client)
+	err := batchUpsert(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpsertErrorContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", testData, "--context", "[\"http://context\""})
 
-	setupFlagString(set, "host,data,link,context")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.ReqData = []byte(`[{"@context":["http://context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:002","temperature":{"type":"Property","unitCode":"CEL","value":21},"type":"TemperatureSensor"},{"@context":["http:/context"],"category":{"type":"Property","value":"sensor"},"id":"urn:ngsi-ld:TemperatureSensor:003","temperature":{"type":"Property","unitCode":"CEL","value":27},"type":"TemperatureSensor"}]`)
-	reqRes.Path = "/ngsi-ld/v1/entityOperations/upsert"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData, "--context=[\"http://context\""})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpsert(c, ngsi, client)
+	err := batchUpsert(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestBatchUpsertErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/entityOperations/upsert"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.Path = "/ngsi-ld/v1/entityOperations/upsert"
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpsert(c, ngsi, client)
+	err := batchUpsert(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestBatchUpsertErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/upsert"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchUpsert(c, ngsi, client)
+	err := batchUpsert(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestBatchDelete(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", testData})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ResBody = []byte(testData)
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/delete"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchDelete(c, ngsi, client)
+	err := batchDelete(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestBatchDeleteErrorReadAll(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", "@"})
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchDelete(c, ngsi, client)
+	err := batchDelete(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestBatchDeleteErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/entityOperations/delete"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchDelete(c, ngsi, client)
+	err := batchDelete(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestBatchDeleteErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"upsert", "entities", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,data,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/entityOperations/delete"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = batchDelete(c, ngsi, client)
+	err := batchDelete(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 

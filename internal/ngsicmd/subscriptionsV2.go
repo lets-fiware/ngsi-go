@@ -39,8 +39,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
 // types respose
@@ -98,7 +99,7 @@ type subscriptionV2 struct {
 	Description  string                      `json:"description,omitempty"`
 	Subject      *subscriptionSubjectV2      `json:"subject,omitempty"`
 	Notification *subscriptionNotificationV2 `json:"notification,omitempty"`
-	Throttling   int                         `json:"throttling,omitempty"`
+	Throttling   int64                       `json:"throttling,omitempty"`
 	Expires      string                      `json:"expires,omitempty"`
 	Status       string                      `json:"status,omitempty"`
 }
@@ -125,12 +126,12 @@ type subscriptionResposeV2 struct {
 		ExceptAttrs       []string                  `json:"exceptAttrs,omitempty"`
 		AttrsFormat       string                    `json:"attrsFormat,omitempty"`
 	} `json:"notification"`
-	Throttling int    `json:"throttling,omitempty"`
+	Throttling int64  `json:"throttling,omitempty"`
 	Expires    string `json:"expires,omitempty"`
 	Status     string `json:"status,omitempty"`
 }
 
-func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func subscriptionsListV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsListV2"
 
 	filters := []string{}
@@ -141,7 +142,7 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		for i, v := range filters {
 			filters[i] = strings.ToLower(v)
 			if !ngsilib.Contains(status, filters[i]) {
-				return &ngsiCmdError{funcName, 1, "error: " + filters[i] + " (active, inactive, oneshot, expired, failed)", nil}
+				return ngsierr.New(funcName, 1, "error: "+filters[i]+" (active, inactive, oneshot, expired, failed)", nil)
 			}
 		}
 	}
@@ -164,21 +165,21 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, "ResultsCount error", err}
+			return ngsierr.New(funcName, 4, "ResultsCount error", err)
 		}
 		if count == 0 {
 			break
 		}
 		var subs []subscriptionResposeV2
 		if err := ngsilib.JSONUnmarshalDecode(body, &subs, client.IsSafeString()); err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		subscriptions = append(subscriptions, subs...)
 
@@ -219,13 +220,13 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		if len(subscriptions) > 0 {
 			b, err := ngsilib.JSONMarshal(subscriptions)
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return ngsierr.New(funcName, 6, err.Error(), err)
 			}
 			if c.Bool("pretty") {
 				newBuf := new(bytes.Buffer)
 				err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 				if err != nil {
-					return &ngsiCmdError{funcName, 7, err.Error(), err}
+					return ngsierr.New(funcName, 7, err.Error(), err)
 				}
 				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			} else {
@@ -238,7 +239,7 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		if c.IsSet("items") {
 			items, err = checkItems(c)
 			if err != nil {
-				return &ngsiCmdError{funcName, 8, err.Error(), err}
+				return ngsierr.New(funcName, 8, err.Error(), err)
 			}
 		}
 		local := c.IsSet("localTime")
@@ -257,7 +258,7 @@ func subscriptionsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	return nil
 }
 
-func subscriptionGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func subscriptionGetV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionGetV2"
 
 	id := c.String("id")
@@ -265,15 +266,15 @@ func subscriptionGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil)
 	}
 
 	var sub subscriptionResposeV2
 	if err := ngsilib.JSONUnmarshalDecode(body, &sub, client.IsSafeString()); err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	if c.IsSet("localTime") {
@@ -281,13 +282,13 @@ func subscriptionGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 	}
 	b, err := ngsilib.JSONMarshal(&sub)
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -297,13 +298,13 @@ func subscriptionGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 	return nil
 }
 
-func subscriptionsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func subscriptionsCreateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsCreateV2"
 
 	client.SetPath("/subscriptions")
 
 	opts := []string{"skipInitialNotification"}
-	v := parseOptions(c, nil, opts)
+	v := ngsicli.ParseOptions(c, nil, opts)
 	client.SetQuery(v)
 
 	client.SetHeader("Content-Type", "application/json")
@@ -311,20 +312,20 @@ func subscriptionsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	var t subscriptionV2
 
 	if err := setSubscriptionValuesV2(c, ngsi, &t, false); err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	b, err := ngsilib.JSONMarshalEncode(&t, true)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	location := res.Header.Get("Location")
@@ -338,7 +339,7 @@ func subscriptionsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	return nil
 }
 
-func subscriptionsUpdateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func subscriptionsUpdateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsUpdateV2"
 
 	id := c.String("id")
@@ -346,7 +347,7 @@ func subscriptionsUpdateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	client.SetPath("/subscriptions/" + id)
 
 	opts := []string{"skipInitialNotification"}
-	v := parseOptions(c, nil, opts)
+	v := ngsicli.ParseOptions(c, nil, opts)
 	client.SetQuery(v)
 
 	client.SetHeader("Content-Type", "application/json")
@@ -354,20 +355,20 @@ func subscriptionsUpdateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	var t subscriptionV2
 
 	if err := setSubscriptionValuesV2(c, ngsi, &t, true); err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	b, err := ngsilib.JSONMarshalEncode(&t, true)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	res, body, err := client.HTTPPatch(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil}
+		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil)
 	}
 
 	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is updated, FIWARE-Service: %s, FIWARE-ServicePath: %s",
@@ -378,7 +379,7 @@ func subscriptionsUpdateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	return nil
 }
 
-func subscriptionsDeleteV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func subscriptionsDeleteV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsDeleteV2"
 
 	id := c.String("id")
@@ -387,10 +388,10 @@ func subscriptionsDeleteV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil)
 	}
 
 	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is deleted, FIWARE-Service: %s, FIWARE-ServicePath: %s",
@@ -399,24 +400,24 @@ func subscriptionsDeleteV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	return nil
 }
 
-func subscriptionsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
+func subscriptionsTemplateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI) error {
 	const funcName = "subscriptionsTemplateV2"
 
 	var t subscriptionV2
 
 	if err := setSubscriptionValuesV2(c, ngsi, &t, false); err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	b, err := ngsilib.JSONMarshal(t)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -426,22 +427,22 @@ func subscriptionsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 	return nil
 }
 
-func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscriptionV2, checkskip bool) error {
+func setSubscriptionValuesV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, t *subscriptionV2, checkskip bool) error {
 	const funcName = "setSubscriptionValuesV2"
 
 	if c.IsSet("data") {
-		b, err := readAll(c, ngsi)
+		b, err := ngsi.ReadAll(c.String("data"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		err = ngsilib.JSONUnmarshal(b, t)
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 	err := getAttributesV2(c, ngsi, t)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	if c.IsSet("entityId") || c.IsSet("idPattern") {
@@ -462,7 +463,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 	}
 
 	if c.IsSet("type") && c.IsSet("typePattern") {
-		return &ngsiCmdError{funcName, 4, "type or typePattern", nil}
+		return ngsierr.New(funcName, 4, "type or typePattern", nil)
 	}
 
 	if c.IsSet("type") || c.IsSet("typePattern") {
@@ -482,7 +483,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		}
 	}
 
-	if isSetOR(c, []string{"wAttrs", "query", "mq", "georel", "geometry", "coords"}) {
+	if c.IsSetOR([]string{"wAttrs", "query", "mq", "georel", "geometry", "coords"}) {
 		if t.Subject == nil {
 			t.Subject = new(subscriptionSubjectV2)
 		}
@@ -493,7 +494,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 			t.Subject.Condition.Attrs = strings.Split(c.String("wAttrs"), ",")
 		}
 
-		if isSetOR(c, []string{"query", "mq", "georel", "geometry", "coords"}) {
+		if c.IsSetOR([]string{"query", "mq", "georel", "geometry", "coords"}) {
 			if t.Subject.Condition.Expression == nil {
 				t.Subject.Condition.Expression = new(subscriptionExpressionV2)
 			}
@@ -515,7 +516,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		}
 	}
 
-	if isSetOR(c, []string{"uri", "url", "headers", "qs", "method", "payload"}) {
+	if c.IsSetOR([]string{"uri", "url", "headers", "qs", "method", "payload"}) {
 		url := ""
 		if c.IsSet("uri") {
 			url = c.String("uri")
@@ -531,7 +532,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 			}
 			t.Notification.HTTP.URL = url
 		}
-		if isSetOR(c, []string{"headers", "qs", "method", "payload"}) {
+		if c.IsSetOR([]string{"headers", "qs", "method", "payload"}) {
 			if t.Notification.HTTPCustom == nil {
 				t.Notification.HTTPCustom = new(subscriptionHTTPCustomV2)
 			}
@@ -543,7 +544,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 				var headers map[string]string
 				err := ngsilib.JSONUnmarshal([]byte(c.String("headers")), &headers)
 				if err != nil {
-					return &ngsiCmdError{funcName, 5, "err" + c.String("headers"), err}
+					return ngsierr.New(funcName, 5, "err"+c.String("headers"), err)
 				}
 				t.Notification.HTTPCustom.Headers = headers
 			}
@@ -551,7 +552,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 				var qs map[string]string
 				err := ngsilib.JSONUnmarshal([]byte(c.String("qs")), &qs)
 				if err != nil {
-					return &ngsiCmdError{funcName, 6, "err" + c.String("qs"), err}
+					return ngsierr.New(funcName, 6, "err"+c.String("qs"), err)
 				}
 				t.Notification.HTTPCustom.Qs = qs
 			}
@@ -568,7 +569,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 		}
 	}
 
-	if isSetOR(c, []string{"nAttrs", "metadata", "exceptAttrs", "attrsFormat"}) {
+	if c.IsSetOR([]string{"nAttrs", "metadata", "exceptAttrs", "attrsFormat"}) {
 		if t.Notification == nil {
 			t.Notification = new(subscriptionNotificationV2)
 		}
@@ -579,7 +580,7 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 			t.Notification.Metadata = strings.Split(c.String("metadata"), ",")
 		}
 		if c.IsSet("exceptAttrs") && c.IsSet("nAttrs") {
-			return &ngsiCmdError{funcName, 7, "error exceptAttrs or nAttrs", nil}
+			return ngsierr.New(funcName, 7, "error exceptAttrs or nAttrs", nil)
 		}
 		if c.IsSet("exceptAttrs") {
 			t.Notification.ExceptAttrs = strings.Split(c.String("exceptAttrs"), ",")
@@ -590,14 +591,14 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 	}
 
 	if c.IsSet("throttling") {
-		t.Throttling = c.Int("throttling")
+		t.Throttling = c.Int64("throttling")
 	}
 	if c.IsSet("expires") {
 		s := c.String("expires")
 		if !ngsilib.IsOrionDateTime(s) {
 			s, err = ngsilib.GetExpirationDate(s)
 			if err != nil {
-				return &ngsiCmdError{funcName, 8, err.Error(), err}
+				return ngsierr.New(funcName, 8, err.Error(), err)
 			}
 		}
 		t.Expires = s
@@ -605,38 +606,39 @@ func setSubscriptionValuesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscription
 	if c.IsSet("status") {
 		s := strings.ToLower(c.String("status"))
 		if !ngsilib.Contains([]string{"active", "inactive", "oneshot"}, s) {
-			return &ngsiCmdError{funcName, 9, "error: " + s + " (active, inactive, oneshot)", nil}
+			return ngsierr.New(funcName, 9, "error: "+s+" (active, inactive, oneshot)", nil)
 		}
 		t.Status = s
 	}
 	return nil
 }
 
-func getAttributesV2(c *cli.Context, ngsi *ngsilib.NGSI, t *subscriptionV2) error {
+func getAttributesV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, t *subscriptionV2) error {
 	const funcName = "getAttributesV2"
 
 	entityType := c.String("type")
 
-	if entityType != "" && ngsi.Host != "" && c.IsSet("get") {
-		client, err := newClient(ngsi, c, false, []string{"broker"})
+	if entityType != "" && c.IsSet("host") && c.IsSet("get") {
+		ngsi.Host = c.String("host")
+		client, err := ngsicli.NewClient(ngsi, c, false, []string{"brokerv2"})
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 
 		client.SetPath("/types/" + entityType)
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 
 		var typeInfo typesResponseV2
 
 		if err := ngsilib.JSONUnmarshal(body, &typeInfo); err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 
 		attrs := make([]string, len(typeInfo.Attrs))
@@ -699,7 +701,7 @@ func getLocalTime(s string) string {
 	return s
 }
 
-func checkItems(c *cli.Context) ([]string, error) {
+func checkItems(c *ngsicli.Context) ([]string, error) {
 	const funcName = "checkItems"
 
 	subscriptionItems := []string{"description", "timessent", "lastnotification", "lastsuccess",
@@ -711,7 +713,7 @@ func checkItems(c *cli.Context) ([]string, error) {
 		for _, e := range list {
 			e = strings.ToLower(e)
 			if !ngsilib.Contains(subscriptionItems, e) {
-				return nil, &ngsiCmdError{funcName, 1, fmt.Sprintf("error: %s in --items", e), nil}
+				return nil, ngsierr.New(funcName, 1, fmt.Sprintf("error: %s in --items", e), nil)
 			}
 			items = append(items, e)
 		}

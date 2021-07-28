@@ -1,0 +1,238 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Porting of https://github.com/smartsdk/ngsi-timeseries-api/pull/413/files
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi settings list
+#
+ngsi settings list
+
+```
+Host: quantumleap
+FIWARE-Service: openiot
+FIWARE-ServicePath: /
+```
+
+#
+# 0011 Create subscription in orion-ld
+#
+ngsi create --host orion-ld subscription --data \
+'{
+  "description": "Notify building type data to ql",
+  "type": "Subscription",
+  "entities": [{"type": "Building"}],
+  "notification": {
+    "endpoint": {
+      "uri": "http://quantumleap:8668/v2/notify",
+      "accept": "application/json"
+    }
+  },
+  "@context": [
+        "https://fiware.github.io/data-models/context.jsonld",
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+  ]
+}'
+
+```
+REGEX(.*)
+```
+
+$id=$$
+
+#
+# 0001 ngsi settings list
+#
+ngsi settings list
+
+```
+Host: orion-ld
+```
+
+#
+# 0012 List subscriptions
+#
+ngsi list --host orion-ld subscriptions
+
+```
+REGEX(.*)
+```
+
+#
+# 0013 Create entity in orion-ld
+#
+ngsi create --host orion-ld entity --data \
+'{
+    "id": "urn:ngsi-ld:Building:store001",
+    "type": "Building",
+    "category": {
+        "type": "Property",
+        "value": ["commercial"]
+    },
+    "address": {
+        "type": "Property",
+        "value": {
+            "streetAddress": "Bornholmer Straße 65",
+            "addressRegion": "Berlin",
+            "addressLocality": "Prenzlauer Berg",
+            "postalCode": "10439"
+        },
+        "verified": {
+            "type": "Property",
+            "value": true
+        }
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+             "type": "Point",
+             "coordinates": [13.3986, 52.5547]
+        }
+    },
+    "name": {
+        "type": "Property",
+        "value": "Bösebrücke Einkauf"
+    },
+    "@context": [
+        "https://fiware.github.io/data-models/context.jsonld",
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
+    ]
+}'
+
+```
+```
+
+#
+# 0014 List entities
+#
+ngsi list --host orion-ld entities
+
+```
+urn:ngsi-ld:Building:store001
+```
+
+#
+# 0015 sleep 5
+#
+sleep 5
+
+#
+#
+# 0016 Add server
+#
+ngsi server add --host ql --serverHost http://quantumleap:8668 --serverType quantumleap
+
+```
+```
+
+#
+# 0017 hget entities
+#
+ngsi hget --host ql entities
+
+```
+[
+  {
+    "id": "urn:ngsi-ld:Building:store001",
+    "index": [
+      "REGEX(.*)"
+    ],
+    "type": "Building"
+  }
+]
+```
+
+#
+# 0018 hget attr
+#
+ngsi hget attr --id urn:ngsi-ld:Building:store001 --attr address --pretty
+
+```
+{
+  "attrName": "address",
+  "entityId": "urn:ngsi-ld:Building:store001",
+  "index": [
+    "REGEX(.*)"
+  ],
+  "values": [
+    {
+      "addressLocality": "Prenzlauer Berg",
+      "addressRegion": "Berlin",
+      "postalCode": "10439",
+      "streetAddress": "Bornholmer Stra\u00dfe 65"
+    }
+  ]
+}
+```
+
+#
+# 0101 hdelete entities
+#
+ngsi hdelete entities --type Building --run
+
+```
+```
+
+#
+# 0102 sleep 5
+#
+sleep 5
+
+#
+# 0103 hget entities
+#
+ngsi hget --host ql entities
+
+```1
+qlEntitiesReadMain003 404 NOT FOUND {
+  "description": "No records were found for such query.",
+  "error": "Not Found"
+}
+```
+
+#
+# 0104 Delete subscription
+#
+ngsi delete --host orion-ld subscription --id $id
+
+```
+```
+
+#
+# 0105 Delete entity
+#
+ngsi delete entity --id urn:ngsi-ld:Building:store001
+
+```
+```
+
+#
+# 0106 Delete server
+#
+ngsi server delete --host ql
+
+```
+```

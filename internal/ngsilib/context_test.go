@@ -34,6 +34,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -71,7 +72,7 @@ func TestAddContexErrorAlreadyExists(t *testing.T) {
 	err = ngsi.AddContext("fiware", "https://fiware.org/")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware already exists", ngsiErr.Message)
 	}
@@ -86,7 +87,7 @@ func TestAddContexErrorNotUrl(t *testing.T) {
 	err := ngsi.AddContext("fiware", "fiware.org")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware.org is neither url nor json", ngsiErr.Message)
 	}
@@ -101,7 +102,7 @@ func TestAddContexErrorSave(t *testing.T) {
 	err := ngsi.AddContext("fiware", "https://fiware.org/")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -131,7 +132,7 @@ func TestUpdateContexErrorNotUrl(t *testing.T) {
 
 	err = ngsi.UpdateContext("fiware", "fiware.org")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware.org is not url", ngsiErr.Message)
 	}
@@ -149,7 +150,7 @@ func TestUpdateContexErrorSave(t *testing.T) {
 	err = ngsi.UpdateContext("fiware", "http://fiware.org")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -166,7 +167,7 @@ func TestUpdateContexErrorNotFound(t *testing.T) {
 
 	err = ngsi.UpdateContext("core", "http://fiware.org")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "core not found", ngsiErr.Message)
 	}
@@ -199,11 +200,11 @@ func TestDeleteContexErrorReferenced(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
 	orion := Server{ServerHost: "http://orion/", Context: "fiware"}
-	ngsi.serverList["orion"] = &orion
+	ngsi.ServerList["orion"] = &orion
 
 	err = ngsi.DeleteContext("fiware")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware is referenced", ngsiErr.Message)
 	}
@@ -223,7 +224,7 @@ func TestDeleteContexErrorSave(t *testing.T) {
 
 	err = ngsi.DeleteContext("fiware")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -243,7 +244,7 @@ func TestDeleteContexErrorNotFound(t *testing.T) {
 
 	err = ngsi.DeleteContext("core")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "core not found", ngsiErr.Message)
 	}
@@ -305,7 +306,7 @@ func TestGetContextErrorOtherType(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, expected, actual)
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware neither url nor json", ngsiErr.Message)
 	}
@@ -324,7 +325,7 @@ func TestGetContextErrorString(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, expected, actual)
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware is not url", ngsiErr.Message)
 	}
@@ -335,7 +336,7 @@ func TestGetContextErrorJSON(t *testing.T) {
 	ngsi.contextList = ContextsInfo{}
 	fileName := ""
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
 
 	var v []interface{}
 	err := json.Unmarshal([]byte(`[]`), &v)
@@ -347,7 +348,7 @@ func TestGetContextErrorJSON(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, expected, actual)
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
@@ -367,7 +368,7 @@ func TestGetContextErrorNotFound(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, expected, actual)
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "core not found", ngsiErr.Message)
 	}
@@ -404,7 +405,7 @@ func TestGetContextHTTPErrorNoFound(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, expected, actual)
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "core not found", ngsiErr.Message)
 	}
@@ -426,7 +427,7 @@ func TestGetContextHTTPErrorJSON(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, expected, actual)
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware is not url", ngsiErr.Message)
 	}

@@ -32,6 +32,7 @@ package ngsilib
 import (
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -60,7 +61,7 @@ func TestRequestTokenBasicErrorUser(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -94,7 +95,7 @@ func TestGetTokenInfoBasic(t *testing.T) {
 	_, err := idm.getTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "no information available", ngsiErr.Message)
 	}
@@ -116,7 +117,7 @@ func TestCheckIdmParamsBasicError(t *testing.T) {
 	err := idm.checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "username and password are needed", ngsiErr.Message)
 	}

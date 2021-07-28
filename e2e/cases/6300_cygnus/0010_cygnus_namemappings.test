@@ -41,7 +41,7 @@ ngsi namemappings --host cygnus list --pretty
 #
 # 0012 server create --host cygnus
 #
-ngsi namemappings create -pretty \
+ngsi namemappings create --pretty \
 --data '{
   "serviceMappings": [
     {

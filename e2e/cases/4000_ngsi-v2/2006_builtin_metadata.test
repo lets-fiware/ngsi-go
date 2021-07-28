@@ -62,7 +62,7 @@ ngsi create entity \
 #
 # 0003 Get entity E1 with metadata "*,dateCreated,dateModified"
 #
-ngsi list entities --metadata "*,dateCreated,dateModified" -pretty 
+ngsi list entities --metadata "*,dateCreated,dateModified" --pretty 
 
 ```
 [
@@ -108,7 +108,7 @@ ngsi list entities --metadata "*,dateCreated,dateModified" -pretty
 #
 # 0004 Get entity E1 with metadata "dateCreated,dateModified"
 #
-ngsi list entities --metadata "dateCreated,dateModified" -pretty 
+ngsi list entities --metadata "dateCreated,dateModified" --pretty 
 
 ```
 [
@@ -158,7 +158,7 @@ ngsi update attr --id E1 --attr A1 --data 567.89
 #
 # 0006 Get entity E1 with metadata "*,dateCreated,dateModified"
 #
-ngsi list entities --metadata "*,dateCreated,dateModified" -pretty 
+ngsi list entities --metadata "*,dateCreated,dateModified" --pretty 
 
 ```
 [
@@ -204,7 +204,7 @@ ngsi list entities --metadata "*,dateCreated,dateModified" -pretty
 #
 # 0007 Get entity E1 with metadata "dateCreated,dateModified"
 #
-ngsi list entities --metadata "dateCreated,dateModified" -pretty 
+ngsi list entities --metadata "dateCreated,dateModified" --pretty 
 
 ```
 [

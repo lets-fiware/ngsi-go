@@ -32,6 +32,8 @@ package ngsilib
 import (
 	"fmt"
 	"sort"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // ServerList is ...
@@ -39,12 +41,12 @@ type ServerList map[string]*Server
 
 // AllServersList is ...
 func (ngsi *NGSI) AllServersList() *ServerList {
-	return &ngsi.serverList
+	return &ngsi.ServerList
 }
 
 // InitServerList is ...
 func InitServerList() {
-	gNGSI.serverList = make(ServerList)
+	gNGSI.ServerList = make(ServerList)
 }
 
 // List is ...
@@ -76,33 +78,33 @@ func (info *ServerList) List(singleLine bool) string {
 func (info *ServerList) BrokerInfo(name string) (*Server, error) {
 	const funcName = "BrokerInfo"
 
-	client, ok := gNGSI.serverList[name]
+	client, ok := gNGSI.ServerList[name]
 	if ok {
 		if client.ServerType == "broker" {
 			return client, nil
 		}
-		return nil, &LibError{funcName, 1, fmt.Sprintf("host found: %s, but type is %s", name, client.ServerType), nil}
+		return nil, ngsierr.New(funcName, 1, fmt.Sprintf("host found: %s, but type is %s", name, client.ServerType), nil)
 	}
-	return nil, &LibError{funcName, 2, fmt.Sprintf("host not found: %s", name), nil}
+	return nil, ngsierr.New(funcName, 2, fmt.Sprintf("host not found: %s", name), nil)
 }
 
 // ServerInfo is ...
 func (info *ServerList) ServerInfo(name, filter string) (*Server, error) {
 	const funcName = "ServerInfo"
 
-	client, ok := gNGSI.serverList[name]
+	client, ok := gNGSI.ServerList[name]
 	if ok {
 		if filter == "" {
 			if client.ServerType != "broker" {
 				return client, nil
 			}
-			return nil, &LibError{funcName, 1, fmt.Sprintf("host found: %s, but type is %s", name, client.ServerType), nil}
+			return nil, ngsierr.New(funcName, 1, fmt.Sprintf("host found: %s, but type is %s", name, client.ServerType), nil)
 		}
 		if client.ServerType == filter {
 			return client, nil
 		}
 	}
-	return nil, &LibError{funcName, 2, fmt.Sprintf("host not found: %s", name), nil}
+	return nil, ngsierr.New(funcName, 2, fmt.Sprintf("host not found: %s", name), nil)
 }
 
 // BrokerInfoJSON is ...
@@ -113,20 +115,20 @@ func (info *ServerList) BrokerInfoJSON(name string) (*string, error) {
 	if name == "" {
 		json, err := JSONMarshal(info.BrokerList())
 		if err != nil {
-			return nil, &LibError{funcName, 1, "json.Marshl error", err}
+			return nil, ngsierr.New(funcName, 1, "json.Marshl error", err)
 		}
 		s = string(json)
 	} else {
-		info, ok := gNGSI.serverList[name]
+		info, ok := gNGSI.ServerList[name]
 		if !ok {
-			return nil, &LibError{funcName, 2, fmt.Sprintf("host not found: %s", name), nil}
+			return nil, ngsierr.New(funcName, 2, fmt.Sprintf("host not found: %s", name), nil)
 		}
 		if info.ServerType != "broker" {
-			return nil, &LibError{funcName, 3, fmt.Sprintf("host found: %s, but type is %s", name, info.ServerType), nil}
+			return nil, ngsierr.New(funcName, 3, fmt.Sprintf("host found: %s, but type is %s", name, info.ServerType), nil)
 		}
 		json, err := JSONMarshal(info)
 		if err != nil {
-			return nil, &LibError{funcName, 4, "json.Marshl error", err}
+			return nil, ngsierr.New(funcName, 4, "json.Marshl error", err)
 		}
 		s = string(json)
 	}
@@ -138,7 +140,7 @@ func (info *ServerList) BrokerInfoJSON(name string) (*string, error) {
 func (info *ServerList) BrokerList() ServerList {
 	list := ServerList{}
 
-	for k, v := range gNGSI.serverList {
+	for k, v := range gNGSI.ServerList {
 		if v.ServerType == "broker" {
 			list[k] = v
 		}
@@ -154,20 +156,20 @@ func (info *ServerList) ServerInfoJSON(name, filter string) (*string, error) {
 	if name == "" {
 		json, err := JSONMarshal(info.ServerList(filter, false))
 		if err != nil {
-			return nil, &LibError{funcName, 1, "json.Marshl error", err}
+			return nil, ngsierr.New(funcName, 1, "json.Marshl error", err)
 		}
 		s = string(json)
 	} else {
-		info, ok := gNGSI.serverList[name]
+		info, ok := gNGSI.ServerList[name]
 		if !ok {
-			return nil, &LibError{funcName, 2, fmt.Sprintf("host not found: %s", name), nil}
+			return nil, ngsierr.New(funcName, 2, fmt.Sprintf("host not found: %s", name), nil)
 		}
 		if info.ServerType == "broker" {
-			return nil, &LibError{funcName, 3, fmt.Sprintf("host found: %s, but type is %s", name, info.ServerType), nil}
+			return nil, ngsierr.New(funcName, 3, fmt.Sprintf("host found: %s, but type is %s", name, info.ServerType), nil)
 		}
 		json, err := JSONMarshal(info)
 		if err != nil {
-			return nil, &LibError{funcName, 4, "json.Marshl error", err}
+			return nil, ngsierr.New(funcName, 4, "json.Marshl error", err)
 		}
 		s = string(json)
 	}
@@ -179,7 +181,7 @@ func (info *ServerList) ServerInfoJSON(name, filter string) (*string, error) {
 func (info *ServerList) ServerList(filter string, all bool) ServerList {
 	list := ServerList{}
 
-	for k, v := range gNGSI.serverList {
+	for k, v := range gNGSI.ServerList {
 		if v.ServerType != "broker" || all {
 			if filter == "" || v.ServerType == filter {
 				list[k] = v
@@ -187,4 +189,27 @@ func (info *ServerList) ServerList(filter string, all bool) ServerList {
 		}
 	}
 	return list
+}
+
+func (ngsi *NGSI) GetServerInfo(host string, skipRefHost bool) (*Server, error) {
+	const funcName = "GetServerInfo"
+
+	server, ok := ngsi.ServerList[host]
+	if ok {
+		if !skipRefHost {
+			host2 := server.ServerHost
+			if !IsHTTP(host2) {
+				parentServer, ok := ngsi.ServerList[host2]
+				if !ok {
+					return nil, ngsierr.New(funcName, 1, fmt.Sprintf("host error: %s, %s not found", host, host2), nil)
+				}
+				if !IsHTTP(parentServer.ServerHost) {
+					return nil, ngsierr.New(funcName, 2, fmt.Sprintf("host error: %s, %s not found", host, host2), nil)
+				}
+				copyServerInfo(parentServer, server)
+			}
+		}
+		return server, nil
+	}
+	return nil, ngsierr.New(funcName, 3, host+" not found", nil)
 }

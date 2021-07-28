@@ -32,6 +32,8 @@ package ngsilib
 import (
 	"encoding/base64"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 type idmBasic struct {
@@ -42,7 +44,7 @@ func (i *idmBasic) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	token := base64.URLEncoding.EncodeToString([]byte(username + ":" + password))
@@ -67,7 +69,7 @@ func (i *idmBasic) getAuthHeader(token string) (string, string) {
 func (i *idmBasic) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 	const funcName = "getTokenInfoBasic"
 
-	return nil, &LibError{funcName, 1, "no information available", nil}
+	return nil, ngsierr.New(funcName, 1, "no information available", nil)
 }
 
 func (i *idmBasic) checkIdmParams(idmParams *IdmParams) error {
@@ -83,5 +85,5 @@ func (i *idmBasic) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "username and password are needed", nil}
+	return ngsierr.New(funcName, 1, "username and password are needed", nil)
 }

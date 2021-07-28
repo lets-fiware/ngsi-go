@@ -35,6 +35,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -119,7 +120,7 @@ func TestRequestTokenWSO2ErrorUser(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -149,7 +150,7 @@ func TestRequestTokenWSO2ErrorHTTP(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -178,7 +179,7 @@ func TestRequestTokenWSO2ErrorUnmarshal(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		actual := "json: cannot unmarshal string into Go value of type ngsilib.WSO2Token Field: (7) \"scope\":\"default\",\"tok"
 		assert.Equal(t, actual, ngsiErr.Message)
@@ -208,7 +209,7 @@ func TestRequestTokenWSO2ErrorHTTPStatus(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -237,7 +238,7 @@ func TestRequestTokenWSO2ErrorHTTPStatusUnauthorized(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "error  Unauthorized", ngsiErr.Message)
 	}
@@ -280,7 +281,7 @@ func TestRevokeTokenWSO2ErrorHTTP(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -304,7 +305,7 @@ func TestRevokeTokenWSO2ErrorHTTPStatus(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -355,12 +356,12 @@ func TestGetTokenInfoWSO2Error(t *testing.T) {
 		},
 	}
 
-	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}}
 
 	_, err := idm.getTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
@@ -393,7 +394,7 @@ func TestCheckIdmParamsWSO2Error(t *testing.T) {
 	err := idm.checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "idmHost, username, password, clientID and clientSecret are needed", ngsiErr.Message)
 	}

@@ -36,28 +36,19 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func typesList(c *cli.Context) error {
-	const funcName = "typesList"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
+func typesList(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return typesListV2(c, ngsi, client)
 	}
 	return typesListLd(c, ngsi, client)
 }
 
-func typesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func typesListV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "typesListV2"
 
 	page := 0
@@ -77,15 +68,15 @@ func typesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 		}
 
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, "ResultsCount error", err}
+			return ngsierr.New(funcName, 3, "ResultsCount error", err)
 		}
 		if count == 0 {
 			break
@@ -94,7 +85,7 @@ func typesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		var t []string
 		err = ngsilib.JSONUnmarshal(body, &t)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 		types = append(types, t...)
 
@@ -105,16 +96,16 @@ func typesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		}
 	}
 
-	if isSetOR(c, []string{"json", "pretty"}) {
+	if c.IsSetOR([]string{"json", "pretty"}) {
 		b, err := ngsilib.JSONMarshal(types)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		if c.Bool("pretty") {
 			newBuf := new(bytes.Buffer)
 			err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return ngsierr.New(funcName, 6, err.Error(), err)
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
@@ -137,7 +128,7 @@ type entityTypeList struct {
 	TypeList  []string    `json:"typeList,omitempty"`
 }
 
-func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func typesListLd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "typesListLd"
 
 	client.SetPath("/types")
@@ -150,18 +141,18 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
-	if isSetOR(c, []string{"json", "details", "pretty"}) {
+	if c.IsSetOR([]string{"json", "details", "pretty"}) {
 		if c.Bool("pretty") {
 			newBuf := new(bytes.Buffer)
 			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 3, err.Error(), err}
+				return ngsierr.New(funcName, 3, err.Error(), err)
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		} else {
@@ -171,7 +162,7 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		var list entityTypeList
 		err := ngsilib.JSONUnmarshal(body, &list)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 		for _, e := range list.TypeList {
 			fmt.Fprintln(ngsi.StdWriter, e)
@@ -181,17 +172,8 @@ func typesListLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	return nil
 }
 
-func typeGet(c *cli.Context) error {
+func typeGet(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "typesGet"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	t := ""
 	if c.IsSet("type") && c.Args().Len() == 0 {
@@ -199,7 +181,7 @@ func typeGet(c *cli.Context) error {
 	} else if !c.IsSet("type") && c.Args().Len() == 1 {
 		t = c.Args().Get(0)
 	} else {
-		return &ngsiCmdError{funcName, 3, "missing entity type", nil}
+		return ngsierr.New(funcName, 1, "missing entity type", nil)
 	}
 
 	if client.IsNgsiV2() {
@@ -208,24 +190,24 @@ func typeGet(c *cli.Context) error {
 	return typeGetLd(c, ngsi, client, t)
 }
 
-func typeGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t string) error {
+func typeGetV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t string) error {
 	const funcName = "typeGetV2"
 
 	client.SetPath("/types/" + t)
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 	} else {
@@ -235,24 +217,24 @@ func typeGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t str
 	return nil
 }
 
-func typeGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t string) error {
+func typeGetLd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t string) error {
 	const funcName = "typeGetLd"
 
 	client.SetPath("/types/" + url.QueryEscape(t))
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 	} else {
@@ -262,20 +244,11 @@ func typeGetLd(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, t str
 	return nil
 }
 
-func typesCount(c *cli.Context) error {
+func typesCount(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "typesCount"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
 	if client.IsNgsiLd() {
-		return &ngsiCmdError{funcName, 3, "Only available on NGSIv2", nil}
+		return ngsierr.New(funcName, 1, "Only available on NGSIv2", nil)
 	}
 
 	client.SetPath("/types")
@@ -286,15 +259,15 @@ func typesCount(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	count, err := client.ResultsCount(res)
 	if err != nil {
-		return &ngsiCmdError{funcName, 6, "ResultsCount error", nil}
+		return ngsierr.New(funcName, 4, "ResultsCount error", nil)
 	}
 
 	fmt.Fprintln(ngsi.StdWriter, strconv.Itoa(count))

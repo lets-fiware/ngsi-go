@@ -25,21 +25,11 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi devices create --help
+# 0001 ngsi settings clear
 #
-ngsi devices create --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi devices create - create a device
-
-USAGE:
-   ngsi devices create [command options] [arguments...]
-
-OPTIONS:
-   --data value  data body (payload)
-   --help        show help (default: false)
-   
 ```
 
 #
@@ -533,7 +523,7 @@ ngsi devices delete --id sensor003
 ngsi devices get --id sensor003
 
 ```1
-idasDevicesGet005 404 Not Found {"name":"DEVICE_NOT_FOUND","message":"No device was found with id:sensor003"}
+idasDevicesGet002 404 Not Found {"name":"DEVICE_NOT_FOUND","message":"No device was found with id:sensor003"}
 ```
 
 #
@@ -642,7 +632,7 @@ ngsi devices list --pretty
 ```
 
 #
-# 00025 Delete sensor001
+# 0025 Delete sensor001
 #
 ngsi devices delete --id sensor001
 
@@ -711,7 +701,7 @@ ngsi devices list --pretty
 #
 # 0027 Delete services and devices
 #
-ngsi services delete --resource /iot/d --device on
+ngsi services delete --resource /iot/d --device true
 
 ```
 ```

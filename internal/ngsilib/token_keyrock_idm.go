@@ -34,6 +34,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // KeyrockToken is ...
@@ -60,7 +62,7 @@ func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	idm.SetHeader(cContentType, cAppJSON)
@@ -68,16 +70,16 @@ func (i *idmKeyrockIDM) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 
 	res, body, err := idm.HTTPPost(data)
 	if err != nil {
-		return nil, &LibError{funcName, 2, err.Error(), err}
+		return nil, ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return nil, ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	var token KeyrockIDMToken
 	err = JSONUnmarshal(body, &token)
 	if err != nil {
-		return nil, &LibError{funcName, 4, err.Error(), err}
+		return nil, ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	layout := "2006-01-02T15:04:05.000Z"
 	t, _ := time.Parse(layout, token.Token.ExpiresAt)
@@ -104,10 +106,10 @@ func (i *idmKeyrockIDM) revokeToken(ngsi *NGSI, client *Client, tokenInfo *Token
 
 	res, body, err := idm.HTTPDelete(nil)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
@@ -135,5 +137,5 @@ func (i *idmKeyrockIDM) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "username and password are needed", nil}
+	return ngsierr.New(funcName, 1, "username and password are needed", nil)
 }

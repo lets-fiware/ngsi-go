@@ -33,256 +33,87 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestIsJSON(t *testing.T) {
 	testNgsiLibInit()
 
-	actual := IsJSON([]byte("["))
-	expected := true
+	cases := []struct {
+		value    []byte
+		expected bool
+	}{
+		{value: []byte("["), expected: true},
+		{value: []byte("{"), expected: true},
+		{value: []byte(" ["), expected: true},
+		{value: []byte(" {"), expected: true},
+		{value: []byte("\t{"), expected: true},
+		{value: []byte("\t["), expected: true},
+		{value: []byte("	{"), expected: true},
+		{value: []byte("	["), expected: true},
+		{value: []byte("abc"), expected: false},
+		{value: []byte("123"), expected: false},
+		{value: []byte(" abc"), expected: false},
+		{value: []byte(" 123"), expected: false},
+		{value: []byte("\t123"), expected: false},
+		{value: []byte("\tabc"), expected: false},
+		{value: []byte("	123"), expected: false},
+		{value: []byte("	abc"), expected: false},
+		{value: []byte("a[bc"), expected: false},
+		{value: []byte("1{23"), expected: false},
+		{value: []byte(" a[bc"), expected: false},
+		{value: []byte(" 1{23"), expected: false},
+		{value: []byte("\t1{23"), expected: false},
+		{value: []byte("\ta[bc"), expected: false},
+		{value: []byte("	1{23"), expected: false},
+		{value: []byte("	a[bc"), expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("{"))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte(" ["))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte(" {"))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("\t{"))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("\t["))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("	{"))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("	["))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("abc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte(" abc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte(" 123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("\t123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("\tabc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("	123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("	abc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("a[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte(" a[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte(" 1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("\t1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("\ta[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("	1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSON([]byte("	a[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := IsJSON(c.value)
+		assert.Equal(t, c.expected, actual)
+	}
 
 }
 
 func TestIsJSONArray(t *testing.T) {
 	testNgsiLibInit()
 
-	actual := IsJSONArray([]byte("["))
-	expected := true
+	cases := []struct {
+		value    []byte
+		expected bool
+	}{
+		{value: []byte("["), expected: true},
+		{value: []byte("{"), expected: false},
+		{value: []byte(" ["), expected: true},
+		{value: []byte(" {"), expected: false},
+		{value: []byte("\t{"), expected: false},
+		{value: []byte("\t["), expected: true},
+		{value: []byte("	{"), expected: false},
+		{value: []byte("	["), expected: true},
+		{value: []byte("abc"), expected: false},
+		{value: []byte("123"), expected: false},
+		{value: []byte(" abc"), expected: false},
+		{value: []byte(" 123"), expected: false},
+		{value: []byte("\t123"), expected: false},
+		{value: []byte("\tabc"), expected: false},
+		{value: []byte("	123"), expected: false},
+		{value: []byte("	abc"), expected: false},
+		{value: []byte("a[bc"), expected: false},
+		{value: []byte("1{23"), expected: false},
+		{value: []byte(" a[bc"), expected: false},
+		{value: []byte(" 1{23"), expected: false},
+		{value: []byte("\t1{23"), expected: false},
+		{value: []byte("\ta[bc"), expected: false},
+		{value: []byte("	1{23"), expected: false},
+		{value: []byte("	a[bc"), expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("{"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte(" ["))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte(" {"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("\t{"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("\t["))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("	{"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("	["))
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("abc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte(" abc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte(" 123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("\t123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("\tabc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("	123"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("	abc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("a[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte(" a[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte(" 1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("\t1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("\ta[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("	1{23"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsJSONArray([]byte("	a[bc"))
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := IsJSONArray(c.value)
+		assert.Equal(t, c.expected, actual)
+	}
 
 }
 
@@ -302,14 +133,14 @@ func TestGetJSONArray(t *testing.T) {
 
 	err = GetJSONArray([]byte(" [-1, 100"), v)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	}
 
 	err = GetJSONArray([]byte(" {}"), v)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "not JSON Array: {}", ngsiErr.Message)
 	}
@@ -327,8 +158,6 @@ func TestJSONMarshalEncode(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, expected, string(actual))
-	} else {
-		t.FailNow()
 	}
 
 }
@@ -345,8 +174,6 @@ func TestJSONUnmarshal(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, expected, string(actual))
-	} else {
-		t.FailNow()
 	}
 
 }
@@ -363,8 +190,6 @@ func TestJSONMarshalDecode(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, expected, string(actual))
-	} else {
-		t.FailNow()
 	}
 
 	actual, err = JSONMarshalDecode(&template, true)
@@ -372,8 +197,6 @@ func TestJSONMarshalDecode(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, expected, string(actual))
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -388,8 +211,6 @@ func TestJSONUnmarshalEncode(t *testing.T) {
 		assert.Equal(t, "%3C%3ESubscription template", template.Description)
 		assert.Equal(t, "http://localhost:1028/accumulate", template.Notification.HTTP.URL)
 		assert.Equal(t, 0, template.Throttling)
-	} else {
-		t.FailNow()
 	}
 
 	err = JSONUnmarshalEncode([]byte(subscriptionTemplate), &template, false)
@@ -398,8 +219,6 @@ func TestJSONUnmarshalEncode(t *testing.T) {
 		assert.Equal(t, "<>Subscription template", template.Description)
 		assert.Equal(t, "http://localhost:1028/accumulate", template.Notification.HTTP.URL)
 		assert.Equal(t, 0, template.Throttling)
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -412,16 +231,12 @@ func TestJSONUnmarshalDecode(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "<>Subscription template", template.Description)
-	} else {
-		t.FailNow()
 	}
 
 	err = JSONUnmarshalDecode([]byte(test), &template, false)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "%3C%3ESubscription template", template.Description)
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -432,7 +247,7 @@ func TestJsonUnmarshalErrorJSON(t *testing.T) {
 	err := jsonUnmarshal([]byte(`{"id": aa`), template, true, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 'a' looking for beginning of value (5) {\"id\": aa", ngsiErr.Message)
 	}
@@ -445,7 +260,7 @@ func TestJsonUnmarshalErrorJSONEof(t *testing.T) {
 	err := jsonUnmarshal([]byte("{"), template, true, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: {", ngsiErr.Message)
 	}
@@ -458,7 +273,7 @@ func TestJsonUnmarshalErrorJSONNoSafeString(t *testing.T) {
 	err := jsonUnmarshal([]byte(`{"name":aa`), &template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 'a' looking for beginning of value (9) {\"name\":aa", ngsiErr.Message)
 	}
@@ -471,7 +286,7 @@ func TestJsonUnmarshalErrorUnmarshalTypeError(t *testing.T) {
 	err := jsonUnmarshal([]byte(`{}`), &template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json: cannot unmarshal object into Go value of type []interface {} Field: (1) {}", ngsiErr.Message)
 	}
@@ -479,13 +294,13 @@ func TestJsonUnmarshalErrorUnmarshalTypeError(t *testing.T) {
 
 func TestJsonUnmarshalErrorUnmarshal(t *testing.T) {
 	ngsi := testNgsiLibInit()
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
 
 	var template interface{}
 	err := jsonUnmarshal([]byte(`{}`), &template, false, SafeStringEncode)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}

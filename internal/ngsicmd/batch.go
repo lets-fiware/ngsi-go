@@ -33,22 +33,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func batch(c *cli.Context, mode string) error {
+func batch(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, mode string) error {
 	const funcName = "batch"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	if client.IsNgsiLd() {
 		switch mode {
@@ -75,10 +66,10 @@ func batch(c *cli.Context, mode string) error {
 			return opUpdate(c, ngsi, client, "delete")
 		}
 	}
-	return &ngsiCmdError{funcName, 3, "error: " + mode, nil}
+	return ngsierr.New(funcName, 1, "error: "+mode, nil)
 }
 
-func batchCreate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func batchCreate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "batchCreate"
 
 	client.SetPath("/entityOperations/create")
@@ -86,24 +77,24 @@ func batchCreate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	client.SetContentType()
 	client.SetAcceptJSON()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	fmt.Fprintln(ngsi.StdWriter, string(body))
@@ -111,67 +102,67 @@ func batchCreate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 	return nil
 }
 
-func batchUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func batchUpdate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "batchUpdate"
 
 	client.SetPath("/entityOperations/update")
 
 	var opts = []string{"noOverwrite", "replace"}
-	v := parseOptions(c, nil, opts)
+	v := ngsicli.ParseOptions(c, nil, opts)
 	client.SetQuery(v)
 
 	client.SetContentType()
 	client.SetAcceptJSON()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
-func batchUpsert(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func batchUpsert(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "batchUpsert"
 
 	client.SetPath("/entityOperations/upsert")
 
 	var opts = []string{"replace", "update"}
-	v := parseOptions(c, nil, opts)
+	v := ngsicli.ParseOptions(c, nil, opts)
 	client.SetQuery(v)
 
 	client.SetContentType()
 	client.SetAcceptJSON()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode == http.StatusCreated {
 		fmt.Fprintln(ngsi.StdWriter, string(body))
@@ -180,27 +171,27 @@ func batchUpsert(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) err
 		return nil
 	}
 
-	return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+	return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 }
 
-func batchDelete(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func batchDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "batchDelete"
 
 	client.SetPath("/entityOperations/delete")
 
 	client.SetContentType()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil

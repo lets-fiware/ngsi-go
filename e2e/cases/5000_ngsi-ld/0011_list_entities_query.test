@@ -4,7 +4,7 @@
 #
 # 0000 Clean up
 #
-ngsi rm --run -type Sensor --link test
+ngsi rm --run --type Sensor --link test
 
 ```
 REGEX(.*)
@@ -119,7 +119,7 @@ urn:ngsi-ld:sensor002
 #
 # 9999 Clean up
 #
-ngsi rm --run -type Sensor --link test
+ngsi rm --run --type Sensor --link test
 
 ```
 REGEX(.*)

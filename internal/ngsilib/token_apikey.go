@@ -29,7 +29,11 @@ SOFTWARE.
 
 package ngsilib
 
-import "os"
+import (
+	"os"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
+)
 
 type idmApikey struct {
 }
@@ -49,7 +53,7 @@ func (i *idmApikey) getAuthHeader(token string) (string, string) {
 func (i *idmApikey) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 	const funcName = "getTokenInfoApikey"
 
-	return nil, &LibError{funcName, 1, "no information available", nil}
+	return nil, ngsierr.New(funcName, 1, "no information available", nil)
 }
 
 func (i *idmApikey) checkIdmParams(idmParams *IdmParams) error {
@@ -64,7 +68,7 @@ func (i *idmApikey) checkIdmParams(idmParams *IdmParams) error {
 		((idmParams.HeaderValue == "") != (idmParams.HeaderEnvValue == "")) {
 		return nil
 	}
-	return &LibError{funcName, 1, "headerName and either headerValue or headerEnvValue", nil}
+	return ngsierr.New(funcName, 1, "headerName and either headerValue or headerEnvValue", nil)
 }
 
 func GetApikeyHeader(client *Client) (string, string) {

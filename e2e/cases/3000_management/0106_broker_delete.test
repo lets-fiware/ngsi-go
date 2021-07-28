@@ -25,25 +25,15 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi broker delete --help
+# 0001 ngsi settings clear
 #
-ngsi broker delete --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi broker delete - delete broker
-
-USAGE:
-   ngsi broker delete [command options] [arguments...]
-
-OPTIONS:
-   --host value, -h value  host or alias
-   --help                  show help (default: false)
-   
 ```
 
 #
-# 0002 Add broker (base)
+# 0011 Add broker (base)
 #
 ngsi broker add \
 --host base \
@@ -54,7 +44,7 @@ ngsi broker add \
 ```
 
 #
-# 0003 Add broker with base
+# 0012 Add broker with base
 #
 ngsi broker add \
 --host tokenproxy \
@@ -68,7 +58,7 @@ ngsi broker add \
 ```
 
 #
-# 0004 Check broker info
+# 0013 Check broker info
 # 
 ngsi broker get --host tokenproxy --clearText
 
@@ -81,16 +71,16 @@ Password 0123456789
 ```
 
 #
-# 0005 Delete broker
+# 0014 Delete broker
 #
 ngsi broker delete --host base
 
 ```1
-brokersDelete006 base is referenced
+brokersDelete004 base is referenced
 ```
 
 #
-# 0006 Delete broker
+# 0015 Delete broker
 #
 ngsi broker delete --host tokenproxy
 
@@ -99,7 +89,7 @@ ngsi broker delete --host tokenproxy
 ```
 
 #
-# 0007 Delete broker
+# 0016 Delete broker
 #
 ngsi broker delete --host base
 
@@ -112,5 +102,5 @@ ngsi broker delete --host base
 ngsi broker delete --host base
 
 ```1
-brokersDelete003 base not found
+brokersDelete001 base not found
 ```

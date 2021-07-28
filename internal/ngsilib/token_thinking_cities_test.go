@@ -35,6 +35,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -93,7 +94,7 @@ func TestRequestTokenErrorThinkingCitiesErrorUser(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -124,7 +125,7 @@ func TestRequestTokenErrorThinkingCitiesErrorHTTP(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -154,7 +155,7 @@ func TestRequestTokenErrorThinkingCitiesErrorStatus(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -184,7 +185,7 @@ func TestRequestTokenThinkingCitiesErrorUnmarshal(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
 	}
@@ -269,12 +270,12 @@ func TestGetTokenInfoThinkingCitiesError(t *testing.T) {
 	keystone.Token.AuditIds = []string{"6kJ9zBFCQaKRa7aCFc6bpw"}
 	keystone.Token.IssuedAt = "2021-04-16T08:30:47.000000Z"
 
-	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}}
 
 	_, err := idm.getTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
@@ -306,7 +307,7 @@ func TestCheckIdmParamsThinkingCitiesError(t *testing.T) {
 	err := idm.checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "idmHost, username and password are needed", ngsiErr.Message)
 	}

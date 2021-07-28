@@ -34,50 +34,41 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func attrsRead(c *cli.Context) error {
+func attrsRead(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "attrsRead"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	id := c.String("id")
 	client.SetPath("/entities/" + id + "/attrs")
 
 	args := []string{"type", "attrs", "metadata"}
 	opts := []string{"keyValues", "values", "unique"}
-	v := parseOptions(c, args, opts)
+	v := ngsicli.ParseOptions(c, args, opts)
 	client.SetQuery(v)
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	if client.IsSafeString() {
 		body, err = ngsilib.JSONSafeStringDecode(body)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -88,152 +79,123 @@ func attrsRead(c *cli.Context) error {
 	return nil
 }
 
-func attrsAppend(c *cli.Context) error {
+func attrsAppend(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "attrsAppend"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	id := c.String("id")
 	client.SetPath("/entities/" + id + "/attrs")
 
 	args := []string{"type"}
 	opts := []string{"append", "keyValues"}
-	v := parseOptions(c, args, opts)
+	v := ngsicli.ParseOptions(c, args, opts)
 	client.SetQuery(v)
 
 	client.SetContentType()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func attrsUpdate(c *cli.Context) error {
+func attrsUpdate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "attrsUpdate"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	id := c.String("id")
 	client.SetPath("/entities/" + id + "/attrs")
 
 	args := []string{"type"}
 	opts := []string{"append", "keyValues"}
-	v := parseOptions(c, args, opts)
+	v := ngsicli.ParseOptions(c, args, opts)
 	client.SetQuery(v)
 
 	client.SetContentType()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPatch(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func attrsReplace(c *cli.Context) error {
+func attrsReplace(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "attrsReplace"
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	id := c.String("id")
 	client.SetPath("/entities/" + id + "/attrs")
 
 	args := []string{"type"}
 	opts := []string{"append", "keyValues"}
-	v := parseOptions(c, args, opts)
+	v := ngsicli.ParseOptions(c, args, opts)
 	client.SetQuery(v)
 
 	client.SetHeader("Content-Type", "application/json")
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil

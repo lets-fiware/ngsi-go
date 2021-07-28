@@ -68,7 +68,7 @@ ngsi hget --host quantumleap entities
 ngsi hdelete entity --id device003 --run
 
 ```1
-qlEntityDeleteMain004 404 NOT FOUND {
+tsEntityDelete001 404 NOT FOUND {
   "description": "No records were found for such query.",
   "error": "Not Found"
 }
@@ -148,7 +148,7 @@ ngsi hget entities
 ngsi hdelete entity --id device001 --type Event --run
 
 ```1
-qlEntityDeleteMain004 404 NOT FOUND {
+tsEntityDelete001 404 NOT FOUND {
   "description": "No records were found for such query.",
   "error": "Not Found"
 }

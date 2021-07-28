@@ -25,27 +25,7 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi man --help
-#
-ngsi man --help
-
-```
-NAME:
-   ngsi man - print urls of document
-
-USAGE:
-   ngsi man [command options] [arguments...]
-
-CATEGORY:
-   CONVENIENCE
-
-OPTIONS:
-   --help  show help (default: false)
-   
-```
-
-#
-# 0002 ngsi man
+# 0011 ngsi man
 #
 ngsi man
 

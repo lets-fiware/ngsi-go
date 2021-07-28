@@ -174,7 +174,7 @@ ngsi applications roles --aid $aid get --rid $rid --pretty
 #
 # 0031 Update a role
 #
-ngsi applications roles --aid $aid update -rid $rid --name "role99"
+ngsi applications roles --aid $aid update --rid $rid --name "role99"
 
 ```
 {"values_updated":{"name":"role99"}}

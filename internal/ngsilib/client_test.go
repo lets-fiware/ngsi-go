@@ -34,6 +34,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -167,7 +168,7 @@ func TestInitHeaderErrorTenant(t *testing.T) {
 	err := client.InitHeader()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
@@ -206,7 +207,7 @@ func TestInitHeaderErrorNgsiV2Scope(t *testing.T) {
 	err := client.InitHeader()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE ServicePath: iot", ngsiErr.Message)
 	}
@@ -563,7 +564,7 @@ func TestCheckTenantError(t *testing.T) {
 	err := client.CheckTenant("FIWARE")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
@@ -582,7 +583,7 @@ func TestCheckScopeError(t *testing.T) {
 	err := client.CheckScope("fiware")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE ServicePath: fiware", ngsiErr.Message)
 	}

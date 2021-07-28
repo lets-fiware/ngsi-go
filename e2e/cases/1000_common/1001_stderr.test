@@ -30,9 +30,10 @@
 ngsi --stderr info version --host unknown
 
 ```1
-REGEX(.*)
-cbVersion
-cbVersion002 error host: unknown
+ (git_hash:)
+Run001 error host: unknown
+ngsiRun005 error host: unknown
+newClient001 error host: unknown
 newClient002 error host: unknown
 NewClient005 error host: unknown
 abnormal termination
@@ -44,7 +45,7 @@ abnormal termination
 ngsi --stderr err version --host unknown
 
 ```1
-cbVersion002 error host: unknown
+Run001 error host: unknown
 ```
 
 #

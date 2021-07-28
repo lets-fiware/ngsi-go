@@ -35,6 +35,8 @@ import (
 	"net/url"
 	"path"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 type KeycloakToken struct {
@@ -72,7 +74,7 @@ func (i *idmKeycloak) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenI
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	openid := "openid"
@@ -90,7 +92,7 @@ func (i *idmKeycloak) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenI
 
 		res, body, err = idm.HTTPPost(payload)
 		if err != nil {
-			return nil, &LibError{funcName, 2, err.Error(), err}
+			return nil, ngsierr.New(funcName, 2, err.Error(), err)
 		}
 
 		switch res.StatusCode {
@@ -106,7 +108,7 @@ func (i *idmKeycloak) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenI
 			var oToken KeycloakToken
 			err = JSONUnmarshal(body, &oToken)
 			if err != nil {
-				return nil, &LibError{funcName, 3, err.Error(), err}
+				return nil, ngsierr.New(funcName, 3, err.Error(), err)
 			}
 
 			tokenInfo := &TokenInfo{
@@ -120,7 +122,7 @@ func (i *idmKeycloak) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenI
 		}
 	}
 
-	return nil, &LibError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	return nil, ngsierr.New(funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 }
 
 func (i *idmKeycloak) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
@@ -138,10 +140,10 @@ func (i *idmKeycloak) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenIn
 
 	res, body, err := idm.HTTPPost(payload)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
@@ -156,7 +158,7 @@ func (i *idmKeycloak) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 
 	b, err := JSONMarshal(tokenInfo.Keycloak)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return b, nil
 }
@@ -174,5 +176,5 @@ func (i *idmKeycloak) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil}
+	return ngsierr.New(funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil)
 }

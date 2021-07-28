@@ -35,6 +35,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -92,7 +93,7 @@ func TestRequestTokenKeyrockIDMErrorUser(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -122,7 +123,7 @@ func TestRequestTokenKeyrockIDMErrorHTTP(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -150,7 +151,7 @@ func TestRequestTokenKeyrockIDMErrorHTTPStatus(t *testing.T) {
 
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -179,7 +180,7 @@ func TestRequestTokenKeyrockIDMErrorUnmarshal(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json: cannot unmarshal string into Go value of type ngsilib.KeyrockIDMToken Field: (8) \"tokens\":{\"9e7067026d0a", ngsiErr.Message)
 	}
@@ -220,7 +221,7 @@ func TestRevokeKeyrockIDMErrorHTTP(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -243,7 +244,7 @@ func TestRevokeKeyrockIDMErrorHTTPStatus(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -298,7 +299,7 @@ func TestCheckIdmParamsKeyrockIDMError(t *testing.T) {
 	err := idm.checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "username and password are needed", ngsiErr.Message)
 	}

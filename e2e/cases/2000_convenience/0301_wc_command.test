@@ -25,32 +25,11 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi wc --help
+# 0001 ngsi settings clear
 #
-ngsi wc --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi wc - print number of entities, subscriptions, registrations or types
-
-USAGE:
-   ngsi wc command [command options] [arguments...]
-
-COMMANDS:
-   entities       print number of entities
-   subscriptions  print number of subscriptions
-   registrations  print number of registrations
-   types          print number of types
-   help, h        Shows a list of commands or help for one command
-
-OPTIONS:
-   --host value, -h value     host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --help                     show help (default: false)
-   --version, -v              print the version (default: false)
-   
 ```
 
 #

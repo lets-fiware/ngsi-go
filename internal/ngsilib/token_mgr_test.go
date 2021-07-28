@@ -36,6 +36,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -76,7 +77,7 @@ func TestInitTokenMgrErrorgetConfigDir(t *testing.T) {
 
 	err := ngsi.InitTokenMgr(nil)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error homedir", ngsiErr.Message)
 	}
@@ -91,7 +92,7 @@ func TestInitTokenMgrErrorPathAbs(t *testing.T) {
 	err := ngsi.InitTokenMgr(&filename)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "path abs error cache-file", ngsiErr.Message)
 	}
@@ -106,7 +107,7 @@ func TestInitTokenMgrErrorInitTokenList(t *testing.T) {
 	err := ngsi.InitTokenMgr(&filename)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error cache-file", ngsiErr.Message)
 	}
@@ -176,7 +177,7 @@ func TestInitTokenListErrorOpen(t *testing.T) {
 	err := initTokenList(io)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -207,7 +208,7 @@ func TestTokenInfoNotFound(t *testing.T) {
 	_, err := ngsi.TokenInfo(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "not found", ngsiErr.Message)
 	}
@@ -330,7 +331,7 @@ func TestGetTokenErrorRequestToken(t *testing.T) {
 	_, err := ngsi.GetToken(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
@@ -383,7 +384,7 @@ func TestGetAuthHeaderErrorGetToken(t *testing.T) {
 	_, _, err := ngsi.GetAuthHeader(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
@@ -409,7 +410,7 @@ func TestGetAuthHeaderErrorIdmType(t *testing.T) {
 	_, _, err := ngsi.GetAuthHeader(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
@@ -541,7 +542,7 @@ func TestRequestTokenErrorIdmType(t *testing.T) {
 	_, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: fiware", ngsiErr.Message)
 	}
@@ -568,7 +569,7 @@ func TestRequestTokenErrorRequestToken(t *testing.T) {
 	_, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -595,7 +596,7 @@ func TestRequestTokenErrorSave(t *testing.T) {
 	_, err := requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
@@ -646,7 +647,7 @@ func TestSaveTokenErrorOpenFile(t *testing.T) {
 
 	err := saveToken("cache-file", tokenInfo)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "open error cache-file", ngsiErr.Message)
 	}
@@ -660,7 +661,7 @@ func TestSaveTokenErrorTruncate(t *testing.T) {
 
 	err := saveToken("cache-file", tokenInfo)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "truncate error", ngsiErr.Message)
 	}
@@ -674,7 +675,7 @@ func TestSaveTokenErrorEncode(t *testing.T) {
 
 	err := saveToken("cache-file", tokenInfo)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "encode error", ngsiErr.Message)
 	}
@@ -727,7 +728,7 @@ func TestGetUserNameError(t *testing.T) {
 	_, err := getUserName(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "username is required", ngsiErr.Message)
 	}
@@ -751,7 +752,7 @@ func TestGetPasswordError(t *testing.T) {
 	_, err := getPassword(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -776,7 +777,7 @@ func TestGetUserNamePasswordErrorUser(t *testing.T) {
 	_, _, err := getUserNamePassword(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "username is required", ngsiErr.Message)
 	}
@@ -789,7 +790,7 @@ func TestGetUserNamePasswordErrorPassword(t *testing.T) {
 	_, _, err := getUserNamePassword(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "password is required", ngsiErr.Message)
 	}
@@ -827,7 +828,7 @@ func TestRevodeTokenErrorIdm(t *testing.T) {
 	err := ngsi.RevokeToken(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
@@ -871,7 +872,7 @@ func TestRevodeTokenErrorSaveToken(t *testing.T) {
 	err := ngsi.RevokeToken(client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error file", ngsiErr.Message)
 	}
@@ -909,7 +910,7 @@ func TestGetTokenInfoErrorUnkownType(t *testing.T) {
 	_, err := ngsi.GetTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
@@ -929,12 +930,12 @@ func TestGetTokenInfoErrorJSON(t *testing.T) {
 		},
 	}
 
-	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}}
 
 	_, err := ngsi.GetTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
@@ -971,7 +972,7 @@ func TestCheckIdmParamsErrorNoIDM(t *testing.T) {
 	err := checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "required idmType not found", ngsiErr.Message)
 	}
@@ -985,7 +986,7 @@ func TestCheckIdmParamsErrorUnkownIDM(t *testing.T) {
 	err := checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
@@ -1003,7 +1004,7 @@ func TestCheckIdmParamsErrorParam(t *testing.T) {
 	err := checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "idmHost, username, password, clientID and clientSecret are needed", ngsiErr.Message)
 	}

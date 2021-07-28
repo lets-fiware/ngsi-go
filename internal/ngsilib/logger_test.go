@@ -33,6 +33,7 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -116,7 +117,7 @@ func TestLogLevelError(t *testing.T) {
 
 	if assert.Error(t, err) {
 		assert.Equal(t, -1, actual)
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown LogLevel: fiware", ngsiErr.Message)
 	}

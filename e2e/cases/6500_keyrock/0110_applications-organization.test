@@ -213,9 +213,9 @@ ngsi organizations delete --oid $oid
 ```
 
 #
-# 9001 Delete an application
+# 9002 Delete an application
 #
-ngsi applications delete --aid $aid delete
+ngsi applications delete --aid $aid
 
 ```
 ```

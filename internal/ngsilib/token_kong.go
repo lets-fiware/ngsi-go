@@ -36,6 +36,8 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // KongToken is ...
@@ -74,7 +76,7 @@ func (i *idmKong) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 
 		res, body, err = idm.HTTPPost(payload)
 		if err != nil {
-			return nil, &LibError{funcName, 1, err.Error(), err}
+			return nil, ngsierr.New(funcName, 1, err.Error(), err)
 		}
 
 		switch res.StatusCode {
@@ -90,7 +92,7 @@ func (i *idmKong) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 			var token KongToken
 			err = JSONUnmarshal(body, &token)
 			if err != nil {
-				return nil, &LibError{funcName, 2, err.Error(), err}
+				return nil, ngsierr.New(funcName, 2, err.Error(), err)
 			}
 
 			tokenInfo.Type = CKong
@@ -103,7 +105,7 @@ func (i *idmKong) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 		}
 	}
 
-	return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	return nil, ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 }
 
 func (i *idmKong) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
@@ -117,10 +119,10 @@ func (i *idmKong) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) 
 
 	res, body, err := idm.HTTPDelete(nil)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
@@ -135,7 +137,7 @@ func (i *idmKong) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 
 	b, err := JSONMarshal(tokenInfo.Kong)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return b, nil
 }
@@ -153,7 +155,7 @@ func (i *idmKong) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "idmHost, clientID and clientSecret are needed", nil}
+	return ngsierr.New(funcName, 1, "idmHost, clientID and clientSecret are needed", nil)
 }
 
 func getKongHost(idm string, i int) string {

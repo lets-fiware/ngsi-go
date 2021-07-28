@@ -37,400 +37,234 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 )
 
 func TestOpUpdateArrayData(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", testOpUpdateArrayData})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	ngsi.Host = "orion"
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateArrayData})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	assert.NoError(t, err)
 }
 
 func TestOpUpdateArrayDataOver100(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
 	testData := "["
 	for i := 0; i < 105; i++ {
 		testData = testData + fmt.Sprintf("{\"id\":\"urn:ngsi-ld:Product:%d\",\"type\":\"Product\"},", i)
 	}
 	testData = testData[:len(testData)-1] + "]"
-	reqRes1 := MockHTTPReqRes{}
+
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", testData})
+
+	reqRes1 := helper.MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusNoContent
 	reqRes1.Path = "/v2/op/update"
-	reqRes2 := MockHTTPReqRes{}
+
+	reqRes2 := helper.MockHTTPReqRes{}
 	reqRes2.Res.StatusCode = http.StatusNoContent
 	reqRes2.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes1)
-	mock.ReqRes = append(mock.ReqRes, reqRes2)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
 	assert.NoError(t, err)
 }
 
 func TestOpUpdateLineData(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", testOpUpdateLineData})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateLineData})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	assert.NoError(t, err)
 }
 
 func TestOpUpdateErrorReadAll(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
-func TestOpUpdateErrorToken(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+func TestOpUpdateErrorData(t *testing.T) {
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "@test"})
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	c.Ngsi.FileReader = &helper.MockFileLib{IoReader: bufio.NewReader(bytes.NewReader([]byte("")))}
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=@test"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	ngsi.FileReader = &MockFileLib{IoReader: bufio.NewReader(bytes.NewReader([]byte("")))}
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpUpdateErrorJSONDelim(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "1"})
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=1"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "data not JSON", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpUpdateErrorJSONDelim2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "{{"})
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={{"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character '{' looking for beginning of object key string (2)", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpUpdateErrorDecode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "[" + testOpUpdateArrayData})
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=[" + testOpUpdateArrayData})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json: cannot unmarshal array into Go value of type map[string]interface {}", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
-func TestOpUpdateArrayErrorHTTP2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
+func TestOpUpdateArrayErrorHTTP(t *testing.T) {
 	testData := "["
 	for i := 0; i < 105; i++ {
 		testData = testData + fmt.Sprintf("{\"id\":\"urn:ngsi-ld:Product:%d\",\"type\":\"Product\"},", i)
 	}
 	testData = testData[:len(testData)-1] + "]"
-	reqRes1 := MockHTTPReqRes{}
+
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", testData})
+
+	reqRes1 := helper.MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusNoContent
 	reqRes1.Err = errors.New("error")
 	reqRes1.Path = "/v2/op/update"
-	reqRes2 := MockHTTPReqRes{}
+
+	reqRes2 := helper.MockHTTPReqRes{}
 	reqRes2.Res.StatusCode = http.StatusNoContent
 	reqRes2.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes1)
-	mock.ReqRes = append(mock.ReqRes, reqRes2)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
-func TestOpUpdateArrayErrorHTTP2StatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
+func TestOpUpdateArrayErrorStatusCode(t *testing.T) {
 	testData := "["
 	for i := 0; i < 105; i++ {
 		testData = testData + fmt.Sprintf("{\"id\":\"urn:ngsi-ld:Product:%d\",\"type\":\"Product\"},", i)
 	}
 	testData = testData[:len(testData)-1] + "]"
-	reqRes1 := MockHTTPReqRes{}
+
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", testData})
+
+	reqRes1 := helper.MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusBadRequest
 	reqRes1.Path = "/v2/op/update"
-	reqRes2 := MockHTTPReqRes{}
+
+	reqRes2 := helper.MockHTTPReqRes{}
 	reqRes2.Res.StatusCode = http.StatusNoContent
 	reqRes2.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes1)
-	mock.ReqRes = append(mock.ReqRes, reqRes2)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testData})
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, " ", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpUpdateErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "{}"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestOpUpdateErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", "{}"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 9, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestOpUpdateArrayDataError(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "entities", "--host", "orion", "--data", testOpUpdateArrayDataError})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/op/update"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=" + testOpUpdateArrayDataError})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = opUpdate(c, ngsi, client, "append_strict")
+	err := opUpdate(c, c.Ngsi, c.Client, "append_strict")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 

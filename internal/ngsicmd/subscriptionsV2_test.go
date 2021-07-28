@@ -30,1551 +30,968 @@ SOFTWARE.
 package ngsicmd
 
 import (
-	"flag"
+	"errors"
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
 )
 
 func TestSubscriptionssubscriptionsListV2(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	_ = set.Parse([]string{"--host=orion"})
-	c := cli.NewContext(app, set, nil)
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "3ea2e78f675f2d199d3025ff\n5f64060ef6752d199d302600\n1f32db4bf6752d199d302601\n3978fabd87752d199d302602\n9f6c254ac4a6068bb276774e\n4f6c2576c4a6068bb276774f\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Count(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--count"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "count")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--count"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "6\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2CountZero(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	_ = set.Parse([]string{"--host=orion"})
-	c := cli.NewContext(app, set, nil)
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := ""
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Page(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	reqRes1 := MockHTTPReqRes{}
+	reqRes1 := helper.MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte(subscriptionData)
 	reqRes1.Path = "/v2/subscriptions"
 	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"106"}}
-	reqRes2 := MockHTTPReqRes{}
+
+	reqRes2 := helper.MockHTTPReqRes{}
 	reqRes2.Res.StatusCode = http.StatusOK
 	reqRes2.ResBody = []byte(subscriptionData)
 	reqRes2.Path = "/v2/subscriptions"
 	reqRes2.ResHeader = http.Header{"Fiware-Total-Count": []string{"106"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes1)
-	mock.ReqRes = append(mock.ReqRes, reqRes2)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	_ = set.Parse([]string{"--host=orion"})
-	c := cli.NewContext(app, set, nil)
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "3ea2e78f675f2d199d3025ff\n5f64060ef6752d199d302600\n1f32db4bf6752d199d302601\n3978fabd87752d199d302602\n9f6c254ac4a6068bb276774e\n4f6c2576c4a6068bb276774f\n3ea2e78f675f2d199d3025ff\n5f64060ef6752d199d302600\n1f32db4bf6752d199d302601\n3978fabd87752d199d302602\n9f6c254ac4a6068bb276774e\n4f6c2576c4a6068bb276774f\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Status(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "active"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status")
-	_ = set.Parse([]string{"--host=orion", "--status=active"})
-	c := cli.NewContext(app, set, nil)
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "4f6c2576c4a6068bb276774f\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Query(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--query", "FIWARE"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--query=FIWARE*"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "4f6c2576c4a6068bb276774f\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Json(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "inactive", "--json"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query")
-	setupFlagBool(set, "json")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[{\"id\":\"9f6c254ac4a6068bb276774e\",\"description\":\"ngsi source subscription\",\"subject\":{\"entities\":[{\"idPattern\":\".*\"}],\"condition\":{\"attrs\":[\"dateObserved\"]}},\"notification\":{\"timesSent\":28,\"lastNotification\":\"2020-09-24T07:30:02.00Z\",\"lastSuccess\":\"2020-09-24T07:30:02.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:13.00Z\",\"status\":\"inactive\"}]\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2JsonPretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "inactive", "--json", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query")
-	setupFlagBool(set, "json,pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[\n  {\n    \"id\": \"9f6c254ac4a6068bb276774e\",\n    \"description\": \"ngsi source subscription\",\n    \"subject\": {\n      \"entities\": [\n        {\n          \"idPattern\": \".*\"\n        }\n      ],\n      \"condition\": {\n        \"attrs\": [\n          \"dateObserved\"\n        ]\n      }\n    },\n    \"notification\": {\n      \"timesSent\": 28,\n      \"lastNotification\": \"2020-09-24T07:30:02.00Z\",\n      \"lastSuccess\": \"2020-09-24T07:30:02.00Z\",\n      \"lastSuccessCode\": 404,\n      \"onlyChangedAttrs\": false,\n      \"http\": {\n        \"url\": \"https://ngsiproxy\"\n      },\n      \"attrsFormat\": \"keyValues\"\n    },\n    \"expires\": \"2020-09-24T07:49:13.00Z\",\n    \"status\": \"inactive\"\n  }\n]\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2JsonCount0(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "inactive", "--json"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query")
-	set.Bool("json", false, "doc")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := ""
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Verbose(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "inactive", "--verbose"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query")
-	setupFlagBool(set, "verbose")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "9f6c254ac4a6068bb276774e inactive 2020-09-24T07:49:13.00Z ngsi source subscription\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Localtime(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "inactive", "--verbose", "--localTime"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query")
-	setupFlagBool(set, "verbose,localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "9f6c254ac4a6068bb276774e inactive 2020-09-24T16:49:13.00+0900 ngsi source subscription\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2Items(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "inactive", "--verbose", "--localTime", "--items", "status,expires"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query,items")
-	setupFlagBool(set, "verbose,localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "9f6c254ac4a6068bb276774e inactive 2020-09-24T16:49:13.00+0900\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--host", "orion", "--status", "abc", "--verbose", "--localTime", "--items", "status,expires"})
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.ResBody = []byte(subscriptionData)
-	reqRes.Path = "/v2/subscriptions"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,status,query,items")
-	setupFlagBool(set, "verbose,localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=abc", "--verbose", "--localTime", "--items=status,expires"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error: abc (active, inactive, oneshot, expired, failed)", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscription"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host,status,query,items")
-	setupFlagBool(set, "verbose,localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
 
-	setupFlagString(set, "host,status,query,items")
-	setupFlagBool(set, "verbose,localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorRessultsCount(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorUnmarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion"})
 
-	setJSONDecodeErr(ngsi, 1)
-
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
 
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorMarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--json"})
 
-	setJSONEncodeErr(ngsi, 2)
-
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "json")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--json"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorJSONPretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--json", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query")
-	setupFlagBool(set, "json,pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--json", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONIndentError(c.Ngsi)
 
-	setJSONIndentError(ngsi)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionssubscriptionsListV2ErrorHTTPItems(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--status", "inactive", "--verbose", "--localTime", "--items", "status,expires,error"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(subscriptionData)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"6"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,status,query,items")
-	setupFlagBool(set, "verbose,localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--status=inactive", "--verbose", "--localTime", "--items=status,expires,error"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsListV2(c, ngsi, client)
+	err := subscriptionsListV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsGetV2(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "id,host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-	err = subscriptionGetV2(c, ngsi, client)
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"id\":\"4f6c2576c4a6068bb276774f\",\"description\":\"FIWARE\",\"subject\":{\"entities\":[{\"idPattern\":\".*\",\"type\":\"WeatherObserved\"}],\"condition\":{\"attrs\":[\"dateRetrieved\"]}},\"notification\":{\"timesSent\":278,\"lastNotification\":\"2020-09-24T07:40:26.00Z\",\"lastSuccess\":\"2020-09-24T07:40:26.00Z\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T07:49:56.00Z\",\"status\":\"active\"}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsGetV2Pretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	setupFlagBool(set, "pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionGetV2(c, ngsi, client)
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\n  \"id\": \"4f6c2576c4a6068bb276774f\",\n  \"description\": \"FIWARE\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\",\n        \"type\": \"WeatherObserved\"\n      }\n    ],\n    \"condition\": {\n      \"attrs\": [\n        \"dateRetrieved\"\n      ]\n    }\n  },\n  \"notification\": {\n    \"timesSent\": 278,\n    \"lastNotification\": \"2020-09-24T07:40:26.00Z\",\n    \"lastSuccess\": \"2020-09-24T07:40:26.00Z\",\n    \"lastSuccessCode\": 404,\n    \"onlyChangedAttrs\": false,\n    \"http\": {\n      \"url\": \"https://ngsiproxy\"\n    },\n    \"attrsFormat\": \"keyValues\"\n  },\n  \"expires\": \"2020-09-24T07:49:56.00Z\",\n  \"status\": \"active\"\n}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsGetV2LocalTime(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--localTime"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	setupFlagBool(set, "localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c", "--localTime"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionGetV2(c, ngsi, client)
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"id\":\"4f6c2576c4a6068bb276774f\",\"description\":\"FIWARE\",\"subject\":{\"entities\":[{\"idPattern\":\".*\",\"type\":\"WeatherObserved\"}],\"condition\":{\"attrs\":[\"dateRetrieved\"]}},\"notification\":{\"timesSent\":278,\"lastNotification\":\"2020-09-24T16:40:26.00+0900\",\"lastSuccess\":\"2020-09-24T16:40:26.00+0900\",\"lastSuccessCode\":404,\"onlyChangedAttrs\":false,\"http\":{\"url\":\"https://ngsiproxy\"},\"attrsFormat\":\"keyValues\"},\"expires\":\"2020-09-24T16:49:56.00+0900\",\"status\":\"active\"}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 func TestSubscriptionsGetV2ErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionGetV2(c, ngsi, client)
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "  5f0a44789dd803416ccbf15c", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsGetV2ErrorUnmarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c"})
 
-	setJSONDecodeErr(ngsi, 1)
-
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
 
-	err = subscriptionGetV2(c, ngsi, client)
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsGetV2ErrorMarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c"})
 
-	setJSONEncodeErr(ngsi, 2)
-
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	err = subscriptionGetV2(c, ngsi, client)
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsGetV2ErrorPretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
 	reqRes.ResBody = []byte(`{"id":"4f6c2576c4a6068bb276774f","description":"FIWARE","subject":{"entities":[{"idPattern":".*","type":"WeatherObserved"}],"condition":{"attrs":["dateRetrieved"]}},"notification":{"timesSent":278,"lastNotification":"2020-09-24T07:40:26.00Z","lastSuccess":"2020-09-24T07:40:26.00Z","lastSuccessCode":404,"onlyChangedAttrs":false,"http":{"url":"https://ngsiproxy"},"attrsFormat":"keyValues"},"expires":"2020-09-24T07:49:56.00Z","status":"active"}`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	setupFlagBool(set, "pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=5f0a44789dd803416ccbf15c", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONIndentError(c.Ngsi)
 
-	setJSONIndentError(ngsi)
-
-	err = subscriptionGetV2(c, ngsi, client)
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsCreateV2(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--entityId", "abc", "--uri", "http://ngsiproxy", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Location": []string{"/v2/subscriptions/5f0a44789dd803416ccbf15c"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,throttling,expires,entityId,uri")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--entityId=abc", "--uri=http://ngsiproxy"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsCreateV2(c, ngsi, client)
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "5f0a44789dd803416ccbf15c\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsCreateV2ErrorsetSubscriptionValuesV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z", "--data", "@"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.Path = "/v2/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,throttling,expires,data")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data=", "--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsCreateV2(c, ngsi, client)
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--entityId", "abc", "--url", "http://ngsiproxy", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	setJSONEncodeErr(ngsi, 2)
-
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscriptions"
 	reqRes.ResHeader = http.Header{"Location": []string{"/v2/subscriptions/5f0a44789dd803416ccbf15c"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,throttling,expires,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	err = subscriptionsCreateV2(c, ngsi, client)
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsCreateV2ErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--entityId", "abc", "--url", "http://ngsiproxy", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscription"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host,id,throttling,expires,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsCreateV2(c, ngsi, client)
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsCreateV2ErrorStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--entityId", "abc", "--url", "http://ngsiproxy", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ReqData = []byte(`{"subject":{"entities":[{"id":"abc"}]},"notification":{"http":{"url":"http://ngsiproxy"}},"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscriptions"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
 
-	setupFlagString(set, "host,id,throttling,expires,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsCreateV2(c, ngsi, client)
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsUpdateV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,throttling,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsUpdateV2(c, ngsi, client)
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestSubscriptionsUpdateV2wAttr(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--wAttrs", "Temp"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"subject":{"condition":{"attrs":["Temp"]}}}`)
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,wAttrs")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
-	_ = set.Parse([]string{"--wAttrs=Temp"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsUpdateV2(c, ngsi, client)
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestSubscriptionsUpdateV2ErrotsetSubscriptionValuesV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--throttling", "1", "--expires", "2"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscription/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,throttling,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsUpdateV2(c, ngsi, client)
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "error 2", ngsiErr.Message)
 	}
 }
 func TestSubscriptionsUpdateV2Marshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	setJSONEncodeErr(ngsi, 2)
-
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,throttling,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	err = subscriptionsUpdateV2(c, ngsi, client)
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 func TestSubscriptionsUpdateV2ErrotHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscription/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host,id,throttling,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsUpdateV2(c, ngsi, client)
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsUpdateV2ErrorStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.ReqData = []byte(`{"throttling":1,"expires":"2020-10-05T00:58:26.929Z"}`)
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
 
-	setupFlagString(set, "host,id,throttling,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
-	_ = set.Parse([]string{"--throttling=1", "--expires=2020-10-05T00:58:26.929Z"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsUpdateV2(c, ngsi, client)
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error 5f0a44789dd803416ccbf15c", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsDeleteV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsDeleteV2(c, ngsi, client)
+	err := subscriptionsDeleteV2(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestSubscriptionsDeleteV2ErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/subscription/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsDeleteV2(c, ngsi, client)
+	err := subscriptionsDeleteV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsDeleteV2ErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
 
-	setupFlagString(set, "id,host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	_ = set.Parse([]string{"--id=5f0a44789dd803416ccbf15c"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = subscriptionsDeleteV2(c, ngsi, client)
+	err := subscriptionsDeleteV2(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error 5f0a44789dd803416ccbf15c", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsTemplateV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--data", "{}", "--entityId", "abc", "--url", "http://ngsiproxy"})
 
-	setupFlagString(set, "data,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
-
-	err := subscriptionsTemplateV2(c, ngsi)
+	err := subscriptionsTemplateV2(c, c.Ngsi)
 
 	assert.NoError(t, err)
 }
 
 func TestSubscriptionsTemplateV2Pretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--pretty", "--data", "{}", "--entityId", "abc", "--url", "http://ngsiproxy"})
 
-	setupFlagString(set, "data,entityId,url")
-	setupFlagBool(set, "pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--pretty", "--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
-
-	err := subscriptionsTemplateV2(c, ngsi)
+	err := subscriptionsTemplateV2(c, c.Ngsi)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\n  \"subject\": {\n    \"entities\": [\n      {\n        \"id\": \"abc\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://ngsiproxy\"\n    }\n  }\n}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsTemplateV2Error(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--url", "http://ngsiproxy", "--data", "@"})
 
-	setupFlagString(set, "data,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data=", "--url=http://ngsiproxy"})
-
-	err := subscriptionsTemplateV2(c, ngsi)
+	err := subscriptionsTemplateV2(c, c.Ngsi)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestSubscriptionsTemplateV2ErrorMarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--entityId", "abc", "--url", "http://ngsiproxy"})
 
-	setJSONEncodeErr(ngsi, 0)
-	setupFlagString(set, "data,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy"})
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	err := subscriptionsTemplateV2(c, ngsi)
+	err := subscriptionsTemplateV2(c, c.Ngsi)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSubscriptionsTemplateV2ErrorPretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--pretty", "--data", "{}", "--entityId", "abc", "--url", "http://ngsiproxy"})
 
-	setupFlagString(set, "data,entityId,url")
-	setupFlagBool(set, "pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--pretty", "--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
+	helper.SetJSONIndentError(c.Ngsi)
 
-	setJSONIndentError(ngsi)
-
-	err := subscriptionsTemplateV2(c, ngsi)
+	err := subscriptionsTemplateV2(c, c.Ngsi)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSetSubscriptionValuesV2Data(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--data", "{}", "--entityId", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--entityId=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2getAttributes(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--entityId", "abc", "--url", "http://ngsiproxy", "--host", "orion", "--type", "abc", "--get"})
 
-	sub := subscriptionV2{}
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/abc"
 	reqRes.ResBody = []byte("{\"attrs\":{\"CO\":{\"types\":[\"Number\"]},\"CO_Level\":{\"types\":[\"Text\"]},\"NO\":{\"types\":[\"Number\"]},\"NO2\":{\"types\":[\"Number\"]},\"NOx\":{\"types\":[\"Number\"]},\"SO2\":{\"types\":[\"Number\"]},\"address\":{\"types\":[\"StructuredValue\"]},\"airQualityIndex\":{\"types\":[\"Number\"]},\"airQualityLevel\":{\"types\":[\"Text\"]},\"dateObserved\":{\"types\":[\"DateTime\",\"Text\"]},\"location\":{\"types\":[\"StructuredValue\",\"geo:json\"]},\"precipitation\":{\"types\":[\"Number\"]},\"refPointOfInterest\":{\"types\":[\"Text\"]},\"relativeHumidity\":{\"types\":[\"Number\"]},\"reliability\":{\"types\":[\"Number\"]},\"source\":{\"types\":[\"Text\",\"URL\"]},\"temperature\":{\"types\":[\"Number\"]},\"windDirection\":{\"types\":[\"Number\"]},\"windSpeed\":{\"types\":[\"Number\"]}},\"count\":18}")
-	mock := NewMockHTTP()
+
+	mock := helper.NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	c.Ngsi.HTTP = mock
 
-	setupFlagString(set, "data,entityId,url,host,type,link")
-	setupFlagBool(set, "get")
+	sub := subscriptionV2{}
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-
-	err = setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2IdPattern(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--data", "{}", "--idPattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,entityId,idPattern,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--idPattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2TypePattern(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--data", "{}", "--typePattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--typePattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2wAttrs1(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--wAttrs", "abc,def,xyz", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,wAttrs")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--wAttrs=abc,def,xyz", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2wAttrs2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--wAttrs", "abc,def,xyz", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
-	sub.Subject = new(subscriptionSubjectV2)
-	sub.Subject.Condition = new(subscriptionConditionV2)
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,wAttrs")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--wAttrs=abc,def,xyz", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2query1(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--query", "abc", "--mq", "def", "--georel", "123", "--geometry", "456", "--coords", "789", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 	sub.Subject = new(subscriptionSubjectV2)
 	sub.Subject.Condition = new(subscriptionConditionV2)
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--query=abc", "--mq=def", "--georel=123", "--geometry=456", "--coords=789", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2query2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--query", "abc", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 	sub.Subject = new(subscriptionSubjectV2)
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--query=abc", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2query3(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--query", "abc", "--mq", "def", "--georel", "123", "--geometry", "456", "--coords", "789", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 	sub.Subject = new(subscriptionSubjectV2)
@@ -1582,443 +999,356 @@ func TestSetSubscriptionValuesV2query3(t *testing.T) {
 	sub.Subject.Condition = new(subscriptionConditionV2)
 	sub.Subject.Condition.Expression = new(subscriptionExpressionV2)
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--query=abc", "--mq=def", "--georel=123", "--geometry=456", "--coords=789", "--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2url(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 	sub.Notification = new(subscriptionNotificationV2)
 	sub.Notification.HTTP = new(subscriptionHTTPV2)
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,query,mq,georel,geometry,coords")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2Metadata(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--metadata", "abc"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "metadata")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{`--metadata=abc`})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2headers(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy", "--headers", `{"abc":"123","xyz":"456"}`})
 
 	sub := subscriptionV2{}
 	sub.Notification = new(subscriptionNotificationV2)
 	sub.Notification.HTTP = new(subscriptionHTTPV2)
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,headers,qs,method,payload")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{`--headers={"abc":"123","xyz":"456"}`})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2qs(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy", "--qs", `{"abc":"123","xyz":"456"}`})
 
 	sub := subscriptionV2{}
 	sub.Notification = new(subscriptionNotificationV2)
 	sub.Notification.HTTPCustom = new(subscriptionHTTPCustomV2)
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,headers,qs,method,payload")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{`--qs={"abc":"123","xyz":"456"}`})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2method(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy", "--method", "post", "--payload", "abc", "--nAttrs", "abc,xyz", "--metadata", "abc,xyz"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,method,payload,nAttrs,metadata")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{"--method=post", "--payload=abc", "--nAttrs=abc,xyz", "--metadata=abc,xyz"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2exceptAttrs(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy", "--exceptAttrs", "abc,xyz", "--attrsFormat", "abc", "--throttling", "1", "--expires", "1day", "--status", "oneshot"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,exceptAttrs,attrsFormat,throttling,expires,status")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{"--exceptAttrs=abc,xyz", "--attrsFormat=abc", "--throttling=1", "--expires=1day", "--status=oneshot"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2expires(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--idPattern", "abc", "--typePattern", "abc", "--url", "http://ngsiproxy", "--exceptAttrs", "abc,xyz", "--attrsFormat", "abc", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z", "--status", "active"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "typePattern,data,entityId,idPattern,url,exceptAttrs,attrsFormat,throttling,expires,status")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--idPattern=abc", "--typePattern=abc", "--url=http://ngsiproxy"})
-	_ = set.Parse([]string{"--exceptAttrs=abc,xyz", "--attrsFormat=abc", "--throttling=1", "--expires=2020-10-05T00:58:26.929Z", "--status=active"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	assert.NoError(t, err)
 }
 
 func TestSetSubscriptionValuesV2Error1(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--data", "@", "--entityId", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data=", "--entityId=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--data", "{id}", "--entityId", "abc", "--url", "http://ngsiproxy"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "data,entityId,url")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={id}", "--entityId=abc", "--url=http://ngsiproxy"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "invalid character 'i' looking for beginning of object key string (2) {id}", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error3(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--entityId", "abc", "--url", "http://ngsiproxy", "--host", "orion", "--type", "abc", "--get", "--link", "abc"})
 
 	sub := subscriptionV2{}
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/abc"
-	mock := NewMockHTTP()
+
+	mock := helper.NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	c.Ngsi.HTTP = mock
 
-	setupFlagString(set, "data,entityId,url,host,type,get,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--host=orion", "--type=abc", "--get", "--link=abc"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-
-	err = setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "abc not found", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error5(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--entityId", "abc", "--url", "http://ngsiproxy", "--type", "123", "--typePattern", "xyz"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "entityId,url,type,typePattern")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--entityId=abc", "--url=http://ngsiproxy", "--type=123", "--typePattern=xyz"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "type or typePattern", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error6(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--headers", "{id}", "--entityId", "abc", "--url", "http://ngsiproxy", "--type", "123"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "entityId,url,type,typePattern,headers")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--headers={id}", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "err{id}", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error7(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--qs", "{id}", "--entityId", "abc", "--url", "http://ngsiproxy", "--type", "123"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "entityId,url,type,typePattern,headers,qs")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--qs={id}", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "err{id}", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error8(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--exceptAttrs", "abc", "--nAttrs", "abc", "--entityId", "abc", "--url", "http://ngsiproxy", "--type", "123"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "entityId,url,type,typePattern,headers,qs,expires,exceptAttrs,nAttrs")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--exceptAttrs=abc", "--nAttrs=abc", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "error exceptAttrs or nAttrs", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error9(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--expires", "1", "--entityId", "abc", "--url", "http://ngsiproxy", "--type", "123"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "entityId,url,type,typePattern,headers,qs,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--expires=1", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "error 1", ngsiErr.Message)
 	}
 }
 
 func TestSetSubscriptionValuesV2Error10(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--status", "error", "--entityId", "abc", "--url", "http://ngsiproxy", "--type", "123"})
 
 	sub := subscriptionV2{}
 
-	setupFlagString(set, "entityId,url,type,typePattern,headers,qs,expires,status")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--status=error", "--entityId=abc", "--url=http://ngsiproxy", "--type=123"})
-
-	err := setSubscriptionValuesV2(c, ngsi, &sub, false)
+	err := setSubscriptionValuesV2(c, c.Ngsi, &sub, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 9, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "error: error (active, inactive, oneshot)", ngsiErr.Message)
 	}
 }
 
 func TestGtAttributesV2Ok1(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--host", "orion", "--type", "abc", "--get"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/abc"
 	reqRes.ResBody = []byte("{\"attrs\":{\"CO\":{\"types\":[\"Number\"]},\"CO_Level\":{\"types\":[\"Text\"]},\"NO\":{\"types\":[\"Number\"]},\"NO2\":{\"types\":[\"Number\"]},\"NOx\":{\"types\":[\"Number\"]},\"SO2\":{\"types\":[\"Number\"]},\"address\":{\"types\":[\"StructuredValue\"]},\"airQualityIndex\":{\"types\":[\"Number\"]},\"airQualityLevel\":{\"types\":[\"Text\"]},\"dateObserved\":{\"types\":[\"DateTime\",\"Text\"]},\"location\":{\"types\":[\"StructuredValue\",\"geo:json\"]},\"precipitation\":{\"types\":[\"Number\"]},\"refPointOfInterest\":{\"types\":[\"Text\"]},\"relativeHumidity\":{\"types\":[\"Number\"]},\"reliability\":{\"types\":[\"Number\"]},\"source\":{\"types\":[\"Text\",\"URL\"]},\"temperature\":{\"types\":[\"Number\"]},\"windDirection\":{\"types\":[\"Number\"]},\"windSpeed\":{\"types\":[\"Number\"]}},\"count\":18}")
-	mock := NewMockHTTP()
+
+	mock := helper.NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type,link")
-	set.Bool("get", false, "")
+	c.Ngsi.HTTP = mock
+
 	sub := subscriptionV2{}
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get"})
-	err := getAttributesV2(c, ngsi, &sub)
+	err := getAttributesV2(c, c.Ngsi, &sub)
 
 	assert.NoError(t, err)
 }
 
 func TestGtAttributesV2Ok2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--host", "orion", "--type", "abc", "--get"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/types/abc"
 	reqRes.ResBody = []byte("{\"attrs\":{\"CO\":{\"types\":[\"Number\"]},\"CO_Level\":{\"types\":[\"Text\"]},\"NO\":{\"types\":[\"Number\"]},\"NO2\":{\"types\":[\"Number\"]},\"NOx\":{\"types\":[\"Number\"]},\"SO2\":{\"types\":[\"Number\"]},\"address\":{\"types\":[\"StructuredValue\"]},\"airQualityIndex\":{\"types\":[\"Number\"]},\"airQualityLevel\":{\"types\":[\"Text\"]},\"dateObserved\":{\"types\":[\"DateTime\",\"Text\"]},\"location\":{\"types\":[\"StructuredValue\",\"geo:json\"]},\"precipitation\":{\"types\":[\"Number\"]},\"refPointOfInterest\":{\"types\":[\"Text\"]},\"relativeHumidity\":{\"types\":[\"Number\"]},\"reliability\":{\"types\":[\"Number\"]},\"source\":{\"types\":[\"Text\",\"URL\"]},\"temperature\":{\"types\":[\"Number\"]},\"windDirection\":{\"types\":[\"Number\"]},\"windSpeed\":{\"types\":[\"Number\"]}},\"count\":18}")
-	mock := NewMockHTTP()
+
+	mock := helper.NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type,link")
-	set.Bool("get", false, "")
+	c.Ngsi.HTTP = mock
+
 	sub := subscriptionV2{}
 	sub.Subject = new(subscriptionSubjectV2)
 	sub.Subject.Condition = new(subscriptionConditionV2)
 	sub.Subject.Entities = append(sub.Subject.Entities, *new(subscriptionEntityV2))
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get"})
-	err := getAttributesV2(c, ngsi, &sub)
+	err := getAttributesV2(c, c.Ngsi, &sub)
 
 	assert.NoError(t, err)
 }
 
 func TestGtAttributesV2NoError(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2"})
 
-	setupFlagString(set, "host,type")
 	sub := subscriptionV2{}
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := getAttributesV2(c, ngsi, &sub)
+	err := getAttributesV2(c, c.Ngsi, &sub)
 
 	assert.NoError(t, err)
 }
 
 func TestGtAttributesV2ErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "abc", "--ngsiType", "v2", "--type", "abc", "--get"})
 
-	setupFlagString(set, "host,type,link")
-	set.Bool("get", false, "")
 	sub := subscriptionV2{}
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get", "--link=abc"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-
-	err = getAttributesV2(c, ngsi, &sub)
+	err := getAttributesV2(c, c.Ngsi, &sub)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "error host: abc", ngsiErr.Message)
 	}
 }
 
 func TestGtAttributesV2ErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--type", "abc", "--get"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Path = "/v2/types"
-	mock := NewMockHTTP()
+	reqRes.Err = errors.New("http error")
+
+	mock := helper.NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type,link")
-	set.Bool("get", false, "")
+	c.Ngsi.HTTP = mock
+
 	sub := subscriptionV2{}
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-
-	err = getAttributesV2(c, ngsi, &sub)
+	err := getAttributesV2(c, c.Ngsi, &sub)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
+	}
+}
+
+func TestGtAttributesV2ErrorJSONUnmarshal(t *testing.T) {
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--host", "orion", "--type", "abc", "--get"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/types/abc"
+	reqRes.ResBody = []byte("{\"attrs\":{\"CO\":{\"types\":[\"Number\"]},\"CO_Level\":{\"types\":[\"Text\"]},\"NO\":{\"types\":[\"Number\"]},\"NO2\":{\"types\":[\"Number\"]},\"NOx\":{\"types\":[\"Number\"]},\"SO2\":{\"types\":[\"Number\"]},\"address\":{\"types\":[\"StructuredValue\"]},\"airQualityIndex\":{\"types\":[\"Number\"]},\"airQualityLevel\":{\"types\":[\"Text\"]},\"dateObserved\":{\"types\":[\"DateTime\",\"Text\"]},\"location\":{\"types\":[\"StructuredValue\",\"geo:json\"]},\"precipitation\":{\"types\":[\"Number\"]},\"refPointOfInterest\":{\"types\":[\"Text\"]},\"relativeHumidity\":{\"types\":[\"Number\"]},\"reliability\":{\"types\":[\"Number\"]},\"source\":{\"types\":[\"Text\",\"URL\"]},\"temperature\":{\"types\":[\"Number\"]},\"windDirection\":{\"types\":[\"Number\"]},\"windSpeed\":{\"types\":[\"Number\"]}},\"count\":18}")
+
+	mock := helper.NewMockHTTP()
+	mock.ReqRes = append(mock.ReqRes, reqRes)
+	c.Ngsi.HTTP = mock
+
+	sub := subscriptionV2{}
+	sub.Subject = new(subscriptionSubjectV2)
+	sub.Subject.Condition = new(subscriptionConditionV2)
+	sub.Subject.Entities = append(sub.Subject.Entities, *new(subscriptionEntityV2))
+
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
+
+	err := getAttributesV2(c, c.Ngsi, &sub)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
 
 func TestGtAttributesV2ErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "subscription", "--host", "orion", "--ngsiType", "v2", "--type", "abc", "--get"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/types/abc"
-	mock := NewMockHTTP()
+	reqRes.ResBody = []byte("error")
+
+	mock := helper.NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type,link")
-	set.Bool("get", false, "")
+	c.Ngsi.HTTP = mock
+
 	sub := subscriptionV2{}
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=abc", "--get"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-
-	err = getAttributesV2(c, ngsi, &sub)
+	err := getAttributesV2(c, c.Ngsi, &sub)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
@@ -2062,30 +1392,22 @@ func TestGetLocalTime4(t *testing.T) {
 }
 
 func TestCheckItems(t *testing.T) {
-	set := flag.NewFlagSet("test", 0)
-	setupFlagString(set, "items")
-	app := cli.NewApp()
-	_ = set.Parse([]string{"--items=description,timessent,lastnotification,lastsuccess,lastsuccesscode,url,expires,status"})
-	c := cli.NewContext(app, set, nil)
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--items", "description,timessent,lastnotification,lastsuccess,lastsuccesscode,url,expires,status"})
+
 	_, err := checkItems(c)
 
 	assert.NoError(t, err)
 }
 
 func TestCheckItemsError(t *testing.T) {
-	set := flag.NewFlagSet("test", 0)
-	setupFlagString(set, "items")
-	app := cli.NewApp()
-	_ = set.Parse([]string{"--items=abc"})
-	c := cli.NewContext(app, set, nil)
+	c := setupTest([]string{"list", "subscriptions", "--host", "orion", "--items", "abc"})
+
 	_, err := checkItems(c)
 
 	if assert.Error(t, err) {
 		actual := err.Error()
 		expected := "error: abc in --items"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 

@@ -35,6 +35,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -93,7 +94,7 @@ func TestRequestTokenKongErrorHTTP(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -123,7 +124,7 @@ func TestRequestTokenKongErrorUnmarshal(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		actual := "json: cannot unmarshal string into Go value of type ngsilib.KongToken Field: (12) \"expires_in\":7200,\"access_t"
 		assert.Equal(t, actual, ngsiErr.Message)
@@ -153,7 +154,7 @@ func TestRequestTokenKongErrorHTTPStatus(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -182,7 +183,7 @@ func TestRequestTokenKongErrorHTTPStatusUnauthorized(t *testing.T) {
 	_, err := idm.requestToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "error  Unauthorized", ngsiErr.Message)
 	}
@@ -225,7 +226,7 @@ func TestRevokeTokenKongErrorHTTP(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
@@ -249,7 +250,7 @@ func TestRevokeTokenKongErrorHTTPStatus(t *testing.T) {
 	err := idm.revokeToken(ngsi, client, tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error  bad request", ngsiErr.Message)
 	}
@@ -326,12 +327,12 @@ func TestGetTokenInfoKongError(t *testing.T) {
 		},
 	}
 
-	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error")}
+	gNGSI.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}}
 
 	_, err := idm.getTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
@@ -363,7 +364,7 @@ func TestCheckIdmParamsKongError(t *testing.T) {
 	err := idm.checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "idmHost, clientID and clientSecret are needed", ngsiErr.Message)
 	}

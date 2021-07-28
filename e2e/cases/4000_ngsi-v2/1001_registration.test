@@ -27,7 +27,7 @@
 #
 # 0001 Create registration
 #
-ngsi create registration --description "context source mock" \
+ngsi create --host orion registration --description "context source mock" \
 --provider ${csource}/v2 --attrs temperature,atmosphericPressure,relativeHumidity \
 --providedId urn:ngsi-ld:WeatherObserved:sensor001 --type WeatherObserved
 

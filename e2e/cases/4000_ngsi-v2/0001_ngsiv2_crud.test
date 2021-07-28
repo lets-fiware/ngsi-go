@@ -244,7 +244,7 @@ ngsi list entities --type Product --verbose
 #
 # 1012 List all Data Entities (key-value pairs)
 #
-ngsi list entities --type Product -attrs name,price --keyValues --verbose
+ngsi list entities --type Product --attrs name,price --keyValues --verbose
 
 ```
 [{"id":"urn:ngsi-ld:Product:001","type":"Product","name":"Beer","price":99},{"id":"urn:ngsi-ld:Product:002","type":"Product","name":"Red Wine","price":1099},{"id":"urn:ngsi-ld:Product:003","type":"Product","name":"White Wine","price":1499},{"id":"urn:ngsi-ld:Product:004","type":"Product","name":"Vodka","price":5000},{"id":"urn:ngsi-ld:Product:005","type":"Product","name":"Lager","price":99},{"id":"urn:ngsi-ld:Product:006","type":"Product","name":"Whisky","price":99},{"id":"urn:ngsi-ld:Product:007","type":"Product","name":"Gin","price":99},{"id":"urn:ngsi-ld:Product:008","type":"Product","name":"Apple Juice","price":99},{"id":"urn:ngsi-ld:Product:009","type":"Product","name":"Orange Juice","price":99},{"id":"urn:ngsi-ld:Product:010","type":"Product","name":"Lemonade","price":99},{"id":"urn:ngsi-ld:Product:011","type":"Product","name":"Brandy","price":1199},{"id":"urn:ngsi-ld:Product:012","type":"Product","name":"Port","price":1099}]
@@ -258,7 +258,7 @@ ngsi list entities --type Product -attrs name,price --keyValues --verbose
 #  https://github.com/lets-fiware/ngsi-go/issues/87
 #  https://github.com/FIWARE/tutorials.CRUD-Operations/issues/14
 #
-ngsi list entities --type Product -attrs __NONE --verbose
+ngsi list entities --type Product --attrs __NONE --verbose
 
 ```
 [{"id":"urn:ngsi-ld:Product:001","type":"Product"},{"id":"urn:ngsi-ld:Product:002","type":"Product"},{"id":"urn:ngsi-ld:Product:003","type":"Product"},{"id":"urn:ngsi-ld:Product:004","type":"Product"},{"id":"urn:ngsi-ld:Product:005","type":"Product"},{"id":"urn:ngsi-ld:Product:006","type":"Product"},{"id":"urn:ngsi-ld:Product:007","type":"Product"},{"id":"urn:ngsi-ld:Product:008","type":"Product"},{"id":"urn:ngsi-ld:Product:009","type":"Product"},{"id":"urn:ngsi-ld:Product:010","type":"Product"},{"id":"urn:ngsi-ld:Product:011","type":"Product"},{"id":"urn:ngsi-ld:Product:012","type":"Product"}]

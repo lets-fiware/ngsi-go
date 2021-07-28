@@ -32,6 +32,8 @@ package ngsilib
 import (
 	"fmt"
 	"strings"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // Server is
@@ -130,11 +132,11 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 
 	serverHost := host.ServerHost
 	if serverHost == "" {
-		return &LibError{funcName, 1, "host not found", nil}
+		return ngsierr.New(funcName, 1, "host not found", nil)
 	}
 	if !IsHTTP(serverHost) {
-		if _, ok := ngsi.serverList[serverHost]; !ok {
-			return &LibError{funcName, 2, fmt.Sprintf("host error: %s", serverHost), nil}
+		if _, ok := ngsi.ServerList[serverHost]; !ok {
+			return ngsierr.New(funcName, 2, fmt.Sprintf("host error: %s", serverHost), nil)
 		}
 	}
 
@@ -145,11 +147,11 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 	if ngsiType := host.NgsiType; ngsiType != "" {
 		ngsiType = strings.ToLower(ngsiType)
 		if !(Contains(ngsiV2Types, ngsiType) || Contains(ngsiLdTypes, ngsiType)) {
-			return &LibError{funcName, 3, fmt.Sprintf("%s not found", ngsiType), nil}
+			return ngsierr.New(funcName, 3, fmt.Sprintf("%s not found", ngsiType), nil)
 		}
 		if Contains(ngsiV2Types, ngsiType) {
 			if host.BrokerType != "" {
-				return &LibError{funcName, 4, "can'n specify broker Type", nil}
+				return ngsierr.New(funcName, 4, "can'n specify broker Type", nil)
 			}
 			host.NgsiType = cV2
 			host.BrokerType = ""
@@ -160,7 +162,7 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 			} else {
 				host.BrokerType = strings.ToLower(host.BrokerType)
 				if !Contains(brokerTypeArgs, host.BrokerType) {
-					return &LibError{funcName, 5, fmt.Sprintf("brokerType Error: %s", host.BrokerType), nil}
+					return ngsierr.New(funcName, 5, fmt.Sprintf("brokerType Error: %s", host.BrokerType), nil)
 				}
 			}
 		}
@@ -168,7 +170,7 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 
 	if apiPath := host.APIPath; apiPath != "" {
 		if _, _, err := getAPIPath(apiPath); err != nil {
-			return &LibError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 6, err.Error(), err)
 		}
 	}
 
@@ -186,26 +188,26 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 	}
 	err := checkIdmParams(idmParams)
 	if err != nil {
-		return &LibError{funcName, 7, err.Error(), err}
+		return ngsierr.New(funcName, 7, err.Error(), err)
 	}
 
 	var client *Client
 	if tenant := host.Tenant; tenant != "" {
 		err = client.CheckTenant(tenant)
 		if err != nil {
-			return &LibError{funcName, 8, err.Error(), err}
+			return ngsierr.New(funcName, 8, err.Error(), err)
 		}
 	}
 
 	if scope := host.Scope; scope != "" {
 		err = client.CheckScope(scope)
 		if err != nil {
-			return &LibError{funcName, 9, err.Error(), err}
+			return ngsierr.New(funcName, 9, err.Error(), err)
 		}
 	}
 
 	if _, err := host.safeString(); err != nil {
-		return &LibError{funcName, 10, err.Error(), err}
+		return ngsierr.New(funcName, 10, err.Error(), err)
 	}
 
 	return nil
@@ -216,25 +218,25 @@ func getAPIPath(apiPath string) (string, string, error) {
 
 	pos := strings.Index(apiPath, ",")
 	if pos == -1 {
-		return "", "", &LibError{funcName, 1, fmt.Sprintf("apiPath error: %s", apiPath), nil}
+		return "", "", ngsierr.New(funcName, 1, fmt.Sprintf("apiPath error: %s", apiPath), nil)
 	}
 	pathBefore := apiPath[:pos]
 	if !Contains(apiPaths, pathBefore) {
-		return "", "", &LibError{funcName, 2, fmt.Sprintf("apiPath error: %s", pathBefore), nil}
+		return "", "", ngsierr.New(funcName, 2, fmt.Sprintf("apiPath error: %s", pathBefore), nil)
 	}
 	pathAfter := apiPath[pos+1:]
 	if !strings.HasPrefix(pathAfter, "/") {
-		return "", "", &LibError{funcName, 3, fmt.Sprintf("must start with '/': %s", pathAfter), nil}
+		return "", "", ngsierr.New(funcName, 3, fmt.Sprintf("must start with '/': %s", pathAfter), nil)
 	}
 	if strings.HasSuffix(pathAfter, "/") {
-		return "", "", &LibError{funcName, 4, fmt.Sprintf("trailing '/' is not required: %s", pathAfter), nil}
+		return "", "", ngsierr.New(funcName, 4, fmt.Sprintf("trailing '/' is not required: %s", pathAfter), nil)
 	}
 	return pathBefore, pathAfter, nil
 }
 
 // ExistsBrokerHost is ...
 func (ngsi *NGSI) ExistsBrokerHost(host string) bool {
-	_, ok := ngsi.serverList[host]
+	_, ok := ngsi.ServerList[host]
 	return ok
 }
 
@@ -324,7 +326,7 @@ func setServerParam(broker *Server, param map[string]string) error {
 	for key, value := range param {
 		switch key {
 		default:
-			return &LibError{funcName, 1, fmt.Sprintf("%s not found", key), nil}
+			return ngsierr.New(funcName, 1, fmt.Sprintf("%s not found", key), nil)
 		case cServerType:
 			broker.ServerType = value
 		case cServerHost:
@@ -378,16 +380,16 @@ func setServerParam(broker *Server, param map[string]string) error {
 func (ngsi *NGSI) DeleteItem(host string, item string) error {
 	const funcName = "DeleteItem"
 
-	broker, ok := ngsi.serverList[host]
+	broker, ok := ngsi.ServerList[host]
 	if !ok {
-		return &LibError{funcName, 1, fmt.Sprintf("%s not found", host), nil}
+		return ngsierr.New(funcName, 1, fmt.Sprintf("%s not found", host), nil)
 	}
 	param := map[string]string{item: ""}
 
 	err := setServerParam(broker, param)
 
 	if err != nil {
-		return &LibError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	return nil
 }
@@ -396,10 +398,10 @@ func (ngsi *NGSI) DeleteItem(host string, item string) error {
 func (ngsi *NGSI) IsHostReferenced(host string) error {
 	const funcName = "IsHostReferenced"
 
-	for k, v := range ngsi.serverList {
+	for k, v := range ngsi.ServerList {
 		value := v.ServerHost
 		if host == value {
-			return &LibError{funcName, 1, fmt.Sprintf("%s is referenced in %s", host, k), nil}
+			return ngsierr.New(funcName, 1, fmt.Sprintf("%s is referenced in %s", host, k), nil)
 		}
 	}
 	return nil
@@ -409,10 +411,10 @@ func (ngsi *NGSI) IsHostReferenced(host string) error {
 func (ngsi *NGSI) IsContextReferenced(context string) error {
 	const funcName = "IsContextReferenced"
 
-	for k, v := range ngsi.serverList {
+	for k, v := range ngsi.ServerList {
 		value := v.Context
 		if context == value {
-			return &LibError{funcName, 1, fmt.Sprintf("%s is referenced in %s", context, k), nil}
+			return ngsierr.New(funcName, 1, fmt.Sprintf("%s is referenced in %s", context, k), nil)
 		}
 	}
 	return nil
@@ -428,7 +430,7 @@ func (info *Server) safeString() (bool, error) {
 	value := info.SafeString
 	b, err := gNGSI.BoolFlag(value)
 	if err != nil {
-		return false, &LibError{funcName, 1, err.Error(), err}
+		return false, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return b, nil
 }
@@ -439,7 +441,7 @@ func (info *Server) xAuthToken() (bool, error) {
 	value := info.XAuthToken
 	b, err := gNGSI.BoolFlag(value)
 	if err != nil {
-		return false, &LibError{funcName, 1, err.Error(), err}
+		return false, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return b, nil
 }

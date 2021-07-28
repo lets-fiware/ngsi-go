@@ -25,43 +25,15 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi broker add --help
+# 0001 ngsi settings clear
 #
-ngsi broker add --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi broker add - add broker
-
-USAGE:
-   ngsi broker add [command options] [arguments...]
-
-OPTIONS:
-   --host value, -h value          host or alias
-   --brokerHost value, -b value    specify context broker host
-   --ngsiType value                specify NGSI type: v2 or ld
-   --brokerType value              specify NGSI-LD broker type: orion-ld, scorpio or stellio
-   --idmType value, -t value       specify token type
-   --idmHost value, -m value       specify identity manager host
-   --apiPath value, -a value       specify API path
-   --username value, -U value      specify username
-   --password value, -P value      specify password
-   --clientId value, -I value      specify client id
-   --clientSecret value, -S value  specify client secret
-   --headerName value              specify header name for apikey
-   --headerValue value             specify header value for apikey
-   --headerEnvValue value          specify name of environment variable for apikey
-   --tokenScope value              specify scope for token
-   --token value                   oauth token
-   --service value, -s value       FIWARE Service
-   --path value, -p value          FIWARE ServicePath
-   --safeString value              use safe string (value: on/off)
-   --help                          show help (default: false)
-   
 ```
 
 #
-# 0002 Add broker with ngsiType v2
+# 0012 Add broker with ngsiType v2
 #
 ngsi broker add \
 --host orion-v2 \
@@ -72,7 +44,7 @@ ngsi broker add \
 ```
 
 #
-# 0003 Check broker info
+# 0013 Check broker info
 # 
 ngsi broker get --host orion-v2
 
@@ -82,7 +54,7 @@ ngsiType v2
 ```
 
 #
-# 0004 Delete broker
+# 0014 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -90,7 +62,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0005 Add broker with ngsiType ld
+# 0015 Add broker with ngsiType ld
 #
 ngsi broker add \
 --host orion-ld2 \
@@ -101,7 +73,7 @@ ngsi broker add \
 ```
 
 #
-# 0006 Check broker info
+# 0016 Check broker info
 # 
 ngsi broker get --host orion-ld2
 
@@ -112,7 +84,7 @@ brokerType orion-ld
 ```
 
 #
-# 0007 Delete broker
+# 0017 Delete broker
 #
 ngsi broker delete --host orion-ld2
 
@@ -120,7 +92,7 @@ ngsi broker delete --host orion-ld2
 ```
 
 #
-# 0008 Add broker with keyrock
+# 0018 Add broker with keyrock
 #
 ngsi broker add \
 --host idm \
@@ -137,7 +109,7 @@ ngsi broker add \
 ```
 
 #
-# 0009 Check broker info
+# 0019 Check broker info
 # 
 ngsi broker get --host idm --clearText
 
@@ -154,7 +126,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 ```
 
 #
-# 0010 Delete broker
+# 0020 Delete broker
 #
 ngsi broker delete --host idm
 
@@ -162,7 +134,7 @@ ngsi broker delete --host idm
 ```
 
 #
-# 0011 Add broker with password credentials
+# 0021 Add broker with password credentials
 #
 ngsi broker add \
 --host password \
@@ -179,7 +151,7 @@ ngsi broker add \
 ```
 
 #
-# 0012 Check broker info
+# 0022 Check broker info
 # 
 ngsi broker get --host password --clearText
 
@@ -196,7 +168,7 @@ ClientSecret 55555555-6666-7777-8888-999999999999
 ```
 
 #
-# 0013 Delete broker
+# 0023 Delete broker
 #
 ngsi broker delete --host password
 
@@ -204,7 +176,7 @@ ngsi broker delete --host password
 ```
 
 #
-# 0014 Add broker with KeyrockTokenProvider
+# 0024 Add broker with KeyrockTokenProvider
 #
 ngsi broker add \
 --host KeyrockTokenProvider \
@@ -219,7 +191,7 @@ ngsi broker add \
 ```
 
 #
-# 0015 Check broker info
+# 0025 Check broker info
 # 
 ngsi broker get --host KeyrockTokenProvider --clearText
 
@@ -234,7 +206,7 @@ Password 0123456789
 ```
 
 #
-# 0016 Delete broker
+# 0026 Delete broker
 #
 ngsi broker delete --host KeyrockTokenProvider
 
@@ -242,7 +214,7 @@ ngsi broker delete --host KeyrockTokenProvider
 ```
 
 #
-# 0017 Add broker with tokenproxy
+# 0027 Add broker with tokenproxy
 #
 ngsi broker add \
 --host tokenproxy \
@@ -257,7 +229,7 @@ ngsi broker add \
 ```
 
 #
-# 0018 Check broker info
+# 0028 Check broker info
 # 
 ngsi broker get --host tokenproxy --clearText
 
@@ -272,7 +244,7 @@ Password 0123456789
 ```
 
 #
-# 0019 Delete broker
+# 0029 Delete broker
 #
 ngsi broker delete --host tokenproxy
 
@@ -280,7 +252,7 @@ ngsi broker delete --host tokenproxy
 ```
 
 #
-# 0020 Add broker (base)
+# 0030 Add broker (base)
 #
 ngsi broker add \
 --host base \
@@ -291,7 +263,7 @@ ngsi broker add \
 ```
 
 #
-# 0021 Add broker with base
+# 0031 Add broker with base
 #
 ngsi broker add \
 --host tokenproxy \
@@ -305,7 +277,7 @@ ngsi broker add \
 ```
 
 #
-# 0022 Check broker info
+# 0032 Check broker info
 # 
 ngsi broker get --host tokenproxy --clearText
 
@@ -318,7 +290,7 @@ Password 0123456789
 ```
 
 #
-# 0023 Delete broker
+# 0033 Delete broker
 #
 ngsi broker delete --host tokenproxy
 
@@ -326,7 +298,7 @@ ngsi broker delete --host tokenproxy
 ```
 
 #
-# 0024 Delete broker
+# 0034 Delete broker
 #
 ngsi broker delete --host base
 
@@ -334,7 +306,7 @@ ngsi broker delete --host base
 ```
 
 #
-# 0025 Add broker with FIWARE-Service
+# 0035 Add broker with FIWARE-Service
 #
 ngsi broker add \
 --host orion-v2 \
@@ -346,7 +318,7 @@ ngsi broker add \
 ```
 
 #
-# 0026 Check broker info
+# 0036 Check broker info
 #
 ngsi broker get --host orion-v2
 
@@ -357,7 +329,7 @@ FIWARE-Service iot
 ```
 
 #
-# 0027 Delete broker
+# 0037 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -365,7 +337,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0028 Add broker with FIWARE-ServicePath
+# 0038 Add broker with FIWARE-ServicePath
 #
 ngsi broker add \
 --host orion-v2 \
@@ -377,7 +349,7 @@ ngsi broker add \
 ```
 
 #
-# 0029 Check broker info
+# 0039 Check broker info
 #
 ngsi broker get --host orion-v2
 
@@ -388,7 +360,7 @@ FIWARE-ServicePath /iot
 ```
 
 #
-# 0030 Delete broker
+# 0040 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -396,7 +368,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0031 Add broker with APIPath
+# 0041 Add broker with APIPath
 #
 ngsi broker add \
 --host orion-v2 \
@@ -408,7 +380,7 @@ ngsi broker add \
 ```
 
 #
-# 0032 Check broker info
+# 0042 Check broker info
 #
 ngsi broker get --host orion-v2
 
@@ -419,7 +391,7 @@ APIPath /,/orion
 ```
 
 #
-# 0033 Delete broker
+# 0043 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -427,7 +399,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0034 Add broker with APIPath
+# 0044 Add broker with APIPath
 #
 ngsi broker add \
 --host orion-v2 \
@@ -439,7 +411,7 @@ ngsi broker add \
 ```
 
 #
-# 0035 Check broker info
+# 0045 Check broker info
 #
 ngsi broker get --host orion-v2
 
@@ -450,7 +422,7 @@ APIPath /v2,/orion/v2.0
 ```
 
 #
-# 0036 Delete broker
+# 0046 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -458,7 +430,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0037 Add broker with safeString on
+# 0047 Add broker with safeString on
 #
 ngsi broker add \
 --host orion-v2 \
@@ -470,7 +442,7 @@ ngsi broker add \
 ```
 
 #
-# 0038 Check broker info
+# 0048 Check broker info
 #
 ngsi broker get --host orion-v2
 
@@ -481,7 +453,7 @@ SafeString on
 ```
 
 #
-# 0039 Delete broker
+# 0049 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -489,7 +461,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0040 Add broker with safeString off
+# 0050 Add broker with safeString off
 #
 ngsi broker add \
 --host orion-v2 \
@@ -501,7 +473,7 @@ ngsi broker add \
 ```
 
 #
-# 0041 Check broker info
+# 0051 Check broker info
 #
 ngsi broker get --host orion-v2
 
@@ -512,7 +484,7 @@ SafeString off
 ```
 
 #
-# 0042 Delete broker
+# 0052 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -520,7 +492,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0043 Add broker with token
+# 0053 Add broker with token
 #
 ngsi broker add \
 --host orion-v2 \
@@ -532,7 +504,7 @@ ngsi broker add \
 ```
 
 #
-# 0044 Check broker info
+# 0054 Check broker info
 #
 ngsi broker get --host orion-v2
 
@@ -543,7 +515,7 @@ Token b495476d545a7e90362eaa0496af8a5dcdf18d9f
 ```
 
 #
-# 0045 Delete broker
+# 0055 Delete broker
 #
 ngsi broker delete --host orion-v2
 
@@ -551,7 +523,7 @@ ngsi broker delete --host orion-v2
 ```
 
 #
-# 0046 Add broker with uppercase tenant name
+# 0056 Add broker with uppercase tenant name
 #
 ngsi broker add --host tenant --brokerHost http://orion:1026 --ngsiType v2 --service Foo
 
@@ -559,7 +531,7 @@ ngsi broker add --host tenant --brokerHost http://orion:1026 --ngsiType v2 --ser
 ```
 
 #
-# 0047 Check tenant name
+# 0057 Check tenant name
 #
 ngsi broker get --host tenant
 
@@ -570,7 +542,7 @@ FIWARE-Service foo
 ```
 
 #
-# 0048 Delete broker
+# 0058 Delete broker
 #
 ngsi broker delete --host tenant
 
@@ -578,7 +550,7 @@ ngsi broker delete --host tenant
 ```
 
 #
-# 0051 Add broker (Basic authentication)
+# 0061 Add broker (Basic authentication)
 #
 ngsi broker add --host orion-with-basic-auth --ngsiType v2 --brokerHost http://localhost:1026/ \
   --idmType basic \
@@ -589,7 +561,7 @@ ngsi broker add --host orion-with-basic-auth --ngsiType v2 --brokerHost http://l
 ```
 
 #
-# 0052 Get broker
+# 0062 Get broker
 #
 ngsi broker get --host orion-with-basic-auth
 
@@ -602,7 +574,7 @@ Password ****
 ```
 
 #
-# 0053 Update broker
+# 0063 Update broker
 #
 ngsi broker update --host orion-with-basic-auth --username orion
 
@@ -610,7 +582,7 @@ ngsi broker update --host orion-with-basic-auth --username orion
 ```
 
 #
-# 0054 Get broker
+# 0064 Get broker
 #
 ngsi broker get --host orion-with-basic-auth --clearText
 
@@ -623,7 +595,7 @@ Password 1234
 ```
 
 #
-# 0055 Delete broker
+# 0065 Delete broker
 #
 ngsi broker delete --host orion-with-basic-auth
 
@@ -631,28 +603,29 @@ ngsi broker delete --host orion-with-basic-auth
 ```
 
 #
-# 0100 brokersAdd002 Required host not found
+# 0100 host not found
 #
 ngsi broker add
 
 ```1
-brokersAdd002 required host not found
+required002 --host not found
+Run001 missing required options
 ```
 
 #
-# 0101 brokersAdd005 brokerHost is missing
+# 0101 brokersAdd003 brokerHost is missing
 #
 ngsi broker add --host fiware
 
 ```1
-brokersAdd005 brokerHost is missing
+brokersAdd003 brokerHost is missing
 ```
 
 #
-# 0102 brokersAdd008 brokerHost error: orion-v2
+# 0102 brokersAdd006 brokerHost error: orion-v2
 #
 ngsi broker add --host fiware --brokerHost orion-v2
 
 ```1
-brokersAdd008 host error: orion-v2
+brokersAdd006 host error: orion-v2
 ```

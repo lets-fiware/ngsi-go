@@ -33,6 +33,8 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // NewClient is ...
@@ -46,27 +48,27 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, sk
 	if IsHTTP(name) {
 		client.URL, err = url.Parse(name)
 		if err != nil {
-			return nil, &LibError{funcName, 1, fmt.Sprintf("illegal url: %s", name), nil}
+			return nil, ngsierr.New(funcName, 1, fmt.Sprintf("illegal url: %s", name), nil)
 		}
 	} else {
 		host, path, query := parseURL(name)
 
-		server, ok := ngsi.serverList[host]
+		server, ok := ngsi.ServerList[host]
 		if ok {
 			client.Server = server
 			host = client.Server.ServerHost
 			if host == "" {
-				return nil, &LibError{funcName, 2, "host not found", nil}
+				return nil, ngsierr.New(funcName, 2, "host not found", nil)
 			}
 			if !IsHTTP(host) {
-				broker1, ok := ngsi.serverList[host]
+				broker1, ok := ngsi.ServerList[host]
 				if !ok {
-					return nil, &LibError{funcName, 3, host + " not found", nil}
+					return nil, ngsierr.New(funcName, 3, host+" not found", nil)
 				}
 				copyServerInfo(broker1, client.Server)
 				host = client.Server.ServerHost
 				if !IsHTTP(host) {
-					return nil, &LibError{funcName, 4, "url error: " + host, nil}
+					return nil, ngsierr.New(funcName, 4, "url error: "+host, nil)
 				}
 			}
 			host = strings.TrimSuffix(host, "/")
@@ -78,7 +80,7 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, sk
 				} else {
 					s = "error host: " + host
 				}
-				return nil, &LibError{funcName, 5, s, nil}
+				return nil, ngsierr.New(funcName, 5, s, nil)
 			}
 			host = "http://" + host
 		}
@@ -91,46 +93,16 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, sk
 		}
 		client.URL, err = url.Parse(host)
 		if err != nil {
-			return nil, &LibError{funcName, 6, "illegal url: " + name + ", " + host, nil}
+			return nil, ngsierr.New(funcName, 6, "illegal url: "+name+", "+host, nil)
 		}
 		client.Path = client.URL.Path
-	}
-
-	var tenant *string
-	var scope *string
-
-	d := ngsi.GetPreviousArgs()
-
-	if d.Tenant != "" {
-		tenant = &d.Tenant
-	}
-	if d.Scope != "" {
-		scope = &d.Scope
-	}
-
-	if cmdFlags.Tenant == nil {
-		cmdFlags.Tenant = tenant
-	}
-	if cmdFlags.Scope == nil {
-		cmdFlags.Scope = scope
-	}
-	setTenantAndScope(client, cmdFlags.Tenant, cmdFlags.Scope)
-
-	if d.Tenant != client.Tenant {
-		d.Tenant = client.Tenant
-		ngsi.Updated = true
-	}
-
-	if d.Scope != client.Scope {
-		d.Scope = client.Scope
-		ngsi.Updated = true
 	}
 
 	if client.Server != nil {
 		if apiPath := client.Server.APIPath; apiPath != "" {
 			client.APIPathBefore, client.APIPathAfter, err = getAPIPath(apiPath)
 			if err != nil {
-				return nil, &LibError{funcName, 7, err.Error(), err}
+				return nil, ngsierr.New(funcName, 7, err.Error(), err)
 			}
 		}
 		client.NgsiType = ngsiV2
@@ -141,36 +113,40 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, sk
 		}
 	}
 
-	token := ""
-	if d.Token != "" {
-		token = d.Token
+	flags := []struct {
+		cmd    *string
+		client *string
+	}{
+		{cmd: cmdFlags.Tenant, client: &client.Tenant},
+		{cmd: cmdFlags.Scope, client: &client.Scope},
+		{cmd: cmdFlags.Token, client: &client.Token},
 	}
-	if cmdFlags.Token != nil && *cmdFlags.Token != token {
-		token = *cmdFlags.Token
-		d.Token = token
-		ngsi.Updated = true
+	for _, flag := range flags {
+		if flag.cmd != nil {
+			*flag.client = *flag.cmd
+		}
 	}
-	if token != "" {
-		client.Token = token
-	} else if client.Server.IdmType != "" &&
+
+	if client.Token == "" &&
+		client.Server.IdmType != "" &&
 		client.Server.IdmType != CApikey &&
 		!skipGetToken {
 		token, err := ngsi.GetToken(client)
 		if err != nil {
-			return nil, &LibError{funcName, 8, err.Error(), err}
+			return nil, ngsierr.New(funcName, 8, err.Error(), err)
 		}
 		client.Token = token
 	}
 
 	b, err := client.Server.safeString()
 	if err != nil {
-		return nil, &LibError{funcName, 9, err.Error(), err}
+		return nil, ngsierr.New(funcName, 9, err.Error(), err)
 	}
 	client.SafeString = b
 	if cmdFlags.SafeString != nil {
 		b, err := ngsi.BoolFlag(*cmdFlags.SafeString)
 		if err != nil {
-			return nil, &LibError{funcName, 10, err.Error(), err}
+			return nil, ngsierr.New(funcName, 10, err.Error(), err)
 		}
 		client.SafeString = b
 	}
@@ -179,33 +155,20 @@ func (ngsi *NGSI) NewClient(name string, cmdFlags *CmdFlags, isHTTPVerb bool, sk
 	client.Link = cmdFlags.Link
 
 	if err = client.InitHeader(); err != nil {
-		return nil, &LibError{funcName, 11, err.Error(), err}
+		return nil, ngsierr.New(funcName, 11, err.Error(), err)
 	}
 
 	if ngsi.Updated && ngsi.GetPreviousArgs().UsePreviousArgs {
-		if _, ok := ngsi.serverList[ngsi.PreviousArgs.Host]; !ok {
+		if _, ok := ngsi.ServerList[ngsi.PreviousArgs.Host]; !ok {
 			ngsi.PreviousArgs.Host = ""
 			ngsi.PreviousArgs.Tenant = ""
 			ngsi.PreviousArgs.Scope = ""
 		}
 		if err = ngsi.saveConfigFile(); err != nil {
-			return nil, &LibError{funcName, 12, err.Error(), err}
+			return nil, ngsierr.New(funcName, 12, err.Error(), err)
 		}
 	}
 	return client, nil
-}
-
-func setTenantAndScope(client *Client, tenant *string, scope *string) {
-
-	client.Tenant = client.Server.Tenant
-	client.Scope = client.Server.Scope
-
-	if tenant != nil {
-		client.Tenant = *tenant
-	}
-	if scope != nil {
-		client.Scope = *scope
-	}
 }
 
 func parseURL(url string) (string, string, string) {

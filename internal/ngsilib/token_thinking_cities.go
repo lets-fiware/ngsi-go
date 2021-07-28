@@ -34,6 +34,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 type idmThinkingCities struct {
@@ -48,7 +50,7 @@ func (i *idmThinkingCities) requestToken(ngsi *NGSI, client *Client, tokenInfo *
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	idm.SetHeader(cContentType, cAppJSON)
@@ -56,16 +58,16 @@ func (i *idmThinkingCities) requestToken(ngsi *NGSI, client *Client, tokenInfo *
 
 	res, body, err := idm.HTTPPost(data)
 	if err != nil {
-		return nil, &LibError{funcName, 2, err.Error(), err}
+		return nil, ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return nil, ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	var token KeyStoneToken
 	err = JSONUnmarshal(body, &token)
 	if err != nil {
-		return nil, &LibError{funcName, 4, err.Error(), err}
+		return nil, ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	layout := "2006-01-02T15:04:05.000000Z"
 	t, _ := time.Parse(layout, token.Token.ExpiresAt)
@@ -92,7 +94,7 @@ func (i *idmThinkingCities) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 
 	b, err := JSONMarshal(tokenInfo.Keystone)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return b, nil
 }
@@ -110,5 +112,5 @@ func (i *idmThinkingCities) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "idmHost, username and password are needed", nil}
+	return ngsierr.New(funcName, 1, "idmHost, username and password are needed", nil)
 }

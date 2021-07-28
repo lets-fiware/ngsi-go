@@ -35,114 +35,51 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func subscriptionsList(c *cli.Context) error {
-	const funcName = "subscriptionsList"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func subscriptionsList(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return subscriptionsListV2(c, ngsi, client)
 	}
 	return subscriptionsListLd(c, ngsi, client)
 }
 
-func subscriptionGet(c *cli.Context) error {
-	const funcName = "subscriptionGet"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func subscriptionGet(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return subscriptionGetV2(c, ngsi, client)
 	}
 	return subscriptionGetLd(c, ngsi, client)
 }
 
-func subscriptionsCreate(c *cli.Context) error {
-	const funcName = "subscriptionsCreate"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func subscriptionsCreate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return subscriptionsCreateV2(c, ngsi, client)
 	}
 	return subscriptionsCreateLd(c, ngsi, client)
 }
 
-func subscriptionsUpdate(c *cli.Context) error {
-	const funcName = "subscriptionsUpdate"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
+func subscriptionsUpdate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return subscriptionsUpdateV2(c, ngsi, client)
 	}
 	return subscriptionsUpdateLd(c, ngsi, client)
 }
 
-func subscriptionsDelete(c *cli.Context) error {
-	const funcName = "subscriptionsDelete"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func subscriptionsDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return subscriptionsDeleteV2(c, ngsi, client)
 	}
 	return subscriptionsDeleteLd(c, ngsi, client)
 }
 
-func subscriptionsTemplate(c *cli.Context) error {
+func subscriptionsTemplate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsTemplate"
 
-	ngsi, err := initCmd(c, funcName, false)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
 	if !c.IsSet("ngsiType") {
-		return &ngsiCmdError{funcName, 2, "Required ngsiType not found", err}
+		return ngsierr.New(funcName, 1, "Required ngsiType not found", nil)
 	}
 
 	t := strings.ToLower(c.String("ngsiType"))
@@ -154,21 +91,11 @@ func subscriptionsTemplate(c *cli.Context) error {
 		return subscriptionsTemplateLd(c, ngsi)
 	}
 
-	return &ngsiCmdError{funcName, 3, "ngsiType error " + t, err}
+	return ngsierr.New(funcName, 2, "ngsiType error "+t, nil)
 }
 
-func subscriptionsCount(c *cli.Context) error {
+func subscriptionsCount(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsCount"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	client.SetPath("/subscriptions")
 	v := url.Values{}
@@ -184,15 +111,15 @@ func subscriptionsCount(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	count, err := client.ResultsCount(res)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, "ResultsCount error", nil}
+		return ngsierr.New(funcName, 3, "ResultsCount error", nil)
 	}
 
 	fmt.Fprintln(ngsi.StdWriter, count)

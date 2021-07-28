@@ -37,8 +37,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
 type jsonldContexts []struct {
@@ -53,24 +54,10 @@ type jsonldContexts []struct {
 	URLs      []string          `json:"URLs"`
 }
 
-func jsonldContextsList(c *cli.Context) error {
+func jsonldContextsList(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "jsonldContextsList"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "only available on NGSI-LD", nil}
-	}
-
-	path := "/jsonldContexts"
+	client.SetPath("/jsonldContexts")
 
 	if c.IsSet("details") || !c.IsSet("json") {
 		v := &url.Values{}
@@ -78,22 +65,20 @@ func jsonldContextsList(c *cli.Context) error {
 		client.SetQuery(v)
 	}
 
-	client.SetPath(path)
-
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
-	if isSetOR(c, []string{"json", "details"}) {
+	if c.IsSetOR([]string{"json", "details"}) {
 		if c.Bool("pretty") {
 			newBuf := new(bytes.Buffer)
 			err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return ngsierr.New(funcName, 3, err.Error(), err)
 			}
 			fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			return nil
@@ -103,7 +88,7 @@ func jsonldContextsList(c *cli.Context) error {
 		var contexts jsonldContexts
 		err := ngsilib.JSONUnmarshal(body, &contexts)
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 
 		for _, context := range contexts {
@@ -114,48 +99,24 @@ func jsonldContextsList(c *cli.Context) error {
 	return nil
 }
 
-func jsonldContextGet(c *cli.Context) error {
+func jsonldContextGet(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "jsonldContextGet"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "only available on NGSI-LD", nil}
-	}
-
-	id := ""
-	if c.IsSet("id") && c.Args().Len() == 0 {
-		id = c.String("id")
-	} else if !c.IsSet("id") && c.Args().Len() == 1 {
-		id = c.Args().Get(0)
-	} else {
-		return &ngsiCmdError{funcName, 4, "missing jsonldContext id", nil}
-	}
-
-	path := "/jsonldContexts/" + id
-	client.SetPath(path)
+	client.SetPath("/jsonldContexts/" + c.String("id"))
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -165,42 +126,23 @@ func jsonldContextGet(c *cli.Context) error {
 	return nil
 }
 
-func jsonldContextCreate(c *cli.Context) error {
+func jsonldContextCreate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "jsonldContextCreate"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "only available on NGSI-LD", nil}
-	}
-
-	if !c.IsSet("data") {
-		return &ngsiCmdError{funcName, 4, "missing jsonldContext data", nil}
-	}
-
-	b, err := readAll(c, ngsi)
-	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
-	}
-
-	path := "/jsonldContexts"
-	client.SetPath(path)
+	client.SetPath("/jsonldContexts")
 	client.SetContentJSON()
+
+	b, err := ngsi.ReadAll(c.String("data"))
+	if err != nil {
+		return ngsierr.New(funcName, 1, err.Error(), err)
+	}
 
 	res, Body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(Body)), nil}
+		return ngsierr.New(funcName, 3, fmt.Sprintf("%s %s", res.Status, string(Body)), nil)
 	}
 
 	location := res.Header.Get("Location")
@@ -217,41 +159,17 @@ func jsonldContextCreate(c *cli.Context) error {
 	return nil
 }
 
-func jsonldContextDelete(c *cli.Context) error {
+func jsonldContextDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "jsonldContextDelete"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "only available on NGSI-LD", nil}
-	}
-
-	id := ""
-	if c.IsSet("id") && c.Args().Len() == 0 {
-		id = c.String("id")
-	} else if !c.IsSet("id") && c.Args().Len() == 1 {
-		id = c.Args().Get(0)
-	} else {
-		return &ngsiCmdError{funcName, 4, "missing jsonldContext id", nil}
-	}
-
-	path := "/jsonldContexts/" + id
-	client.SetPath(path)
+	client.SetPath("/jsonldContexts/" + c.String("id"))
 
 	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil

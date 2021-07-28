@@ -32,6 +32,8 @@ package ngsilib
 import (
 	"fmt"
 	"path/filepath"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // Settings is ...
@@ -76,7 +78,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	if io.FileName() == nil {
 		home, err := getConfigDir(io)
 		if err != nil {
-			return &LibError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		s := filepath.Join(home, configFileName)
 		io.SetFileName(&s)
@@ -84,7 +86,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 		if *io.FileName() != "" {
 			s, err := io.FilePathAbs(*io.FileName())
 			if err != nil {
-				return &LibError{funcName, 2, err.Error() + " " + *io.FileName(), err}
+				return ngsierr.New(funcName, 2, err.Error()+" "+*io.FileName(), err)
 			}
 			io.SetFileName(&s)
 		}
@@ -93,14 +95,14 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	if existsFile(io, *io.FileName()) {
 		b, err := ngsi.FileReader.ReadFile(*io.FileName())
 		if err != nil {
-			return &LibError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 
 		ngsiConfig := NgsiConfig{}
 		if len(b) > 0 {
 			err = JSONUnmarshal(b, &ngsiConfig)
 			if err != nil {
-				return &LibError{funcName, 4, err.Error(), err}
+				return ngsierr.New(funcName, 4, err.Error(), err)
 			}
 		}
 
@@ -115,16 +117,16 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 		if ngsi.BatchFlag != nil && *ngsi.BatchFlag {
 			ngsi.PreviousArgs = &Settings{UsePreviousArgs: false}
 		}
-		ngsi.serverList = ngsiConfig.Servers
+		ngsi.ServerList = ngsiConfig.Servers
 		ngsi.contextList = ngsiConfig.Contexts
 	}
 
 	if ngsi.configVresion != "1" {
-		return &LibError{funcName, 5, "error: config file version", nil}
+		return ngsierr.New(funcName, 5, "error: config file version", nil)
 	}
 
-	if ngsi.serverList == nil {
-		ngsi.serverList = make(ServerList)
+	if ngsi.ServerList == nil {
+		ngsi.ServerList = make(ServerList)
 	}
 	if ngsi.contextList == nil {
 		ngsi.contextList = make(ContextsInfo)
@@ -135,7 +137,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	}
 
 	errflag := false
-	for k, v := range ngsi.serverList {
+	for k, v := range ngsi.ServerList {
 		if err := gNGSI.checkAllParams(v); err != nil {
 			fmt.Fprintf(gNGSI.LogWriter, "%s in %s\n", err, k)
 			errflag = true
@@ -160,12 +162,12 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 		}
 	}
 	if errflag {
-		return &LibError{funcName, 6, "error in config file", nil}
+		return ngsierr.New(funcName, 6, "error in config file", nil)
 	}
 
 	if saveFlag {
 		if err := ngsi.saveConfigFile(); err != nil {
-			return &LibError{funcName, 7, err.Error(), err}
+			return ngsierr.New(funcName, 7, err.Error(), err)
 		}
 	}
 	return nil
@@ -174,6 +176,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 func (ngsi *NGSI) saveConfigFile() (err error) {
 	const funcName = "saveConfigFile"
 
+	ngsi.Updated = false
 	io := ngsi.ConfigFile
 
 	if *io.FileName() == "" {
@@ -184,22 +187,22 @@ func (ngsi *NGSI) saveConfigFile() (err error) {
 
 	config["version"] = ngsi.configVresion
 	config["settings"] = *ngsi.PreviousArgs
-	config["servers"] = ngsi.serverList
+	config["servers"] = ngsi.ServerList
 	config["contexts"] = ngsi.contextList
 
 	err = io.OpenFile(oWRONLY|oCREATE, 0600)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	defer func() { _ = io.Close() }()
 
 	if err := io.Truncate(0); err != nil {
-		return &LibError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	err = io.Encode(&config)
 	if err != nil {
-		return &LibError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 
 	return nil
