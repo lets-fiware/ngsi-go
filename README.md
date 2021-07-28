@@ -59,11 +59,13 @@ It's a powerful tool and easy to use. It has various features as shown:
     -   [IoT Agent](https://github.com/telefonicaid/iotagent-node-lib/blob/master/doc/apiary/iotagent.apib) Provision API
     -   [Perseo](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/api.md) API
     -   [Keyrock](https://github.com/ging/fiware-idm/blob/master/apiary.apib) API
+    -   [WireCloud](https://github.com/Wirecloud/wirecloud/blob/develop/docs/restapi/applicationmashup.apib) API
 -   Various convenience commands
     -   NGSI commands to manage NGSI Entity, subscription, registration and so on
     -   Time series commands to manage historical data
-    -   IoT Agent commands to manage IoT Agent Provision APIs
+    -   IoT Agent commands to manage IoT Agent Provision API
     -   Rules commands to manage Context-Aware CEP
+    -   WireCloud command to manage Application Mashup RESTful API
     -   Convenience commands
         -   Print version, health-check status and API lists of FIWARE GEs
         -   Admin command for FIWARE Orion
@@ -258,6 +260,8 @@ The NGSI Go makes use of the following package:
 | [urfave/cli](https://github.com/urfave/cli)     | MIT License        |
 
 The dependencies of dependencies have been omitted from the list.
+
+-   [Open Source Insights](https://deps.dev/go/github.com%2Flets-fiware%2Fngsi-go)
 
 ## Copyright and License
 
