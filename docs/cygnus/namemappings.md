@@ -4,15 +4,16 @@ This command allows you to manage namemappings for Cygnus.
 
 -   [List name mappings](#list-namemappings)
 -   [Create a name mapping](#create-a-namemapping)
+-   [Update a name mapping](#update-a-namemapping)
 -   [Delete a name mapping](#delete-a-namemapping)
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-namemappings"></a>
 
@@ -26,10 +27,11 @@ ngsi namemappings [command options] list [options]
 
 ### Options
 
-| Options      | Description                    |
-| ------------ | ------------------------------ |
-| --pretty, -P | pretty format (default: false) |
-| --help       | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -87,11 +89,12 @@ ngsi namemapping [command options] create [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --data value, -d value | name mapping data              |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --data VALUE, -d VALUE | name mapping data (required)           |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -165,6 +168,25 @@ ngsi namemappings create -pretty \
 }
 ```
 
+<a name="create-a-namemapping"></a>
+
+## Update a name mapping
+
+This command updates a name mapping.
+
+```console
+ngsi namemapping [command options] update [options]
+```
+
+### Options
+
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --data VALUE, -d VALUE | name mapping data (required)           |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
+
 <a name="delete-a-namemapping"></a>
 
 ## Delete a name mapping
@@ -177,11 +199,12 @@ ngsi namemapping [command options] delete [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --data value, -d value | name mapping data              |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --data VALUE, -d VALUE | name mapping data (required)           |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

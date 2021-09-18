@@ -6,11 +6,10 @@ This command manages preferences for WireCloud.
 
 ## Common Options
 
-| Options                         | Description                      |
-| ------------------------------- | -------------------------------- |
-| --host value, -h value          | specify host or alias (Required) |
-| --token value                   | specify oauth token              |
-| --help                          | show help (default: false)       |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="get-preferences"></a>
 
@@ -24,9 +23,11 @@ ngsi preferences [options] get
 
 ## Options
 
-| Options      | Description                    |
-| ------------ | ------------------------------ |
-| --pretty, -P | pretty format (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 

@@ -7,11 +7,10 @@ This command manages workspaces for WireCloud.
 
 ## Common Options
 
-| Options                         | Description                      |
-| ------------------------------- | -------------------------------- |
-| --host value, -h value          | specify host or alias (Required) |
-| --token value                   | specify oauth token              |
-| --help                          | show help (default: false)       |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-workspaces"></a>
 
@@ -25,10 +24,12 @@ ngsi workspaces [options] list
 
 ## Options
 
-| Options      | Description                    |
-| ------------ | ------------------------------ |
-| --json, -j   | JSON format (default: false)   |
-| --pretty, -P | pretty format (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --json, -j             | JSON format (default: false)           |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 
@@ -54,15 +55,17 @@ ngsi workspaces [options] get
 
 ## Options
 
-| Options               | Description                     |
-| --------------------- | ------------------------------- |
-| --wid value, -w value | workspace id                    |
-| --users, -u           | list users (default: false)     |
-| --tabs, -t            | list tabs (default: false)      |
-| --widgets, -W         | list widgets (default: false)   |
-| --operators, -o       | list operators (default: false) |
-| --json, -j            | JSON format (default: false)    |
-| --pretty, -P          | pretty format (default: false)  |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --wid VALUE, -w VALUE  | workspace id (required)                |
+| --users, -u            | list users (default: false)            |
+| --tabs, -t             | list tabs (default: false)             |
+| --widgets, -W          | list widgets (default: false)          |
+| --operators, -o        | list operators (default: false)        |
+| --json, -j             | JSON format (default: false)           |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 

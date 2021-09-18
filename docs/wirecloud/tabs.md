@@ -7,11 +7,10 @@ This command manages tabs of a workspace for WireCloud.
 
 ## Common Options
 
-| Options                         | Description                      |
-| ------------------------------- | -------------------------------- |
-| --host value, -h value          | specify host or alias (Required) |
-| --token value                   | specify oauth token              |
-| --help                          | show help (default: false)       |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-tabs"></a>
 
@@ -25,11 +24,13 @@ ngsi tabs [options] list
 
 ## Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --wid value, -w value | workspace id                   |
-| --json, -j            | JSON format (default: false)   |
-| --pretty, -P          | pretty format (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --wid VALUE, -w VALUE  | workspace id (required)                |
+| --json, -j             | JSON format (default: false)           |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 
@@ -55,12 +56,13 @@ ngsi tabs [options] get
 
 ## Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --wid value, -w value | workspace id                   | 
-| --tid value, -t value | tab id                         |
-| --json, -j            | JSON format (default: false)   |
-| --pretty, -P          | pretty format (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --wid VALUE, -w VALUE  | workspace id (required)                |
+| --tid VALUE, -t VALUE  | tab id (required)                      |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 

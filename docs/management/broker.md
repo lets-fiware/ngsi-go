@@ -18,12 +18,12 @@ ngsi broker list [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host value, -h value | specify host or alias                                |
-| --json, -j             | print JSON format (default: false)                   |
+| --host VALUE, -h VALUE | context broker host aliase                           |
+| --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
 | --singleLine, -1       | list one file per line (default: false)              |
-| --help                 | show help (default: false)                           |
+| --help                 | show help (default: true)                            |
 
 #### Example 1
 
@@ -69,11 +69,11 @@ ngsi broker get [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host value, -h value | specify host or alias                                |
-| --json, -j             | print JSON format (default: false)                   |
+| --host VALUE, -h VALUE | context broker host aliase (required)                |
+| --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
-| --help                 | show help (default: false)                           |
+| --help                 | show help (default: true)                            |
 
 #### Example 1
 
@@ -106,28 +106,28 @@ ngsi broker add [options]
 
 ### Options
 
-| Options                        | Description                                               |
-| ------------------------------ | --------------------------------------------------------- |
-| --host value, -h value         | specify host or alias                                     |
-| --brokerHost value, -b value   | specify context broker host                               |
-| --ngsiType value               | specify NGSI type: v2 or ld                               |
-| --brokerType value             | specify NGSI-LD broker type: orion-ld, scorpio or stellio |
-| --idmType value, -t value      | specify token type                                        |
-| --idmHost value, -m value      | specify identity manager host                             |
-| --apiPath value, -a value      | specify API path                                          |
-| --username value, -U value     | specify username                                          |
-| --password value, -P value     | specify password                                          |
-| --clientId value, -I value     | specify client id                                         |
-| --clientSecret value, -S value | specify client secret                                     |
-| --headerName value             | specify header name for apikey                            |
-| --headerValue value            | specify header value for apikey                           |
-| --headerEnvValue value         | specify name of environment variable for apikey           |
-| --tokenScope value             | specify scope for token                                   |
-| --token value                  | specify oauth token                                       |
-| --service value, -s value      | specify FIWARE Service                                    |
-| --path value, -p value         | specify FIWARE ServicePath                                |
-| --safeString value             | Use safe string: `off` or `on`                            |
-| --help                         | show help (default: false)                                |
+| Options                        | Description                                       |
+| ------------------------------ | ------------------------------------------------- |
+| --host VALUE, -h VALUE         | context broker host aliase (required)             |
+| --brokerHost VALUE, -b VALUE   | context broker host address or aliase             |
+| --ngsiType VALUE               | NGSI type: v2 or ld                               |
+| --brokerType VALUE             | NGSI-LD broker type: orion-ld, scorpio or stellio |
+| --idmType VALUE, -t VALUE      | token type                                        |
+| --idmHost VALUE, -m VALUE      | identity manager host                             |
+| --apiPath VALUE, -a VALUE      | API path                                          |
+| --username VALUE, -U VALUE     | username                                          |
+| --password VALUE, -P VALUE     | password                                          |
+| --clientId VALUE, -I VALUE     | client id                                         |
+| --clientSecret VALUE, -S VALUE | client secret                                     |
+| --headerName VALUE             | header name for apikey                            |
+| --headerValue VALUE            | header value for apikey                           |
+| --headerEnvValue VALUE         | name of environment variable for apikey           |
+| --tokenScope VALUE             | scope for token                                   |
+| --token VALUE                  | token VALUE                                       |
+| --service VALUE, -s VALUE      | FIWARE Service VALUE                              |
+| --path VALUE, -p VALUE         | FIWARE ServicePath VALUE                          |
+| --safeString VALUE             | use safe string (VALUE: on/off)                   |
+| --help                         | show help (default: true)                         |
 
 -   The `--brokerType` option is used with `--ngsiType ld` option when adding a NGSI-LD broker. It is not needed for
     NGSIv2.
@@ -384,28 +384,28 @@ ngsi broker upadte [options]
 
 ### Options
 
-| Options                        | Description                                               |
-| ------------------------------ | --------------------------------------------------------- |
-| --host value, -h value         | specify host or alias (Required)                          |
-| --brokerHost value, -b value   | specify context broker host                               |
-| --ngsiType value               | specify NGSI type: v2 or ld                               |
-| --brokerType value             | specify NGSI-LD broker type: orion-ld, scorpio or stellio |
-| --idmType value, -t value      | specify token type                                        |
-| --idmHost value, -m value      | specify identity manager host                             |
-| --apiPath value, -a value      | specify API path                                          |
-| --username value, -U value     | specify username                                          |
-| --password value, -P value     | specify password                                          |
-| --clientId value, -I value     | specify client id                                         |
-| --clientSecret value, -S value | specify client secret                                     |
-| --headerName value             | specify header name for apikey                            |
-| --headerValue value            | specify header value for apikey                           |
-| --headerEnvValue value         | specify name of environment variable for apikey           |
-| --tokenScope value             | specify scope for token                                   |
-| --token value                  | specify oauth token                                       |
-| --service value, -s value      | specify FIWARE Service                                    |
-| --path value, -p value         | specify FIWARE ServicePath                                |
-| --safeString value             | Use safe string: `off` or `on`                            |
-| --help                         | show help (default: false)                                |
+| Options                        | Description                                       |
+| ------------------------------ | ------------------------------------------------- |
+| --host VALUE, -h VALUE         | context broker host aliase (required)             |
+| --brokerHost VALUE, -b VALUE   | context broker host address or aliase             |
+| --ngsiType VALUE               | NGSI type: v2 or ld                               |
+| --brokerType VALUE             | NGSI-LD broker type: orion-ld, scorpio or stellio |
+| --idmType VALUE, -t VALUE      | token type                                        |
+| --idmHost VALUE, -m VALUE      | identity manager host                             |
+| --apiPath VALUE, -a VALUE      | API path                                          |
+| --username VALUE, -U VALUE     | username                                          |
+| --password VALUE, -P VALUE     | password                                          |
+| --clientId VALUE, -I VALUE     | client id                                         |
+| --clientSecret VALUE, -S VALUE | client secret                                     |
+| --headerName VALUE             | header name for apikey                            |
+| --headerValue VALUE            | header value for apikey                           |
+| --headerEnvValue VALUE         | name of environment variable for apikey           |
+| --tokenScope VALUE             | scope for token                                   |
+| --token VALUE                  | token VALUE                                       |
+| --service VALUE, -s VALUE      | FIWARE Service VALUE                              |
+| --path VALUE, -p VALUE         | FIWARE ServicePath VALUE                          |
+| --safeString VALUE             | use safe string (VALUE: on/off)                   |
+| --help                         | show help (default: true)                         |
 
 #### Example 1
 
@@ -423,10 +423,10 @@ ngsi broker upadte [options]
 
 ### Options
 
-| Options                | Description                      |
-| ---------------------- | -------------------------------- |
-| --host value, -h value | specify host or alias (Required) |
-| --help                 | show help (default: false)       |
+| Options                 | Description                           |
+| ----------------------- | ------------------------------------- |
+| --host VALUE, -h VALUE  | context broker host aliase (required) |
+| --help                  | show help (default: true)             |
 
 #### Example 1
 

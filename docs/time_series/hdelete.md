@@ -6,13 +6,12 @@
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="delete-all-the-data-associated-to-certain-attribute-of-certain-entity"></a>
 
@@ -26,13 +25,16 @@ ngsi hdelete [common options] attr [options]
 
 ### Options
 
-| Options                | Description                  |
-| ---------------------- | ---------------------------- |
-| --id value, -i value   | entity id                    |
-| --type value, -t value | entity Type                  |
-| --attr value           | attribute name               |
-| --run                  | run command (default: false) |
-| --help                 | show help (default: false)   |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | id                                     |
+| --type VALUE, -t VALUE    | Entity Type                            |
+| --attr VALUE              | attribute name                         |
+| --run                     | run command (default: false)           |
+| --help                    | show help (default: true)              |
 
 ### Example
 
@@ -53,14 +55,17 @@ ngsi hdelete [common options] entity [options]
 
 ### Options
 
-| Options                | Description                                       |
-| ---------------------- | ------------------------------------------------- |
-| --id value, -i value   | Entity id                                         |
-| --type value, -t value | Entity Type                                       |
-| --fromDate value       | starting date from which data should be retrieved |
-| --toDate value         | final date until which data should be retrieved   |
-| --run                  | run command (default: false)                      |
-| --help                 | show help (default: false)                        |
+| Options                   | Description                                       |
+| ------------------------- | ------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)            |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                              |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                          |
+| --id VALUE, -i VALUE      | id                                                |
+| --type VALUE, -t VALUE    | Entity Type                                       |
+| --fromDate VALUE          | starting date from which data should be retrieved |
+| --toDate VALUE            | final date until which data should be retrieved   |
+| --run                     | run command (default: false)                      |
+| --help                    | show help (default: true)                         |
 
 ### Example
 
@@ -88,15 +93,18 @@ ngsi hdelete [common options] entities [options]
 
 ### Options
 
-| Options                | Description                                       |
-| ---------------------- | ------------------------------------------------- |
-| --id value, -i value   | Entity id                                         |
-| --type value, -t value | Entity Type                                       |
-| --dropTable value      | drop the table storing an entity type             |
-| --fromDate value       | starting date from which data should be retrieved |
-| --toDate value         | final date until which data should be retrieved   |
-| --run                  | run command (default: false)                      |
-| --help                 | show help (default: false)                        |
+| Options                   | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                 |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                               |
+| --id VALUE, -i VALUE      | id                                                     |
+| --type VALUE, -t VALUE    | Entity Type                                            |
+| --dropTable               | drop the table storing an entity type (default: false) |
+| --fromDate VALUE          | starting date from which data should be retrieved      |
+| --toDate VALUE            | final date until which data should be retrieved        |
+| --run                     | run command (default: false)                           |
+| --help                    | show help (default: true)                              |
 
 ### Example
 

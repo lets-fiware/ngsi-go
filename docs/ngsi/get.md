@@ -14,13 +14,12 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="get-an-entity"></a>
 
@@ -34,22 +33,22 @@ ngsi get [command options] entity [options]
 
 ### Options
 
-| Options                | Description                                                      |
-| ---------------------- | ---------------------------------------------------------------- |
-| --id value, -i value   | specify id                                                       |
-| --type value, -t value | specify entity type                                              |
-| --attrs value          | specify attributes                                               |
-| --keyValues, -k        | specify keyValues (default: false)                               |
-| --values, -V           | specify values (default: false)                                  |
-| --unique, -u           | specify unique (default: false)                                  |
-| --sysAttrs, -s         | specify sysAttrs (default: false)                                |
-| --link value, -L value | specify @context                                                 |
-| --acceptJson           | set accecpt header to application/json (LD) (default: false)     |
-| --acceptGeoJson        | set accecpt header to application/geo+json (LD) (default: false) |
-| --acceptJson           | set accecpt header to application/json (LD)                      |
-| --pretty, -P           | pretty format (default: false)                                   |
-| --safeString value     | use safe string (value: on/off)                                  |
-| --help                 | show help (default: false)                                       |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --orderBy VALUE           | orderBy                                |
+| --count, -C               | count (default: false)                 |
+| --keyValues, -K           | keyValues (default: false)             |
+| --values, -V              | values (default: false)                |
+| --unique, -U              | unique (default: false)                |
+| --verbose, -v             | verbose (default: false)               |
+| --lines, -1               | lines (default: false)                 |
+| --data VALUE, -d VALUE    | entities data                          |
+| --pretty, -P              | pretty format (default: false)         |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -95,19 +94,24 @@ ngsi get [command options] entities [options]
 
 ### Options
 
-| Options                | Description                        |
-| ---------------------- | ---------------------------------- |
-| --orderBy value        | specify orderBy                    |
-| --count, -C            | specify count (default: false)     |
-| --keyValues, -k        | specify keyValues (default: false) |
-| --values, -V           | specify values (default: false)    |
-| --unique, -u           | specify unique (default: false)    |
-| --verbose, -v          | specfiy verbose (default: false)   |
-| --lines, -1            | specify lines (default: false)     |
-| --data value, -d value | specify data                       |
-| --pretty, -P           | pretty format (default: false)     |
-| --safeString value     | use safe string (value: on/off)    |
-| --help                 | show help (default: false)         |
+| Options                   | Description                                                      |
+| ------------------------- | ---------------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                           |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                             |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                         |
+| --id VALUE, -i VALUE      | entity id (required)                                             |
+| --type VALUE, -t VALUE    | entity type                                                      |
+| --attrs VALUE             | attributes                                                       |
+| --keyValues, -K           | keyValues (default: false)                                       |
+| --values, -V              | values (default: false)                                          |
+| --unique, -U              | unique (default: false)                                          |
+| --sysAttrs, -S            | sysAttrs (default: false)                                        |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                                              |
+| --acceptJson              | set accecpt header to application/json (LD) (default: false)     |
+| --acceptGeoJson           | set accecpt header to application/geo+json (LD) (default: false) |
+| --pretty, -P              | pretty format (default: false)                                   |
+| --safeString VALUE        | use safe string (VALUE: on/off)                                  |
+| --help                    | show help (default: true)                                        |
 
 ### Examples
 
@@ -129,22 +133,25 @@ ngsi get [common options] tentity [options]
 
 ### Options
 
-| Options                | Description                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| --id value, -i value   | id                                                                             |
-| --attrs value          | attributes                                                                     |
-| --timeProperty value   | timeProperty (LD)                                                              |
-| --fromDate value       | starting date from which data should be retrieved                              |
-| --toDate value         | final date until which data should be retrieved                                |
-| --lastN value          | number of data entries to retrieve since the final date backwards (default: 0) |
-| --link value, -L value | @context (LD)                                                                  |
-| --temporalValues       | temporal simplified representation of entity (default: false)                  |
-| --sysAttrs, -S         | sysAttrs (default: false)                                                      |
-| --acceptJson           | set accecpt header to application/json (LD) (default: false)                   |
-| --pretty, -P           | pretty format (default: false)                                                 |
-| --safeString value     | use safe string (value: on/off)                                                |
-| --etsi10               | ETSI CIM 009 V1.0 (default: false)                                             |
-| --help                 | show help (default: false)                                                     |
+| Options                   | Description                                                       |
+| ------------------------- | ----------------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                            |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                              |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                          |
+| --id VALUE, -i VALUE      | temporal entity id (required)                                     |
+| --attrs VALUE             | attributes                                                        |
+| --timeProperty VALUE      | timeProperty (LD)                                                 |
+| --fromDate VALUE          | starting date from which data should be retrieved                 |
+| --toDate VALUE            | final date until which data should be retrieved                   |
+| --lastN VALUE             | number of data entries to retrieve since the final date backwards |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                                               |
+| --temporalValues          | temporal simplified representation of entity (default: false)     |
+| --sysAttrs, -S            | sysAttrs (default: false)                                         |
+| --acceptJson              | set accecpt header to application/json (LD) (default: false)      |
+| --pretty, -P              | pretty format (default: false)                                    |
+| --safeString VALUE        | use safe string (VALUE: on/off)                                   |
+| --etsi10                  | ETSI CIM 009 V1.0 (default: false)                                |
+| --help                    | show help (default: true)                                         |
 
 <a name="get-an-attribute"></a>
 
@@ -158,14 +165,17 @@ ngsi get [common options] attr [options]
 
 ### Options
 
-| Options                | Description                     |
-| ---------------------- | ------------------------------- |
-| --id value, -i value   | specify id                      |
-| --type value, -t value | specify entity type             |
-| --attr value           | specify attribute name          |
-| --pretty, -P           | pretty format (default: false)  |
-| --safeString value     | use safe string (value: on/off) |
-| --help                 | show help (default: false)      |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | entity id (required)                   |
+| --attr VALUE              | attribute name (required)              |
+| --type VALUE, -t VALUE    | entity type                            |
+| --pretty, -P              | pretty format (default: false)         |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -187,18 +197,21 @@ ngsi get [common options] attrs [options]
 
 ### Options
 
-| Options                | Description                        |
-| ---------------------- | ---------------------------------- |
-| --id value, -i value   | specify id                         |
-| --type value, -t value | specify Entity Type                |
-| --attrs value          | specify attrs                      |
-| --metadata value       | specify metadata                   |
-| --keyValues, -k        | specify keyValues (default: false) |
-| --values, -V           | specify values (default: false)    |
-| --unique, -u           | specify unique (default: false)    |
-| --pretty, -P           | pretty format (default: false)     |
-| --safeString value     | use safe string (value: on/off)    |
-| --help                 | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | entity id (required)                   |
+| --type VALUE, -t VALUE    | entity type                            |
+| --attrs VALUE             | attributes                             |
+| --metadata VALUE          | metadata (v2)                          |
+| --keyValues, -K           | keyValues (default: false)             |
+| --values, -V              | values (default: false)                |
+| --unique, -U              | unique (default: false)                |
+| --pretty, -P              | pretty format (default: false)         |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -244,12 +257,15 @@ ngsi get [common options] type [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --type value, -t value | Entity Type                    |
-| --pretty, -P           | pretty format (default: false) |
-| --link value, -L value | @context (LD)                  |
-| --help                 | show help (default: false)     |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --type VALUE, -t VALUE    | entity type                            |
+| --pretty, -P              | pretty format (default: false)         |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                    |
+| --help                    | show help (default: true)              |
 
 ### Examples for NGSIv2
 
@@ -330,13 +346,16 @@ ngsi get [common options] subscription [options]
 
 ### Options
 
-| Options                | Description                     |
-| ---------------------- | ------------------------------- |
-| --id value, -i value   | specify id                      |
-| --localTime            | localTime (default: false)      |
-| --pretty, -P           | pretty format (default: false)  |
-| --safeString value     | use safe string (value: on/off) |
-| --help                 | show help (default: false)      |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | subscription id (required)             |
+| --localTime               | localTime (default: false)             |
+| --pretty, -P              | pretty format (default: false)         |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Examples for NGSIv2
 
@@ -463,13 +482,16 @@ ngsi get [common options] registration [options]
 
 ### Options
 
-| Options              | Description                        |
-| -------------------- | ---------------------------------- |
-| --id value, -i value | specify id                         |
-| --localTime          | specify localTime (default: false) |
-| --pretty, -P           | pretty format (default: false)  |
-| --safeString value   | use safe string (value: on/off)    |
-| --help               | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | registration id (required)             |
+| --localTime               | localTime (default: false)             |
+| --pretty, -P              | pretty format (default: false)         |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Examples for NGSI-LD
 
@@ -513,11 +535,14 @@ ngsi get [common options] ldContext [options]
 
 ### Options
 
-| Options      | Description                        |
-| ------------ | ---------------------------------- |
-| --id, -i     | jsonldContexts id (default: false) |
-| --pretty, -P |  pretty format (default: false)    |
-| --help       | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | jsonldContexts id (LD) (required)      |
+| --pretty, -P              | pretty format (default: false)         |
+| --help                    | show help (default: true)              |
 
 ### Example
 

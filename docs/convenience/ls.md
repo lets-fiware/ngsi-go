@@ -8,34 +8,34 @@ ngsi ls [options]
 
 ## Options
 
-| Options                   | Description                                         |
-| ------------------------- | --------------------------------------------------- |
-| --host value, -h value    | specify host or alias for source (Required)         |
-| --token value             | specify oauth token                                 |
-| --service value, -s value | specify FIWARE Service                              |
-| --path value, -p value    | specify FIWARE ServicePath                          |
-| --type value, -t value    | specify Entity Type                                 |
-| --idPattern value         | specify idPattern                                   |
-| --typePattern value       | specify typePattern                                 |
-| --query value, -q value   | specify query                                       |
-| --mq value, -m value      | specify mq                                          |
-| --georel value            | specify georel                                      |
-| --geometry value          | specify geometry                                    |
-| --coords value            | specify coords                                      |
-| --attrs value             | specify attrs                                       |
-| --metadata value          | specify metadata                                    |
-| --orderBy value           | specify orderBy                                     |
-| --count, -C               | specify count (default: false)                      |
-| --keyValues, -k           | specify keyValues (default: false)                  |
-| --values, -V              | specify values (default: false)                     |
-| --unique, -u              | specify unique (default: false)                     |
-| --id value, -i value      | specify id                                          |
-| --skipForwarding          | skip forwarding to CPrs (v2) (Orion 3.1.0 or later) |
-| --link value, -L value    | specify @context                                    |
-| --verbose, -v             | specify verbose (default: false)                    |
-| --pretty, -P              | pretty format (default: false)                      |
-| --lines, -1               | specify lines (default: false)                      |
-| --help                    | show help (default: false)                          |
+| Options                   | Description                                   |
+| ------------------------- | --------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                          |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                      |
+| --id VALUE, -i VALUE      | entity id                                     |
+| --type VALUE, -t VALUE    | entity type                                   |
+| --idPattern VALUE         | idPattern                                     |
+| --typePattern VALUE       | typePattern (v2)                              |
+| --query VALUE, -q VALUE   | filtering by attribute value                  |
+| --mq VALUE, -m VALUE      | filtering by metadata (v2)                    |
+| --georel VALUE            | georel                                        |
+| --geometry VALUE          | geometry                                      |
+| --coords VALUE            | coords                                        |
+| --attrs VALUE             | attributes                                    |
+| --metadata VALUE          | metadata (v2)                                 |
+| --orderBy VALUE           | orderBy                                       |
+| --count, -C               | count (default: false)                        |
+| --keyValues, -K           | keyValues (default: false)                    |
+| --values, -V              | values (default: false)                       |
+| --unique, -U              | unique (default: false)                       |
+| --skipForwarding          | skip forwarding to CPrs (v2) (default: false) |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                           |
+| --verbose, -v             | verbose (default: false)                      |
+| --lines, -1               | lines (default: false)                        |
+| --pretty, -P              | pretty format (default: false)                |
+| --safeString VALUE        | use safe string (VALUE: on/off)               |
+| --help                    | show help (default: true)                     |
 
 ### Example
 

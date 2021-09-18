@@ -18,12 +18,12 @@ ngsi server list [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host value, -h value | specify host or alias                                |
-| --json, -j             | print JSON format (default: false)                   |
+| --host VALUE, -h VALUE | server host aliase                                   |
+| --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
 | --singleLine, -1       | list one file per line (default: false)              |
-| --help                 | show help (default: false)                           |
+| --help                 | show help (default: true)                            |
 
 #### Example 1
 
@@ -47,11 +47,11 @@ ngsi server get [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host value, -h value | specify host or alias                                |
-| --json, -j             | print JSON format (default: false)                   |
+| --host VALUE, -h VALUE | server host aliase (required)                        |
+| --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
-| --help                 | show help (default: false)                           |
+| --help                 | show help (default: true)                            |
 
 #### Example 1
 
@@ -86,27 +86,27 @@ ngsi server add [options]
 
 ### Options
 
-| Options                        | Description                                     |
-| ------------------------------ | ----------------------------------------------- |
-| --host value, -h value         | specify host or alias                           |
-| --serverHost value, -b value   | specify context server host                     |
-| --serverType value             | specify FIWARE GE Type                          |
-| --idmType value, -t value      | specify token type                              |
-| --idmHost value, -m value      | specify identity manager host                   |
-| --apiPath value, -a value      | specify API path                                |
-| --username value, -U value     | specify username                                |
-| --password value, -P value     | specify password                                |
-| --clientId value, -I value     | specify client id                               |
-| --clientSecret value, -S value | specify client secret                           |
-| --headerName value             | specify header name for apikey                  |
-| --headerValue value            | specify header value for apikey                 |
-| --headerEnvValue value         | specify name of environment variable for apikey |
-| --tokenScope value             | specify scope for token                         |
-| --token value                  | specify oauth token                             |
-| --service value, -s value      | specify FIWARE Service                          |
-| --path value, -p value         | specify FIWARE ServicePath                      |
-| --safeString value             | Use safe string: `off` or `on`                  |
-| --help                         | show help (default: false)                      |
+| Options                        | Description                             |
+| ------------------------------ | --------------------------------------- |
+| --host VALUE, -h VALUE         | server host aliase (required)           |
+| --serverHost VALUE             | server host address or aliase           |
+| --serverType VALUE             | serverType (comet, ql)                  |
+| --idmType VALUE, -t VALUE      | token type                              |
+| --idmHost VALUE, -m VALUE      | identity manager host                   |
+| --apiPath VALUE, -a VALUE      | API path                                |
+| --username VALUE, -U VALUE     | username                                |
+| --password VALUE, -P VALUE     | password                                |
+| --clientId VALUE, -I VALUE     | client id                               |
+| --clientSecret VALUE, -S VALUE | client secret                           |
+| --headerName VALUE             | header name for apikey                  |
+| --headerValue VALUE            | header value for apikey                 |
+| --headerEnvValue VALUE         | name of environment variable for apikey |
+| --tokenScope VALUE             | scope for token                         |
+| --token VALUE                  | token VALUE                             |
+| --service VALUE, -s VALUE      | FIWARE Service VALUE                    |
+| --path VALUE, -p VALUE         | FIWARE ServicePath VALUE                |
+| --safeString VALUE             | use safe string (VALUE: on/off)         |
+| --help                         | show help (default: true)               |
 
 > **Note:** Orion interprets the FIWARE Service name (tenant name) in lowercase. To use a coherent FIWARE Service name,
 > NGSI Go allows only lowercase letters in FIWARE Service name. Please have a look at
@@ -277,26 +277,26 @@ ngsi server upadte [options]
 
 ### Options
 
-| Options                        | Description                                     |
-| ------------------------------ | ----------------------------------------------- |
-| --host value, -h value         | specify host or alias (Required)                |
-| --serverHost value, -b value   | specify context server host                     |
-| --idmType value, -t value      | specify token type                              |
-| --idmHost value, -m value      | specify identity manager host                   |
-| --apiPath value, -a value      | specify API path                                |
-| --username value, -U value     | specify username                                |
-| --password value, -P value     | specify password                                |
-| --clientId value, -I value     | specify client id                               |
-| --clientSecret value, -S value | specify client secret                           |
-| --headerName value             | specify header name for apikey                  |
-| --headerValue value            | specify header value for apikey                 |
-| --headerEnvValue value         | specify name of environment variable for apikey |
-| --tokenScope value             | specify scope for token                         |
-| --token value                  | specify oauth token                             |
-| --service value, -s value      | specify FIWARE Service                          |
-| --path value, -p value         | specify FIWARE ServicePath                      |
-| --safeString value             | Use safe string: `off` or `on`                  |
-| --help                         | show help (default: false)                      |
+| Options                        | Description                             |
+| ------------------------------ | --------------------------------------- |
+| --host VALUE, -h VALUE         | server host aliase (required)           |
+| --serverHost VALUE             | server host address or aliase           |
+| --idmType VALUE, -t VALUE      | token type                              |
+| --idmHost VALUE, -m VALUE      | identity manager host                   |
+| --apiPath VALUE, -a VALUE      | API path                                |
+| --username VALUE, -U VALUE     | username                                |
+| --password VALUE, -P VALUE     | password                                |
+| --clientId VALUE, -I VALUE     | client id                               |
+| --clientSecret VALUE, -S VALUE | client secret                           |
+| --headerName VALUE             | header name for apikey                  |
+| --headerValue VALUE            | header value for apikey                 |
+| --headerEnvValue VALUE         | name of environment variable for apikey |
+| --tokenScope VALUE             | scope for token                         |
+| --token VALUE                  | token VALUE                             |
+| --service VALUE, -s VALUE      | FIWARE Service VALUE                    |
+| --path VALUE, -p VALUE         | FIWARE ServicePath VALUE                |
+| --safeString VALUE             | use safe string (VALUE: on/off)         |
+| --help                         | show help (default: true)               |
 
 #### Example 1
 
@@ -314,10 +314,10 @@ ngsi server upadte [options]
 
 ### Options
 
-| Options                | Description                      |
-| ---------------------- | -------------------------------- |
-| --host value, -h value | specify host or alias (Required) |
-| --help                 | show help (default: false)       |
+| Options                | Description                   |
+| ---------------------- | ----------------------------- |
+| --host VALUE, -h VALUE | server host aliase (required) |
+| --help                 | show help (default: true)     |
 
 #### Example 1
 

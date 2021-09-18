@@ -19,16 +19,16 @@ ngsi tokenproxy server [options]
 
 | Options                        | Description                                 |
 | ------------------------------ | ------------------------------------------- |
-| --host value                   | host for tokenproxy (default: "0.0.0.0")    |
-| --port value, -p value         | port for tokenproxy (default: "1029")       |
+| --host VALUE                   | host for tokenproxy                         |
+| --port VALUE, -p VALUE         | port for tokenproxy                         |
 | --https, -s                    | start in https (default: false)             |
-| --key value, -k value          | key file (only needed if https is enabled)  |
-| --cert value, -c value         | cert file (only needed if https is enabled) |
-| --idmHost value                | host for Keyrock                            |
-| --clientId value, -I value     | specify client id for Keyrock               |
-| --clientSecret value, -S value |  specify client secret for Keyrock          |
+| --key VALUE, -k VALUE          | key file (only needed if https is enabled)  |
+| --cert VALUE, -c VALUE         | cert file (only needed if https is enabled) |
+| --idmHost VALUE                | host for Keyrock                            |
+| --clientId VALUE, -I VALUE     | client id for Keyrock                       |
+| --clientSecret VALUE, -S VALUE | client secret for Keyrock                   |
 | --verbose, -v                  | verbose (default: false)                    |
-| --help                         | show help (default: false)                  |
+| --help                         | show help (default: true)                   |
 
 ### Example
 
@@ -52,11 +52,11 @@ ngsi tokenproxy health [options]
 
 ## Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --host value, -h value | regproxy host                  |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                       |
+| ---------------------- | --------------------------------- |
+| --host VALUE, -h VALUE | tokenproxy server host (required) |
+| --pretty, -P           | pretty format (default: false)    |
+| --help                 | show help (default: true)         |
 
 ### Example
 

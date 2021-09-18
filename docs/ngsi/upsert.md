@@ -7,13 +7,12 @@ This command upserts entities.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="upsert-an-entity"></a>
 
@@ -27,11 +26,15 @@ ngsi upsert [common options] entity [options]
 
 ### Options
 
-| Options                   | Description                        |
-| ------------------------- | ---------------------------------- |
-| --data value, -d value    | specify data                       |
-| --keyValues, -k           | specify keyValues (default: false) |
-| --help                    | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --data VALUE, -d VALUE    | entity data (required)                 |
+| --keyValues, -K           | keyValues (default: false)             |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Example
 
@@ -60,14 +63,17 @@ ngsi upsert [common options] entities [options]
 
 ### Options
 
-| Options                   | Description                      |
-| ------------------------- | -------------------------------- |
-| --data value, -d value    | specify data                     |
-| --replace, -r             | specfiy replace (default: false) |
-| --update, -u              | specify update (default: false)  |
-| --link value, -L value    | specify @context (LD)            |
-| --context value, -C value | specify @context (LD)            |
-| --help                    | show help (default: false)       |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --data VALUE, -d VALUE    | entities data (required)               |
+| --replace, -r             | replace (default: false)               |
+| --update, -u              | update (default: false)                |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                    |
+| --context VLAUE, -C VLAUE | @context VLAUE (LD)                    |
+| --help                    | show help (default: true)              |
 
 ### Example
 

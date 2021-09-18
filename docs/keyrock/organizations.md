@@ -10,11 +10,10 @@ This command allows you to manage organizations for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-organization"></a>
 
@@ -28,10 +27,12 @@ ngsi organizations [command options] list [options]
 
 ### Options
 
-| Options                       | Description                    |
-| ----------------------------- | ------------------------------ |
-| --pretty, -P                  | pretty format (default: false) |
-| --help                        | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -80,11 +81,12 @@ ngsi organization [command options] get [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --oid value, -o value | organization id                |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE  | organization id (required)             |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -118,14 +120,15 @@ ngsi organization [command options] create [options]
 
 ### Options
 
-| Options                       | Description                    |
-| ----------------------------- | ------------------------------ |
-| --name value, -n value        | organization name              |
-| --description value, -d value | description                    |
-| --website value, -w value     | website                        |
-| --verbose, -v                 | verbose (default: false)       |
-| --pretty, -P                  | pretty format (default: false) |
-| --help                        | show help (default: false)     |
+| Options                       | Description                            |
+| ----------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE        | broker or server host VALUE (required) |
+| --name VALUE, -n VALUE        | organization name (required)           |
+| --description VALUE, -d VALUE | description                            |
+| --website VALUE, -w VALUE     | website                                |
+| --verbose, -v                 | verbose (default: false)               |
+| --pretty, -P                  | pretty format (default: false)         |
+| --help                        | show help (default: true)              |
 
 ### Examples
 
@@ -151,15 +154,16 @@ ngsi organization [command options] update [options]
 
 ### Options
 
-| Options                       | Description                    |
-| ----------------------------- | ------------------------------ |
-| --oid value, -o value         | organization id                |
-| --name value, -n value        | organization name              |
-| --description value, -d value | description                    |
-| --website value, -w value     | website                        |
-| --verbose, -v                 | verbose (default: false)       |
-| --pretty, -P                  | pretty format (default: false) |
-| --help                        | show help (default: false)     |
+| Options                       | Description                            |
+| ----------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE        | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE         | organization id (required)             |
+| --name VALUE, -n VALUE        | organization name                      |
+| --description VALUE, -d VALUE | description                            |
+| --website VALUE, -w VALUE     | website                                |
+| --verbose, -v                 | verbose (default: false)               |
+| --pretty, -P                  | pretty format (default: false)         |
+| --help                        | show help (default: true)              |
 
 ### Examples
 
@@ -189,10 +193,11 @@ ngsi organization [command options] delete [options]
 
 ### Options
 
-| Options               | Description                |
-| --------------------- | -------------------------- |
-| --oid value, -o value | organization               |
-| --help                | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE  | organization id (required)             |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

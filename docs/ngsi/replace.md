@@ -7,13 +7,13 @@ This command replaces multiple entities or attributes
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                    |
+| --help                    | show help (default: true)              |
 
 <a name="replace-multiple-entities"></a>
 
@@ -27,11 +27,15 @@ ngsi replace [common options] entities [options]
 
 ### Options
 
-| Options                | Description                        |
-| ---------------------- | ---------------------------------- |
-| --keyValues, -k        | specify keyValues (default: false) |
-| --data value, -d value | specify data                       |
-| --help                 | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                    |
+| --data VALUE, -d VALUE    | entities data (required)               |
+| --keyValues, -K           | keyValues (default: false)             |
+| --help                    | show help (default: true)              |
 
 ### Example
 
@@ -57,12 +61,17 @@ ngsi replace [common options] attrs [options]
 
 ### Options
 
-| Options                | Description                        |
-| ---------------------- | ---------------------------------- |
-| --id value, -i value   | specify id                         |
-| --keyValues, -k        | specify keyValues (default: false) |
-| --data value, -d value | specify data                       |
-| --help                 | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                    |
+| --id VALUE, -i VALUE      | entity id (required)                   |
+| --type VALUE, -t VALUE    | entity type                            |
+| --data VALUE, -d VALUE    | attributes data                        |
+| --keyValues, -K           | keyValues (default: false)             |
+| --help                    | show help (default: true)              |
 
 ### Example
 

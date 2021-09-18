@@ -9,13 +9,12 @@ This command allows you to list, create, get and delete rule entry for Perseo.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="list-all-rule"></a>
 
@@ -29,15 +28,18 @@ ngsi rules [command options] list [options]
 
 ### Options
 
-| Options        | Description                                                          |
-| -------------- | -------------------------------------------------------------------- |
-| --limit value  | maximum number of rules (default: 0)                                 |
-| --offset value | offset to skip a given number of rules at the beginning (default: 0) |
-| --count        | print number of rules (default: false)                               |
-| --raw          | print raw data (default: false)                                      |
-| --verbose, -v  | verbose (default: false)                                             |
-| --pretty, -P   | pretty format (default: false)                                       |
-| --help         | show help (default: false)                                           |
+| Options                   | Description                                             |
+| ------------------------- | ------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                  |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                    |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                |
+| --limit VALUE             | maximum number of rules                                 |
+| --offset VALUE            | offset to skip a given number of rules at the beginning |
+| --count                   | print number of rules (default: false)                  |
+| --raw                     | print raw data (default: false)                         |
+| --verbose, -v             | verbose (default: false)                                |
+| --pretty, -P              | pretty format (default: false)                          |
+| --help                    | show help (default: true)                               |
 
 ### Examples
 
@@ -63,12 +65,15 @@ ngsi rules [command options] create [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --data value, -d value | rule data                      |
-| --verbose, -v          | verbose (default: false)       |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --data VALUE, -d VALUE    | rule data (required)                   |
+| --verbose, -v             | verbose (default: false)               |
+| --pretty, -P              | pretty format (default: false)         |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -106,11 +111,14 @@ ngsi rules [command options] get [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --name value, -n value | rule name                      |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --name VALUE, -n VALUE    | rule name (required)                   |
+| --pretty, -P              | pretty format (default: false)         |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -157,10 +165,13 @@ ngsi rules [command options] delete [options]
 
 ### Options
 
-| Options                | Description                |
-| ---------------------- | -------------------------- |
-| --name value, -n value | rule name                  |
-| --help                 | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --name VALUE, -n VALUE    | rule name (required)                   |
+| --help                    | show help (default: true)              |
 
 ### Examples
 

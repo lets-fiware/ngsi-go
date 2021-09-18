@@ -15,11 +15,10 @@ This command gives you various system information for FIWARE Orion, Cygnus, Pers
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="log"></a>
 
@@ -33,12 +32,13 @@ ngsi admin [command options] log [options]
 
 ### Options
 
-| Options                 | Description                                                         |
-| ----------------------- | ------------------------------------------------------------------- |
-| --level value, -l value | specify log level (none, fatal, error, warn, info, debug)           |
-| --logging, -L           | logging output when logging level higher than Info (default: false) |
-| --pretty, -P            | pretty format (default: false)                                      |
-| --help                  | show help (default: false)                                          |
+| Options                 | Description                            |
+| ----------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE  | broker or server host VALUE (required) |
+| --level VALUE, -l VALUE | log level                              |
+| --logging, -L           | logging (default: false)               |
+| --pretty, -P            | pretty format (default: false)         |
+| --help                  | show help (default: true)              |
 
 ### Example
 
@@ -70,13 +70,14 @@ ngsi admin [common options] trace [options]
 
 ### Options
 
-| Options                 | Description                                                         |
-| ----------------------- | ------------------------------------------------------------------- |
-| --level value, -l value | specify log level                                                   |
-| --set, -s               | set (default: false)                                                |
-| --delete, -d            | delete (default: false)                                             |
-| --logging, -L           | logging output when logging level higher than Info (default: false) |
-| --help                  | show help (default: false)                                          |
+| Options                 | Description                            |
+| ----------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE  | broker or server host VALUE (required) |
+| --level VALUE, -l VALUE | log level                              |
+| --set, -s               | set (default: false)                   |
+| --delete, -d            | delete (default: false)                |
+| --logging, -L           | logging (default: false)               |
+| --help                  | show help (default: true)              |
 
 ### Example
 
@@ -120,11 +121,12 @@ ngsi admin [command options] semaphore [options]
 
 ### Options
 
-| Options       | Description                                                         |
-| ------------- | ------------------------------------------------------------------- |
-| --logging, -L | logging output when logging level higher than Info (default: false) |
-| --pretty, -P  | pretty format (default: false)                                      |
-| --help        | show help (default: false)                                          |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --logging, -L          | logging (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 
@@ -184,13 +186,14 @@ ngsi admin [command options] metrics [options]
 
 ### Options
 
-| Options       | Description                                                         |
-| ------------- | ------------------------------------------------------------------- |
-| --delete, -d  | delete metrics (default: false)                                     |
-| --reset, -r   | reset metrics (default: false)                                      |
-| --logging, -L | logging output when logging level higher than Info (default: false) |
-| --pretty, -P  | pretty format (default: false)                                      |
-| --help        | show help (default: false)                                          |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --delete, -d           | delete (default: false)                |
+| --reset, -r            | reset (default: false)                 |
+| --logging, -L          | logging (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 
@@ -294,12 +297,13 @@ ngsi admin [command options] statistics [options]
 
 ### Options
 
-| Options       | Description                                                         |
-| ------------- | ------------------------------------------------------------------- |
-| --delete, -d  | delete metrics (default: false)                                     |
-| --logging, -L | logging output when logging level higher than Info (default: false) |
-| --pretty, -P  | pretty format (default: false)                                      |
-| --help        | show help (default: false)                                          |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --delete, -d           | delete (default: false)                |
+| --logging, -L          | logging (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 
@@ -334,12 +338,13 @@ ngsi admin [command options] cacheStatistics [options]
 
 ### Options
 
-| Options       | Description                                                         |
-| ------------- | ------------------------------------------------------------------- |
-| --delete, -d  | delete metrics (default: false)                                     |
-| --logging, -L | logging output when logging level higher than Info (default: false) |
-| --pretty, -P  | pretty format (default: false)                                      |
-| --help        | show help (default: false)                                          |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --delete, -d           | delete (default: false)                |
+| --logging, -L          | logging (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 

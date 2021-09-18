@@ -11,13 +11,12 @@ This command prints number of entities, subscriptions, registrations, or types.
 
 ### Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="print-number-of-entities"></a>
 
@@ -31,12 +30,15 @@ ngsi wc [common options] entities [options]
 
 ### Options
 
-| Options                | Description                                         |
-| ---------------------- | --------------------------------------------------- |
-| --type value, -t value | specify Entity Type                                 |
-| --link value, -L value | specify @context                                    |
-| --skipForwarding       | skip forwarding to CPrs (v2) (Orion 3.1.0 or later) |
-| --help                 | specify show help (default: false)                  |
+| Options                   | Description                                   |
+| ------------------------- | --------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                          |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                      |
+| --type VALUE, -t VALUE    | entity type                                   |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                           |
+| --skipForwarding          | skip forwarding to CPrs (v2) (default: false) |
+| --help                    | show help (default: true)                     |
 
 ### Examples
 
@@ -70,6 +72,15 @@ This command prints number of subscriptions.
 ngsi wc [common options] subscriptions
 ```
 
+### Options
+
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
+
 ### Examples
 
 #### Example 1
@@ -92,6 +103,15 @@ This command prints number of registrations.
 ngsi wc [common options] registrations
 ```
 
+### Options
+
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
+
 ### Examples
 
 #### Example 1
@@ -113,6 +133,15 @@ This command will print number of types.
 ```console
 ngsi wc [common options] types
 ```
+
+### Options
+
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 ### Examples
 

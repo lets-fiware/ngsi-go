@@ -6,6 +6,12 @@ This command prints URLs of the documents related to the NGSI Go.
 ngsi man
 ```
 
+### Options
+
+| Options | Description               |
+| ------- | ------------------------- |
+| --help  | show help (default: true) |
+
 ```text
 English:
   https://fiware-orion.readthedocs.io/

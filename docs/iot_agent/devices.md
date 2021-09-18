@@ -10,13 +10,12 @@ This command allows you to list, create, update and delete device entry for IoT 
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="list-all-device"></a>
 
@@ -30,15 +29,18 @@ ngsi devices [command options] list [options]
 
 ### Options
 
-| Options          | Description                                                             |
-| ---------------- | ----------------------------------------------------------------------- |
-| --limit value    | maximum number of devices (default: 0)                                  |
-| --offset value   | offset to skip a given number of elements at the beginning (default: 0) |
-| --detailed value | all device information (on) or only name (off) (default: "off")         |
-| --entity value   | get a device from entity name                                           |
-| --protocol value | get devices with this protocol                                          |
-| --pretty, -P     | pretty format (default: false)                                          |
-| --help           | show help (default: false)                                              |
+| Options                   | Description                                                |
+| ------------------------- | ---------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                     |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                       |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                   |
+| --limit VALUE             | maximum number of devices                                  |
+| --offset VALUE            | offset to skip a given number of elements at the beginning |
+| --detailed VALUE          | all device information (on) or only name (off)             |
+| --entity VALUE            | get a device from entity name                              |
+| --protocol VALUE          | get devices with this protocol                             |
+| --pretty, -P              | pretty format (default: false)                             |
+| --help                    | show help (default: true)                                  |
 
 ### Examples
 
@@ -114,10 +116,13 @@ ngsi devices [command options] create [options]
 
 ### Options
 
-| Options                | Description                |
-| ---------------------- | -------------------------- |
-| --data value, -d value | data body (payload)        |
-| --help                 | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --data VALUE              | data body (payload) (required)         |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -158,11 +163,14 @@ ngsi devices [command options] get [options]
 
 ### Options
 
-| Options              | Description                    |
-| -------------------- | ------------------------------ |
-| --id value, -i value | device id                      |
-| --pretty, -P         | pretty format (default: false) |
-| --help               | show help (default: false)     |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE                | device id (required)                   |
+| --pretty, -P              | pretty format (default: false)         |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -233,11 +241,14 @@ ngsi devices [command options] update [options]
 
 ### Options
 
-| Options                | Description                |
-| ---------------------- | -------------------------- |
-| --id value, -i value   | device id                  |
-| --data value, -d value | data body (payload)        |
-| --help                 | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE                | device id (required)                   |
+| --data VALUE              | data body (payload) (required)         |
+| --help                    | show help (default: true)              |
 
 ### Examples
 
@@ -261,10 +272,13 @@ ngsi devices [command options] delete [options]
 
 ### Options
 
-| Options              | Description                |
-| -------------------- | -------------------------- |
-| --id value, -i value | device id                  |
-| --help               | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE                | device id (required)                   |
+| --help                    | show help (default: true)              |
 
 ### Examples
 

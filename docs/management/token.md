@@ -8,14 +8,14 @@ ngsi token [options]
 
 ## Options
 
-| Options                | Description                                 |
-| ---------------------- | ------------------------------------------- |
-| --host value, -h value | specify host or alias (Required)            |
-| --verbose, -v          | print detailed information (default: false) |
-| --pretty, -P           | pretty format (default: false)              |
-| --expires, -e          | print expires (default: false)              |
-| --revoke, -r           | revoke token (default: false)               |
-| --help                 | show help (default: false)                  |
+| Options                | Description                    |
+| ---------------------- | ------------------------------ |
+| --host VALUE, -h VALUE | broker or server host VALUE    |
+| --verbose, -v          | verbose (default: false)       |
+| --pretty, -P           | pretty format (default: false) |
+| --expires, -e          | expires (default: false)       |
+| --revoke, -r           | revoke token (default: false)  |
+| --help                 | show help (default: true)      |
 
 ### Example 1
 

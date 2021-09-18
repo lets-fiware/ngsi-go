@@ -5,6 +5,16 @@ This command generates a json-style query text for subscription or registration.
 -   [Subscription](#subscription)
 -   [Registration](#registration)
 
+### Options
+
+| Options                   | Description                 |
+| ------------------------- | --------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE |
+| --service VALUE, -s VALUE | FIWARE Service VALUE        |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE    |
+| --link VALUE, -L VALUE    | @context VALUE (LD)         |
+| --help                    | show help (default: true)   |
+
 <a name="subscription"></a>
 
 ## Subscription
@@ -15,51 +25,55 @@ This command generates a json-style query text to create a subscription and prin
 ngsi template subscription [options]
 ```
 
-### Options for NGSI-LD
+### Options
 
-| Options                   | Description                                                    |
-| ------------------------- | -------------------------------------------------------------- |
-| --ngsiType value          | specify NGSI type: ld                                          |
-| --data value, -d value    | specify data                                                   |
-| --subscriptionId value    | specify subscription id (LD)                                   |
-| --name value              | specify subscription name (LD)                                 |
-| --description value       | specify description                                            |
-| --entityId value          | specify entityId (LD)                                          |
-| --idPattern value         | specify idPattern                                              |
-| --type value, -t value    | specify Entity Type                                            |
-| --typePattern value       | specify typePattern (v2)                                       |
-| --wAttrs value            | specify watched attributes                                     |
-| --timeInterval value      | specify time interval (LD) (default: 0)                        |
-| --query value, -q value   | filtering by attribute value                                   |
-| --mq value, -m value      | filtering by metadata (v2)                                     |
-| --geometry value          | specify geometry                                               |
-| --coords value            | specify coords                                                 |
-| --georel value            | specify georel                                                 |
-| --geoproperty value       | sprcify geoproperty (LD)                                       |
-| --csf value               | specify context source filter (LD)                             |
-| --active                  | specify active (LD) (default: false)                           |
-| --inactive                | specify inactive (LD) (default: false)                         |
-| --nAttrs value            | specify attributes to be notified                              |
-| --keyValues, -k           | specify keyValues (default: false)                             |
-| --uri value               | specify uri/url to be invoked when a notification is generated |
-| --accept value            | specify accept header (json or ld+json)                        |
-| --expires value, -e value | specify expires                                                |
-| --throttling value        | specify throttling (default: 0)                                |
-| --timeRel value           | specify temporal relationship (LD)                             |
-| --timeAt value            | specify timeAt (LD)                                            |
-| --endTimeAt value         | specify endTimeAt (LD)                                         |
-| --timeProperty value      | specify timeProperty (LD)                                      |
-| --context value, -C value | specify @context (LD)                                          |
-| --status value            | specify status                                                 |
-| --headers value           | specify headers (v2)                                           |
-| --qs value                | specify qs (v2)                                                |
-| --method value            | specify method (v2)                                            |
-| --payload value           | specify payload (v2)                                           |
-| --metadata value          | specify metadata (v2)                                          |
-| --exceptAttrs value       | specify exceptAttrs (v2)                                       |
-| --attrsFormat value       | specify attrsFormat (v2)                                       |
-| --pretty, -P              | pretty format (default: false)                                 |
-| --help                    | show help (default: false)                                     |
+| Options                   | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| --host VALUE, -h VALUE    | broker or server host VALUE                            |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                               |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                                    |
+| --ngsiType VALUE          | NGSI type: v2 or ld                                    |
+| --data VALUE, -d VALUE    | subscription data                                      |
+| --subscriptionId VALUE    | subscription id (LD)                                   |
+| --name VALUE              | subscription name (LD)                                 |
+| --description VALUE       | description                                            |
+| --entityId VALUE          | entity id                                              |
+| --idPattern VALUE         | idPattern                                              |
+| --type VALUE, -t VALUE    | entity type                                            |
+| --typePattern VALUE       | typePattern (v2)                                       |
+| --wAttrs VALUE            | watched attributes                                     |
+| --timeInterval VALUE      | time interval (LD)                                     |
+| --query VALUE, -q VALUE   | filtering by attribute value                           |
+| --mq VALUE, -m VALUE      | filtering by metadata (v2)                             |
+| --geometry VALUE          | geometry                                               |
+| --coords VALUE            | coords                                                 |
+| --georel VALUE            | georel                                                 |
+| --geoproperty VALUE       | geoproperty (LD)                                       |
+| --csf VALUE               | context source filter (LD)                             |
+| --active                  | active (LD) (default: false)                           |
+| --inactive                | inactive (LD) (default: false)                         |
+| --nAttrs VALUE            | attributes to be notified                              |
+| --keyValues, -K           | keyValues (default: false)                             |
+| --uri VALUE, -u VALUE     | uri/url to be invoked when a notification is generated |
+| --accept VALUE            | accept header (json or ld+json)                        |
+| --expires VALUE, -e VALUE | expires                                                |
+| --throttling VALUE        | throttling                                             |
+| --timeRel VALUE           | temporal relationship (LD)                             |
+| --timeAt VALUE            | timeAt (LD)                                            |
+| --endTimeAt VALUE         | endTimeAt (LD)                                         |
+| --timeProperty VALUE      | timeProperty (LD)                                      |
+| --context VLAUE, -C VLAUE | @context VLAUE (LD)                                    |
+| --status VALUE            | status                                                 |
+| --headers VALUE           | headers (v2)                                           |
+| --qs VALUE                | qs (v2)                                                |
+| --method VALUE            | method (v2)                                            |
+| --payload VALUE           | payload (v2)                                           |
+| --metadata VALUE          | metadata (v2)                                          |
+| --exceptAttrs VALUE       | exceptAttrs (v2)                                       |
+| --attrsFormat VALUE       | attrsFormat (v2)                                       |
+| --pretty, -P              | pretty format (default: false)                         |
+| --help                    | show help (default: true)                              |
 
 ### Example for NGSI-LD
 
@@ -203,22 +217,29 @@ ngsi template registration
 
 ### Options
 
-| Options                    | Description                                     |
-| -------------------------- | ----------------------------------------------- |
-| --ngsiType value           | specify NGSI type: v2 or ld                     |
-| --providedId value         | specify id                                      |
-| --idPattern value          | specify idPattern                               |
-| --type value, -t value     | specify Entity Type                             |
-| --attrs value              | specify attrs                                   |
-| --provider value, -p value | specify URL of context provider/source          |
-| --description value        | specify description                             |
-| --legacy                   | specify legacy forwarding mode (default: false) |
-| --forwardingMode value     | specify forwarding mode                         |
-| --expires value, -e value  | specify expires                                 |
-| --status value             | specify status                                  |
-| --context value, -C value  | specify @context (LD)                           |
-| --pretty, -P               | pretty format (default: false)                  |
-| --help                     | show help (default: false)                      |
+| Options                    | Description                                  |
+| -------------------------- | -------------------------------------------- |
+| --host VALUE, -h VALUE     | broker or server host VALUE                  |
+| --service VALUE, -s VALUE  | FIWARE Service VALUE                         |
+| --path VALUE, -p VALUE     | FIWARE ServicePath VALUE                     |
+| --link VALUE, -L VALUE     | @context VALUE (LD)                          |
+| --ngsiType VALUE           | NGSI type: v2 or ld                          |
+| --data VALUE, -d VALUE     | registration data                            |
+| --description VALUE        | description                                  |
+| --type VALUE, -t VALUE     | entity type                                  |
+| --providedId VALUE         | providedId                                   |
+| --idPattern VALUE          | idPattern                                    |
+| --properties VALUE         | properties (LD)                              |
+| --relationships VALUE      | relationships (LD)                           |
+| --expires VALUE, -e VALUE  | expires                                      |
+| --provider VALUE, -p VALUE | Url of context provider/source               |
+| --attrs VALUE              | attributes                                   |
+| --legacy                   | legacy forwarding mode (V2) (default: false) |
+| --forwardingMode VALUE     | forwarding mode (V2)                         |
+| --status VALUE             | status                                       |
+| --context VLAUE, -C VLAUE  | @context VLAUE (LD)                          |
+| --pretty, -P               | pretty format (default: false)               |
+| --help                     | show help (default: true)                    |
 
 ### Example for NGSI-LD
 

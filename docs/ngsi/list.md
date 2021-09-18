@@ -12,13 +12,12 @@ This command lists types, entities, subscriptions or registrations.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="list-multiple-types"></a>
 
@@ -32,13 +31,16 @@ ngsi list [common options] types [options]
 
 ### Options
 
-| Options                | Description                                            |
-| ---------------------- | ------------------------------------------------------ |
-| --details, -d          | detailed entity type information (LD) (default: false) |
-| --json, -j             | JSON format (default: false)                           |
-| --pretty, -P           | pretty format (default: false)                         |
-| --link value, -L value | specify @context                                       |
-| --help                 | show help (default: false)                             |
+| Options                   | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                 |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                               |
+| --details, -d             | detailed entity type information (LD) (default: false) |
+| --json, -j                | JSON format (default: false)                           |
+| --pretty, -P              | pretty format (default: false)                         |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                                    |
+| --help                    | show help (default: true)                              |
 
 ### Examples for NGSIv2
 
@@ -99,13 +101,16 @@ ngsi list [common options] attributes [options]
 
 ### Options
 
-| Options                | Description                                     |
-| ---------------------- | ----------------------------------------------- |
-| --attr value           | attribute name                                  |
-| --details, -d          | detailed attribute information (default: false) |
-| --pretty, -P           | pretty format (default: false)                  |
-| --link value, -L value | specify @context                                |
-| --help                 | show help (default: false)                      |
+| Options                   | Description                                          |
+| ------------------------- | ---------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)               |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                 |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                             |
+| --attr VALUE              | attribute name                                       |
+| --details, -d             | detailed attribute information (LD) (default: false) |
+| --pretty, -P              | pretty format (default: false)                       |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                                  |
+| --help                    | show help (default: true)                            |
 
 ### Examples
 
@@ -137,33 +142,36 @@ ngsi list [common options] entities [options]
 
 ### Options
 
-| Options                 | Description                                                      |
-| ----------------------- | ---------------------------------------------------------------- |
-| --type value, -t value  | specify Entity Type                                              |
-| --idPattern value       | specify idPattern                                                |
-| --typePattern value     | specify typePattern                                              |
-| --query value, -q value | specify query                                                    |
-| --mq value, -m value    | specify mq (v2)                                                  |
-| --georel value          | specify georel                                                   |
-| --geometry value        | specify geometry                                                 |
-| --coords value          | specify coords                                                   |
-| --attrs value           | specify attrs                                                    |
-| --metadata value        | specify metadata (v2)                                            |
-| --orderBy value         | specify orderBy                                                  |
-| --count, -C             | specify count (default: false)                                   |
-| --keyValues, -k         | specify keyValues (default: false)                               |
-| --values, -V            | specify values (default: false)                                  |
-| --unique, -u            | specify unique (default: false)                                  |
-| --id value, -i value    | specify id                                                       |
-| --skipForwarding        | skip forwarding to CPrs (v2) (Orion 3.1.0 or later)              |
-| --acceptJson            | set accecpt header to application/json (LD) (default: false)     |
-| --acceptGeoJson         | set accecpt header to application/geo+json (LD) (default: false) |
-| --link value, -L value  | specify @context                                                 |
-| --verbose, -v           | specify verbose (default: false)                                 |
-| --lines, -1             | specify lines (default: false)                                   |
-| --pretty, -P            | pretty format (default: false)                                   |
-| --safeString value      | use safe string (value: on/off)                                  |
-| --help                  | show help (default: false)                                       |
+| Options                   | Description                                                      |
+| ------------------------- | ---------------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                           |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                             |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                         |
+| --id VALUE, -i VALUE      | entity id                                                        |
+| --type VALUE, -t VALUE    | entity type                                                      |
+| --idPattern VALUE         | idPattern                                                        |
+| --typePattern VALUE       | typePattern (v2)                                                 |
+| --query VALUE, -q VALUE   | filtering by attribute value                                     |
+| --mq VALUE, -m VALUE      | filtering by metadata (v2)                                       |
+| --georel VALUE            | georel                                                           |
+| --geometry VALUE          | geometry                                                         |
+| --coords VALUE            | coords                                                           |
+| --attrs VALUE             | attributes                                                       |
+| --metadata VALUE          | metadata (v2)                                                    |
+| --orderBy VALUE           | orderBy                                                          |
+| --count, -C               | count (default: false)                                           |
+| --keyValues, -K           | keyValues (default: false)                                       |
+| --values, -V              | values (default: false)                                          |
+| --unique, -U              | unique (default: false)                                          |
+| --skipForwarding          | skip forwarding to CPrs (v2) (default: false)                    |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                                              |
+| --acceptJson              | set accecpt header to application/json (LD) (default: false)     |
+| --acceptGeoJson           | set accecpt header to application/geo+json (LD) (default: false) |
+| --verbose, -v             | verbose (default: false)                                         |
+| --lines, -1               | lines (default: false)                                           |
+| --pretty, -P              | pretty format (default: false)                                   |
+| --safeString VALUE        | use safe string (VALUE: on/off)                                  |
+| --help                    | show help (default: true)                                        |
 
 ### Example
 
@@ -386,32 +394,35 @@ ngsi list [common options] tentities [options]
 
 ### Options
 
-| Options                 | Description                                                                    |
-| ----------------------- | ------------------------------------------------------------------------------ |
-| --id value, -i value    | id                                                                             |
-| --type value, -t value  | Entity Type                                                                    |
-| --idPattern value       | idPattern                                                                      |
-| --attrs value           | attributes                                                                     |
-| --query value, -q value | filtering by attribute value                                                   |
-| --csf value             | context source filter (LD)                                                     |
-| --georel value          | georel                                                                         |
-| --geometry value        | geometry                                                                       |
-| --coords value          | coords                                                                         |
-| --geoProperty value     | geo property (LD)                                                              |
-| --timeProperty value    | timeProperty (LD)                                                              |
-| --fromDate value        | starting date from which data should be retrieved                              |
-| --toDate value          | final date until which data should be retrieved                                |
-| --lastN value           | number of data entries to retrieve since the final date backwards (default: 0) |
-| --temporalValues        | temporal simplified representation of entity (default: false)                  |
-| --sysAttrs, -S          | sysAttrs (default: false)                                                      |
-| --link value, -L value  | @context (LD)                                                                  |
-| --acceptJson            | set accecpt header to application/json (LD) (default: false)                   |
-| --verbose, -v           | verbose (default: false)                                                       |
-| --lines, -1             | lines (default: false)                                                         |
-| --pretty, -P            | pretty format (default: false)                                                 |
-| --safeString value      | use safe string (value: on/off)                                                |
-| --etsi10                | ETSI CIM 009 V1.0 (default: false)                                             |
-|  --help                 | show help (default: false)                                                     |
+| Options                   | Description                                                       |
+| ------------------------- | ----------------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                            |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                              |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                          |
+| --id VALUE, -i VALUE      | temporal entity id                                                |
+| --type VALUE, -t VALUE    | entity type                                                       |
+| --idPattern VALUE         | idPattern                                                         |
+| --attrs VALUE             | attributes                                                        |
+| --query VALUE, -q VALUE   | filtering by attribute value                                      |
+| --csf VALUE               | context source filter (LD)                                        |
+| --georel VALUE            | georel                                                            |
+| --geometry VALUE          | geometry                                                          |
+| --coords VALUE            | coords                                                            |
+| --geoProperty VALUE       | geo property (LD)                                                 |
+| --timeProperty VALUE      | timeProperty (LD)                                                 |
+| --fromDate VALUE          | starting date from which data should be retrieved                 |
+| --toDate VALUE            | final date until which data should be retrieved                   |
+| --lastN VALUE             | number of data entries to retrieve since the final date backwards |
+| --temporalValues          | temporal simplified representation of entity (default: false)     |
+| --sysAttrs, -S            | sysAttrs (default: false)                                         |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                                               |
+| --acceptJson              | set accecpt header to application/json (LD) (default: false)      |
+| --verbose, -v             | verbose (default: false)                                          |
+| --lines, -1               | lines (default: false)                                            |
+| --pretty, -P              | pretty format (default: false)                                    |
+| --safeString VALUE        | use safe string (VALUE: on/off)                                   |
+| --etsi10                  | ETSI CIM 009 V1.0 (default: false)                                |
+| --help                    | show help (default: true)                                         |
 
 ## List multiple subscriptions
 
@@ -423,18 +434,21 @@ ngsi list [common options] subscriptions [options]
 
 ### Options
 
-| Options                 | Description                        |
-| ----------------------- | ---------------------------------- |
-| --verbose, -v           | verbose (default: false)           |
-| --json, -j              | JSON format (default: false)       |
-| --status value          | specify status                     |
-| --localTime             | specify localTime (default: false) |
-| --query value, -q value | specify query                      |
-| --items value, -i value | specify itmes                      |
-| --pretty, -P            | pretty format (default: false)     |
-| --safeString value      | use safe string (value: on/off)    |
-| --count, -C             | count (default: false)             |
-| --help                  | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --verbose, -v             | verbose (default: false)               |
+| --json, -j                | JSON format (default: false)           |
+| --status VALUE            | status                                 |
+| --localTime               | localTime (default: false)             |
+| --query VALUE, -q VALUE   | filtering by attribute value           |
+| --items VALUE, -i VALUE   | itmes                                  |
+| --pretty, -P              | pretty format (default: false)         |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --count, -C               | count (default: false)                 |
+| --help                    | show help (default: true)              |
 
 ### Examples for NGSI-LD
 
@@ -535,13 +549,17 @@ ngsi list [common options] registrations [options]
 
 ### Options
 
-| Options            | Description                     |
-| ------------------ | ------------------------------- |
-| --verbose, -v      | verbose (default: false)        |
-| --json, -j         | JSON format (default: false)    |
-| --pretty, -P       | pretty format (default: false)  |
-| --safeString value | use safe string (value: on/off) |
-| --help             | show help (default: false)      |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --verbose, -v             | verbose (default: false)               |
+| --json, -j                | JSON format (default: false)           |
+| --localTime               | localTime (default: false)             |
+| --pretty, -P              | pretty format (default: false)         |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Examples for NGSI-LD
 
@@ -607,12 +625,15 @@ ngsi list [common options] ldContexts [options]
 
 ### Options
 
-| Options       | Description                                          |
-| ------------- | ---------------------------------------------------- |
-| --details, -d | detailed jsonldContexts information (default: false) |
-| --json, -j    | JSON format (default: false)                         |
-| --pretty, -P  | pretty format (default: false)                       |
-| --help        | show help (default: false)                           |
+| Options                   | Description                                               |
+| ------------------------- | --------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                    |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                      |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                  |
+| --details, -d             | detailed jsonldContexts information (LD) (default: false) |
+| --json, -j                | JSON format (default: false)                              |
+| --pretty, -P              | pretty format (default: false)                            |
+| --help                    | show help (default: true)                                 |
 
 ### Examples
 

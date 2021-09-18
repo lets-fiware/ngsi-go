@@ -54,6 +54,7 @@ nav:
       - 'users': keyrock/organizations-users.md
     - 'applications':
       - 'applications': keyrock/applications.md
+      - 'users': keyrock/users.md
       - 'roles': keyrock/applications-roles.md
       - 'permissions': keyrock/applications-permissions.md
       - 'organizations': keyrock/applications-organizations.md

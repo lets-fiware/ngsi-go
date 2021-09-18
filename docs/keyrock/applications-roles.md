@@ -13,11 +13,11 @@ This command allows you to manage roles for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --help                 | show help (default: true)              |
 
 <a name="list-roles"></a>
 
@@ -31,11 +31,13 @@ ngsi applications [command options] roles --aid {id} list [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -72,12 +74,13 @@ ngsi application [command options] roles --aid {id} get [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --rid value, -r value | role id                        |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --rid VALUE, -r VALUE  | role id (required)                     |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -110,14 +113,15 @@ ngsi application [command options] roles --aid {id} create [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --aid value, -i value  | application id                 |
-| --data value, -d value | role data                      |
-| --name value, -n value | role name                      |
-| --verbose, -v          | verbose (default: false)       |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --data VALUE, -d VALUE | role data                              |
+| --name VALUE, -n VALUE | role name                              |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -143,15 +147,16 @@ ngsi application [command options] roles --aid {id} update [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --aid value, -i value  | application id                 |
-| --rid value, -r value  | role id                        |
-| --data value, -d value | role data                      |
-| --name value, -n value | role name                      |
-| --verbose, -v          | verbose (default: false)       |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --rid VALUE, -r VALUE  | role id (required)                     |
+| --data VALUE, -d VALUE | role data                              |
+| --name VALUE, -n VALUE | role name                              |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -178,11 +183,12 @@ ngsi application [command options] roles delete [options]
 
 ### Options
 
-| Options               | Description                |
-| --------------------- | -------------------------- |
-| --aid value, -i value | application id             |
-| --rid value, -r value | role id                    |
-| --help                | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --rid VALUE, -r VALUE  | role id (required)                     |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -205,12 +211,13 @@ ngsi application [command options] roles permissions [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --rid value, -r value | role id                        |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --rid VALUE, -r VALUE  | role id (required)                     |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -249,14 +256,15 @@ ngsi application [command options] roles assign [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --rid value, -r value | role id                        |
-| --pid value, -p value | permission id                  |
-| --verbose, -v         | verbose (default: false)       |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --rid VALUE, -r VALUE  | role id (required)                     |
+| --pid VALUE, -p VALUE  | permission id (required)               |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -288,12 +296,13 @@ ngsi application [command options] roles unassign [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --rid value, -r value | role id                        |
-| --pid value, -p value | permission id                  |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --rid VALUE, -r VALUE  | role id (required)                     |
+| --pid VALUE, -p VALUE  | permission id (required)               |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

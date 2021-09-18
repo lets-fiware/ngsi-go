@@ -19,21 +19,21 @@ ngsi regproxy server [options]
 
 ## Options
 
-| Options                | Description                                      |
-| ---------------------- | ------------------------------------------------ |
-| --host value, -h value | context broker or csource host                   |
-| --rhost value          | host for registration proxy (default: "0.0.0.0") |
-| --port value, -p value | port for registration proxy (default: "1028")    |
-| --url value, -u value  | url for registration proxy (default: "/")        |
-| --replaceService value | replace FIWARE-Serivce                           |
-| --replacePath value    | replace FIWARE-SerivcePath                       |
-| --addPath value        | add path to FIWARE-SerivcePath                   |
-| --replaceURL valuee    | replace URL of forwarding destination            |
-| --https, -s            | start in https (default: false)                  |
-| --key value, -k value  | key file (only needed if https is enabled)       |
-| --cert value, -c value | cert file (only needed if https is enabled)      |
-| --verbose, -v          | verbose (default: false)                         |
-| --help                 | show help (default: false)                       |
+| Options                | Description                                 |
+| ---------------------- | ------------------------------------------- |
+| --host VALUE, -h VALUE | context broker or csource host (required)   |
+| --rhost VALUE          | host for registration proxy                 |
+| --port VALUE, -p VALUE | port for registration proxy                 |
+| --url VALUE, -u VALUE  | url for registration proxy                  |
+| --replaceService VALUE | replace FIWARE-Serivce                      |
+| --replacePath VALUE    | replace FIWARE-SerivcePath                  |
+| --addPath VALUE        | add path to FIWARE-SerivcePath              |
+| --replaceURL VALUE     | replace URL of forwarding destination       |
+| --https, -s            | start in https (default: false)             |
+| --key VALUE, -k VALUE  | key file (only needed if https is enabled)  |
+| --cert VALUE, -c VALUE | cert file (only needed if https is enabled) |
+| --verbose, -v          | verbose (default: false)                    |
+| --help                 | show help (default: true)                   |
 
 ### Example
 
@@ -55,9 +55,9 @@ ngsi regproxy health [options]
 
 | Options                | Description                    |
 | ---------------------- | ------------------------------ |
-| --host value, -h value | regproxy host                  |
+| --host VALUE, -h VALUE | regproxy host (required)       |
 | --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| --help                 | show help (default: true)      |
 
 ### Example
 
@@ -96,15 +96,15 @@ ngsi regproxy config [options]
 ## Options
 
 | Options                   | Description                           |
-| ------------------------- | --------------------------------------|
-| --host value, -h value    | regproxy host                         |
-| --verbose value, -v value | verbose log (on/off)                  |
-| --replaceService value    | replace FIWARE-Serivce                |
-| --replacePath value       | replace FIWARE-SerivcePath            |
-| --addPath value           | add path to FIWARE-SerivcePath        |
-| --replaceURL value        | replace URL of forwarding destination |
-| --pretty, -P              | pretty format (default: false)
-| --help                    | show help (default: false)
+| ------------------------- | ------------------------------------- |
+| --host VALUE, -h VALUE    | regproxy host (required)              |
+| --verbose VALUE, -v VALUE | verbose log (on/off)                  |
+| --replaceService VALUE    | replace FIWARE-Serivce                |
+| --replacePath VALUE       | replace FIWARE-SerivcePath            |
+| --addPath VALUE           | add path to FIWARE-SerivcePath        |
+| --replaceURL VALUE        | replace URL of forwarding destination |
+| --pretty, -P              | pretty format (default: false)        |
+| --help                    | show help (default: true)             |
 
 ### Example
 

@@ -23,15 +23,15 @@ ngsi queryproxy server [options]
 
 | Options                      | Description                                 |
 | ---------------------------- | ------------------------------------------- |
-| --host value, -h value       | context broker                              |
-| --replaceURL value, -u value | replace URL (default: "/v2/ex/entities")    |
-| --qhost value                | host for queryproxy (default: "0.0.0.0")    |
-| --port value, -p value       | port for queryproxy (default: "1030")       |
+| --host VALUE, -h VALUE       | context broker (required)                   |
+| --replaceURL VALUE, -u VALUE | replace URL                                 |
+| --qhost VALUE                | host for queryproxy                         |
+| --port VALUE, -p VALUE       | port for queryproxy                         |
 | --https, -s                  | start in https (default: false)             |
-| --key value, -k value        | key file (only needed if https is enabled)  |
-| --cert value, -c value       | cert file (only needed if https is enabled) |
+| --key VALUE, -k VALUE        | key file (only needed if https is enabled)  |
+| --cert VALUE, -c VALUE       | cert file (only needed if https is enabled) |
 | --verbose, -v                | verbose (default: false)                    |
-| --help                       | show help (default: false)                  |
+| --help                       | show help (default: true)                   |
 
 ### Example
 
@@ -57,12 +57,11 @@ ngsi queryproxy health [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --host value, -h value | regproxy host                  |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
-
+| Options                | Description                       |
+| ---------------------- | --------------------------------- |
+| --host VALUE, -h VALUE | queryproxy server host (required) |
+| --pretty, -P           | pretty format (default: false)    |
+| --help                 | show help (default: true)         |
 
 ### Example
 
