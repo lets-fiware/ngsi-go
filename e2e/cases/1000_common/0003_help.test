@@ -7974,9 +7974,8 @@ CATEGORY:
    MANAGEMENT
 
 OPTIONS:
-   --host VALUE, -h VALUE   context broker host aliase (required)
-   --items VALUE, -i VALUE  itmes
-   --help                   show help (default: true)
+   --host VALUE, -h VALUE  context broker host aliase (required)
+   --help                  show help (default: true)
 
 GLOBAL OPTIONS:
    --syslog LEVEL        syslog logging LEVEL (off, err, info, debug)

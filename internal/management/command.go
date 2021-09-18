@@ -148,7 +148,7 @@ var BrokersCmd = ngsicli.Command{
 			Usage: "delete broker",
 			Flags: []ngsicli.Flag{
 				hostBrokerRFlag,
-				itemsFlag,
+				itemsHFlag,
 			},
 			Action: func(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 				return brokersDelete(c, ngsi, client)
