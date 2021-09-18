@@ -34,8 +34,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewClient(t *testing.T) {

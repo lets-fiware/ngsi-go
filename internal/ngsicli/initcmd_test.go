@@ -34,9 +34,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestInitCmd(t *testing.T) {

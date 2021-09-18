@@ -32,8 +32,8 @@ package timeseries
 import (
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTsAttrReadComet(t *testing.T) {

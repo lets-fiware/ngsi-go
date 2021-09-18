@@ -34,7 +34,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 )
 
 func TestInterfaceAddrs(t *testing.T) {

@@ -35,9 +35,9 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/helper"
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestRegistrationsListLd(t *testing.T) {

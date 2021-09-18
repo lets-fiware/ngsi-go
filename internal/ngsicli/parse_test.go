@@ -32,8 +32,8 @@ package ngsicli
 import (
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestParseFlagsNoset(t *testing.T) {

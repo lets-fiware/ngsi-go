@@ -35,8 +35,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNGSI(t *testing.T) {

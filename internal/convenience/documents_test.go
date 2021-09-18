@@ -32,7 +32,7 @@ package convenience
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 )
 
 func TestDocuments(t *testing.T) {

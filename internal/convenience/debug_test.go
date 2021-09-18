@@ -32,8 +32,8 @@ package convenience
 import (
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/helper"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDebugCommand(t *testing.T) {

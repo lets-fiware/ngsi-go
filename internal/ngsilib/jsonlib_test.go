@@ -33,7 +33,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 )
 
 func TestJSONLibDecode(t *testing.T) {

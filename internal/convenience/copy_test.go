@@ -35,10 +35,10 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/helper"
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCopyV2V2(t *testing.T) {

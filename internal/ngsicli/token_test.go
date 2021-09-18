@@ -32,7 +32,7 @@ package ngsicli
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 )
 
 func TestNewToken(t *testing.T) {

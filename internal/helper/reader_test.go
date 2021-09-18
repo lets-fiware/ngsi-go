@@ -32,8 +32,8 @@ package helper
 import (
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestMockReadAll(t *testing.T) {

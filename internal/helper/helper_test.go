@@ -34,9 +34,9 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/stretchr/testify/assert"
 )
 
 var testApp = &ngsicli.App{

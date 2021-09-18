@@ -36,8 +36,8 @@ import (
 	"io"
 	"testing"
 
+	"github.com/lets-fiware/ngsi-go/internal/assert"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/stretchr/testify/assert"
 )
 
 type jsonLib struct {
