@@ -8,18 +8,18 @@ ngsi receiver [options]
 
 ## Options
 
-| Options                | Description                                         |
-| ---------------------- | --------------------------------------------------- |
-| --host value, -h value | specify host for receiver (default: "0.0.0.0")      |
-| --port value, -p value | specify port for receiver (default: "1028")         |
-| --url value, -u value  | specify url for receiver (default: "/")             |
-| --pretty, -P           | specify pretty format (default: false)              |
-| --https, -s            | start in https (default: false)                     |
-| --key value, -k value  | specify key file (only needed if https is enabled)  |
-| --cert value, -c value | specify cert file (only needed if https is enabled) |
-| --verbose, -v          | specify verbose (default: false)                    |
-| --header               | print receive header (default: false)               |
-| --help                 | specify show help (default: false)                  |
+| Options                | Description                                 |
+| ---------------------- | ------------------------------------------- |
+| --host VALUE, -h VALUE | host for receiver                           |
+| --port VALUE, -p VALUE | port for receiver                           |
+| --url VALUE, -u VALUE  | url for receiver                            |
+| --pretty, -P           | pretty format (default: false)              |
+| --https, -s            | start in https (default: false)             |
+| --key VALUE, -k VALUE  | key file (only needed if https is enabled)  |
+| --cert VALUE, -c VALUE | cert file (only needed if https is enabled) |
+| --verbose, -v          | verbose (default: false)                    |
+| --header               | print receive header (default: false)       |
+| --help                 | show help (default: true)                   |
 
 ### Example
 

@@ -25,28 +25,11 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi settings
+# 0001 ngsi settings clear
 #
-ngsi settings
+ngsi settings clear
 
 ```
-NAME:
-   ngsi settings - manage settings
-
-USAGE:
-   ngsi settings command [command options] [arguments...]
-
-COMMANDS:
-   list          List settings
-   delete        Delete setting
-   clear         Clear settings
-   previousArgs  Set PreviousArgs mode
-   help, h       Shows a list of commands or help for one command
-
-OPTIONS:
-   --help         show help (default: false)
-   --version, -v  print the version (default: false)
-   
 ```
 
 #

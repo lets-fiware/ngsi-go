@@ -9,11 +9,11 @@ This command allows you to manage users of organization for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE  | organization id (required)             |
+| --help                 | show help (default: true)              |
 
 <a name="list-organization"></a>
 
@@ -27,11 +27,13 @@ ngsi organizations [command options] users --oid {id} list [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --oid value, -o value | organization id                |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE  | organization id (required)             |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -70,12 +72,13 @@ ngsi organization [command options] users --oid {id} get [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --oid value, -o value | organization id                |
-| --uid value, -i value | user id                        |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE  | organization id (required)             |
+| --uid VALUE, -i VALUE  | user id (required)                     |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -108,13 +111,15 @@ ngsi organization [command options] users --oid {id} add [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --oid value, -o value  | organization id                |
-| --uid value, -i value  | user id                        |
-| --orid value, -c value | organization role id           |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE  | organization id (required)             |
+| --uid VALUE, -i VALUE  | user id (required)                     |
+| --orid VALUE, -c VALUE | organization role id (required)        |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -147,12 +152,13 @@ ngsi organization [command options] users --oid {id} remove [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --oid value, -o value  | organization id                |
-| --uid value, -i value  | user id                        |
-| --orid value, -c value | organization role id           |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --oid VALUE, -o VALUE  | organization id (required)             |
+| --uid VALUE, -i VALUE  | user id (required)                     |
+| --orid VALUE, -c VALUE | organization role id (required)        |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

@@ -10,11 +10,11 @@ This command allows you to manage appenders for Cygnus.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-appenders"></a>
 
@@ -28,11 +28,12 @@ ngsi admin [command options] appenders list [options]
 
 ### Options
 
-| Options         | Description                                                                   |
-| --------------- | ----------------------------------------------------------------------------- |
-| --transient, -t | true, retrieving from memory, or false, retrieving from file (default: false) |
-| --pretty, -P    | pretty format (default: false)                                                |
-| --help          | show help (default: false)                                                    |
+| Options                | Description                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
+| --pretty, -P           | pretty format (default: false)                                                |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -79,10 +80,11 @@ ngsi admin [command options] appenders get [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | appender name                                                                 |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --name VALUE, -n VALUE | appender name (required)                                                      |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -111,11 +113,12 @@ ngsi admin [command options] appenders create [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | appender name                                                                 |
-| --data value, -d value | appender information                                                          |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --name VALUE, -n VALUE | appender name                                                                 |
+| --data VALUE, -d VALUE | appender information (required)                                               |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -153,11 +156,12 @@ ngsi admin [command options] appenders update [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | appender name                                                                 |
-| --data value, -d value | appender information                                                          |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --name VALUE, -n VALUE | appender name (required)                                                      |
+| --data VALUE, -d VALUE | appender information (required)                                               |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -195,10 +199,11 @@ ngsi admin [command options] appenders delete [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | appender name                                                                 |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --name VALUE, -n VALUE | appender name (required)                                                      |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 

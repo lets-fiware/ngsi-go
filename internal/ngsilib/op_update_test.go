@@ -35,7 +35,8 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestOpUpdate(t *testing.T) {
@@ -84,7 +85,7 @@ func TestOpUpdateErrorJSON(t *testing.T) {
 	mock := NewMockHTTP()
 	mock.ReqRes = append(mock.ReqRes, reqRes)
 	client := &Client{HTTP: mock, URL: &url.URL{}, Headers: map[string]string{}, Server: &Server{ServerType: "broker"}}
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
 
 	entities := `[]`
 	actionType := "update"
@@ -94,7 +95,7 @@ func TestOpUpdateErrorJSON(t *testing.T) {
 	_, _, err := client.OpUpdate(entities, actionType, keyValues, safeString)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json.Marshal error", ngsiErr.Message)
 	}

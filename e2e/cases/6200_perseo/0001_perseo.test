@@ -25,32 +25,11 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi rules
+# 0001 ngsi settings clear
 #
-ngsi rules
+ngsi settings clear
 
 ```
-NAME:
-   ngsi rules - rules command for PERSEO
-
-USAGE:
-   ngsi rules command [command options] [arguments...]
-
-COMMANDS:
-   list     list all plain rules
-   create   create a plain rule
-   get      get a plain rule
-   delete   delete a plain rule
-   help, h  Shows a list of commands or help for one command
-
-OPTIONS:
-   --host value, -h value     host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --help                     show help (default: false)
-   --version, -v              print the version (default: false)
-   
 ```
 
 #

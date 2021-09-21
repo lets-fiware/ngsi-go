@@ -8,13 +8,12 @@ This command gets an entity, an attribute, multiple attributes, a subscription o
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="get-hstory-of-an-attribute"></a>
 
@@ -28,26 +27,30 @@ ngsi hget [command options] attr [options]
 
 ### Options
 
-| Options                | Description                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| --type value, -t value | Entity type                                                                    |
-| --id value, -i value   | Entity id                                                                      |
-| --attr value           | attribute name                                                                 |
-| --sameType             | same type (default: false)                                                     |
-| --nTypes               | nTypes (default: false)                                                        |
-| --aggrMethod value     | aggregation method (max, min, sum, sum, occur)                                 |
-| --aggrPeriod value     | aggregation period or resolution of the aggregated data to be retrieved        |
-| --fromDate value       | starting date from which data should be retrieved                              |
-| --toDate value         | final date until which data should be retrieved                                |
-| --lastN value          | number of data entries to retrieve since the final date backwards (default: 0) |
-| --hLimit value         | maximum number of data entries to retrieve (default: 0)                        |
-| --hOffset value        | offset to be applied to data entries to be retrieved (default: 0)              |
-| --georel value         | georel                                                                         |
-| --geometry value       | geometry                                                                       |
-| --coords value         | coords                                                                         |
-| --value                | values only (default: false)                                                   |
-| --pretty, -P           | pretty format (default: false)                                                 |
-| --help                 | show help (default: false)                                                     |
+| Options                   | Description                                                             |
+| ------------------------- | ----------------------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                                  |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                                    |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                                |
+| --type VALUE, -t VALUE    | Entity Type                                                             |
+| --id VALUE, -i VALUE      | id                                                                      |
+| --attr VALUE              | attribute name                                                          |
+| --sameType                | same type (default: false)                                              |
+| --nTypes                  | nTypes (default: false)                                                 |
+| --aggrMethod VALUE        | aggregation method (max, min, sum, sum, occur)                          |
+| --aggrPeriod VALUE        | aggregation period or resolution of the aggregated data to be retrieved |
+| --fromDate VALUE          | starting date from which data should be retrieved                       |
+| --toDate VALUE            | final date until which data should be retrieved                         |
+| --lastN VALUE             | number of data entries to retrieve since the final date backwards       |
+| --hLimit VALUE            | maximum number of data entries to retrieve                              |
+| --hOffset VALUE           | offset to be applied to data entries to be retrieved                    |
+| --georel VALUE            | georel                                                                  |
+| --geometry VALUE          | geometry                                                                |
+| --coords VALUE            | coords                                                                  |
+| --value                   | values only (default: false)                                            |
+| --pretty, -P              | pretty format (default: false)                                          |
+| --safeString VALUE        | use safe string (VALUE: on/off)                                         |
+| --help                    | show help (default: true)                                               |
 
 ### Examples
 
@@ -118,25 +121,30 @@ ngsi hget [command options] attributes [options]
 
 ### Options
 
-| Options                | Description                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| --type value, -t value | Entity Type                                                                    |
-| --id value, -i value   | Entity id                                                                      |
-| --attrs value          | attributes                                                                     |
-| --sameType             | same type (default: false)                                                     |
-| --aggrMethod value     | aggregation method (max, min, sum, sum, occur)                                 |
-| --aggrPeriod value     | aggregation period or resolution of the aggregated data to be retrieved        |
-| --fromDate value       | starting date from which data should be retrieved                              |
-| --toDate value         | final date until which data should be retrieved                                |
-| --lastN value          | number of data entries to retrieve since the final date backwards (default: 0) |
-| --hLimit value         | maximum number of data entries to retrieve (default: 0)                        |
-| --hOffset value        | offset to be applied to data entries to be retrieved (default: 0)              |
-| --georel value         | georel                                                                         |
-| --geometry value       | geometry                                                                       |
-| --coords value         | coords                                                                         |
-| --value                | values only (default: false)                                                   |
-| --pretty, -P           | pretty format (default: false)                                                 |
-| --help                 | show help (default: false)                                                     |
+| Options                   | Description                                                             |
+| ------------------------- | ----------------------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                                  |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                                    |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                                |
+| --type VALUE, -t VALUE    | Entity Type                                                             |
+| --id VALUE, -i VALUE      | id                                                                      |
+| --attrs VALUE             | attributes                                                              |
+| --sameType                | same type (default: false)                                              |
+| --nTypes                  | nTypes (default: false)                                                 |
+| --aggrMethod VALUE        | aggregation method (max, min, sum, sum, occur)                          |
+| --aggrPeriod VALUE        | aggregation period or resolution of the aggregated data to be retrieved |
+| --fromDate VALUE          | starting date from which data should be retrieved                       |
+| --toDate VALUE            | final date until which data should be retrieved                         |
+| --lastN VALUE             | number of data entries to retrieve since the final date backwards       |
+| --hLimit VALUE            | maximum number of data entries to retrieve                              |
+| --hOffset VALUE           | offset to be applied to data entries to be retrieved                    |
+| --georel VALUE            | georel                                                                  |
+| --geometry VALUE          | geometry                                                                |
+| --coords VALUE            | coords                                                                  |
+| --value                   | values only (default: false)                                            |
+| --pretty, -P              | pretty format (default: false)                                          |
+| --safeString VALUE        | use safe string (VALUE: on/off)                                         |
+| --help                    | show help (default: true)                                               |
 
 ### Examples
 
@@ -188,15 +196,19 @@ ngsi hget [common options] entities [options]
 
 ### Options
 
-| Options                | Description                                                       |
-| ---------------------- | ----------------------------------------------------------------- |
-| --type value, -t value | Entity Type                                                       |
-| --fromDate value       | starting date from which data should be retrieved                 |
-| --toDate value         | final date until which data should be retrieved                   |
-| --hLimit value         | maximum number of data entries to retrieve (default: 0)           |
-| --hOffset value        | offset to be applied to data entries to be retrieved (default: 0) |
-| --pretty, -P           | pretty format (default: false)                                    |
-| --help                 | show help (default: false)                                        |
+| Options                   | Description                                          |
+| ------------------------- | ---------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)               |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                 |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                             |
+| --type VALUE, -t VALUE    | Entity Type                                          |
+| --fromDate VALUE          | starting date from which data should be retrieved    |
+| --toDate VALUE            | final date until which data should be retrieved      |
+| --hLimit VALUE            | maximum number of data entries to retrieve           |
+| --hOffset VALUE           | offset to be applied to data entries to be retrieved |
+| --pretty, -P              | pretty format (default: false)                       |
+| --safeString VALUE        | use safe string (VALUE: on/off)                      |
+| --help                    | show help (default: true)                            |
 
 ### Examples
 

@@ -33,585 +33,281 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
-func TestRegistrationsListErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := registrationsList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsListErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--link=abc"})
-	err := registrationsList(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestRegistrationsListErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := registrationsList(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsList(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := registrationsList(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsList(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsGetErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := registrationsGet(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsGetErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--link=abc"})
-	err := registrationsGet(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsGetErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion", "--id", "57458eb60962ef754e7c0998"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := registrationsGet(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsGet(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsGetErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "57458eb60962ef754e7c0998"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := registrationsGet(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsGet(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsCreateErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := registrationsCreate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsCreateErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--link=abc"})
-	err := registrationsCreate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCreateErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "registration", "--host", "orion", "--data", "{}"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := registrationsCreate(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCreateErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "registration", "--host", "orion-ld", "--data", "{}"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "data")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-	err := registrationsCreate(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsDeleteErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := registrationsDelete(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsDeleteErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--link=abc"})
-	err := registrationsDelete(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "url error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsDeleteErrorV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "registration", "--host", "orion", "--id", "57458eb60962ef754e7c0998"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := registrationsDelete(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsDelete(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsDeleteErrorLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "registration", "--host", "orion-ld", "--id", "57458eb60962ef754e7c0998"})
 
-	setupFlagString(set, "host,link")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := registrationsDelete(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsDelete(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsTemplateErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "syslog")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--syslog="})
-	err := registrationsTemplate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsTemplateNgsiV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "v2"})
 
-	setupFlagString(set, "host,ngsiType")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--ngsiType=v2"})
-	err := registrationsTemplate(c)
+	err := registrationsTemplate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestRegistrationsTemplateNgsiLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld"})
 
-	setupFlagString(set, "host,ngsiType")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--ngsiType=ld"})
-	err := registrationsTemplate(c)
+	err := registrationsTemplate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestRegistrationsTemplateErrorNgsiTypeMissing(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration"})
 
-	setupFlagString(set, "host,ngsiType")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	err := registrationsTemplate(c)
+	err := registrationsTemplate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "missing ngsiType", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsTemplateErrorNgsiTypeError(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "v1"})
 
-	setupFlagString(set, "host,ngsiType")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--ngsiType=v1"})
-	err := registrationsTemplate(c)
+	err := registrationsTemplate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "ngsiType error: v1", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCountV2(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"wc", "registrations", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/registrations"
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"12"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := registrationsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsCount(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "12\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 func TestRegistrationsCountLD(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"wc", "registrations", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations"
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"21"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := registrationsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsCount(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "21\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsCountErrorInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	c := cli.NewContext(app, set, nil)
-	err := registrationsCount(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestRegistrationsCountErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,link")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--link=abc"})
-	err := registrationsCount(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCountErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"wc", "registrations", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := registrationsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsCount(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, ngsiErr.Message, "url error")
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCountErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"wc", "registrations", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/registrations"
 	reqRes.ResBody = []byte(`error`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,type")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--type=AirQualityObserved"})
-	err := registrationsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsCount(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 	}
 }
 
 func TestRegistrationsCountErrorResultsCount(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"wc", "registrations", "--host", "orion"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/registrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion"})
-	err := registrationsCount(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := registrationsCount(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 	}
 }

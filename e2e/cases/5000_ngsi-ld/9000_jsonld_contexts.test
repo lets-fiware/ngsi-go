@@ -27,78 +27,11 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi list ldContexts --help
+# 0001 ngsi settings clear
 #
-ngsi list ldContexts --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi list ldContexts - list jsonldContexts
-
-USAGE:
-   ngsi list ldContexts [command options] [arguments...]
-
-OPTIONS:
-   --details, -d  detailed jsonldContexts information (default: false)
-   --json, -j     JSON format (default: false)
-   --pretty, -P   pretty format (default: false)
-   --help         show help (default: false)
-   
-```
-
-#
-# 0002 ngsi get ldContext --help
-#
-ngsi get ldContext --help
-
-```
-NAME:
-   ngsi get ldContext - get jsonldContext
-
-USAGE:
-   ngsi get ldContext [command options] [arguments...]
-
-OPTIONS:
-   --id value, -i value  jsonldContexts id
-   --pretty, -P          pretty format (default: false)
-   --help                show help (default: false)
-   
-```
-
-#
-# 0003 ngsi create ldContext --help
-#
-ngsi create ldContext --help
-
-```
-NAME:
-   ngsi create ldContext - create jsonldContext
-
-USAGE:
-   ngsi create ldContext [command options] [arguments...]
-
-OPTIONS:
-   --data value, -d value  jsonldContexts data
-   --help                  show help (default: false)
-   
-```
-   
-#
-# 0004 ngsi delete ldContext --help
-#
-ngsi delete ldContext --help
-
-```
-NAME:
-   ngsi delete ldContext - delete jsonldContext
-
-USAGE:
-   ngsi delete ldContext [command options] [arguments...]
-
-OPTIONS:
-   --id value, -i value  jsonldContexts id
-   --help                show help (default: false)
-   
 ```
 
 #
@@ -220,32 +153,33 @@ ngsi delete ldContext --id $id
 ngsi list --host orion ldContexts
 
 ```1
-jsonldContextsList003 only available on NGSI-LD
+Run001 only available on NGSI-LD
 ```
 
 #
 # 1002 ngsi get ldCOntext error
 #
-ngsi get --host orion ldContext
+ngsi get --host orion ldContext --id aae768d8-fe86-11eb-bd93-0242c0a88010
 
 ```1
-jsonldContextGet003 only available on NGSI-LD
+Run001 only available on NGSI-LD
 ```
 
 #
 # 1003 ngsi create ldCOntext error
 #
-ngsi create --host orion ldContext
+ngsi create --host orion ldContext \
+--data '["https://fiware.github.io/data-models/context.jsonld","https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"]'
 
 ```1
-jsonldContextCreate003 only available on NGSI-LD
+Run001 only available on NGSI-LD
 ```
 
 #
 # 1002 ngsi delete ldCOntext error
 #
-ngsi delete --host orion ldContext
+ngsi delete --host orion ldContext --id aae768d8-fe86-11eb-bd93-0242c0a88010
 
 ```1
-jsonldContextDelete003 only available on NGSI-LD
+Run001 only available on NGSI-LD
 ```

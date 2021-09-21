@@ -33,7 +33,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestSafeStringEncode(t *testing.T) {
@@ -141,8 +142,6 @@ func TestJSONSafeStringEncode(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, string([]byte(expected)), string(actual))
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -153,11 +152,9 @@ func TestJSONSafeStringErrorEncode1(t *testing.T) {
 	_, err := JSONSafeStringEncode([]byte(input))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character '%' after object key (19) \":\"abc\",\"type:\"%<>\\\"'=;()\",\"sp", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -168,11 +165,9 @@ func TestJSONSafeStringErrorEncode2(t *testing.T) {
 	_, err := JSONSafeStringEncode([]byte(input))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 't' after object key (41) =;()\",\"speed:{\"type\":\"Text\",\"v", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 func TestJSONSafeStringDecodeString(t *testing.T) {
@@ -183,8 +178,6 @@ func TestJSONSafeStringDecodeString(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, []byte(expected), actual)
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -196,8 +189,6 @@ func TestJSONSafeStringDecodeJSON(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, []byte(expected), actual)
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -207,11 +198,9 @@ func TestJSONSafeStringDecodeErrorMarshal(t *testing.T) {
 	_, err := JSONSafeStringDecode([]byte(`{"name":%25"}`))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character '%' looking for beginning of value (7) {\"name\":%25\"}", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -219,16 +208,14 @@ func TestJSONSafeStringDecodeErrorUnmarshal(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
 	j := ngsi.JSONConverter
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), Jsonlib: j}
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, Jsonlib: j}
 
 	_, err := JSONSafeStringDecode([]byte(`{"name":"%25}`))
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
@@ -268,7 +255,7 @@ func TestJsonParserError(t *testing.T) {
 	data := `{"name":`
 	_, err := jsonParser([]byte(data), testStringFunc)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: {\"name\"", ngsiErr.Message)
 	}
@@ -278,7 +265,7 @@ func TestJsonParserError2(t *testing.T) {
 	data := `{"name":"abcdefghijklmn"`
 	_, err := jsonParser([]byte(data), testStringFunc)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: abcdefghijklmn\"", ngsiErr.Message)
 	}

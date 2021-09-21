@@ -30,598 +30,451 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestOpQuery(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	setupFlagString(set, "host,data")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "Sensor001\nSensor002\nSensor003\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQueryCountZero(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	setupFlagString(set, "host,data")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"0"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := ""
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQuerylines(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--lines"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "lines")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	err := opQuery(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"id\":\"Sensor001\",\"type\":\"Sensor\"}\n{\"id\":\"Sensor002\",\"type\":\"Sensor\"}\n{\"id\":\"Sensor003\",\"type\":\"Sensor\"}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQueryValues(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--values"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "values")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "Sensor001\nSensor002\nSensor003\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQueryLinesValues(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--lines", "--values"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "lines,values")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--lines", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[10.148599472]\n[14.627960669]\n[-2.461631059]\n[-15.999248065]\n[-4.553473866]\n[1.147149609]\n[1.003624237]\n[11.747977585]\n[-4.264932072]\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQueryPage(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	setupFlagString(set, "host,data")
-	reqRes1 := MockHTTPReqRes{}
+	reqRes1 := helper.MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.Path = "/v2/op/query"
 	reqRes1.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes1.ResHeader = http.Header{"Fiware-Total-Count": []string{"103"}}
-	reqRes2 := MockHTTPReqRes{}
+
+	reqRes2 := helper.MockHTTPReqRes{}
 	reqRes2.Res.StatusCode = http.StatusOK
 	reqRes2.Path = "/v2/op/query"
 	reqRes2.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes2.ResHeader = http.Header{"Fiware-Total-Count": []string{"103"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes1)
-	mock.ReqRes = append(mock.ReqRes, reqRes2)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "Sensor001\nSensor002\nSensor003\nSensor001\nSensor002\nSensor003\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQueryVerbose(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--verbose"})
 
-	setupFlagString(set, "host,data")
-	set.Bool("verbose", false, "dock")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--verbose", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[{\"id\": \"Sensor001\",\"type\":\"Sensor\"},{\"id\": \"Sensor002\",\"type\":\"Sensor\"},{\"id\": \"Sensor003\",\"type\":\"Sensor\"}]"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQueryVerbosePretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--verbose", "--pretty"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "verbose,pretty")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[\n  {\n    \"id\": \"Sensor001\",\n    \"type\": \"Sensor\"\n  },\n  {\n    \"id\": \"Sensor002\",\n    \"type\": \"Sensor\"\n  },\n  {\n    \"id\": \"Sensor003\",\n    \"type\": \"Sensor\"\n  }\n]"
 		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestOpQueryCount(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--verbose", "--count"})
 
-	setupFlagString(set, "host,data")
-	set.Bool("count", false, "doc")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--count", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "3\n"
 		assert.Equal(t, expected, actual)
 	}
 }
 
-func TestOpQueryInitCmd(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,data")
-	c := cli.NewContext(app, set, nil)
-	err := opQuery(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestOpQueryErrorNewClient(t *testing.T) {
-	_, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--link=abc"})
-	err := opQuery(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestOpQueryErrorOnlyV2(t *testing.T) {
-	_, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion-ld"})
 
-	setupFlagString(set, "host,data,link")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
-	err := opQuery(c)
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 0, ngsiErr.ErrNo)
 		assert.Equal(t, "Only available on NGSIv2", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorReadAll(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "@"})
 
-	setupFlagString(set, "host,data")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/op/query"
-	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
-	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data="})
-	err := opQuery(c)
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestOpQueryErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	setupFlagString(set, "host,data")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
-	err := opQuery(c)
+	reqRes.Err = errors.New("http error")
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestOpQueryErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	setupFlagString(set, "host,data")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 	}
 }
 
 func TestOpQueryErrorResultsCountCount(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--count"})
 
-	setupFlagString(set, "host,data")
-	set.Bool("count", false, "doc")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--count", "--data={}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 8, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorResultsCount(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	setupFlagString(set, "host,data")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 9, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryVerboseErrorSafeString(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--safeString", "on"})
 
-	setupFlagString(set, "host,data,safeString")
-	set.Bool("verbose", false, "dock")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type:"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--verbose", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	err := opQuery(c)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 10, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "invalid character 'S' after object key (27) sor001\",\"type:\"Sensor\"},{\"id\":", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorLinesValues(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--lines", "--values"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "lines,values")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--lines", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	setJSONDecodeErr(ngsi, 1)
 
-	err := opQuery(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 11, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorLinesValues2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--lines", "--values"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "lines,values")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[[10.148599472],[14.627960669],[-2.461631059],[-15.999248065],[-4.553473866],[1.147149609],[1.003624237],[11.747977585],[-4.264932072]]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--lines", "--values", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	setJSONEncodeErr(ngsi, 2)
 
-	err := opQuery(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 12, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorLines(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--lines"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "lines")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	setJSONDecodeErr(ngsi, 1)
+	helper.SetClientHTTP(c, reqRes)
 
-	err := opQuery(c)
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 13, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorLines2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--lines"})
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "lines")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--lines", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	setJSONEncodeErr(ngsi, 2)
 
-	err := opQuery(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 14, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorVerbosePretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}", "--verbose", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data")
-	setupFlagBool(set, "verbose,pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--verbose", "--pretty", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
+	helper.SetClientHTTP(c, reqRes)
 
-	setJSONIndentError(ngsi)
+	helper.SetJSONIndentError(c.Ngsi)
 
-	err := opQuery(c)
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 15, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 11, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestOpQueryErrorUnmarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "entities", "--host", "orion", "--data", "{\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
 
-	setupFlagString(set, "host,data")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v2/op/query"
 	reqRes.ResBody = []byte(`[{"id": "Sensor001","type":"Sensor"},{"id": "Sensor002","type":"Sensor"},{"id": "Sensor003","type":"Sensor"}]`)
 	reqRes.ResHeader = http.Header{"Fiware-Total-Count": []string{"3"}}
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--data={\"entities\":[{\"idPattern\":\".*\",\"type\":\"Sensor\"}]}"})
-	setJSONDecodeErr(ngsi, 1)
 
-	err := opQuery(c)
+	helper.SetClientHTTP(c, reqRes)
+
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
+
+	err := opQuery(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 16, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 12, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }

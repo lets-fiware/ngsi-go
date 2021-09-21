@@ -10,11 +10,11 @@ This command allows you to manage IoT Agents in an application for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --help                 | show help (default: true)              |
 
 <a name="list-iot-agents"></a>
 
@@ -28,11 +28,13 @@ ngsi applications [command options] iota --aid {id} list [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -67,13 +69,14 @@ ngsi application [command options] iota --aid {id} add [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --iid value, -i value | IoT Agent id                   |
-| --verbose, -v         | verbose (default: false)       |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --iid VALUE, -i VALUE  | IoT Agent id (required)                |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -105,12 +108,13 @@ ngsi application [command options] iota --aid {id} create [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --verbose, -v         | verbose (default: false)       |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -141,13 +145,14 @@ ngsi application [command options] iota --aid {id} reset [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --iid value, -i value | IoT Agent id                   |
-| --verbose, -v         | verbose (default: false)       |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --iid VALUE, -i VALUE  | IoT Agent id (required)                |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -176,11 +181,12 @@ ngsi application [command options] iota --aid {id} delete [options]
 
 ### Options
 
-| Options               | Description                |
-| --------------------- | -------------------------- |
-| --aid value, -i value | application id             |
-| --iid value, -i value | IoT Agent id               |
-| --help                | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --iid VALUE, -i VALUE  | IoT Agent id (required)                |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

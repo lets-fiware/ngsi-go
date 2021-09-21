@@ -384,7 +384,7 @@ ngsi list entities --link ctx --type TemperatureSensor -P
 #
 # 0012 List all Data Entities (key-value pairs)
 #
-ngsi list entities -link ctx --type TemperatureSensor --attrs temperature --keyValues --verbose -P
+ngsi list entities --link ctx --type TemperatureSensor --attrs temperature --keyValues --verbose -P
 
 ```
 [

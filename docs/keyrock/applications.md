@@ -10,11 +10,10 @@ This command allows you to manage applications for Keyrock.
 
 ## Common Options
 
-| Options                | Description                |
-| ---------------------- | -------------------------- |
-| --host value, -h value | specify host or alias      |
-| --token value          | specify oauth token        |
-| --help                 | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-application"></a>
 
@@ -28,11 +27,12 @@ ngsi applications [command options] list [options]
 
 ### Options
 
-| Options       | Description                    |
-| ------------- | ------------------------------ |
-| --verbose, -v | verbose (default: false)       |
-| --pretty, -P  | pretty format (default: false) |
-| --help        | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -83,11 +83,12 @@ ngsi application [command options] get [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -139,21 +140,22 @@ ngsi application [command options] create [options]
 
 ### Options
 
-| Options                              | Description                    |
-| ------------------------------------ | ------------------------------ |
-| --data value, -d value               | application data               |
-| --name value, -n value               | application name               |
-| --description value, -D value        | description                    |
-| --url value, -u value                | url                            |
-| --redirectUri value, -R value        | redirect uri                   |
-| --redirectSignOutUri value, -S value | redirect redirect sign out uri |
-| --grantType value, -g value          | grant type                     |
-| --tokenTypes value, -t value         | token types                    |
-| --responseType value, -r value       | response type                  |
-| --clientType value, -c value         | client type                    |
-| --verbose, -v                        | verbose (default: false)       |
-| --pretty, -P                         | pretty format (default: false) |
-| --help                               | show help (default: false)     |
+| Options                              | Description                            |
+| ------------------------------------ | -------------------------------------- |
+| --host VALUE, -h VALUE               | broker or server host VALUE (required) |
+| --data VALUE, -d VALUE               | application data                       |
+| --name VALUE, -n VALUE               | application name                       |
+| --description VALUE, -D VALUE        | description                            |
+| --url VALUE, -u VALUE                | url                                    |
+| --redirectUri VALUE, -R VALUE        | redirect uri                           |
+| --redirectSignOutUri VALUE, -S VALUE | redirect redirect sign out uri         |
+| --grantType VALUE, -g VALUE          | grant type                             |
+| --tokenTypes VALUE, -t VALUE         | token types                            |
+| --responseType VALUE, -r VALUE       | response type                          |
+| --clientType VALUE, -c VALUE         | client type                            |
+| --verbose, -v                        | verbose (default: false)               |
+| --pretty, -P                         | pretty format (default: false)         |
+| --help                               | show help (default: true)              |
 
 ### Examples
 
@@ -184,22 +186,23 @@ ngsi application [command options] update [options]
 
 ### Options
 
-| Options                              | Description                    |
-| ------------------------------------ | ------------------------------ |
-| --aid value, -i value                | application id                 |
-| --data value, -d value               | application data               |
-| --name value, -n value               | application name               |
-| --description value, -D value        | description                    |
-| --url value, -u value                | url                            |
-| --redirectUri value, -R value        | redirect uri                   |
-| --redirectSignOutUri value, -S value | redirect redirect sign out uri |
-| --grantType value, -g value          | grant type                     |
-| --tokenTypes value, -t value         | token types                    |
-| --responseType value, -r value       | response type                  |
-| --clientType value, -c value         | client type                    |
-| --verbose, -v                        | verbose (default: false)       |
-| --pretty, -P                         | pretty format (default: false) |
-| --help                               | show help (default: false)     |
+| Options                              | Description                            |
+| ------------------------------------ | -------------------------------------- |
+| --host VALUE, -h VALUE               | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE                | application id (required)              |
+| --data VALUE, -d VALUE               | application data                       |
+| --name VALUE, -n VALUE               | application name                       |
+| --description VALUE, -D VALUE        | description                            |
+| --url VALUE, -u VALUE                | url                                    |
+| --redirectUri VALUE, -R VALUE        | redirect uri                           |
+| --redirectSignOutUri VALUE, -S VALUE | redirect redirect sign out uri         |
+| --grantType VALUE, -g VALUE          | grant type                             |
+| --tokenTypes VALUE, -t VALUE         | token types                            |
+| --responseType VALUE, -r VALUE       | response type                          |
+| --clientType VALUE, -c VALUE         | client type                            |
+| --verbose, -v                        | verbose (default: false)               |
+| --pretty, -P                         | pretty format (default: false)         |
+| --help                               | show help (default: true)              |
 
 ### Examples
 
@@ -231,10 +234,11 @@ ngsi application [command options] delete [options]
 
 ### Options
 
-| Options               | Description                |
-| --------------------- | -------------------------- |
-| --aid value, -i value | application id             |
-| --help                | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

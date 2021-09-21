@@ -34,7 +34,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestInitServerList(t *testing.T) {
@@ -42,7 +43,7 @@ func TestInitServerList(t *testing.T) {
 
 	InitServerList()
 
-	if gNGSI.serverList == nil {
+	if gNGSI.ServerList == nil {
 		t.Error("brokerList is nil")
 	}
 }
@@ -50,11 +51,11 @@ func TestInitServerList(t *testing.T) {
 func TestAllServersList(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
 	actual := ngsi.AllServersList()
-	expected := &gNGSI.serverList
+	expected := &gNGSI.ServerList
 
 	assert.Equal(t, expected, actual)
 }
@@ -62,13 +63,13 @@ func TestAllServersList(t *testing.T) {
 func TestList(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual := gNGSI.serverList.List(false)
+	actual := gNGSI.ServerList.List(false)
 	expected := "orion orion-ld"
 
 	assert.Equal(t, expected, actual)
@@ -78,13 +79,13 @@ func TestList(t *testing.T) {
 func TestListSingleLine(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual := gNGSI.serverList.List(true)
+	actual := gNGSI.ServerList.List(true)
 	expected := "orion\norion-ld"
 
 	assert.Equal(t, expected, actual)
@@ -94,14 +95,14 @@ func TestListSingleLine(t *testing.T) {
 func TestBrokerInfo(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
 	orion := Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion"] = &orion
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &orion
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual, _ := gNGSI.serverList.BrokerInfo("orion")
+	actual, _ := gNGSI.ServerList.BrokerInfo("orion")
 	expected := &orion
 
 	assert.Equal(t, expected, actual)
@@ -110,17 +111,17 @@ func TestBrokerInfo(t *testing.T) {
 func TestBrokerInfoErrorNotBroker(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
 
-	_, err := gNGSI.serverList.BrokerInfo("comet")
+	_, err := gNGSI.ServerList.BrokerInfo("comet")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "host found: comet, but type is comet", ngsiErr.Message)
 	}
@@ -129,16 +130,16 @@ func TestBrokerInfoErrorNotBroker(t *testing.T) {
 func TestBrokerInfoErrorHostNotFound(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	_, err := gNGSI.serverList.BrokerInfo("fiware")
+	_, err := gNGSI.ServerList.BrokerInfo("fiware")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found: fiware", ngsiErr.Message)
 	}
@@ -147,14 +148,14 @@ func TestBrokerInfoErrorHostNotFound(t *testing.T) {
 func TestServerInfo(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
 	comet := Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["comet"] = &comet
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &comet
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual, _ := gNGSI.serverList.ServerInfo("comet", "")
+	actual, _ := gNGSI.ServerList.ServerInfo("comet", "")
 	expected := &comet
 
 	assert.Equal(t, expected, actual)
@@ -163,14 +164,14 @@ func TestServerInfo(t *testing.T) {
 func TestServerInfoWithFilter(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
 	comet := Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["comet"] = &comet
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &comet
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual, _ := gNGSI.serverList.ServerInfo("comet", "comet")
+	actual, _ := gNGSI.ServerList.ServerInfo("comet", "comet")
 	expected := &comet
 
 	assert.Equal(t, expected, actual)
@@ -179,17 +180,17 @@ func TestServerInfoWithFilter(t *testing.T) {
 func TestServerInfoErrorNotServer(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
 
-	_, err := gNGSI.serverList.ServerInfo("orion", "")
+	_, err := gNGSI.ServerList.ServerInfo("orion", "")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "host found: orion, but type is broker", ngsiErr.Message)
 	}
@@ -198,16 +199,16 @@ func TestServerInfoErrorNotServer(t *testing.T) {
 func TestServerInfoErrorHostNotFound(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	_, err := gNGSI.serverList.ServerInfo("fiware", "comet")
+	_, err := gNGSI.ServerList.ServerInfo("fiware", "comet")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found: fiware", ngsiErr.Message)
 	}
@@ -216,47 +217,59 @@ func TestServerInfoErrorHostNotFound(t *testing.T) {
 func TestBrokerInfoJSON(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual, _ := gNGSI.serverList.BrokerInfoJSON("orion")
+	actual, _ := gNGSI.ServerList.BrokerInfoJSON("orion")
 	expected := `{"serverHost":"http://orion/", "serverType": "broker"}`
 
-	assert.JSONEq(t, expected, *actual)
+	actualMap := make(map[string]string)
+	expectedMap := make(map[string]string)
+
+	_ = json.Unmarshal([]byte(*actual), &actualMap)
+	_ = json.Unmarshal([]byte(expected), &expectedMap)
+
+	assert.Equal(t, expectedMap, actualMap)
 }
 
 func TestBrokerInfoJSONAll(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual, _ := gNGSI.serverList.BrokerInfoJSON("")
+	actual, _ := gNGSI.ServerList.BrokerInfoJSON("")
 	expected := `{"orion":{"serverHost":"http://orion/", "serverType": "broker"},"orion-ld":{"serverHost":"http://orion-ld/", "serverType": "broker"}}`
 
-	assert.JSONEq(t, expected, *actual)
+	actualMap := make(map[string]map[string]string)
+	expectedMap := make(map[string]map[string]string)
+
+	_ = json.Unmarshal([]byte(*actual), &actualMap)
+	_ = json.Unmarshal([]byte(expected), &expectedMap)
+
+	assert.Equal(t, expectedMap, actualMap)
 }
 
 func TestBrokerInfoJSONErrorMarshal(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
-	_, err := gNGSI.serverList.BrokerInfoJSON("")
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
+	_, err := gNGSI.ServerList.BrokerInfoJSON("")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json.Marshl error", ngsiErr.Message)
 	}
@@ -265,16 +278,16 @@ func TestBrokerInfoJSONErrorMarshal(t *testing.T) {
 func TestBrokerInfoJSONErrorHostNotFound(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	_, err := gNGSI.serverList.BrokerInfoJSON("fiware")
+	_, err := gNGSI.ServerList.BrokerInfoJSON("fiware")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found: fiware", ngsiErr.Message)
 	}
@@ -283,16 +296,16 @@ func TestBrokerInfoJSONErrorHostNotFound(t *testing.T) {
 func TestBrokerInfoJSONErrorServerType(t *testing.T) {
 	_ = testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
 
-	_, err := gNGSI.serverList.BrokerInfoJSON("comet")
+	_, err := gNGSI.ServerList.BrokerInfoJSON("comet")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "host found: comet, but type is comet", ngsiErr.Message)
 	}
@@ -301,16 +314,16 @@ func TestBrokerInfoJSONErrorServerType(t *testing.T) {
 func TestBrokerInfoJSONErrorMarshal2(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
-	_, err := gNGSI.serverList.BrokerInfoJSON("orion")
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
+	_, err := gNGSI.ServerList.BrokerInfoJSON("orion")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json.Marshl error", ngsiErr.Message)
 	}
@@ -319,14 +332,14 @@ func TestBrokerInfoJSONErrorMarshal2(t *testing.T) {
 func TestBrokerList(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	actual := gNGSI.serverList.BrokerList()
-	expected := &gNGSI.serverList
+	actual := gNGSI.ServerList.BrokerList()
+	expected := &gNGSI.ServerList
 
 	assert.Equal(t, *expected, actual)
 }
@@ -334,51 +347,63 @@ func TestBrokerList(t *testing.T) {
 func TestServerInfoJSON(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
 
-	actual, _ := gNGSI.serverList.ServerInfoJSON("comet", "comet")
+	actual, _ := gNGSI.ServerList.ServerInfoJSON("comet", "comet")
 	expected := `{"serverHost":"http://comet/", "serverType":"comet"}`
 
-	assert.JSONEq(t, expected, *actual)
+	actualMap := make(map[string]string)
+	expectedMap := make(map[string]string)
+
+	_ = json.Unmarshal([]byte(*actual), &actualMap)
+	_ = json.Unmarshal([]byte(expected), &expectedMap)
+
+	assert.Equal(t, expectedMap, actualMap)
 }
 
 func TestServerInfoJSONAll(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
 
-	actual, _ := gNGSI.serverList.ServerInfoJSON("", "")
+	actual, _ := gNGSI.ServerList.ServerInfoJSON("", "")
 	expected := `{"comet":{"serverHost":"http://comet/", "serverType":"comet"}, "ql":{"serverHost":"http://quantumleap/", "serverType":"quantumleap"}}`
 
-	assert.JSONEq(t, expected, *actual)
+	actualMap := make(map[string]map[string]string)
+	expectedMap := make(map[string]map[string]string)
+
+	_ = json.Unmarshal([]byte(*actual), &actualMap)
+	_ = json.Unmarshal([]byte(expected), &expectedMap)
+
+	assert.Equal(t, expectedMap, actualMap)
 }
 
 func TestServerInfoJSONErrorMarshal(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
-	_, err := gNGSI.serverList.ServerInfoJSON("", "")
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
+	_, err := gNGSI.ServerList.ServerInfoJSON("", "")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "json.Marshl error", ngsiErr.Message)
 	}
@@ -387,18 +412,18 @@ func TestServerInfoJSONErrorMarshal(t *testing.T) {
 func TestServerInfoJSONErrorHostNotFound(t *testing.T) {
 	testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
 
-	_, err := gNGSI.serverList.ServerInfoJSON("fiware", "")
+	_, err := gNGSI.ServerList.ServerInfoJSON("fiware", "")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found: fiware", ngsiErr.Message)
 	}
@@ -407,16 +432,16 @@ func TestServerInfoJSONErrorHostNotFound(t *testing.T) {
 func TestServerInfoJSONErrorServerType(t *testing.T) {
 	_ = testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
 
-	_, err := gNGSI.serverList.ServerInfoJSON("orion", "")
+	_, err := gNGSI.ServerList.ServerInfoJSON("orion", "")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "host found: orion, but type is broker", ngsiErr.Message)
 	}
@@ -425,18 +450,18 @@ func TestServerInfoJSONErrorServerType(t *testing.T) {
 func TestServerInfoJSONErrorMarshal2(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
-	_, err := gNGSI.serverList.ServerInfoJSON("ql", "quantumleap")
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
+	_, err := gNGSI.ServerList.ServerInfoJSON("ql", "quantumleap")
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json.Marshl error", ngsiErr.Message)
 	}
@@ -445,35 +470,124 @@ func TestServerInfoJSONErrorMarshal2(t *testing.T) {
 func TestServerList(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
-	list := gNGSI.serverList.ServerList("", false)
-	actual, _ := json.Marshal(list)
-	expected := "{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"http://comet/\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"http://quantumleap/\"}}"
-	assert.JSONEq(t, expected, string(actual))
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
+
+	actual := gNGSI.ServerList.ServerList("", false)
+
+	var expected ServerList
+	_ = json.Unmarshal([]byte("{\"comet\":{\"serverType\":\"comet\",\"serverHost\":\"http://comet/\"},\"ql\":{\"serverType\":\"quantumleap\",\"serverHost\":\"http://quantumleap/\"}}"), &expected)
+
+	assert.Equal(t, expected, actual)
+
 }
 
 func TestServerListAll(t *testing.T) {
 	ngsi := testNgsiLibInit()
 
-	gNGSI.serverList = nil
+	gNGSI.ServerList = nil
 	InitServerList()
 
-	gNGSI.serverList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
-	gNGSI.serverList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
-	gNGSI.serverList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
-	gNGSI.serverList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
+	gNGSI.ServerList["orion"] = &Server{ServerHost: "http://orion/", ServerType: "broker"}
+	gNGSI.ServerList["orion-ld"] = &Server{ServerHost: "http://orion-ld/", ServerType: "broker"}
+	gNGSI.ServerList["comet"] = &Server{ServerHost: "http://comet/", ServerType: "comet"}
+	gNGSI.ServerList["ql"] = &Server{ServerHost: "http://quantumleap/", ServerType: "quantumleap"}
 
-	ngsi.JSONConverter = &MockJSONLib{EncodeErr: errors.New("json error"), DecodeErr: errors.New("json error")}
-	list := gNGSI.serverList.ServerList("", true)
-	actual, _ := json.Marshal(list)
-	expected := `{"comet":{"serverType":"comet","serverHost":"http://comet/"},"orion":{"serverType":"broker","serverHost":"http://orion/"},"orion-ld":{"serverType":"broker","serverHost":"http://orion-ld/"},"ql":{"serverType":"quantumleap","serverHost":"http://quantumleap/"}}`
-	assert.JSONEq(t, expected, string(actual))
+	ngsi.JSONConverter = &MockJSONLib{EncodeErr: [5]error{errors.New("json error")}, DecodeErr: [5]error{errors.New("json error")}}
+
+	actual := gNGSI.ServerList.ServerList("", true)
+
+	var expected ServerList
+	_ = json.Unmarshal([]byte(`{"comet":{"serverType":"comet","serverHost":"http://comet/"},"orion":{"serverType":"broker","serverHost":"http://orion/"},"orion-ld":{"serverType":"broker","serverHost":"http://orion-ld/"},"ql":{"serverType":"quantumleap","serverHost":"http://quantumleap/"}}`), &expected)
+
+	assert.Equal(t, expected, actual)
+}
+
+func TestGetServerInfo(t *testing.T) {
+	ngsi := NGSI{
+		ServerList: ServerList{
+			"orion1": &Server{ServerHost: "http://localhost:1026", Tenant: "fiware", Scope: "/iot"},
+			"orion2": &Server{ServerHost: "orion1", Tenant: "wirecloud", Scope: "/macs"},
+			"orion3": &Server{ServerHost: "orion1"},
+		},
+	}
+
+	tests := []struct {
+		Host        string
+		Expected    *Server
+		SkipRefHost bool
+	}{
+		{Host: "orion3", Expected: &Server{ServerHost: "orion1", Tenant: "", Scope: ""}, SkipRefHost: true},
+		{Host: "orion1", Expected: &Server{ServerHost: "http://localhost:1026", Tenant: "fiware", Scope: "/iot"}},
+		{Host: "orion2", Expected: &Server{ServerHost: "http://localhost:1026", Tenant: "wirecloud", Scope: "/macs"}},
+		{Host: "orion3", Expected: &Server{ServerHost: "http://localhost:1026", Tenant: "fiware", Scope: "/iot"}},
+	}
+
+	for _, test := range tests {
+		actual, err := ngsi.GetServerInfo(test.Host, test.SkipRefHost)
+
+		if assert.NoError(t, err) {
+			assert.Equal(t, test.Expected.ServerHost, actual.ServerHost)
+			assert.Equal(t, test.Expected.Tenant, actual.Tenant)
+			assert.Equal(t, test.Expected.Scope, actual.Scope)
+		}
+	}
+}
+
+func TestGetServerInfoError1(t *testing.T) {
+	ngsi := NGSI{
+		ServerList: ServerList{
+			"orion2": &Server{ServerHost: "orion1", Tenant: "wirecloud", Scope: "/macs"},
+		},
+	}
+
+	actual, err := ngsi.GetServerInfo("orion2", false)
+
+	if assert.Error(t, err) {
+		assert.Equal(t, (*Server)(nil), actual)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "host error: orion2, orion1 not found", ngsiErr.Message)
+	}
+}
+
+func TestGetServerInfoError2(t *testing.T) {
+	ngsi := NGSI{
+		ServerList: ServerList{
+			"orion1": &Server{ServerHost: "http://localhost:1026", Tenant: "fiware", Scope: "/iot"},
+			"orion2": &Server{ServerHost: "orion1", Tenant: "wirecloud", Scope: "/macs"},
+			"orion3": &Server{ServerHost: "orion3"},
+		},
+	}
+
+	actual, err := ngsi.GetServerInfo("orion3", false)
+
+	if assert.Error(t, err) {
+		assert.Equal(t, (*Server)(nil), actual)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "host error: orion3, orion3 not found", ngsiErr.Message)
+	}
+}
+
+func TestGetServerInfoError3(t *testing.T) {
+	ngsi := NGSI{
+		ServerList: ServerList{},
+	}
+
+	actual, err := ngsi.GetServerInfo("orion", false)
+
+	if assert.Error(t, err) {
+		assert.Equal(t, (*Server)(nil), actual)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "orion not found", ngsiErr.Message)
+	}
 }

@@ -27,7 +27,15 @@
 # SOFTWARE.
 
 #
-# 0000 Clean up
+# 0001 ngsi settings clear
+#
+ngsi settings clear
+
+```
+```
+
+#
+# 0002 Clean up
 #
 ngsi rm --host orion-ld --type TemperatureSensor --link ctx --run
 
@@ -36,28 +44,7 @@ REGEX(.*)
 ```
 
 #
-# 0001 list types --help
-#
-ngsi list types --help
-
-```
-NAME:
-   ngsi list types - list types
-
-USAGE:
-   ngsi list types [command options] [arguments...]
-
-OPTIONS:
-   --details, -d           detailed entity type information (LD) (default: false)
-   --json, -j              JSON format (default: false)
-   --pretty, -P            pretty format (default: false)
-   --link value, -L value  @context (LD)
-   --help                  show help (default: false)
-   
-```
-
-#
-# 0002 list types
+# 0011 list types
 #
 ngsi list types
 
@@ -65,7 +52,7 @@ ngsi list types
 ```
 
 #
-# 0003 list types
+# 0012 list types
 #
 #  Related issues:
 #    https://github.com/FIWARE/context.Orion-LD/issues/732
@@ -83,7 +70,7 @@ ngsi list types --pretty
 ```
 
 #
-# 0011 Create entity
+# 0021 Create entity
 #
 ngsi create --host orion-ld entity --link ctx \
 --data '{
@@ -103,7 +90,7 @@ ngsi create --host orion-ld entity --link ctx \
 ```
 ```
 #
-# 0012 Get Entity
+# 0022 Get Entity
 #
 ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 
@@ -125,7 +112,7 @@ ngsi get entity --link ctx --id urn:ngsi-ld:TemperatureSensor:001 -P
 ```
 
 #
-# 0013 list types
+# 0023 list types
 #
 ngsi list types
 
@@ -134,7 +121,7 @@ https://uri.fiware.org/ns/data-models#TemperatureSensor
 ```
 
 #
-# 0014 list types --pretty
+# 0024 list types --pretty
 #
 ngsi list types --pretty
 
@@ -150,7 +137,7 @@ ngsi list types --pretty
 ```
 
 #
-# 0015 list types --details --pretty
+# 0025 list types --details --pretty
 #
 ngsi list types --details --pretty
 

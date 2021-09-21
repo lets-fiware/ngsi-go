@@ -36,6 +36,8 @@ import (
 	"path"
 	"strconv"
 	"strings"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // Client is
@@ -84,7 +86,7 @@ func (client *Client) InitHeader() error {
 	}
 	if client.Tenant != "" {
 		if err := client.CheckTenant(client.Tenant); err != nil {
-			return &LibError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		if client.NgsiType == ngsiLd {
 			client.Headers["NGSILD-Tenant"] = client.Tenant
@@ -95,7 +97,7 @@ func (client *Client) InitHeader() error {
 	if client.NgsiType == ngsiV2 {
 		if client.Scope != "" {
 			if err := client.CheckScope(client.Scope); err != nil {
-				return &LibError{funcName, 2, err.Error(), err}
+				return ngsierr.New(funcName, 2, err.Error(), err)
 			}
 			client.Headers["Fiware-ServicePath"] = client.Scope
 		} else {
@@ -249,7 +251,7 @@ func (client *Client) CheckTenant(tenant string) error {
 	if isTenantString(tenant) {
 		return nil
 	}
-	return &LibError{funcName, 1, fmt.Sprintf("error FIWARE Service: %s", tenant), nil}
+	return ngsierr.New(funcName, 1, fmt.Sprintf("error FIWARE Service: %s", tenant), nil)
 }
 
 // CheckScope is ...
@@ -259,5 +261,5 @@ func (client *Client) CheckScope(scope string) error {
 	if isScopeString(scope) {
 		return nil
 	}
-	return &LibError{funcName, 1, fmt.Sprintf("error FIWARE ServicePath: %s", scope), nil}
+	return ngsierr.New(funcName, 1, fmt.Sprintf("error FIWARE ServicePath: %s", scope), nil)
 }

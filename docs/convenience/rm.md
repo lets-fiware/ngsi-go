@@ -8,18 +8,17 @@ ngsi rm [options]
 
 ## Options
 
-| Options                   | Description                                         |
-| ------------------------- | --------------------------------------------------- |
-| --host value, -h value    | specify host or alias (Required)                    |
-| --token value             | specify oauth token                                 |
-| --service value, -s value | specify FIWARE Service                              |
-| --path value, -p value    | specify FIWARE ServicePath                          |
-| --type value, -t value    | specify Entity Type (Required)                      |
-| --link value, -L value    | specify @context (LD)                               |
-| --ngsiV1                  | NGSI v1 mode (default: false)                       |
-| --skipForwarding          | skip forwarding to CPrs (v2) (Orion 3.1.0 or later) |
-| --run                     | actually run to copy entities (default: false)      |
-| --help                    | show help (default: false)                          |
+| Options                   | Description                                   |
+| ------------------------- | --------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                          |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                      |
+| --type VALUE, -t VALUE    | Entity Type (required)                        |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                           |
+| --ngsiV1                  | NGSI v1 mode (default: false)                 |
+| --skipForwarding          | skip forwarding to CPrs (v2) (default: false) |
+| --run                     | run command (default: false)                  |
+| --help                    | show help (default: true)                     |
 
 ### Example
 

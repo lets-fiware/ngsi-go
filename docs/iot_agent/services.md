@@ -9,13 +9,12 @@ This command allows you to list, create, update and delete service entry for IoT
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="list-configuration-group"></a>
 
@@ -29,13 +28,16 @@ ngsi services [command options] list [options]
 
 ### Options
 
-| Options          | Description                                                             |
-| ---------------- | ----------------------------------------------------------------------- |
-| --limit value    | maximum number of services (default: 0)                                 |
-| --offset value   | offset to skip a given number of elements at the beginning (default: 0) |
-| --resource value | uri for the iotagent                                                    |
-| --pretty, -P     | pretty format (default: false)                                          |
-| --help           | show help (default: false)                                              |
+| Options                   | Description                                                |
+| ------------------------- | ---------------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                     |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                       |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                                   |
+| --limit VALUE             | maximum number of services                                 |
+| --offset VALUE            | offset to skip a given number of elements at the beginning |
+| --resource VALUE          | uri for the iotagent                                       |
+| --pretty, -P              | pretty format (default: false)                             |
+| --help                    | show help (default: true)                                  |
 
 ### Examples
 
@@ -78,15 +80,18 @@ ngsi services [command options] create [options]
 
 ### Options
 
-| Options                | Description                                      |
-| ---------------------- | ------------------------------------------------ |
-| --data value, -d value | data body (payload)                              |
-| --apikey value         | a key used for devices belonging to this service |
-| --token value          | token obtained from the authentication system    |
-| --cbroker value        | url of context broker or broker alias            |
-| --type value, -t value | Entity Type                                      |
-| --resource value       | uri for the iotagent                             |
-| --help                 | show help (default: false)                       |
+| Options                   | Description                                      |
+| ------------------------- | ------------------------------------------------ |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)           |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                             |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                         |
+| --data VALUE              | data body (payload)                              |
+| --apikey VALUE            | a key used for devices belonging to this service |
+| --token VALUE             | token obtained from the authentication system    |
+| --cbroker VALUE           | url of context broker or broker alias            |
+| --type VALUE, -t VALUE    | Entity Type                                      |
+| --resource VALUE          | uri for the iotagent                             |
+| --help                    | show help (default: true)                        |
 
 ### Examples
 
@@ -128,15 +133,18 @@ ngsi services [command options] update [options]
 
 ### Options
 
-| Options                | Description                                      |
-| ---------------------- | ------------------------------------------------ |
-| --data value, -d value | data body (payload)                              |
-| --apikey value         | a key used for devices belonging to this service |
-| --token value          | token obtained from the authentication system    |
-| --cbroker value        | url of context broker or broker alias            |
-| --type value, -t value | Entity Type                                      |
-| --resource value       | uri for the iotagent                             |
-| --help                 | show help (default: false)                       |
+| Options                   | Description                                      |
+| ------------------------- | ------------------------------------------------ |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)           |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                             |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                         |
+| --resource VALUE          | uri for the iotagent (required)                  |
+| --data VALUE              | data body (payload)                              |
+| --apikey VALUE            | a key used for devices belonging to this service |
+| --token VALUE             | token obtained from the authentication system    |
+| --cbroker VALUE           | url of context broker or broker alias            |
+| --type VALUE, -t VALUE    | Entity Type                                      |
+| --help                    | show help (default: true)                        |
 
 ### Examples
 
@@ -161,12 +169,15 @@ ngsi services [command options] delete [options]
 
 ### Options
 
-| Options          | Description                                           |
-| ---------------- | ----------------------------------------------------- |
-| --apikey value   | a key used for devices belonging to this service      |
-| --resource value | uri for the iotagent                                  |
-| --device         | remove devices in service/subservice (default: false) |
-| --help           | show help (default: false)                            |
+| Options                   | Description                                           |
+| ------------------------- | ----------------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)                |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                                  |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                              |
+| --resource VALUE          | uri for the iotagent (required)                       |
+| --apikey VALUE            | a key used for devices belonging to this service      |
+| --device                  | remove devices in service/subservice (default: false) |
+| --help                    | show help (default: true)                             |
 
 ### Examples
 

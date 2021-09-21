@@ -25,28 +25,15 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi broker get --help
+# 0001 ngsi settings clear
 #
-ngsi broker get --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi broker get - get broker
-
-USAGE:
-   ngsi broker get [command options] [arguments...]
-
-OPTIONS:
-   --host value, -h value  host or alias
-   --json, -j              JSON format (default: false)
-   --pretty, -P            pretty format (default: false)
-   --clearText             show obfuscated items as clear text (default: false)
-   --help                  show help (default: false)
-   
 ```
 
 #
-# 0002 Get orion broker
+# 0011 Get orion broker
 #
 ngsi broker get --host orion
 
@@ -56,7 +43,7 @@ ngsiType v2
 ```
 
 #
-# 0003 Get orion-ld broker
+# 0012 Get orion-ld broker
 #
 ngsi broker get --host orion-ld
 
@@ -67,7 +54,7 @@ brokerType orion-ld
 ```
 
 #
-# 0004 Get orion broker with --json
+# 0013 Get orion broker with --json
 #
 ngsi broker get --host orion --json
 
@@ -76,7 +63,7 @@ ngsi broker get --host orion --json
 ```
 
 #
-# 0005 Get orion broker with --json and --pretty
+# 0014 Get orion broker with --json and --pretty
 #
 ngsi broker get --host orion --json --pretty
 
@@ -89,19 +76,38 @@ ngsi broker get --host orion --json --pretty
 ```
 
 #
-# 0100 brokersGet002 Required host not found
+# 0015 Get orion without --host
+#
+ngsi broker get
+
+```
+brokerHost http://orion:1026
+ngsiType v2
+```
+
+#
+# 0101 ngsi settings clear
+#
+ngsi settings clear
+
+```
+```
+
+#
+# 0102 checkEmpty001 --host: value is empty
 #
 ngsi broker get
 
 ```1
-brokersGet002 required host not found
+required002 --host not found
+Run001 missing required options
 ```
 
 #
-# 0100 brokersGet005 fiware not found
+# 0103 brokersGet003 fiware not found
 #
 ngsi broker get --host fiware
 
 ```1
-brokersGet005 fiware not found
+brokersGet003 fiware not found
 ```

@@ -10,11 +10,10 @@ This command allows you to manage users for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-user"></a>
 
@@ -28,10 +27,12 @@ ngsi users [command options] list [options]
 
 ### Options
 
-| Options      | Description                    |
-| ------------ | ------------------------------ |
-| --pretty, -P | pretty format (default: false) |
-| --help       | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -82,11 +83,12 @@ ngsi user [command options] get [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --uid value, -i value | user id                        |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --uid VALUE, -i VALUE  | user id (required)                     |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -126,14 +128,15 @@ ngsi user [command options] create [options]
 
 ### Options
 
-| Options                    | Description                    |
-| -------------------------- | ------------------------------ |
-| --username value, -u value | user name                      |
-| --password value, -p value | password                       |
-| --email value, -e value    | email                          |
-| --verbose, -v              | verbose (default: false)       |
-| --pretty, -P               | pretty format (default: false) |
-| --help                     | show help (default: false)     |
+| Options                    | Description                            |
+| -------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE     | broker or server host VALUE (required) |
+| --username VALUE, -u VALUE | user name (required)                   |
+| --password VALUE, -p VALUE | password (required)                    |
+| --email VALUE, -e VALUE    | email (required)                       |
+| --verbose, -v              | verbose (default: false)               |
+| --pretty, -P               | pretty format (default: false)         |
+| --help                     | show help (default: true)              |
 
 ### Examples
 
@@ -159,15 +162,19 @@ ngsi user [command options] update [options]
 
 ### Options
 
-| Options                    | Description                    |
-| -------------------------- | ------------------------------ |
-| --uid value, -i value      | user id                        |
-| --username value, -u value | user name                      |
-| --password value, -p value | password                       |
-| --email value, -e value    | email                          |
-| --verbose, -v              | verbose (default: false)       |
-| --pretty, -P               | pretty format (default: false) |
-| --help                     | show help (default: false)     |
+| Options                       | Description                            |
+| ----------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE        | broker or server host VALUE (required) |
+| --uid VALUE, -i VALUE         | user id (required)                     |
+| --username VALUE, -u VALUE    | user name                              |
+| --password VALUE, -p VALUE    | password                               |
+| --email VALUE, -e VALUE       | email                                  |
+| --gravatar, -g                | gravatar (default: false)              |
+| --description VALUE, -d VALUE | description                            |
+| --website VALUE, -w VALUE     | website                                |
+| --extra VALUE, -E VALUE       | extra information                      |
+| --pretty, -P                  | pretty format (default: false)         |
+| --help                        | show help (default: true)              |
 
 ### Examples
 
@@ -197,10 +204,11 @@ ngsi user [command options] delete [options]
 
 ### Options
 
-| Options               | Description                |
-| --------------------- | -------------------------- |
-| --uid value, -i value | user id                    |
-| --help                | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --uid VALUE, -i VALUE  | user id (required)                     |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

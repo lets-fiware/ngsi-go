@@ -28,31 +28,15 @@
 #
 
 #
-# 0001 ngsi update attr --help
+# 0001 ngsi settings clear
 #
-ngsi update attr --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi update attr - update attr
-
-USAGE:
-   ngsi update attr [command options] [arguments...]
-
-OPTIONS:
-   --id value, -i value       id
-   --data value, -d value     data
-   --attr value               attribute name
-   --link value, -L value     @context (LD)
-   --context value, -C value  @context (LD)
-   --safeString value         use safe string (value: on/off)
-   --help                     show help (default: false)
-   
 ```
 
-
 #
-# 0002 Clean up
+# 0011 Clean up
 #
 ngsi rm --host orion --type Thing --run
 
@@ -61,7 +45,7 @@ REGEX(.*)
 ```
 
 #
-# 0003 Create entity E1
+# 0012 Create entity E1
 #
 ngsi create entity --keyValues \
 --data '{
@@ -87,9 +71,9 @@ ngsi create entity --keyValues \
 ```
 
 #
-# 0004 Get entity as normalized
+# 0013 Get entity as normalized
 #
-ngsi get entity --id E1 -pretty
+ngsi get entity --id E1 --pretty
 
 ```
 {
@@ -150,9 +134,9 @@ ngsi get entity --id E1 -pretty
 ```
 
 #
-# 0005 Check attributes
+# 0014 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -177,7 +161,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0006 Update attr null
+# 0015 Update attr null
 #
 ngsi update attr --id E1 --attr A1 --data null
 
@@ -185,9 +169,9 @@ ngsi update attr --id E1 --attr A1 --data null
 ```
 
 #
-# 0007 Check attributes
+# 0016 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -212,7 +196,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0008 Update attr true
+# 0017 Update attr true
 #
 ngsi update attr --id E1 --attr A3 --data true
 
@@ -220,9 +204,9 @@ ngsi update attr --id E1 --attr A3 --data true
 ```
 
 #
-# 0009 Check attributes
+# 0018 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -247,7 +231,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0010 Update attr false
+# 0018 Update attr false
 #
 ngsi update attr --id E1 --attr A2 --data false
 
@@ -255,9 +239,9 @@ ngsi update attr --id E1 --attr A2 --data false
 ```
 
 #
-# 0011 Check attributes
+# 0019 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -282,7 +266,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0012 Update attr integer
+# 0020 Update attr integer
 #
 ngsi update attr --id E1 --attr A4 --data 999
 
@@ -290,9 +274,9 @@ ngsi update attr --id E1 --attr A4 --data 999
 ```
 
 #
-# 0013 Check attributes
+# 0021 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -317,7 +301,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0014 Update attr float
+# 0022 Update attr float
 #
 ngsi update attr --id E1 --attr A5 --data 567.89
 
@@ -325,9 +309,9 @@ ngsi update attr --id E1 --attr A5 --data 567.89
 ```
 
 #
-# 0015 Check attributes
+# 0023 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -352,7 +336,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0016 Update attr string
+# 0024 Update attr string
 #
 ngsi update attr --id E1 --attr A6 --data FIWARE
 
@@ -360,9 +344,9 @@ ngsi update attr --id E1 --attr A6 --data FIWARE
 ```
 
 #
-# 0017 Check attributes
+# 0025 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -387,7 +371,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0018 Update attr string with space
+# 0026 Update attr string with space
 #
 ngsi update attr --id E1 --attr A6 --data "Open APIs"
 
@@ -395,9 +379,9 @@ ngsi update attr --id E1 --attr A6 --data "Open APIs"
 ```
 
 #
-# 0019 Check attributes
+# 0027 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -422,7 +406,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0020 Update attr empty string 
+# 0028 Update attr empty string 
 #
 ngsi update attr --id E1 --attr A6 --data '""'
 
@@ -430,9 +414,9 @@ ngsi update attr --id E1 --attr A6 --data '""'
 ```
 
 #
-# 0021 Check attributes
+# 0029 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -457,7 +441,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0022 Update attr empty string --safeString on
+# 0030 Update attr empty string --safeString on
 #
 ngsi update attr --id E1 --attr A6 --safeString on --data '""'
 
@@ -465,9 +449,9 @@ ngsi update attr --id E1 --attr A6 --safeString on --data '""'
 ```
 
 #
-# 0023 Check attributes
+# 0031 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -492,7 +476,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0024 Update attr string with --safeString on
+# 0032 Update attr string with --safeString on
 #
 ngsi update attr --id E1 --attr A6 --safeString on --data "<>"
 
@@ -500,9 +484,9 @@ ngsi update attr --id E1 --attr A6 --safeString on --data "<>"
 ```
 
 #
-# 0025 Check attributes
+# 0033 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -527,7 +511,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0026 Update attr string with --safeString on
+# 0034 Update attr string with --safeString on
 #
 ngsi update attr --id E1 --attr A6 --safeString on --data "<Open APIs>"
 
@@ -535,9 +519,9 @@ ngsi update attr --id E1 --attr A6 --safeString on --data "<Open APIs>"
 ```
 
 #
-# 0027 Check attributes
+# 0035 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -562,7 +546,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0028 Update attr array
+# 0036 Update attr array
 #
 ngsi update attr --id E1 --attr A8 --data '[ 5, 6, 7 ]'
 
@@ -570,9 +554,9 @@ ngsi update attr --id E1 --attr A8 --data '[ 5, 6, 7 ]'
 ```
 
 #
-# 0029 Check attributes
+# 0037 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -597,7 +581,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0030 Update attr object
+# 0038 Update attr object
 #
 ngsi update attr --id E1 --attr A9 --data '{"A91": 567.89}'
 
@@ -605,9 +589,9 @@ ngsi update attr --id E1 --attr A9 --data '{"A91": 567.89}'
 ```
 
 #
-# 0031 Check attributes
+# 0039 Check attributes
 #
-ngsi get entity --id E1 --keyValues -pretty
+ngsi get entity --id E1 --keyValues --pretty
 
 ```
 {
@@ -632,7 +616,7 @@ ngsi get entity --id E1 --keyValues -pretty
 ```
 
 #
-# 0032 Create entity E2
+# 0040 Create entity E2
 #
 ngsi create entity \
 --data '{
@@ -647,7 +631,7 @@ ngsi create entity \
 ```
 
 #
-# 0033 Get enttity E3
+# 0041 Get enttity E3
 #
 ngsi get entity --id E2 --pretty
 
@@ -664,14 +648,14 @@ ngsi get entity --id E2 --pretty
 ```
 
 #
-# 0033 Update attr E2 DateTime
+# 0042 Update attr E2 DateTime
 #
 ngsi update attr --id E2 --attr timestamp --data 2022-12-31T11:45:01.111Z
 
 ```
 ```
 #
-# 0034 Check attributes
+# 0043 Check attributes
 #
 ngsi get entity --id E2 --pretty
 
@@ -700,7 +684,10 @@ ngsi settings clear
 ngsi update attr
 
 ```1
-Required flags "id, attr" not set
+required002 --host not found
+required002 --id not found
+required002 --attr not found
+Run001 missing required options
 ```
  
 #
@@ -709,7 +696,8 @@ Required flags "id, attr" not set
 ngsi update attr --id E1 --attr A1
 
 ```1
-attrUpdate001 required host not found
+required002 --host not found
+Run001 missing required options
 ```
 
 #
@@ -718,52 +706,52 @@ attrUpdate001 required host not found
 ngsi update --host orion attr --id E1 --attr A1
 
 ```1
-attrUpdate003 data is empty
+attrUpdate001 data is empty
 ```
 
 #
 # 1004 attrUpdate008 400 Bad Request {"error":"ParseError","description":"Errors found in incoming JSON buffer"}
 # 
-ngsi update --host orion attr --id E1 --attr A1 --data "{"id":"
+ngsi update --host orion attr --id E1 --attr A1 --data '{"id":'
 
 ```1
-attrUpdate008 400 Bad Request {"error":"ParseError","description":"Errors found in incoming JSON buffer"}
+attrUpdate006 400 Bad Request {"error":"ParseError","description":"Errors found in incoming JSON buffer"}
 ```
 
 #
 # 1005 attrUpdate002 unknown parameter: yes
 # 
-ngsi update --host orion attr --id E1 --attr A1 --safeString yes --data "{"id":"
+ngsi update --host orion attr --id E1 --attr A1 --safeString yes --data '{"id":'
 
 ```1
-attrUpdate002 unknown parameter: yes
+Run001 unknown parameter: yes
 ```
 
 #
-# 1005 attrUpdate005 json error: {
+# 1006 attrUpdate005 json error: {
 # 
-ngsi update --host orion attr --id E1 --attr A1 --safeString on --data "{"id":"
+ngsi update --host orion attr --id E1 --attr A1 --safeString on --data '{"id":'
 
 ```1
-attrUpdate005 json error: {
+attrUpdate003 json error: {"id"
 ```
 
 #
-# 1006 attrUpdate003 file name error
+# 1007 attrUpdate003 file name error
 # 
 ngsi update --host orion attr --id E1 --attr A1 --data @
 
 ```1
-attrUpdate003 file name error
+attrUpdate001 file name error
 ```
 
 #
-# 1007 attrUpdate006 data length error
+# 1008 attrUpdate006 data length error
 # 
 ngsi update --host orion attr --id E1 --attr A1 --data '"'
 
 ```1
-attrUpdate006 data length error
+attrUpdate004 data length error
 ```
 
 #

@@ -32,7 +32,8 @@ package ngsilib
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestCheckAllParams(t *testing.T) {
@@ -47,7 +48,7 @@ func TestCheckAllParams(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	err = ngsi.checkAllParams(host)
 
 	assert.NoError(t, err)
@@ -66,7 +67,7 @@ func TestCheckAllParamsOrionLD(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	err = ngsi.checkAllParams(host)
 
 	assert.NoError(t, err)
@@ -84,12 +85,12 @@ func TestCheckAllParamsErrorBrokerHost(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.ServerHost = ""
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
@@ -107,12 +108,12 @@ func TestCheckAllParamsErrorBrokerHostNotFound(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.ServerHost = "orion-ld"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host error: orion-ld", ngsiErr.Message)
 	}
@@ -130,12 +131,12 @@ func TestCheckAllParamsErrorNgsiType(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.NgsiType = "v1"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "v1 not found", ngsiErr.Message)
 	}
@@ -154,13 +155,13 @@ func TestCheckAllParamsErrorV2BrokerType(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.BrokerType = "orion"
 
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "can'n specify broker Type", ngsiErr.Message)
 	}
@@ -180,13 +181,13 @@ func TestCheckAllParamsErrorBrokerType(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.BrokerType = "orion"
 
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "brokerType Error: orion", ngsiErr.Message)
 	}
@@ -204,12 +205,12 @@ func TestCheckAllParamsErrorAPIPath(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.APIPath = "/"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: /", ngsiErr.Message)
 	}
@@ -227,12 +228,12 @@ func TestCheckAllParamsErrorIdmParams(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.IdmType = "unknown"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown idm type: unknown", ngsiErr.Message)
 	}
@@ -250,12 +251,12 @@ func TestCheckAllParamsErrorTenant(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.Tenant = "FIWARE"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
@@ -273,12 +274,12 @@ func TestCheckAllParamsErrorScope(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.Scope = "Scope"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE ServicePath: Scope", ngsiErr.Message)
 	}
@@ -296,12 +297,12 @@ func TestCheckAllParamsErrorSafeString(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 	assert.NoError(t, err)
 
-	host := ngsi.serverList["orion"]
+	host := ngsi.ServerList["orion"]
 	host.SafeString = "none"
 	err = ngsi.checkAllParams(host)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: none", ngsiErr.Message)
 	}
@@ -320,7 +321,7 @@ func TestGetAPIPathErrorIndex(t *testing.T) {
 	_, _, err := getAPIPath("/")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: /", ngsiErr.Message)
 	}
@@ -330,7 +331,7 @@ func TestGetAPIPathErrorBeforePath(t *testing.T) {
 	_, _, err := getAPIPath("path,path")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: path", ngsiErr.Message)
 	}
@@ -340,7 +341,7 @@ func TestGetAPIPathErrorAfterPath(t *testing.T) {
 	_, _, err := getAPIPath("/,path")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "must start with '/': path", ngsiErr.Message)
 	}
@@ -350,7 +351,7 @@ func TestGetAPIPathErrorAfterPathTail(t *testing.T) {
 	_, _, err := getAPIPath("/,/path/")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "trailing '/' is not required: /path/", ngsiErr.Message)
 	}
@@ -504,7 +505,7 @@ func TestSetBrokerParamError(t *testing.T) {
 	err := setServerParam(&broker, param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware not found", ngsiErr.Message)
 	}
@@ -523,7 +524,7 @@ func TestDeleteItem(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 
 	if assert.NoError(t, err) {
-		actual := ngsi.serverList["orion"].SafeString
+		actual := ngsi.ServerList["orion"].SafeString
 		expected := "on"
 		assert.Equal(t, expected, actual)
 	}
@@ -531,7 +532,7 @@ func TestDeleteItem(t *testing.T) {
 	err = ngsi.DeleteItem("orion", "safeString")
 
 	if assert.NoError(t, err) {
-		actual := ngsi.serverList["orion"].SafeString
+		actual := ngsi.ServerList["orion"].SafeString
 		expected := ""
 		assert.Equal(t, expected, actual)
 	}
@@ -553,7 +554,7 @@ func TestDeleteItemErrorHostNotFound(t *testing.T) {
 	err = ngsi.DeleteItem("orion-ld", "safeString")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}
@@ -575,7 +576,7 @@ func TestDeleteItemErrorItem(t *testing.T) {
 	err = ngsi.DeleteItem("orion", "SafeString")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "SafeString not found", ngsiErr.Message)
 	}
@@ -618,7 +619,7 @@ func TestIsHostReferencedError(t *testing.T) {
 	err = ngsi.IsHostReferenced("orion")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "orion is referenced in fiware", ngsiErr.Message)
 	}
@@ -638,7 +639,7 @@ func TestIsContextReferenced(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
 	orion := Server{ServerHost: "http://orion/", Context: "fiware"}
-	ngsi.serverList["orion"] = &orion
+	ngsi.ServerList["orion"] = &orion
 
 	err = ngsi.IsContextReferenced("orion")
 
@@ -659,12 +660,12 @@ func TestIsContextReferencedError(t *testing.T) {
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName}
 
 	orion := Server{ServerHost: "http://orion/", Context: "fiware"}
-	ngsi.serverList["orion"] = &orion
+	ngsi.ServerList["orion"] = &orion
 
 	err = ngsi.IsContextReferenced("fiware")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "fiware is referenced in orion", ngsiErr.Message)
 	}
@@ -706,7 +707,7 @@ func TestSafeStringError(t *testing.T) {
 	b, err := info.safeString()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)
@@ -739,7 +740,7 @@ func TestXAuthTokenError(t *testing.T) {
 	b, err := info.xAuthToken()
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: error", ngsiErr.Message)
 		assert.Equal(t, b, false)

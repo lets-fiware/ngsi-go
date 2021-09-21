@@ -32,7 +32,8 @@ package ngsilib
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestRequestTokenApikey(t *testing.T) {
@@ -75,7 +76,7 @@ func TestGetTokenInfoApikey(t *testing.T) {
 	_, err := idm.getTokenInfo(tokenInfo)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "no information available", ngsiErr.Message)
 	}
@@ -106,7 +107,7 @@ func TestCheckIdmParamsApikeyError(t *testing.T) {
 	err := idm.checkIdmParams(idmParams)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "headerName and either headerValue or headerEnvValue", ngsiErr.Message)
 	}

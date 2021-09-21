@@ -18,10 +18,10 @@ ngsi settings list [options]
 
 ### Options
 
-| Options | Description                      |
-| ------- | -------------------------------- |
-| --all   | print ail itmes (default: false) |
-| --help  | show help (default: false)       |
+| Options | Description                |
+| ------- | -------------------------- |
+| --all   | ail itmes (default: false) |
+| --help  | show help (default: true)  |
 
 #### Example 1
 
@@ -62,10 +62,10 @@ ngsi settings list [options]
 
 ### Options
 
-| Options                 | Description                                 |
-| ----------------------- | ------------------------------------------- |
-| --items value, -i value | specify the items in a comma-separated list |
-| --help                  | show help (default: false)                  |
+| Options                 | Description               |
+| ----------------------- | ------------------------- |
+| --items VALUE, -i VALUE | itmes                     |
+| --help                  | show help (default: true) |
 
 #### Example
 
@@ -87,9 +87,9 @@ ngsi settings clear [options]
 
 ### Options
 
-| Options | Description                |
-| ------- | -------------------------- |
-| --help  | show help (default: false) |
+| Options | Description               |
+| ------- | ------------------------- |
+| --help  | show help (default: true) |
 
 <a name="set-previousargs-mode"></a>
 
@@ -113,4 +113,4 @@ ngsi settings previousArgs [options]
 | --------- | ------------------------------ |
 | --off, -d | off (disable) (default: false) |
 | --on, -e  | on (enable) (default: false)   |
-| --help    | show help (default: false)     |
+| --help    | show help (default: true)      |

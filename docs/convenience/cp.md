@@ -8,22 +8,21 @@ ngsi cp [options]
 
 ## Options
 
-| Options                   | Description                                         |
-| ------------------------- | --------------------------------------------------- |
-| --host value, -h value    | specify host or alias for source (Required)         |
-| --host2 value, -d value   | specify host or alias (Required) for destination    |
-| --token value             | specify oauth token for source                      |
-| --service value, -s value | specify FIWARE Service for source                   |
-| --path value, -p value    | specify FIWARE ServicePath for source               |
-| --type value, -t value    | specify Entity Type (Required)                      |
-| --token2 value            | specify oauth token for destination                 |
-| --service2 value          | specify FIWARE Service for destination              |
-| --path2 value             | specify FIWARE ServicePath for destination          |
-| --context2 value          | specify @context for destination                    |
-| --ngsiV1                  | NGSI v1 mode (default: false)                       |
-| --skipForwarding          | skip forwarding to CPrs (v2) (Orion 3.1.0 or later) |
-| --run                     | actually run to copy entities (default: false)      |
-| --help                    | show help (default: false)                          |
+| Options                   | Description                                   |
+| ------------------------- | --------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
+| --host2 VALUE, -d VALUE   | host or alias (required)                      |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                          |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE                      |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                           |
+| --type VALUE, -t VALUE    | Entity Type (required)                        |
+| --service2 VALUE          | FIWARE Service for destination                |
+| --path2 VALUE             | FIWARE ServicePath for destination            |
+| --context2 VALUE          | @context for destination                      |
+| --ngsiV1                  | NGSI v1 mode (default: false)                 |
+| --skipForwarding          | skip forwarding to CPrs (v2) (default: false) |
+| --run                     | run command (default: false)                  |
+| --help                    | show help (default: true)                     |
 
 ### Example
 

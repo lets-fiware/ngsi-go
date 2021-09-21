@@ -235,7 +235,7 @@ ngsi get entity --id urn:ngsi-ld:SafeString:010 --safeString on -P
 ```
 
 #
-# 1000 entityCreate009 400 Bad Request Invalid characters in attribute value
+# 1000 entityCreate006 400 Bad Request Invalid characters in attribute value
 #
 ngsi create entity \
 --data '{
@@ -248,11 +248,11 @@ ngsi create entity \
 }'
 
 ```1
-entityCreate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
+entityCreate006 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute value"}
 ```
 
 #
-# 1001 entityCreate009 400 Bad Request Invalid characters in attribute value
+# 1001 entityCreate006 400 Bad Request Invalid characters in attribute value
 #
 ngsi create entity --safeString off \
 --data '{
@@ -265,11 +265,11 @@ ngsi create entity --safeString off \
 }'
 
 ```1
-entityCreate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute name"}
+entityCreate006 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute name"}
 ```
 
 #
-# 1002 entityCreate009 400 Bad Request Invalid characters in attribute value
+# 1002 entityCreate006 400 Bad Request Invalid characters in attribute value
 #
 ngsi create entity --safeString off \
 --data '{
@@ -282,7 +282,7 @@ ngsi create entity --safeString off \
 }'
 
 ```1
-entityCreate009 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute name"}
+entityCreate006 400 Bad Request {"error":"BadRequest","description":"Invalid characters in attribute name"}
 ```
 
 #

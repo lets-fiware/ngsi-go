@@ -36,6 +36,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // WSO2Token is ...
@@ -64,7 +66,7 @@ func (i *idmWSO2) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	payloads = append(payloads,
 		fmt.Sprintf("grant_type=password&username=%s&password=%s&client_id=%s&client_secret=%s",
@@ -83,7 +85,7 @@ func (i *idmWSO2) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 
 		res, body, err = idm.HTTPPost(payload)
 		if err != nil {
-			return nil, &LibError{funcName, 2, err.Error(), err}
+			return nil, ngsierr.New(funcName, 2, err.Error(), err)
 		}
 
 		switch res.StatusCode {
@@ -99,7 +101,7 @@ func (i *idmWSO2) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 			var token WSO2Token
 			err = JSONUnmarshal(body, &token)
 			if err != nil {
-				return nil, &LibError{funcName, 3, err.Error(), err}
+				return nil, ngsierr.New(funcName, 3, err.Error(), err)
 			}
 
 			tokenInfo.Type = CWSO2
@@ -112,7 +114,7 @@ func (i *idmWSO2) requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo)
 		}
 	}
 
-	return nil, &LibError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	return nil, ngsierr.New(funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 }
 
 func (i *idmWSO2) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
@@ -135,10 +137,10 @@ func (i *idmWSO2) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) 
 
 	res, body, err := idm.HTTPPost(payload)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
@@ -153,7 +155,7 @@ func (i *idmWSO2) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 
 	b, err := JSONMarshal(tokenInfo.WSO2)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return b, nil
 }
@@ -171,5 +173,5 @@ func (i *idmWSO2) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil}
+	return ngsierr.New(funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil)
 }

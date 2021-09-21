@@ -10,11 +10,11 @@ This command allows you to manage PEP Proxies in an application for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --help                 | show help (default: true)              |
 
 <a name="list-pep-proxies"></a>
 
@@ -28,11 +28,12 @@ ngsi applications [command options] pep --aid {id} list [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -63,13 +64,14 @@ ngsi application [command options] pep --aid {id} create [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --run                 | run command (default: false)   |
-| --verbose, -v         | verbose (default: false)       |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --run                  | run command (default: false)           |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -100,13 +102,14 @@ ngsi application [command options] pep --aid {id} reset [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --run                 | run command (default: false)   |
-| --verbose, -v         | verbose (default: false)       |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --run                  | run command (default: false)           |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -134,11 +137,12 @@ ngsi application [command options] pep --aid {id} delete [options]
 
 ### Options
 
-| Options               | Description                |
-| --------------------- | -------------------------- |
-| --aid value, -i value | application id             |
-| --run                 | run command (default: false)   |
-| --help                | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --run                  | run command (default: false)           |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

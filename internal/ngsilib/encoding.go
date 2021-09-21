@@ -33,6 +33,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // IsJSON is ...
@@ -74,13 +76,13 @@ func GetJSONArray(b []byte, v interface{}) error {
 		if string(b[i]) == "[" {
 			err := JSONUnmarshal(b, v)
 			if err != nil {
-				return &LibError{funcName, 1, err.Error(), err}
+				return ngsierr.New(funcName, 1, err.Error(), err)
 			}
 			return nil
 		}
 		break
 	}
-	return &LibError{funcName, 2, "not JSON Array:" + string(b), nil}
+	return ngsierr.New(funcName, 2, "not JSON Array:"+string(b), nil)
 }
 
 // JSONMarshal is ...
@@ -105,7 +107,7 @@ func jsonMarshal(v interface{}, safeString bool, f func(string) string) ([]byte,
 	buffer := &bytes.Buffer{}
 	err := gNGSI.JSONConverter.Encode(buffer, v)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	b := buffer.Bytes()
 	if b[len(b)-1] == 0xa {
@@ -143,7 +145,7 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 		var err error
 		data, err = jsonParser(data, f)
 		if err != nil {
-			return &LibError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 
 	}
@@ -160,7 +162,7 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 			if e > int64(len(data)) {
 				e = int64(len(data))
 			}
-			return &LibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(data[s:e])), err}
+			return ngsierr.New(funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(data[s:e])), err)
 		case *json.UnmarshalTypeError:
 			s := err.Offset - 15
 			if s < 0 {
@@ -170,9 +172,9 @@ func jsonUnmarshal(data []byte, v interface{}, safeString bool, f func(string) s
 			if e > int64(len(data)) {
 				e = int64(len(data))
 			}
-			return &LibError{funcName, 3, fmt.Sprintf("%s Field:%s (%d) %s", err.Error(), err.Field, err.Offset, string(data[s:e])), err}
+			return ngsierr.New(funcName, 3, fmt.Sprintf("%s Field:%s (%d) %s", err.Error(), err.Field, err.Offset, string(data[s:e])), err)
 		}
-		return &LibError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 
 	return nil

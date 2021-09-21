@@ -9,11 +9,10 @@ This command allows you to manage groupingrules for Cygnus.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-groupingrules"></a>
 
@@ -27,10 +26,11 @@ ngsi groupingrules [command options] list [options]
 
 ### Options
 
-| Options      | Description                    |
-| ------------ | ------------------------------ |
-| --pretty, -P | pretty format (default: false) |
-| --help       | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -69,11 +69,12 @@ ngsi groupingrule [command options] create [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --data value, -d value | grouping rule data             |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --data VALUE, -d VALUE | grouping rule data (required)          |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -107,12 +108,13 @@ ngsi groupingrule [command options] update [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --id value, -i value   | grouping rule id               |
-| --data value, -d value | grouping rule data             |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --id VALUE, -i VALUE   | grouping rule id (required)            |
+| --data VALUE, -d VALUE | grouping rule data (required)          |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -146,11 +148,12 @@ ngsi groupingrule [command options] delete [options]
 
 ### Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --id value, -i value   | grouping rule id               |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --id VALUE, -i VALUE   | grouping rule id (required)            |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

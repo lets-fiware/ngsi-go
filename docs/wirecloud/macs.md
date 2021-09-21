@@ -10,11 +10,10 @@ This command manages mashable application components for WireCloud.
 
 ## Common Options
 
-| Options                         | Description                      |
-| ------------------------------- | -------------------------------- |
-| --host value, -h value          | specify host or alias (Required) |
-| --token value                   | specify oauth token              |
-| --help                          | show help (default: false)       |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-macs"></a>
 
@@ -30,14 +29,16 @@ ngsi macs [options] list
 
 | Options                   | Description                                   |
 | ------------------------- | --------------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
 | --widget                  | filtering widget (default: false)             |
 | --operator                | filtering operator (default: false)           |
 | --mashup                  | filtering mashup (default: false)             |
-| --vender value, -v value  | vender name of mashable application component |
-| --name value, -n value    | name of mashable application component        |
-| --version value, -V value | version of mashable application component     |
+| --vender VALUE, -v VALUE  | vender name of mashable application component |
+| --name VALUE, -n VALUE    | name of mashable application component        |
+| --version VALUE, -V VALUE | version of mashable application component     |
 | --json, -j                | JSON format (default: false)                  |
 | --pretty, -P              | pretty format (default: false)                |
+| --help                    | show help (default: true)                     |
 
 ### Example
 
@@ -71,10 +72,12 @@ ngsi macs [options] get
 
 | Options                   | Description                                   |
 | ------------------------- | --------------------------------------------- |
-| --vender value, -v value  | vender name of mashable application component |
-| --name value, -n value    | name of mashable application component        |
-| --version value, -V value | version of mashable application component     |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
+| --vender VALUE, -v VALUE  | vender name of mashable application component |
+| --name VALUE, -n VALUE    | name of mashable application component        |
+| --version VALUE, -V VALUE | version of mashable application component     |
 | --pretty, -P              | pretty format (default: false)                |
+| --help                    | show help (default: true)                     |
 
 ### Example
 
@@ -100,10 +103,11 @@ ngsi macs [options] downloads
 
 | Options                   | Description                                   |
 | ------------------------- | --------------------------------------------- |
-| --vender value, -v value  | vender name of mashable application component |
-| --name value, -n value    | name of mashable application component        |
-| --version value, -V value | version of mashable application component     |
-| --pretty, -P              | pretty format (default: false)                |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
+| --vender VALUE, -v VALUE  | vender name of mashable application component |
+| --name VALUE, -n VALUE    | name of mashable application component        |
+| --version VALUE, -V VALUE | version of mashable application component     |
+| --help                    | show help (default: true)                     |
 
 ### Example
 
@@ -129,11 +133,13 @@ ngsi macs [options] install
 
 | Options                | Description                                                       |
 | ---------------------- | ----------------------------------------------------------------- |
-| --file value, -f value | mashable application component file                               |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                            |
+| --file VALUE, -f VALUE | mashable application component file (required)                    |
 | --public, -p           | install mashable application component as public (default: false) |
 | --overwrite, -o        | overwrite mashable application component (default: false)         |
 | --json, -j             | JSON format (default: false)                                      |
 | --pretty, -P           | pretty format (default: false)                                    |
+| --help                 | show help (default: true)                                         |
 
 ### Example
 
@@ -159,12 +165,14 @@ ngsi macs [options] uninstall
 
 | Options                   | Description                                   |
 | ------------------------- | --------------------------------------------- |
-| --vender value, -v value  | vender name of mashable application component |
-| --name value, -n value    | name of mashable application component        |
-| --version value, -V value | version of mashable application component     |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required)        |
+| --vender VALUE, -v VALUE  | vender name of mashable application component |
+| --name VALUE, -n VALUE    | name of mashable application component        |
+| --version VALUE, -V VALUE | version of mashable application component     |
 | --run                     | run command (default: false)                  |
 | --json, -j                | JSON format (default: false)                  |
 | --pretty, -P              | pretty format (default: false)                |
+| --help                    | show help (default: true)                     |
 
 ### Example
 

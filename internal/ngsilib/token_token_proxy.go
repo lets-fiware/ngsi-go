@@ -36,6 +36,8 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // Token proxy is a proxy for Keyrock
@@ -63,7 +65,7 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 	}
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	payloads = append(payloads, fmt.Sprintf("{\"username\": \"%s\", \"password\": \"%s\"}", username, password))
 
@@ -79,7 +81,7 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 
 		res, body, err = idm.HTTPPost(payload)
 		if err != nil {
-			return nil, &LibError{funcName, 2, err.Error(), err}
+			return nil, ngsierr.New(funcName, 2, err.Error(), err)
 		}
 		switch res.StatusCode {
 		default:
@@ -94,7 +96,7 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 			var tokenProxy TokenProxy
 			err = JSONUnmarshal(body, &tokenProxy)
 			if err != nil {
-				return nil, &LibError{funcName, 3, err.Error(), err}
+				return nil, ngsierr.New(funcName, 3, err.Error(), err)
 			}
 
 			tokenInfo := &TokenInfo{
@@ -108,7 +110,7 @@ func (i *idmTokenProxy) requestToken(ngsi *NGSI, client *Client, tokenInfo *Toke
 		}
 	}
 
-	return nil, &LibError{funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+	return nil, ngsierr.New(funcName, 4, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 }
 
 func (i *idmTokenProxy) revokeToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) error {
@@ -129,10 +131,10 @@ func (i *idmTokenProxy) revokeToken(ngsi *NGSI, client *Client, tokenInfo *Token
 
 	res, body, err := idm.HTTPPost(payload)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
@@ -147,7 +149,7 @@ func (i *idmTokenProxy) getTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 
 	b, err := JSONMarshal(tokenInfo.TokenProxy)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return b, nil
 }
@@ -165,5 +167,5 @@ func (i *idmTokenProxy) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "idmHost, username and password are needed", nil}
+	return ngsierr.New(funcName, 1, "idmHost, username and password are needed", nil)
 }

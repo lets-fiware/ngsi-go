@@ -34,6 +34,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // https://github.com/FIWARE-Ops/KeyrockTokenProvider
@@ -55,7 +57,7 @@ func (i *idmKeyrockTokenProvider) requestToken(ngsi *NGSI, client *Client, token
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
@@ -63,10 +65,10 @@ func (i *idmKeyrockTokenProvider) requestToken(ngsi *NGSI, client *Client, token
 
 	res, body, err := idm.HTTPPost(data)
 	if err != nil {
-		return nil, &LibError{funcName, 2, err.Error(), err}
+		return nil, ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return nil, ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	utime := ngsi.TimeLib.NowUnix()
@@ -96,7 +98,7 @@ func (i *idmKeyrockTokenProvider) getTokenInfo(tokenInfo *TokenInfo) ([]byte, er
 
 	b, err := JSONMarshal(tokenInfo.TokenProvider)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	return b, nil
@@ -115,5 +117,5 @@ func (i *idmKeyrockTokenProvider) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "idmHost, username and password are needed", nil}
+	return ngsierr.New(funcName, 1, "idmHost, username and password are needed", nil)
 }

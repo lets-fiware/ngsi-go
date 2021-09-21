@@ -31,1110 +31,693 @@ package ngsicmd
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestRegistrationsListLd(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "5f5dcb551e715bc7f1ad79e3\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdLocalTime(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld", "--verbose", "--localTime"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"expires": "2020-09-01T01:24:01.00Z", "id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "verbose,localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--verbose", "--localTime"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "5f5dcb551e715bc7f1ad79e3 sensor source 2020-09-01T10:24:01.00+0900\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdCountZero(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"0"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := ""
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdCountZeroPretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"0"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := ""
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdCountPage(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	reqRes1 := MockHTTPReqRes{}
+	reqRes1 := helper.MockHTTPReqRes{}
 	reqRes1.Res.StatusCode = http.StatusOK
 	reqRes1.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes1.ResHeader = http.Header{"Ngsild-Results-Count": []string{"101"}}
 	reqRes1.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	reqRes2 := MockHTTPReqRes{}
+
+	reqRes2 := helper.MockHTTPReqRes{}
 	reqRes2.Res.StatusCode = http.StatusOK
 	reqRes2.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes2.ResHeader = http.Header{"Ngsild-Results-Count": []string{"101"}}
 	reqRes2.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes1)
-	mock.ReqRes = append(mock.ReqRes, reqRes2)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "5f5dcb551e715bc7f1ad79e3\n5f5dcb551e715bc7f1ad79e3\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdVerbose(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld", "--verbose"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "verbose")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--verbose"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "5f5dcb551e715bc7f1ad79e3 sensor source \n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 func TestRegistrationsListLdJSON(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld", "--json"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "json")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--json"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[{\"id\":\"5f5dcb551e715bc7f1ad79e3\",\"type\":\"ContextSourceRegistration\",\"description\":\"sensor source\",\"endpoint\":\"http://raspi\"}]\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdJSONPretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld", "--json", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "json,pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "[\n  {\n    \"id\": \"5f5dcb551e715bc7f1ad79e3\",\n    \"type\": \"ContextSourceRegistration\",\n    \"description\": \"sensor source\",\n    \"endpoint\": \"http://raspi\"\n  }\n]\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/csourceRegistrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsListLdErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
 	reqRes.ResBody = []byte(`error`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,type")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--type=AirQualityObserved"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsListLdErrorResultsCount(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "ResultsCount error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsListLdErrorUnmarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{}`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json: cannot unmarshal object into Go value of type []ngsicmd.cSourceRegistration Field: (1) {}", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdErrorJSON(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld", "--json"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host")
-	setupFlagBool(set, "json")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--json"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-	setJSONEncodeErr(ngsi, 0)
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsListLdErrorJSONPretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"list", "registrations", "--host", "orion-ld", "--json", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`[{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}]`)
 	reqRes.ResHeader = http.Header{"Ngsild-Results-Count": []string{"1"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host")
-	setupFlagBool(set, "json,pretty")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--json", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONIndentError(c.Ngsi)
 
-	setJSONIndentError(ngsi)
-
-	err = registrationsListLd(c, ngsi, client)
+	err := registrationsListLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsLdGet(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"id\":\"5f5dcb551e715bc7f1ad79e3\",\"type\":\"ContextSourceRegistration\",\"description\":\"sensor source\",\"endpoint\":\"http://raspi\"}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsLdGetPretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	setupFlagBool(set, "pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\n  \"id\": \"5f5dcb551e715bc7f1ad79e3\",\n  \"type\": \"ContextSourceRegistration\",\n  \"description\": \"sensor source\",\n  \"endpoint\": \"http://raspi\"\n}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsLdGetLocalTime(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3", "--localTime"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"expires": "2020-09-01T01:24:01.00Z", "id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	setupFlagBool(set, "localTime")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--localTime", "--id=5f5dcb551e715bc7f1ad79e3"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"id\":\"5f5dcb551e715bc7f1ad79e3\",\"type\":\"ContextSourceRegistration\",\"description\":\"sensor source\",\"expires\":\"2020-09-01T10:24:01.00+0900\",\"endpoint\":\"http://raspi\"}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsLdGetSafeString(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3", "--safeString", "on"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id,safeString")
-	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=5f5dcb551e715bc7f1ad79e3"})
-	c := cli.NewContext(app, set, nil)
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"id\":\"5f5dcb551e715bc7f1ad79e3\",\"type\":\"ContextSourceRegistration\",\"description\":\"sensor source\",\"endpoint\":\"http://raspi\"}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsGetLdErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/csourceRegistrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsGetLdErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
 	reqRes.ResBody = []byte(`error`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "5f5dcb551e715bc7f1ad79e3  error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsLdGetErrorSafeString(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3", "--safeString", "on"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setJSONDecodeErr(ngsi, 1)
+	helper.SetClientHTTP(c, reqRes)
 
-	setupFlagString(set, "host,id,safeString")
-	_ = set.Parse([]string{"--host=orion-ld", "--safeString=on", "--id=5f5dcb551e715bc7f1ad79e3"})
-	c := cli.NewContext(app, set, nil)
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsLdGetErrorJSONMarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	setJSONEncodeErr(ngsi, 2)
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsLdGetErrorPretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"id":"5f5dcb551e715bc7f1ad79e3","description":"sensor source","endpoint":"http://raspi","information":[{"entities":[{"id":"urn:ngsi-ld:Device:device001","type":"Device"}],"properties":["temperature","pressure","humidity"]}],"type":"ContextSourceRegistration"}`)
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-	setupFlagString(set, "host,id")
-	setupFlagBool(set, "pretty")
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3", "--pretty"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
+	helper.SetJSONIndentError(c.Ngsi)
 
-	setJSONIndentError(ngsi)
-
-	err = registrationsGetLd(c, ngsi, client)
+	err := registrationsGetLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCreateLd(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"create", "registration", "--host", "orion-ld", "--data", "{}"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusCreated
 	reqRes.ResHeader = http.Header{"Location": []string{"/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"}}
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsCreateLd(c, ngsi, client)
+	err := registrationsCreateLd(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "5f5dcb551e715bc7f1ad79e3\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCreateLdErrorSetRegistrationsValuleLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "registration", "--host", "orion-ld", "--data", "@"})
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusCreated
-	reqRes.ResHeader = http.Header{"Location": []string{"/ngsi-ld/v1/registrations/5f5dcb551e715bc7f1ad79e3"}}
-	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	setupFlagString(set, "host,data")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data="})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsCreateLd(c, ngsi, client)
+	err := registrationsCreateLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsCreateLdErrorJSONMarshalEncode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "registration", "--host", "orion-ld", "--data", "{}"})
 
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/csourceRegistrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	setJSONEncodeErr(ngsi, 2)
-	setupFlagString(set, "host,data")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
-
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsCreateLd(c, ngsi, client)
+	err := registrationsCreateLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsCreateLdErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "registration", "--host", "orion-ld", "--data", "{}"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/csourceRegistrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations"
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host,data")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsCreateLd(c, ngsi, client)
+	err := registrationsCreateLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsCreateLdErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"create", "registration", "--host", "orion-ld", "--data", "{}"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations"
 	reqRes.ResBody = []byte(`error`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,data")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--data={}"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsCreateLd(c, ngsi, client)
+	err := registrationsCreateLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsDeleteLd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsDeleteLd(c, ngsi, client)
+	err := registrationsDeleteLd(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestRegistrationsDeleteLdErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/csourceRegistrations"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
+	reqRes.Err = errors.New("http error")
 
-	setupFlagString(set, "host")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsDeleteLd(c, ngsi, client)
+	err := registrationsDeleteLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsDeleteLdErrorStatusCode(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"delete", "registration", "--host", "orion-ld", "--id", "5f5dcb551e715bc7f1ad79e3"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/ngsi-ld/v1/csourceRegistrations/5f5dcb551e715bc7f1ad79e3"
 	reqRes.ResBody = []byte(`error`)
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
 
-	setupFlagString(set, "host,id")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=5f5dcb551e715bc7f1ad79e3"})
+	helper.SetClientHTTP(c, reqRes)
 
-	ngsi, err := initCmd(c, "", true)
-	assert.NoError(t, err)
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	assert.NoError(t, err)
-
-	err = registrationsDeleteLd(c, ngsi, client)
+	err := registrationsDeleteLd(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		assert.Equal(t, "5f5dcb551e715bc7f1ad79e3  error", ngsiErr.Message)
 	}
 }
 
 func TestRegistrationsTemplateLd(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "{}"})
 
-	c := cli.NewContext(app, set, nil)
-	err := registrationsTemplateLd(c, ngsi)
+	err := registrationsTemplateLd(c, c.Ngsi)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsTemplateLdArgs(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--description", "test", "--providedId", "device001", "--type", "Device", "--attrs", "abc,xyz", "--provider", "http://provider"})
 
-	setupFlagString(set, "description,providedId,type,attrs,provider")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
-	err := registrationsTemplateLd(c, ngsi)
+	err := registrationsTemplateLd(c, c.Ngsi)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"description\":\"test\",\"registrationInfo\":[{\"entities\":[{\"id\":\"device001\",\"type\":\"Device\"}]}],\"endpoint\":\"http://provider\"}"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsTemplateLdArgsPretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--pretty", "--description", "test", "--providedId", "device001", "--type", "Device", "--attrs", "abc,xyz", "--provider", "http://provider"})
 
-	setupFlagString(set, "description,providedId,type,attrs,provider")
-	setupFlagBool(set, "pretty")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--pretty", "--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
-	err := registrationsTemplateLd(c, ngsi)
+	err := registrationsTemplateLd(c, c.Ngsi)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\n  \"description\": \"test\",\n  \"registrationInfo\": [\n    {\n      \"entities\": [\n        {\n          \"id\": \"device001\",\n          \"type\": \"Device\"\n        }\n      ]\n    }\n  ],\n  \"endpoint\": \"http://provider\"\n}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsTemplateLdErrorProvider(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--description", "test", "--providedId", "device001", "--type", "Device", "--attrs", "abc,xyz", "--provider", "provider"})
 
-	setupFlagString(set, "description,providedId,type,attrs,provider")
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=provider"})
-	err := registrationsTemplateLd(c, ngsi)
+	err := registrationsTemplateLd(c, c.Ngsi)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "provider url error: provider", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsTemplateLdErrorMarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--description", "test", "--providedId", "device001", "--type", "Device", "--attrs", "abc,xyz", "--provider", "http://provider"})
 
-	setupFlagString(set, "description,providedId,type,attrs,provider")
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
-	setJSONEncodeErr(ngsi, 0)
-
-	err := registrationsTemplateLd(c, ngsi)
+	err := registrationsTemplateLd(c, c.Ngsi)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestRegistrationsTemplateLdErrorArgsPretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--pretty", "--description", "test", "--providedId", "device001", "--type", "Device", "--attrs", "abc,xyz", "--provider", "http://provider"})
 
-	setupFlagString(set, "description,providedId,type,attrs,provider")
-	setupFlagBool(set, "pretty")
+	helper.SetJSONIndentError(c.Ngsi)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--pretty", "--description=test", "--providedId=device001", "--type=Device", "--attrs=abc,xyz", "--provider=http://provider"})
-
-	setJSONIndentError(ngsi)
-
-	err := registrationsTemplateLd(c, ngsi)
+	err := registrationsTemplateLd(c, c.Ngsi)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestSetRegistrationsValuleLd1(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "data,description,provider,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--description=reg", "--provider=http://csource", "--expires=2020-12-01T19:17:35.000Z"})
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "{}", "--description", "reg", "--provider", "http://csource", "--expires", "2020-12-01T19:17:35.000Z"})
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.NoError(t, err) {
 		b, _ := json.Marshal(r)
@@ -1145,15 +728,11 @@ func TestSetRegistrationsValuleLd1(t *testing.T) {
 }
 
 func TestSetRegistrationsValuleLd2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "type,providedId,idPattern")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--type=device", "--providedId=device001", "--idPattern=.*"})
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--type", "device", "--providedId", "device001", "--idPattern", ".*"})
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.NoError(t, err) {
 		b, _ := json.Marshal(r)
@@ -1164,15 +743,11 @@ func TestSetRegistrationsValuleLd2(t *testing.T) {
 }
 
 func TestSetRegistrationsValuleLd3(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "properties,relationships")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--properties=speed", "--relationships=urn:ngsi-ld:car"})
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--properties", "speed", "--relationships", "urn:ngsi-ld:car"})
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.NoError(t, err) {
 		b, _ := json.Marshal(r)
@@ -1183,15 +758,11 @@ func TestSetRegistrationsValuleLd3(t *testing.T) {
 }
 
 func TestSetRegistrationsValuleLdContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "data,context")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--context=[\"http://context\"]"})
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "{}", "--context", "[\"http://context\"]"})
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.NoError(t, err) {
 		b, _ := json.Marshal(r)
@@ -1202,93 +773,73 @@ func TestSetRegistrationsValuleLdContext(t *testing.T) {
 }
 
 func TestSetRegistrationsValuleLdErrorReadAll(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "data,description,provider,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data=", "--description=reg", "--provider=http://csource", "--expires=day"})
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "@", "--description", "reg", "--provider", "http://csource", "--expires", "day"})
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "data is empty", ngsiErr.Message)
+		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
 
 func TestSetRegistrationsValuleLdErrorJSONUnmarshal(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "{}", "--description", "reg", "--provider", "http://csource", "--expires", "day"})
 
-	setJSONDecodeErr(ngsi, 0)
-
-	setupFlagString(set, "data,description,provider,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--description=reg", "--provider=http://csource", "--expires=day"})
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
 
-func TestSetRegistrationsValuleLdErrorProvider(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "data,description,provider,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--description=reg", "--provider=csource", "--expires=1day"})
+func TestSetRegistrationsValuleLdErrorExpires(t *testing.T) {
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "{}", "--description", "reg", "--provider", "http://csource", "--expires", "day"})
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "error day", ngsiErr.Message)
+	}
+}
+
+func TestSetRegistrationsValuleLdErrorProvider(t *testing.T) {
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "{}", "--description", "reg", "--provider", "csource", "--expires", "1day"})
+
+	var r cSourceRegistration
+
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "provider url error: csource", ngsiErr.Message)
 	}
 }
 
 func TestSetRegistrationsValuleLdErrorContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "data,context")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--context=[\"http://context\""})
+	c := setupTest([]string{"template", "registration", "--ngsiType", "ld", "--data", "{}", "--context", "[\"http://context\""})
 
 	var r cSourceRegistration
 
-	err := setRegistrationsValuleLd(c, ngsi, &r)
+	err := setRegistrationsValuleLd(c, c.Ngsi, &r)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	}
-}
-
-func TestSetRegistrationsValuleLdErrorExpires(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "data,description,provider,expires")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--data={}", "--description=reg", "--provider=http://csource", "--expires=day"})
-
-	var r cSourceRegistration
-
-	err := setRegistrationsValuleLd(c, ngsi, &r)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "error day", ngsiErr.Message)
 	}
 }

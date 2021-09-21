@@ -35,96 +35,44 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func registrationsList(c *cli.Context) error {
-	const funcName = "registratinsList"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func registrationsList(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return registrationsListV2(c, ngsi, client)
 	}
 	return registrationsListLd(c, ngsi, client)
 }
 
-func registrationsGet(c *cli.Context) error {
-	const funcName = "registrationsGet"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func registrationsGet(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return registrationsGetV2(c, ngsi, client)
 	}
 	return registrationsGetLd(c, ngsi, client)
 }
 
-func registrationsCreate(c *cli.Context) error {
-	const funcName = "registrationsCreate"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func registrationsCreate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return registrationsCreateV2(c, ngsi, client)
 	}
 	return registrationsCreateLd(c, ngsi, client)
 }
 
-func registrationsDelete(c *cli.Context) error {
-	const funcName = "registrationsDelete"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
+func registrationsDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	if client.IsNgsiV2() {
 		return registrationsDeleteV2(c, ngsi, client)
 	}
 	return registrationsDeleteLd(c, ngsi, client)
 }
 
-func registrationsTemplate(c *cli.Context) error {
+func registrationsTemplate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsTemplate"
 
-	ngsi, err := initCmd(c, funcName, false)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
 	if !c.IsSet("ngsiType") {
-		return &ngsiCmdError{funcName, 2, "missing ngsiType", err}
+		return ngsierr.New(funcName, 1, "missing ngsiType", nil)
 	}
 
 	t := strings.ToLower(c.String("ngsiType"))
@@ -137,21 +85,11 @@ func registrationsTemplate(c *cli.Context) error {
 		return registrationsTemplateLd(c, ngsi)
 	}
 
-	return &ngsiCmdError{funcName, 3, "ngsiType error: " + t, nil}
+	return ngsierr.New(funcName, 2, "ngsiType error: "+t, nil)
 }
 
-func registrationsCount(c *cli.Context) error {
+func registrationsCount(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsCount"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	v := url.Values{}
 
@@ -168,15 +106,15 @@ func registrationsCount(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	count, err := client.ResultsCount(res)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, "ResultsCount error", nil}
+		return ngsierr.New(funcName, 3, "ResultsCount error", nil)
 	}
 
 	fmt.Fprintln(ngsi.StdWriter, count)

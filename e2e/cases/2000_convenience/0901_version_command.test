@@ -25,30 +25,7 @@
 # SOFTWARE.
 
 #
-# 0001 version --help
-#
-ngsi version --help
-
-```
-NAME:
-   ngsi version - print the version
-
-USAGE:
-   ngsi version [command options] [arguments...]
-
-CATEGORY:
-   CONVENIENCE
-
-OPTIONS:
-   --host value, -h value  host or alias
-   --token value           oauth token
-   --pretty, -P            pretty format (default: false)
-   --help                  show help (default: false)
-   
-```
-
-#
-# 0002 version --host orion
+# 0011 version --host orion
 #
 ngsi version --host orion
 
@@ -78,7 +55,7 @@ ngsi version --host orion
 ```
 
 #
-# 0003 version --host orion-ld
+# 0012 version --host orion-ld
 #
 ngsi version --host orion-ld
 
@@ -102,5 +79,5 @@ ngsi version --host orion-ld
 ngsi version --host abc
 
 ```1
-cbVersion002 error host: abc
+Run001 error host: abc
 ```

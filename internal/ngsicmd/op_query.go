@@ -34,25 +34,16 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func opQuery(c *cli.Context) error {
+func opQuery(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "opQuery"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
 	if client.IsNgsiLd() {
-		return &ngsiCmdError{funcName, 3, "Only available on NGSIv2", nil}
+		return ngsierr.New(funcName, 0, "Only available on NGSIv2", nil)
 	}
 
 	page := 0
@@ -65,9 +56,9 @@ func opQuery(c *cli.Context) error {
 	}
 	lines := c.Bool("lines")
 
-	buf := jsonBuffer{}
+	buf := ngsilib.NewJsonBuffer()
 	if verbose {
-		buf.bufferOpen(ngsi.StdWriter, false, false)
+		buf.BufferOpen(ngsi.StdWriter, false, false)
 	}
 
 	for {
@@ -75,7 +66,7 @@ func opQuery(c *cli.Context) error {
 
 		var args = []string{"orderBy"}
 		var opts = []string{"count", "keyValues", "values", "unique"}
-		v := parseOptions(c, args, opts)
+		v := ngsicli.ParseOptions(c, args, opts)
 		if c.IsSet("count") {
 			v.Set("limit", "1")
 			v.Set("options", "count")
@@ -94,23 +85,23 @@ func opQuery(c *cli.Context) error {
 
 		client.SetHeader("Content-Type", "application/json")
 
-		b, err := readAll(c, ngsi)
+		b, err := ngsi.ReadAll(c.String("data"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 
 		res, body, err := client.HTTPPost(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 
 		if c.IsSet("count") {
 			count, err := client.ResultsCount(res)
 			if err != nil {
-				return &ngsiCmdError{funcName, 8, "ResultsCount error", nil}
+				return ngsierr.New(funcName, 4, "ResultsCount error", nil)
 			}
 			fmt.Fprintln(ngsi.StdWriter, count)
 			return nil
@@ -118,7 +109,7 @@ func opQuery(c *cli.Context) error {
 
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 9, "ResultsCount error", err}
+			return ngsierr.New(funcName, 5, "ResultsCount error", err)
 		}
 		if count == 0 {
 			break
@@ -127,7 +118,7 @@ func opQuery(c *cli.Context) error {
 		if client.IsSafeString() {
 			body, err = ngsilib.JSONSafeStringDecode(body)
 			if err != nil {
-				return &ngsiCmdError{funcName, 10, err.Error(), err}
+				return ngsierr.New(funcName, 6, err.Error(), err)
 			}
 		}
 
@@ -136,25 +127,25 @@ func opQuery(c *cli.Context) error {
 				var values [][]interface{}
 				err = ngsilib.JSONUnmarshal(body, &values)
 				if err != nil {
-					return &ngsiCmdError{funcName, 11, err.Error(), err}
+					return ngsierr.New(funcName, 7, err.Error(), err)
 				}
 				for _, e := range values {
 					b, err := ngsilib.JSONMarshal(&e)
 					if err != nil {
-						return &ngsiCmdError{funcName, 12, err.Error(), err}
+						return ngsierr.New(funcName, 8, err.Error(), err)
 					}
 					fmt.Fprintln(ngsi.StdWriter, string(b))
 				}
 			} else {
-				var entities entitiesRespose
+				var entities ngsilib.EntitiesRespose
 				err = ngsilib.JSONUnmarshal(body, &entities)
 				if err != nil {
-					return &ngsiCmdError{funcName, 13, err.Error(), err}
+					return ngsierr.New(funcName, 9, err.Error(), err)
 				}
 				for _, e := range entities {
 					b, err := ngsilib.JSONMarshal(&e)
 					if err != nil {
-						return &ngsiCmdError{funcName, 14, err.Error(), err}
+						return ngsierr.New(funcName, 10, err.Error(), err)
 					}
 					fmt.Fprintln(ngsi.StdWriter, string(b))
 				}
@@ -164,17 +155,17 @@ func opQuery(c *cli.Context) error {
 				newBuf := new(bytes.Buffer)
 				err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 				if err != nil {
-					return &ngsiCmdError{funcName, 15, err.Error(), err}
+					return ngsierr.New(funcName, 11, err.Error(), err)
 				}
-				buf.bufferWrite(newBuf.Bytes())
+				buf.BufferWrite(newBuf.Bytes())
 			} else {
-				buf.bufferWrite(body)
+				buf.BufferWrite(body)
 			}
 		} else {
-			var entities entitiesRespose
+			var entities ngsilib.EntitiesRespose
 			err = ngsilib.JSONUnmarshalDecode(body, &entities, client.IsSafeString())
 			if err != nil {
-				return &ngsiCmdError{funcName, 16, err.Error(), err}
+				return ngsierr.New(funcName, 12, err.Error(), err)
 			}
 			for _, e := range entities {
 				fmt.Fprintln(ngsi.StdWriter, e["id"])
@@ -189,7 +180,7 @@ func opQuery(c *cli.Context) error {
 	}
 
 	if verbose {
-		buf.bufferClose()
+		buf.BufferClose()
 	}
 	return nil
 }

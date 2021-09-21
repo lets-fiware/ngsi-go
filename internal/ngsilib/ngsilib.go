@@ -37,39 +37,45 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // NGSI is ...
 type NGSI struct {
 	configVresion string
-	serverList    ServerList
+	ServerList    ServerList
 	tokenList     tokenInfoList
 	contextList   ContextsInfo
 
-	LogLevel           int
-	ConfigFile         IoLib
-	CacheFile          IoLib
-	StdReader          io.Reader
-	StdWriter          io.Writer
-	LogWriter          io.Writer
-	FileReader         FileLib
-	JSONConverter      JSONLib
-	FilePath           FilePathLib
-	Ioutil             IoutilLib
-	ZipLib             ZipLib
-	MultiPart          MultiPart
+	ConfigFile    IoLib
+	CacheFile     IoLib
+	StdReader     io.Reader
+	StdWriter     io.Writer
+	LogWriter     io.Writer
+	FileReader    FileLib
+	JSONConverter JSONLib
+	FilePath      FilePathLib
+	Ioutil        IoutilLib
+	ZipLib        ZipLib
+	SyslogLib     SyslogLib
+	TimeLib       TimeLib
+	MultiPart     MultiPart
+	ReadAll       ReadAllFunc
+	GetReader     GetReaderFunc
+	HTTP          HTTPRequest
+	NetLib        NetLib
+
 	Host               string
 	Destination        string
+	LogLevel           int
 	Margin             int64
-	Maxsize            int
+	Maxsize            int64
 	Timeout            time.Duration
 	PreviousArgs       *Settings
 	Updated            bool
-	HTTP               HTTPRequest
 	Stderr             io.Writer
 	OsType             string
-	SyslogLib          SyslogLib
-	TimeLib            TimeLib
 	BatchFlag          *bool
 	InsecureSkipVerify bool
 }
@@ -93,6 +99,7 @@ func NewNGSI() *NGSI {
 		gNGSI.configVresion = "1"
 		gNGSI.InitLog(os.Stdin, os.Stdout, os.Stderr)
 		gNGSI.HTTP = &httpRequest{}
+		gNGSI.NetLib = NewNetLib()
 		gNGSI.Margin = 180
 		gNGSI.Timeout = 60
 		gNGSI.Maxsize = 100
@@ -103,6 +110,8 @@ func NewNGSI() *NGSI {
 		gNGSI.FilePath = &filePathLib{}
 		gNGSI.Ioutil = &ioutilLib{}
 		gNGSI.ZipLib = &zipLib{}
+		gNGSI.ReadAll = ReadAll
+		gNGSI.GetReader = GetReader
 		gNGSI.MultiPart = &multiPart{}
 		gNGSI.Stderr = os.Stderr
 		gNGSI.OsType = runtime.GOOS
@@ -110,7 +119,7 @@ func NewNGSI() *NGSI {
 		gNGSI.PreviousArgs = &Settings{UsePreviousArgs: true}
 		gNGSI.TimeLib = &timeLib{}
 		gNGSI.InsecureSkipVerify = false
-		gNGSI.serverList = make(ServerList)
+		gNGSI.ServerList = make(ServerList)
 		gNGSI.contextList = make(ContextsInfo)
 		gNGSI.contextList["etsi1.0"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
 		gNGSI.contextList["etsi1.3"] = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
@@ -150,7 +159,7 @@ func (ngsi *NGSI) BoolFlag(s string) (bool, error) {
 	case "on", "true":
 		return true, nil
 	}
-	return false, &LibError{funcName, 1, fmt.Sprintf("unknown parameter: %s", s), nil}
+	return false, ngsierr.New(funcName, 1, fmt.Sprintf("unknown parameter: %s", s), nil)
 }
 
 // StdoutFlush is ...
@@ -167,7 +176,7 @@ func getConfigDir(io IoLib) (string, error) {
 	var path string
 	home, err := io.UserHomeDir()
 	if err != nil {
-		return "", &LibError{funcName, 1, err.Error(), err}
+		return "", ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if gNGSI.OsType == "windows" {
 		path = io.Getenv("APPDATA")
@@ -184,7 +193,7 @@ func getConfigDir(io IoLib) (string, error) {
 	if !existsFile(io, home) {
 		err := io.MkdirAll(home, 0700)
 		if err != nil {
-			return "", &LibError{funcName, 2, err.Error(), err}
+			return "", ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 	return home, nil

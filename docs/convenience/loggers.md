@@ -10,11 +10,10 @@ This command allows you to manage loggers for Cygnus.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --help                 | show help (default: true)              |
 
 <a name="list-loggers"></a>
 
@@ -28,11 +27,12 @@ ngsi admin [command options] loggers list [options]
 
 ### Options
 
-| Options         | Description                                                                   |
-| --------------- | ----------------------------------------------------------------------------- |
-| --transient, -t | true, retrieving from memory, or false, retrieving from file (default: false) |
-| --pretty, -P    | pretty format (default: false)                                                |
-| --help          | show help (default: false)                                                    |
+| Options                | Description                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
+| --pretty, -P           | pretty format (default: false)                                                |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -376,10 +376,11 @@ ngsi admin [command options] loggers get [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | logger name                                                                   |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --name VALUE, -n VALUE | logger name (required)                                                        |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -407,11 +408,11 @@ ngsi admin [command options] loggers create [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | logger name                                                                   |
-| --data value, -d value | logger information                                                            |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --data VALUE, -d VALUE | logger information (required)                                                 |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -439,11 +440,11 @@ ngsi admin [command options] loggers update [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | logger name                                                                   |
-| --data value, -d value | logger information                                                            |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --data VALUE, -d VALUE | logger information (required)                                                 |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 
@@ -471,10 +472,11 @@ ngsi admin [command options] loggers delete [options]
 
 | Options                | Description                                                                   |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| --name value, -n value | logger name i                                                                 |
+| --host VALUE, -h VALUE | broker or server host VALUE (required)                                        |
+| --name VALUE, -n VALUE | logger name (required)                                                        |
 | --transient, -t        | true, retrieving from memory, or false, retrieving from file (default: false) |
 | --pretty, -P           | pretty format (default: false)                                                |
-| --help                 | show help (default: false)                                                    |
+| --help                 | show help (default: true)                                                     |
 
 ### Example
 

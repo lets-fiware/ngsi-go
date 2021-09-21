@@ -31,7 +31,7 @@ if [ -e golangci-lint.sh ]; then
   cd ..
 fi
 
-for i in internal/ngsicmd internal/ngsilib e2e/ngsi-test e2e/server/accumulator e2e/server/atcontext e2e/server/csource e2e/server/oauth
+for i in internal/assert internal/convenience internal/cygnus internal/helper internal/iotagent internal/keyrock internal/management internal/ngsicli internal/ngsicmd internal/ngsierr internal/ngsilib internal/ngsimain internal/perseo internal/timeseries internal/wirecloud e2e/ngsi-test e2e/server/accumulator e2e/server/atcontext e2e/server/csource e2e/server/oauth
 do
   echo "${i}"
   cd "${i}"

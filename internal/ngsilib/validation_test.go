@@ -1,10 +1,40 @@
+/*
+MIT License
+
+Copyright (c) 2020-2021 Kazuhito Suda
+
+This file is part of NGSI Go
+
+https://github.com/lets-fiware/ngsi-go
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
 package ngsilib
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestIsTenantString(t *testing.T) {
@@ -145,153 +175,36 @@ func TestIsExpirationDate(t *testing.T) {
 	}
 }
 
-func TestGetExpirationDate1Year(t *testing.T) {
+func TestGetExpirationDate(t *testing.T) {
 	ngsi := NewNGSI()
 
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("1year")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2007-01-02T15:04:05.000Z", date)
-	} else {
-		t.FailNow()
+	cases := []struct {
+		value    string
+		expected string
+	}{
+		{value: "1year", expected: "2007-01-02T15:04:05.000Z"},
+		{value: "5years", expected: "2011-01-02T15:04:05.000Z"},
+		{value: "1month", expected: "2006-02-02T15:04:05.000Z"},
+		{value: "5months", expected: "2006-06-02T15:04:05.000Z"},
+		{value: "1month", expected: "2006-02-02T15:04:05.000Z"},
+		{value: "5months", expected: "2006-06-02T15:04:05.000Z"},
+		{value: "1day", expected: "2006-01-03T15:04:05.000Z"},
+		{value: "5days", expected: "2006-01-07T15:04:05.000Z"},
+		{value: "1hour", expected: "2006-01-02T16:04:05.000Z"},
+		{value: "5hours", expected: "2006-01-02T20:04:05.000Z"},
+		{value: "1minute", expected: "2006-01-02T15:05:05.000Z"},
+		{value: "-1minute", expected: "2006-01-02T15:03:05.000Z"},
+		{value: "5minutes", expected: "2006-01-02T15:09:05.000Z"},
 	}
-}
-func TestGetExpirationDate5Years(t *testing.T) {
-	ngsi := NewNGSI()
 
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
+	for _, c := range cases {
+		ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
 
-	date, err := GetExpirationDate("5years")
+		date, err := GetExpirationDate(c.value)
 
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2011-01-02T15:04:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestGetExpirationDate1Month(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("1month")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-02-02T15:04:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-func TestGetExpirationDate5Months(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("5months")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-06-02T15:04:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestGetExpirationDate1Day(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("1day")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-01-03T15:04:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-func TestGetExpirationDate5Days(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("5days")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-01-07T15:04:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestGetExpirationDate1Hour(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("1hour")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-01-02T16:04:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-func TestGetExpirationDate5Hours(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("5hours")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-01-02T20:04:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestGetExpirationDate1Minute(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("1minute")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-01-02T15:05:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestGetExpirationDate1MinusMinute(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("-1minute")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-01-02T15:03:05.000Z", date)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestGetExpirationDate5Minutes(t *testing.T) {
-	ngsi := NewNGSI()
-
-	ngsi.TimeLib = &MockTimeLib{dateTime: "2006-01-02T15:04:05.000Z"}
-
-	date, err := GetExpirationDate("5minutes")
-
-	if assert.NoError(t, err) {
-		assert.Equal(t, "2006-01-02T15:09:05.000Z", date)
-	} else {
-		t.FailNow()
+		if assert.NoError(t, err) {
+			assert.Equal(t, c.expected, date)
+		}
 	}
 }
 
@@ -301,29 +214,26 @@ func TestGetExpirationDateError(t *testing.T) {
 	_, err := GetExpirationDate("test")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error test", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestIsOrionDateTime(t *testing.T) {
-	actual := IsOrionDateTime("2022-09-24T12:07:54.035Z")
-	expected := true
+	cases := []struct {
+		value    string
+		expected bool
+	}{
+		{value: "2022-09-24T12:07:54.035Z", expected: true},
+		{value: "2022-09-24T12:07:54.035+09:00", expected: true},
+		{value: "2022-09-24", expected: true},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = IsOrionDateTime("2022-09-24T12:07:54.035+09:00")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsOrionDateTime("2022-09-24")
-	expected = true
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := IsOrionDateTime(c.value)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestIsNameString(t *testing.T) {
@@ -353,40 +263,34 @@ func TestIsNameString(t *testing.T) {
 }
 
 func TestIsNgsiV2(t *testing.T) {
-	actual := IsNgsiV2("ngsi-v2")
-	expected := true
+	cases := []struct {
+		value    string
+		expected bool
+	}{
+		{value: "ngsi-v2", expected: true},
+		{value: "ngsiv2", expected: true},
+		{value: "v2", expected: true},
+		{value: "ld", expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = IsNgsiV2("ngsiv2")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsNgsiV2("v2")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsNgsiV2("ld")
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := IsNgsiV2(c.value)
+		assert.Equal(t, c.expected, actual)
+	}
 }
 
 func TestIsNgsiLd(t *testing.T) {
-	actual := IsNgsiLd("ngsi-ld")
-	expected := true
+	cases := []struct {
+		value    string
+		expected bool
+	}{
+		{value: "ngsi-ld", expected: true},
+		{value: "ld", expected: true},
+		{value: "v2", expected: false},
+	}
 
-	assert.Equal(t, expected, actual)
-
-	actual = IsNgsiLd("ld")
-	expected = true
-
-	assert.Equal(t, expected, actual)
-
-	actual = IsNgsiLd("v2")
-	expected = false
-
-	assert.Equal(t, expected, actual)
+	for _, c := range cases {
+		actual := IsNgsiLd(c.value)
+		assert.Equal(t, c.expected, actual)
+	}
 }

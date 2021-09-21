@@ -33,6 +33,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -42,8 +43,25 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
+//
+// testNgsiLibInit
+//
+func testNgsiLibInit() *NGSI {
+	gNGSI = nil
+
+	ngsi := NewNGSI()
+	ngsi.FileReader = &MockFileLib{}
+
+	return ngsi
+}
+
+//
+// MockTimeLib
+//
 type MockTimeLib struct {
 	dateTime string
 	unixTime int64
@@ -78,28 +96,48 @@ func (t *MockTimeLib) Format(layout string) string {
 }
 
 //
-// MockJSONLIB
+// MockJSONLib
 //
 type MockJSONLib struct {
-	DecodeErr error
-	EncodeErr error
 	IndentErr error
 	ValidErr  *bool
 	Jsonlib   JSONLib
+	DecodeErr [5]error
+	EncodeErr [5]error
+	dp        int
+	ep        int
 }
 
 func (j *MockJSONLib) Decode(r io.Reader, v interface{}) error {
-	if j.DecodeErr == nil {
+	err := j.DecodeErr[j.dp]
+	j.dp++
+	if err == nil {
 		return j.Jsonlib.Decode(r, v)
 	}
-	return j.DecodeErr
+	return err
 }
 
 func (j *MockJSONLib) Encode(w io.Writer, v interface{}) error {
-	if j.EncodeErr == nil {
+	err := j.EncodeErr[j.ep]
+	j.ep++
+	if err == nil {
 		return j.Jsonlib.Encode(w, v)
 	}
-	return j.EncodeErr
+	return err
+}
+
+func SetJSONDecodeErr(ngsi *NGSI, p int) {
+	j := ngsi.JSONConverter
+	mockj := &MockJSONLib{Jsonlib: j}
+	mockj.DecodeErr[p] = errors.New("json error")
+	ngsi.JSONConverter = mockj
+}
+
+func SetJSONEncodeErr(ngsi *NGSI, p int) {
+	j := ngsi.JSONConverter
+	mockj := &MockJSONLib{Jsonlib: j}
+	mockj.EncodeErr[p] = errors.New("json error")
+	ngsi.JSONConverter = mockj
 }
 
 func (j *MockJSONLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error {
@@ -109,6 +147,11 @@ func (j *MockJSONLib) Indent(dst *bytes.Buffer, src []byte, prefix, indent strin
 	return j.IndentErr
 }
 
+func SetJSONIndentError(ngsi *NGSI) {
+	j := ngsi.JSONConverter
+	ngsi.JSONConverter = &MockJSONLib{IndentErr: errors.New("json error"), Jsonlib: j}
+}
+
 func (j *MockJSONLib) Valid(data []byte) bool {
 	if j.ValidErr != nil {
 		return *j.ValidErr
@@ -116,12 +159,6 @@ func (j *MockJSONLib) Valid(data []byte) bool {
 	return j.Jsonlib.Valid(data)
 }
 
-func testNgsiLibInit() *NGSI {
-	gNGSI = nil
-	return NewNGSI()
-}
-
-//
 // MockIoLib
 //
 
@@ -246,16 +283,16 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 		case string:
 			data = []byte(body)
 		default:
-			return nil, nil, &LibError{funcName, 0, "Unsupported type", nil}
+			return nil, nil, ngsierr.New(funcName, 0, "Unsupported type", nil)
 		}
 	}
 	if data != nil && r.ReqData != nil {
 		if !reflect.DeepEqual(r.ReqData, data) {
-			return nil, nil, &LibError{funcName, 1, "body data error", nil}
+			return nil, nil, ngsierr.New(funcName, 1, "body data error", nil)
 		}
 	}
 	if r.Path != "" && r.Path != url.Path {
-		return nil, nil, &LibError{funcName, 3, "url error", nil}
+		return nil, nil, ngsierr.New(funcName, 3, "url error", nil)
 	}
 	if r.ResHeader != nil {
 		r.Res.Header = r.ResHeader
@@ -267,54 +304,78 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 // MockFileLib
 //
 type MockFileLib struct {
-	Name             string
-	openError        error
-	readallError     error
-	readall          []byte
-	filePathAbs      string
-	filePathAbsError error
-	readFile         []byte
-	readFileError    error
-	fileError        bufio.Reader
-	fileError2       bufio.Reader
+	Name              string
+	OpenError         error
+	CloseError        error
+	ReadallError      error
+	ReadallData       []byte
+	FilePathAbsString string
+	FilePathAbsError  [5]error
+	ab                int
+	ReadFileData      []byte
+	ReadFileError     [5]error
+	rf                int
+	FileError         *bufio.Reader
+	FileError2        *bufio.Reader
+	IoReader          *bufio.Reader
 }
 
 func (f *MockFileLib) Open(path string) (err error) {
-	return f.openError
+	return f.OpenError
 }
 
 func (f *MockFileLib) Close() error {
-	return nil
+	return f.CloseError
 }
 
 func (f *MockFileLib) FilePathAbs(path string) (string, error) {
-	if f.filePathAbsError == nil {
-		return f.filePathAbs, nil
+	err := f.FilePathAbsError[f.ab]
+	f.ab++
+	if err == nil {
+		return f.FilePathAbsString, nil
 	}
-	return "", f.filePathAbsError
+	return "", err
+}
+
+func setFilePatAbsError(ngsi *NGSI, p int) {
+	f := ngsi.FileReader.(*MockFileLib)
+	f.FilePathAbsError[p] = errors.New("filepathabs error")
+	ngsi.FileReader = f
 }
 
 func (f *MockFileLib) ReadAll(r io.Reader) ([]byte, error) {
-	if f.readall == nil {
-		return nil, f.readallError
+	if f.ReadallData == nil {
+		return nil, f.ReadallError
 	}
-	return f.readall, nil
+	return f.ReadallData, nil
 }
 
 func (f *MockFileLib) ReadFile(filename string) ([]byte, error) {
-	if f.readFileError == nil {
-		return f.readFile, nil
+	err := f.ReadFileError[f.rf]
+	f.rf++
+	if err == nil {
+		return f.ReadFileData, nil
 	}
-	return nil, f.readFileError
+	return nil, err
+}
+
+func setReadFileError(ngsi *NGSI, p int) {
+	f := ngsi.FileReader.(*MockFileLib)
+	f.ReadFileError[p] = errors.New("readfile error")
+	ngsi.FileReader = f
 }
 
 func (f *MockFileLib) SetReader(r io.Reader) {
+	f.IoReader = bufio.NewReader(r)
 }
 
 func (f *MockFileLib) File() bufio.Reader {
-	r := f.fileError
-	f.fileError = f.fileError2
-	return r
+	err := f.FileError
+	f.FileError = f.FileError2
+	if err == nil {
+		return *f.IoReader
+	}
+	return *err
 }
 
 //

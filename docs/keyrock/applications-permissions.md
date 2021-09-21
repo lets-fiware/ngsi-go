@@ -10,11 +10,11 @@ This command allows you to manage permissions for Keyrock.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --help                    | show help (default: false) |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --help                 | show help (default: true)              |
 
 <a name="list-permissions"></a>
 
@@ -28,12 +28,14 @@ ngsi applications [command options] permissions --aid {id} list [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --pid value, -p value | permission id                  |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --pid VALUE, -p VALUE  | permission id                          |
+| --verbose, -v          | verbose (default: false)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -110,12 +112,13 @@ ngsi application [command options] permissions --aid {id} get [options]
 
 ### Options
 
-| Options               | Description                    |
-| --------------------- | ------------------------------ |
-| --aid value, -i value | application id                 |
-| --pid value, -p value | permission id                  |
-| --pretty, -P          | pretty format (default: false) |
-| --help                | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --pid VALUE, -p VALUE  | permission id (required)               |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 
@@ -153,17 +156,18 @@ ngsi application [command options] permissions --aid {id} create [options]
 
 ### Options
 
-| Options                       | Description                    |
-| ----------------------------- | ------------------------------ |
-| --pid value, -p value         | permission id                  |
-| --data value, -d value        | permission data                |
-| --name value, -n value        | permission name                |
-| --description value, -D value | description                    |
-| --action value, -a value      | action                         |
-| --resource value, -r value    | resoruce                       |
-| --verbose, -v                 | verbose (default: false)       |
-| --pretty, -P                  | pretty format (default: false) |
-| --help                        | show help (default: false)     |
+| Options                       | Description                            |
+| ----------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE        | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE         | application id (required)              |
+| --data VALUE, -d VALUE        | permissionrole data                    |
+| --name VALUE, -n VALUE        | permission name                        |
+| --description VALUE, -D VALUE | description                            |
+| --action VALUE, -a VALUE      | action                                 |
+| --resource VALUE, -r VALUE    | resoruce                               |
+| --verbose, -v                 | verbose (default: false)               |
+| --pretty, -P                  | pretty format (default: false)         |
+| --help                        | show help (default: true)              |
 
 ### Examples
 
@@ -193,18 +197,19 @@ ngsi application [command options] permissions --aid {id} update [options]
 
 ### Options
 
-| Options                       | Description                    |
-| ----------------------------- | ------------------------------ |
-| --aid value, -i value         | application id                 |
-| --pid value, -p value         | permission id                  |
-| --data value, -d value        | permission data                |
-| --name value, -n value        | permission name                |
-| --description value, -D value | description                    |
-| --action value, -a value      | action                         |
-| --resource value, -r value    | resoruce                       |
-| --verbose, -v                 | verbose (default: false)       |
-| --pretty, -P                  | pretty format (default: false) |
-| --help                        | show help (default: false)     |
+| Options                       | Description                            |
+| ----------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE        | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE         | application id (required)              |
+| --pid VALUE, -p VALUE         | permission id (required)               |
+| --data VALUE, -d VALUE        | permissionrole data                    |
+| --name VALUE, -n VALUE        | permission name                        |
+| --description VALUE, -D VALUE | description                            |
+| --action VALUE, -a VALUE      | action                                 |
+| --resource VALUE, -r VALUE    | resoruce                               |
+| --verbose, -v                 | verbose (default: false)               |
+| --pretty, -P                  | pretty format (default: false)         |
+| --help                        | show help (default: true)              |
 
 ### Examples
 
@@ -231,11 +236,12 @@ ngsi application [command options] permissions --aid {id} delete [options]
 
 ### Options
 
-| Options                       | Description                    |
-| ----------------------------- | ------------------------------ |
-| --aid value, -i value         | application id                 |
-| --pid value, -p value         | permission id                  |
-| --help                        | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --aid VALUE, -i VALUE  | application id (required)              |
+| --pid VALUE, -p VALUE  | permission id (required)               |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

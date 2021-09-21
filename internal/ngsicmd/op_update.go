@@ -34,11 +34,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, actionType string) (err error) {
+func opUpdate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, actionType string) (err error) {
 	const funcName = "opUpdate"
 
 	keyValues := c.Bool("keyValues")
@@ -47,21 +48,21 @@ func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, action
 
 	client.SetHeader("Content-Type", "application/json")
 
-	fileReader, err := getReader(c, ngsi)
+	fileReader, err := ngsi.GetReader(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	defer func() { _ = fileReader.Close() }()
 
 	reader := fileReader.File()
 	b, err := reader.Peek(1)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	switch string(b) {
 	default:
-		return &ngsiCmdError{funcName, 3, "data not JSON", err}
+		return ngsierr.New(funcName, 3, "data not JSON", err)
 	case "{":
 		lines = true
 	case "[":
@@ -81,19 +82,19 @@ func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, action
 		err := dec.Decode(&entity)
 		if err != nil {
 			if err, ok := err.(*json.SyntaxError); ok {
-				return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s (%d)", err.Error(), err.Offset), err}
+				return ngsierr.New(funcName, 4, fmt.Sprintf("%s (%d)", err.Error(), err.Offset), err)
 			}
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		entities = append(entities, entity)
 
 		if len(entities) >= 100 {
 			res, body, err := client.OpUpdate(entities, actionType, keyValues, safeStirng)
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return ngsierr.New(funcName, 6, err.Error(), err)
 			}
 			if res.StatusCode != http.StatusNoContent {
-				return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+				return ngsierr.New(funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 			}
 			entities = nil
 		}
@@ -102,17 +103,17 @@ func opUpdate(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client, action
 	if len(entities) > 0 {
 		res, body, err := client.OpUpdate(entities, actionType, keyValues, safeStirng)
 		if err != nil {
-			return &ngsiCmdError{funcName, 8, err.Error(), err}
+			return ngsierr.New(funcName, 8, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusNoContent {
-			return &ngsiCmdError{funcName, 9, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 9, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 	}
 
 	if !lines {
 		_, err = dec.Token()
 		if err != nil {
-			return &ngsiCmdError{funcName, 10, err.Error(), err}
+			return ngsierr.New(funcName, 10, err.Error(), err)
 		}
 	}
 

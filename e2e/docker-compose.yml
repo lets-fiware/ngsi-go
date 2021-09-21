@@ -35,6 +35,7 @@ services:
 
   orion-ld:
     image: fiware/orion-ld:0.8-PRE-266
+    restart: always
     depends_on:
       - mongo
     command: -dbhost mongo -db orionld

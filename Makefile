@@ -26,7 +26,7 @@
 
 NAME := ngsi
 SOURCES := cmd/ngsi/main.go internal/ngsicmd/*.go internal/ngsilib/*.go
-VERSION := $(shell gobump show -r cmd/$(NAME))
+VERSION := $(shell sed -n -r '/var version/s/.*"(.*)".*/\1/p' cmd/ngsi/main.go)
 REVISION := $(shell git rev-parse HEAD)
 LDFLAGS := -X main.revision=$(REVISION) -w -s
 NAMEVER := $(NAME)-v$(VERSION)
@@ -41,7 +41,6 @@ export GO111MODULE=on
 .PHONY: devel-deps
 devel-deps:
 	go get \
-	github.com/x-motemen/gobump/cmd/gobump \
 	github.com/tcnksm/ghr \
 	golang.org/x/tools/cmd/cover
 
@@ -149,15 +148,3 @@ darwin_arm64:
 .PHONY: version
 version:
 	@echo $(VERSION)
-
-.PHONY: bump_major
-bump_major:
-	@gobump major -w cmd/$(NAME)
-
-.PHONY: bump_minor
-bump_minor:
-	@gobump minor -w cmd/$(NAME)
-
-.PHONY: bump_patch
-bump_patch:
-	@gobump patch -w cmd/$(NAME)

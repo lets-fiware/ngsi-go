@@ -8,11 +8,11 @@ ngsi version [options]
 
 ## Options
 
-| Options                         | Description                      |
-| ------------------------------- | -------------------------------- |
-| --host value, -h value          | specify host or alias (Required) |
-| --token value                   | specify oauth token              |
-| --help                          | show help (default: false)       |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Example
 

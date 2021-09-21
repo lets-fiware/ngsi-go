@@ -54,7 +54,7 @@ ngsi create entity \
 #
 # 0003 Get entity as normalized
 #
-ngsi get entity --id E1 -pretty
+ngsi get entity --id E1 --pretty
 
 ```0
 {

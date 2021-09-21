@@ -25,36 +25,15 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi admin --host perseo metrics --pretty
+# 0001 ngsi settings clear
 #
-ngsi rules --help
+ngsi settings clear
 
 ```
-NAME:
-   ngsi rules - rules command for PERSEO
-
-USAGE:
-   ngsi rules command [command options] [arguments...]
-
-COMMANDS:
-   list     list all plain rules
-   create   create a plain rule
-   get      get a plain rule
-   delete   delete a plain rule
-   help, h  Shows a list of commands or help for one command
-
-OPTIONS:
-   --host value, -h value     host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --help                     show help (default: false)
-   --version, -v              print the version (default: false)
-   
 ```
 
 #
-# 0010 rules list -raw --prett
+# 0011 rules list -raw --prett
 #
 ngsi rules --host perseo list --raw --pretty
 
@@ -67,7 +46,7 @@ ngsi rules --host perseo list --raw --pretty
 ```
 
 #
-# 0011 rules create
+# 0012 rules create
 #
 ngsi rules --host perseo create \
 --data '{
@@ -91,7 +70,7 @@ ngsi rules --host perseo create \
 ```
 
 #
-# 0012 rules list
+# 0013 rules list
 #
 ngsi rules list
 
@@ -100,7 +79,7 @@ blood_rule_update
 ```
 
 #
-# 0013 rules get --name
+# 0014 rules get --name
 #
 ngsi rules get --name blood_rule_update --pretty
 
@@ -130,7 +109,7 @@ ngsi rules get --name blood_rule_update --pretty
 ```
 
 #
-# 0013 rules delete --name
+# 0015 rules delete --name
 #
 ngsi rules delete --name blood_rule_update
 

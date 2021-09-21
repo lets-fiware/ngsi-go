@@ -36,6 +36,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // TokenInfo is ...
@@ -140,7 +142,7 @@ func (ngsi *NGSI) InitTokenMgr(file *string) error {
 	if file == nil {
 		home, err := getConfigDir(cacheFile)
 		if err != nil {
-			return &LibError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 
 		s := filepath.Join(home, cacheFileName)
@@ -151,14 +153,14 @@ func (ngsi *NGSI) InitTokenMgr(file *string) error {
 		} else {
 			s, err := cacheFile.FilePathAbs(*file)
 			if err != nil {
-				return &LibError{funcName, 2, err.Error() + " " + s, err}
+				return ngsierr.New(funcName, 2, err.Error()+" "+s, err)
 			}
 			cacheFile.SetFileName(&s)
 		}
 	}
 
 	if err := initTokenList(cacheFile); err != nil {
-		return &LibError{funcName, 3, err.Error() + " " + *cacheFile.FileName(), err}
+		return ngsierr.New(funcName, 3, err.Error()+" "+*cacheFile.FileName(), err)
 	}
 
 	return nil
@@ -176,7 +178,7 @@ func initTokenList(io IoLib) (err error) {
 	if existsFile(io, *io.FileName()) {
 		err = io.Open()
 		if err != nil {
-			return &LibError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		defer func() { _ = io.Close() }()
 
@@ -213,7 +215,7 @@ func (ngsi *NGSI) TokenInfo(client *Client) (*TokenInfo, error) {
 	if v, ok := ngsi.tokenList[hash]; ok {
 		return &v, nil
 	}
-	return nil, &LibError{funcName, 1, "not found", nil}
+	return nil, ngsierr.New(funcName, 1, "not found", nil)
 }
 
 // GetToken is ...
@@ -235,7 +237,7 @@ func (ngsi *NGSI) GetToken(client *Client) (string, error) {
 	}
 	token, err := requestToken(ngsi, client, &info)
 	if err != nil {
-		return "", &LibError{funcName, 1, err.Error(), err}
+		return "", ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return token, nil
 }
@@ -246,14 +248,14 @@ func (ngsi *NGSI) GetAuthHeader(client *Client) (string, string, error) {
 
 	token, err := ngsi.GetToken(client)
 	if err != nil {
-		return "", "", &LibError{funcName, 1, err.Error(), err}
+		return "", "", ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	idmType := strings.ToLower(client.Server.IdmType)
 
 	idm, ok := tokenPlugins[idmType]
 	if !ok {
-		return "", "", &LibError{funcName, 2, "unknown idm type: " + idmType, nil}
+		return "", "", ngsierr.New(funcName, 2, "unknown idm type: "+idmType, nil)
 	}
 
 	key, value := idm.getAuthHeader(token)
@@ -271,19 +273,19 @@ func (ngsi *NGSI) RevokeToken(client *Client) error {
 		idmType := strings.ToLower(client.Server.IdmType)
 		idm, ok := tokenPlugins[idmType]
 		if !ok {
-			return &LibError{funcName, 1, "unknown idm type: " + idmType, nil}
+			return ngsierr.New(funcName, 1, "unknown idm type: "+idmType, nil)
 		}
 
 		err := idm.revokeToken(ngsi, client, &tokenInfo)
 		if err != nil {
-			fmt.Fprint(ngsi.Stderr, sprintMsg(funcName, 2, err.Error()))
+			fmt.Fprint(ngsi.Stderr, ngsierr.SprintMsg(funcName, 2, err.Error()))
 		}
 
 		delete(ngsi.tokenList, hash)
 
 		err = saveToken(*ngsi.CacheFile.FileName(), &ngsi.tokenList)
 		if err != nil {
-			return &LibError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	}
 
@@ -296,12 +298,12 @@ func (ngsi *NGSI) GetTokenInfo(tokenInfo *TokenInfo) ([]byte, error) {
 	idmType := tokenInfo.Type
 	idm, ok := tokenPlugins[idmType]
 	if !ok {
-		return nil, &LibError{funcName, 1, "unknown idm type: " + idmType, nil}
+		return nil, ngsierr.New(funcName, 1, "unknown idm type: "+idmType, nil)
 	}
 
 	b, err := idm.getTokenInfo(tokenInfo)
 	if err != nil {
-		return nil, &LibError{funcName, 2, err.Error(), err}
+		return nil, ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	return b, nil
@@ -316,12 +318,12 @@ func requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (string, err
 
 	idm, ok := tokenPlugins[idmType]
 	if !ok {
-		return "", &LibError{funcName, 1, "unknown idm type: " + idmType, nil}
+		return "", ngsierr.New(funcName, 1, "unknown idm type: "+idmType, nil)
 	}
 
 	tokenInfo, err := idm.requestToken(ngsi, client, tokenInfo)
 	if err != nil {
-		return "", &LibError{funcName, 2, err.Error(), err}
+		return "", ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	client.storeToken(tokenInfo.Token)
@@ -332,7 +334,7 @@ func requestToken(ngsi *NGSI, client *Client, tokenInfo *TokenInfo) (string, err
 
 	err = saveToken(*ngsi.CacheFile.FileName(), newList)
 	if err != nil {
-		return "", &LibError{funcName, 3, err.Error(), err}
+		return "", ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	return tokenInfo.Token, nil
@@ -371,17 +373,17 @@ func saveToken(file string, tokenList *tokenInfoList) error {
 
 	err := cacheFile.OpenFile(oWRONLY|oCREATE, 0600)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error() + " " + file, err}
+		return ngsierr.New(funcName, 1, err.Error()+" "+file, err)
 	}
 	defer func() { _ = cacheFile.Close() }()
 
 	if err := cacheFile.Truncate(0); err != nil {
-		return &LibError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	err = cacheFile.Encode(tokens)
 	if err != nil {
-		return &LibError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	return nil
@@ -404,7 +406,7 @@ func getUserName(client *Client) (string, error) {
 
 	s := client.Server.Username
 	if s == "" {
-		return "", &LibError{funcName, 1, "username is required", nil}
+		return "", ngsierr.New(funcName, 1, "username is required", nil)
 	}
 	return s, nil
 }
@@ -414,7 +416,7 @@ func getPassword(client *Client) (string, error) {
 
 	s := client.Server.Password
 	if s == "" {
-		return "", &LibError{funcName, 1, "password is required", nil}
+		return "", ngsierr.New(funcName, 1, "password is required", nil)
 	}
 	return s, nil
 }
@@ -424,11 +426,11 @@ func getUserNamePassword(client *Client) (string, string, error) {
 
 	username, err := getUserName(client)
 	if err != nil {
-		return "", "", &LibError{funcName, 1, err.Error(), err}
+		return "", "", ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	password, err := getPassword(client)
 	if err != nil {
-		return "", "", &LibError{funcName, 2, err.Error(), err}
+		return "", "", ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	return username, password, nil
@@ -449,19 +451,19 @@ func checkIdmParams(idmParams *IdmParams) error {
 			idmParams.HeaderValue == "" &&
 			idmParams.HeaderEnvValue == "" &&
 			idmParams.TokenScope == "") {
-			return &LibError{funcName, 1, "required idmType not found", nil}
+			return ngsierr.New(funcName, 1, "required idmType not found", nil)
 		}
 		return nil
 	}
 
 	idm, ok := tokenPlugins[idmType]
 	if !ok {
-		return &LibError{funcName, 2, "unknown idm type: " + idmType, nil}
+		return ngsierr.New(funcName, 2, "unknown idm type: "+idmType, nil)
 	}
 
 	err := idm.checkIdmParams(idmParams)
 	if err != nil {
-		return &LibError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	return nil

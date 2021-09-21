@@ -35,6 +35,8 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // https://fiware-orion.readthedocs.io/en/master/user/forbidden_characters/index.html
@@ -120,7 +122,7 @@ func JSONSafeStringEncode(data []byte) ([]byte, error) {
 
 	bytes, err := jsonParser(data, SafeStringEncode)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return bytes, nil
 }
@@ -131,7 +133,7 @@ func JSONSafeStringDecode(data []byte) ([]byte, error) {
 
 	bytes, err := jsonParser(data, SafeStringDecode)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	return bytes, nil
 }
@@ -182,7 +184,7 @@ func jsonParser(jsonStream []byte, f func(string) string) ([]byte, error) {
 			if l > 15 {
 				l = 15
 			}
-			return nil, &LibError{funcName, 1, "json error: " + s[len(s)-l:], err}
+			return nil, ngsierr.New(funcName, 1, "json error: "+s[len(s)-l:], err)
 		}
 		if err != nil {
 			break
@@ -255,9 +257,9 @@ func jsonParser(jsonStream []byte, f func(string) string) ([]byte, error) {
 				e = int64(len(jsonStream))
 			}
 
-			return nil, &LibError{funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(jsonStream[s:e])), err}
+			return nil, ngsierr.New(funcName, 2, fmt.Sprintf("%s (%d) %s", err.Error(), err.Offset, string(jsonStream[s:e])), err)
 		}
-		return nil, &LibError{funcName, 3, err.Error(), err}
+		return nil, ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	return dst.Bytes(), nil
 }

@@ -35,34 +35,21 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func troeList(c *cli.Context) error {
+func troeList(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "troeList"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "ngsiType error", nil}
-	}
 
 	args := []string{"id", "type", "idPattern", "attrs", "query", "csf", "georel", "geometry", "coords", "geoProperty", "timeProperty", "lastN"}
 	opts := []string{"sysattrs", "temporalValues"}
-	v := parseOptions(c, args, opts)
+	v := ngsicli.ParseOptions(c, args, opts)
 
-	err = buildTemporalQuery(c, v)
+	err := buildTemporalQuery(c, v)
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	client.SetQuery(v)
@@ -71,17 +58,17 @@ func troeList(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -92,87 +79,55 @@ func troeList(c *cli.Context) error {
 	return nil
 }
 
-func troeCreate(c *cli.Context) error {
+func troeCreate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "troeCreate"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "ngsiType error", nil}
-	}
 
 	client.SetPath("/temporal/entities/")
 
 	client.SetContentType()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 7, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 8, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func troeRead(c *cli.Context) error {
+func troeRead(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "troeRead"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "ngsiType error", nil}
-	}
-
-	if !c.IsSet("id") {
-		return &ngsiCmdError{funcName, 4, "specify temporal entity id", err}
-	}
 
 	client.SetPath("/temporal/entities/" + c.String("id"))
 
 	args := []string{"attrs"}
 	var opts = []string{"sysAttrs", "temporalValues"}
-	v := parseOptions(c, args, opts)
+	v := ngsicli.ParseOptions(c, args, opts)
 
-	err = buildTemporalQuery(c, v)
+	err := buildTemporalQuery(c, v)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	client.SetQuery(v)
@@ -183,23 +138,23 @@ func troeRead(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 7, fmt.Sprintf("error: %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 3, fmt.Sprintf("error: %s %s", res.Status, string(body)), nil)
 	}
 
 	if client.IsSafeString() {
 		body, err = ngsilib.JSONSafeStringDecode(body)
 		if err != nil {
-			return &ngsiCmdError{funcName, 8, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 9, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -210,128 +165,65 @@ func troeRead(c *cli.Context) error {
 	return nil
 }
 
-func troeDelete(c *cli.Context) error {
+func troeDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "troeDelete"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "ngsiType error", nil}
-	}
-
-	if !c.IsSet("id") {
-		return &ngsiCmdError{funcName, 4, "specify temporal entity id", err}
-	}
 
 	client.SetPath("/temporal/entities/" + c.String("id"))
 
 	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 6, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func troeAttrsAppend(c *cli.Context) error {
+func troeAttrsAppend(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "troeAttrsAppend"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "ngsiType error", nil}
-	}
-
-	if !c.IsSet("id") {
-		return &ngsiCmdError{funcName, 4, "specify temporal entity id", err}
-	}
 
 	client.SetPath("/temporal/entities/" + c.String("id") + "/attrs/")
 
 	client.SetContentType()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 8, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 9, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func troeAttrDelete(c *cli.Context) error {
+func troeAttrDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "troeAttrDelete"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "ngsiType error", nil}
-	}
-
-	params := []struct {
-		arg string
-		msg string
-	}{
-		{"id", "specify temporal entity id"},
-		{"attr", "specify attribute name"},
-	}
-	for _, param := range params {
-		if !c.IsSet(param.arg) {
-			return &ngsiCmdError{funcName, 4, param.msg, err}
-		}
-	}
-
 	if c.IsSet("instanceId") {
-		if isSetOR(c, []string{"deleteAll", "datasetId"}) {
-			return &ngsiCmdError{funcName, 5, "cannot specify --deleteALl and/or --datasetId with --instanceId", nil}
+		if c.IsSetOR([]string{"deleteAll", "datasetId"}) {
+			return ngsierr.New(funcName, 1, "cannot specify --deleteALl and/or --datasetId with --instanceId", nil)
 		}
 		client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s/%s", c.String("id"), c.String("attr"), c.String("instanceId")))
 	} else {
@@ -348,81 +240,53 @@ func troeAttrDelete(c *cli.Context) error {
 
 	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
-		return &ngsiCmdError{funcName, 6, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 7, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 3, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func troeAttrUpdate(c *cli.Context) error {
+func troeAttrUpdate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "troeAttrUpdate"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "ngsiType error", nil}
-	}
-
-	params := []struct {
-		arg string
-		msg string
-	}{
-		{"id", "specify temporal entity id"},
-		{"attr", "specify attribute name"},
-		{"instanceId", "specify instance id"},
-	}
-	for _, param := range params {
-		if !c.IsSet(param.arg) {
-			return &ngsiCmdError{funcName, 4, param.msg, err}
-		}
-	}
 
 	client.SetPath(fmt.Sprintf("/temporal/entities/%s/attrs/%s/%s", c.String("id"), c.String("attr"), c.String("instanceId")))
 
 	client.SetContentType()
 
-	b, err := readAll(c, ngsi)
+	b, err := ngsi.ReadAll(c.String("data"))
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	if client.IsSafeString() {
 		b, err = ngsilib.JSONSafeStringEncode(b)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
 	if client.IsNgsiLd() && c.IsSet("context") {
-		b, err = insertAtContext(ngsi, b, c.String("context"))
+		b, err = ngsi.InsertAtContext(b, c.String("context"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 	}
 
 	res, body, err := client.HTTPPatch(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 8, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 9, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func buildTemporalQuery(c *cli.Context, v *url.Values) error {
+func buildTemporalQuery(c *ngsicli.Context, v *url.Values) error {
 	const funcName = "buildTemporalQuery"
 
 	timeAt := "timeAt"
@@ -438,9 +302,9 @@ func buildTemporalQuery(c *cli.Context, v *url.Values) error {
 
 	for _, p := range []string{"fromDate", "toDate"} {
 		if c.IsSet(p) {
-			dt, err := getDateTime(c.String(p))
+			dt, err := ngsilib.GetDateTime(c.String(p))
 			if err != nil {
-				return &ngsiCmdError{funcName, 1, err.Error(), err}
+				return ngsierr.New(funcName, 1, err.Error(), err)
 			}
 			if p == "fromDate" {
 				fromDate = dt

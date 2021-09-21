@@ -33,7 +33,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestCreateServer(t *testing.T) {
@@ -49,7 +50,7 @@ func TestCreateServer(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 
 	if assert.NoError(t, err) {
-		actual := ngsi.serverList["orion"]
+		actual := ngsi.ServerList["orion"]
 		expected := &Server{ServerHost: "http://orion", ServerType: "broker"}
 		assert.Equal(t, expected, actual)
 	}
@@ -68,7 +69,7 @@ func TestCreateServerErrorParam(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
@@ -87,7 +88,7 @@ func TestCreateServerErrorAllParam(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host error: orion-v2", ngsiErr.Message)
 	}
@@ -106,7 +107,7 @@ func TestCreateServerErrorSave(t *testing.T) {
 	err := ngsi.CreateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -130,7 +131,7 @@ func TestUpdateServer(t *testing.T) {
 	err = ngsi.UpdateServer("orion", param)
 
 	if assert.NoError(t, err) {
-		actual := ngsi.serverList["orion"]
+		actual := ngsi.ServerList["orion"]
 		expected := &Server{ServerHost: "https://orion-ld", ServerType: "broker"}
 		assert.Equal(t, expected, actual)
 	}
@@ -154,7 +155,7 @@ func TestUpdateServerErrorParam(t *testing.T) {
 	err = ngsi.UpdateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
@@ -178,7 +179,7 @@ func TestUpdateServerErrorCheckParam(t *testing.T) {
 	err = ngsi.UpdateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host error: orion-ld", ngsiErr.Message)
 	}
@@ -205,7 +206,7 @@ func TestUpdateServerErrorSave(t *testing.T) {
 	err = ngsi.UpdateServer("orion", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -229,7 +230,7 @@ func TestUpdateServerErrorNotFound(t *testing.T) {
 	err = ngsi.UpdateServer("orion-ld", param)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}
@@ -276,7 +277,7 @@ func TestDeleteServerErrorSave(t *testing.T) {
 	err = ngsi.DeleteServer("orion")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
@@ -300,7 +301,7 @@ func TestDeleteServerErrorNotFound(t *testing.T) {
 	err = ngsi.DeleteServer("orion-ld")
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}

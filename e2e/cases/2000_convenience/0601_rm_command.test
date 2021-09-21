@@ -25,35 +25,6 @@
 # SOFTWARE.
 
 #
-# 0001 ngsi rm --help
-#
-ngsi rm --help
-
-```
-NAME:
-   ngsi rm - remove entities
-
-USAGE:
-   ngsi rm [command options] [arguments...]
-
-CATEGORY:
-   CONVENIENCE
-
-OPTIONS:
-   --host value, -h value     host or alias
-   --token value              oauth token
-   --service value, -s value  FIWARE Service
-   --path value, -p value     FIWARE ServicePath
-   --type value, -t value     Entity Type
-   --link value, -L value     @context (LD)
-   --ngsiV1                   NGSI v1 mode (default: false)
-   --skipForwarding           skip forwarding to CPrs (v2) (default: false)
-   --run                      run command (default: false)
-   --help                     show help (default: false)
-   
-```
-
-#
 # 0011 Create entities
 #
 ngsi create --host orion entity --data '{"id":"thing001","type":"Thing"}'

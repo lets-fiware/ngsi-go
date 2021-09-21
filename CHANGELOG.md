@@ -1,3 +1,8 @@
+## NGSI Go v0.9.0-next
+
+-   Improve: Large scale refactoring (#200)
+-   Update: Update roadmap.md and README.md (#199)
+
 ## NGSI Go v0.9.0  (FIWARE Release 8.1.0) - July 27, 2021
 
 -   Improve: Refactor tokenproxy (#196)

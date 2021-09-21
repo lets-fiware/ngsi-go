@@ -34,6 +34,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 var (
@@ -92,7 +94,7 @@ func GetExpirationDate(s string) (string, error) {
 	}
 
 	if !isExpirationDate(s) {
-		return s, &LibError{funcName, 1, "error " + s, nil}
+		return s, ngsierr.New(funcName, 1, "error "+s, nil)
 	}
 	s = strings.TrimSuffix(s, "s")
 

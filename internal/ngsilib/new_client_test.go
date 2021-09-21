@@ -34,7 +34,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestNewClient(t *testing.T) {
@@ -45,7 +46,7 @@ func TestNewClient(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -62,7 +63,7 @@ func TestNewClientHTTP(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -83,7 +84,7 @@ func TestNewClientHTTP2(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -130,7 +131,7 @@ func TestNewClientTenatScope(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	ngsi.PreviousArgs = &Settings{Tenant: "test", Scope: "/test"}
 	tenant := "fiware"
@@ -150,7 +151,7 @@ func TestNewClientAPIPath(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", APIPath: "/,/orion"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -167,7 +168,7 @@ func TestNewClientNgsiTypeV2(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", NgsiType: "ld"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -184,7 +185,7 @@ func TestNewClientToken(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	ngsi.PreviousArgs = &Settings{Token: "b8ab85c5e7f8708b91dde91979729287b1dbd6d2"}
 	token := "e08ff73ae501d19225152e426ea74d0c4fe458c2"
@@ -210,7 +211,7 @@ func TestNewClientIdmType(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", IdmType: CTokenproxy, Username: "fiware", Password: "1234"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -233,7 +234,7 @@ func TestNewClientSafeString(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", SafeString: "on"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
@@ -256,7 +257,7 @@ func TestNewClientSafeStringCmdFlag(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", SafeString: "on"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	safeString := "on"
 	flags := &CmdFlags{SafeString: &safeString}
@@ -276,7 +277,7 @@ func TestNewClientErrorURL(t *testing.T) {
 	_, err := ngsi.NewClient("http://orion\n", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "illegal url: http://orion\n", ngsiErr.Message)
 	}
@@ -290,14 +291,14 @@ func TestNewClientErrorHost(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: ""}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
@@ -311,14 +312,14 @@ func TestNewClientErrorHost2NotFound(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "orion-ld"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "orion-ld not found", ngsiErr.Message)
 	}
@@ -332,16 +333,16 @@ func TestNewClientErrorHost2Empty(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "orion-ld"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 	broker2 := &Server{ServerHost: ""}
-	ngsi.serverList["orion-ld"] = broker2
+	ngsi.ServerList["orion-ld"] = broker2
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "url error: orion-ld", ngsiErr.Message)
 	}
@@ -359,7 +360,7 @@ func TestNewClientErrorHostNotFound(t *testing.T) {
 	_, err := ngsi.NewClient("192.168.1", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "error host: 192.168.1", ngsiErr.Message)
 	}
@@ -377,7 +378,7 @@ func TestNewClientErrorHostNotFound2(t *testing.T) {
 	_, err := ngsi.NewClient("", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "host not found", ngsiErr.Message)
 	}
@@ -391,14 +392,14 @@ func TestNewClientErrorURLParse(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion\n"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "illegal url: orion, http://orion\n", ngsiErr.Message)
 	}
@@ -412,14 +413,14 @@ func TestNewClientErrorAPIPath(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", APIPath: "/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "apiPath error: /", ngsiErr.Message)
 	}
@@ -433,14 +434,14 @@ func TestNewClientErrorIdmType(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", IdmType: CKeyrock}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 8, ngsiErr.ErrNo)
 		assert.Equal(t, "username is required", ngsiErr.Message)
 	}
@@ -460,14 +461,14 @@ func TestNewClientErrorSafeString(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", SafeString: "enable"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	flags := &CmdFlags{}
 
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 9, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: enable", ngsiErr.Message)
 	}
@@ -487,7 +488,7 @@ func TestNewClientErrorSafeStringCmdFlag(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	safeString := "enable"
 	flags := &CmdFlags{SafeString: &safeString}
@@ -495,7 +496,7 @@ func TestNewClientErrorSafeStringCmdFlag(t *testing.T) {
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 10, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: enable", ngsiErr.Message)
 	}
@@ -515,7 +516,7 @@ func TestNewClientInitHeader(t *testing.T) {
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/", SafeString: "on"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	tenant := "FIWARE"
 	flags := &CmdFlags{Tenant: &tenant}
@@ -523,7 +524,7 @@ func TestNewClientInitHeader(t *testing.T) {
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 11, ngsiErr.ErrNo)
 		assert.Equal(t, "error FIWARE Service: FIWARE", ngsiErr.Message)
 	}
@@ -533,11 +534,12 @@ func TestNewClientErrorSaveConfig(t *testing.T) {
 	ngsi := testNgsiLibInit()
 	fileName := "config"
 	ngsi.ConfigFile = &MockIoLib{filename: &fileName, OpenErr: errors.New("open error")}
+	ngsi.Updated = true
 
 	InitServerList()
 
 	broker := &Server{ServerHost: "http://orion/"}
-	ngsi.serverList["orion"] = broker
+	ngsi.ServerList["orion"] = broker
 
 	tenant := "fiware"
 	scope := "/iot"
@@ -546,50 +548,10 @@ func TestNewClientErrorSaveConfig(t *testing.T) {
 	_, err := ngsi.NewClient("orion", flags, false, false)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*LibError)
+		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 12, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
-}
-
-func TestSetTenantAndScope(t *testing.T) {
-	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
-
-	setTenantAndScope(client, nil, nil)
-
-	assert.Equal(t, "iot", client.Tenant)
-	assert.Equal(t, "/device", client.Scope)
-}
-
-func TestSetTenantAndScopeTenant(t *testing.T) {
-	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
-
-	tenant := "FIWARE"
-	setTenantAndScope(client, &tenant, nil)
-
-	assert.Equal(t, "FIWARE", client.Tenant)
-	assert.Equal(t, "/device", client.Scope)
-}
-
-func TestSetTenantAndScopeScope(t *testing.T) {
-	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
-
-	scope := "/iotagent"
-	setTenantAndScope(client, nil, &scope)
-
-	assert.Equal(t, "iot", client.Tenant)
-	assert.Equal(t, "/iotagent", client.Scope)
-}
-
-func TestSetTenantAndScopeTeantAndScope(t *testing.T) {
-	client := &Client{Server: &Server{Tenant: "iot", Scope: "/device"}}
-
-	tenant := ""
-	scope := ""
-	setTenantAndScope(client, &tenant, &scope)
-
-	assert.Equal(t, "", client.Tenant)
-	assert.Equal(t, "", client.Scope)
 }
 
 func TestParseURLHost(t *testing.T) {

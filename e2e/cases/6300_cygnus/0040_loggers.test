@@ -361,7 +361,7 @@ ngsi admin loggers get --name org.mongodb
 #
 # 0003 loggers update
 #
-ngsi admin --host cygnus loggers update --name org.mongodb --data '{"logger":{"name":"org.mongodb","level":"INFO"}}'
+ngsi admin --host cygnus loggers update --data '{"logger":{"name":"org.mongodb","level":"INFO"}}'
 
 ```
 {"success":"true","result":"Logger 'org.mongodb' updated succesfully"}
@@ -391,7 +391,7 @@ ngsi admin loggers delete --name org.mongodb
 ngsi admin loggers get --name org.mongodb
 
 ```1
-loggersGet005 400 Bad Request {"success":"false","result":"Logger name not found"}
+loggersGet002 400 Bad Request {"success":"false","result":"Logger name not found"}
 ```
 
 #

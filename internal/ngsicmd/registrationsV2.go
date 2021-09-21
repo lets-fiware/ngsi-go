@@ -36,9 +36,9 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-
-	"github.com/urfave/cli/v2"
 )
 
 // lib/apiTypesV2/Registration.h in fiware-orion
@@ -90,7 +90,7 @@ type registrationResposeV2 struct {
 	ForwardingInformation *registrationForwardingInformationV2 `json:"forwardingInformation,omitempty"`
 }
 
-func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsListV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registratinsListV2"
 
 	page := 0
@@ -111,21 +111,21 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, "ResultsCount error", err}
+			return ngsierr.New(funcName, 3, "ResultsCount error", err)
 		}
 		if count == 0 {
 			break
 		}
 		var regs []registrationResposeV2
 		if err := ngsilib.JSONUnmarshalDecode(body, &regs, client.IsSafeString()); err != nil {
-			return &ngsiCmdError{funcName, 4, err.Error(), err}
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
 		registrations = append(registrations, regs...)
 
@@ -142,13 +142,13 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 		if len(registrations) > 0 {
 			b, err := ngsilib.JSONMarshal(registrations)
 			if err != nil {
-				return &ngsiCmdError{funcName, 5, err.Error(), err}
+				return ngsierr.New(funcName, 5, err.Error(), err)
 			}
 			if c.Bool("pretty") {
 				newBuf := new(bytes.Buffer)
 				err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 				if err != nil {
-					return &ngsiCmdError{funcName, 6, err.Error(), err}
+					return ngsierr.New(funcName, 6, err.Error(), err)
 				}
 				fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 			} else {
@@ -172,7 +172,7 @@ func registrationsListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 	return nil
 }
 
-func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsGetV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsGetV2"
 
 	id := c.String("id")
@@ -180,15 +180,15 @@ func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil)
 	}
 
 	var r registrationResposeV2
 	if err := ngsilib.JSONUnmarshalDecode(body, &r, client.IsSafeString()); err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	if c.IsSet("localTime") {
@@ -196,13 +196,13 @@ func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 	}
 	b, err := ngsilib.JSONMarshal(&r)
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 5, err.Error(), err}
+			return ngsierr.New(funcName, 5, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -212,7 +212,7 @@ func registrationsGetV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clie
 	return nil
 }
 
-func registrationsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsCreateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsCreateV2"
 
 	client.SetPath("/registrations")
@@ -222,20 +222,20 @@ func registrationsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	var r registrationQueryV2
 
 	if err := setRegistrationsValuleV2(c, ngsi, &r); err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	b, err := ngsilib.JSONMarshalEncode(&r, true)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 3, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	location := res.Header.Get("Location")
@@ -247,7 +247,7 @@ func registrationsCreateV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 	return nil
 }
 
-func registrationsDeleteV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func registrationsDeleteV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "registrationsDeleteV2"
 
 	id := c.String("id")
@@ -257,33 +257,33 @@ func registrationsDeleteV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 
 	res, body, err := client.HTTPDelete(nil)
 	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s %s", id, res.Status, string(body)), nil)
 	}
 
 	return nil
 }
 
-func registrationsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
+func registrationsTemplateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI) error {
 	const funcName = "registrationsTemplateV2"
 
 	var r registrationQueryV2
 
 	if err := setRegistrationsValuleV2(c, ngsi, &r); err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	b, err := ngsilib.JSONMarshal(r)
 	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 3, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil
@@ -293,17 +293,17 @@ func registrationsTemplateV2(c *cli.Context, ngsi *ngsilib.NGSI) error {
 	return nil
 }
 
-func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registrationQueryV2) error {
+func setRegistrationsValuleV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, r *registrationQueryV2) error {
 	const funcName = "setRegistrationsValuleV2"
 
 	if c.IsSet("data") {
-		b, err := readAll(c, ngsi)
+		b, err := ngsi.ReadAll(c.String("data"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		err = ngsilib.JSONUnmarshal(b, r)
 		if err != nil {
-			return &ngsiCmdError{funcName, 2, err.Error(), err}
+			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 	}
 
@@ -334,7 +334,7 @@ func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registratio
 		r.DataProvided.Atts = strings.Split(s, ",")
 	}
 
-	if c.IsSet("provider") || c.IsSet("legacy") || c.IsSet("forwardingModeFlag") {
+	if c.IsSet("provider") || c.IsSet("legacy") || c.IsSet("forwardingMode") {
 		if r.Provider == nil {
 			r.Provider = new(registrationProviderV2)
 		}
@@ -346,7 +346,7 @@ func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registratio
 			r.Provider.HTTP.URL = s
 		} else {
 			e := fmt.Sprintf("provider url error: %s", s)
-			return &ngsiCmdError{funcName, 1, e, nil}
+			return ngsierr.New(funcName, 1, e, nil)
 		}
 
 		if c.IsSet("legacy") {
@@ -356,10 +356,10 @@ func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registratio
 			}
 		}
 
-		if c.IsSet("forwardingModeFlag") {
-			mode := c.String("forwardingModeFlag")
+		if c.IsSet("forwardingMode") {
+			mode := c.String("forwardingMode")
 			if !ngsilib.Contains([]string{"all", "none", "query", "update"}, mode) {
-				return &ngsiCmdError{funcName, 3, "unknown mode: " + mode, nil}
+				return ngsierr.New(funcName, 3, "unknown mode: "+mode, nil)
 			}
 			r.Provider.SupportedForwardingMode = mode
 		}
@@ -371,7 +371,7 @@ func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registratio
 			var err error
 			s, err = ngsilib.GetExpirationDate(s)
 			if err != nil {
-				return &ngsiCmdError{funcName, 4, err.Error(), nil}
+				return ngsierr.New(funcName, 4, err.Error(), nil)
 			}
 		}
 		r.Expires = s
@@ -380,7 +380,7 @@ func setRegistrationsValuleV2(c *cli.Context, ngsi *ngsilib.NGSI, r *registratio
 	if c.IsSet("status") {
 		status := c.String("status")
 		if !ngsilib.Contains([]string{"active", "inactive"}, status) {
-			return &ngsiCmdError{funcName, 5, "unknown status: " + status, nil}
+			return ngsierr.New(funcName, 5, "unknown status: "+status, nil)
 		}
 		r.Status = status
 	}

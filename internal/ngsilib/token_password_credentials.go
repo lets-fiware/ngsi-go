@@ -36,6 +36,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 // OauthToken is ...
@@ -61,7 +63,7 @@ func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, tokenI
 
 	username, password, err := getUserNamePassword(client)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	idm.SetHeader(cContentType, cAppXWwwFormUrlencoded)
@@ -70,10 +72,10 @@ func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, tokenI
 
 	res, body, err := idm.HTTPPost(data)
 	if err != nil {
-		return nil, &LibError{funcName, 2, err.Error(), err}
+		return nil, ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		return nil, &LibError{funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return nil, ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	utime := ngsi.TimeLib.NowUnix()
@@ -81,7 +83,7 @@ func (i *idmPasswordCredentials) requestToken(ngsi *NGSI, client *Client, tokenI
 	var token OAuthToken
 	err = JSONUnmarshal(body, &token)
 	if err != nil {
-		return nil, &LibError{funcName, 4, err.Error(), err}
+		return nil, ngsierr.New(funcName, 4, err.Error(), err)
 	}
 
 	tokenInfo.Type = CPasswordCredentials
@@ -113,10 +115,10 @@ func (i *idmPasswordCredentials) revokeToken(ngsi *NGSI, client *Client, tokenIn
 
 	res, body, err := idm.HTTPPost(payload)
 	if err != nil {
-		return &LibError{funcName, 1, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &LibError{funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	return nil
@@ -131,7 +133,7 @@ func (i *idmPasswordCredentials) getTokenInfo(tokenInfo *TokenInfo) ([]byte, err
 
 	b, err := JSONMarshal(tokenInfo.OAuth)
 	if err != nil {
-		return nil, &LibError{funcName, 1, err.Error(), err}
+		return nil, ngsierr.New(funcName, 1, err.Error(), err)
 	}
 
 	return b, nil
@@ -150,5 +152,5 @@ func (i *idmPasswordCredentials) checkIdmParams(idmParams *IdmParams) error {
 		idmParams.HeaderEnvValue == "" {
 		return nil
 	}
-	return &LibError{funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil}
+	return ngsierr.New(funcName, 1, "idmHost, username, password, clientID and clientSecret are needed", nil)
 }

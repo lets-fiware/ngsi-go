@@ -7,13 +7,12 @@ This command appends multiple attributes.
 
 ## Common Options
 
-| Options                   | Description                |
-| ------------------------- | -------------------------- |
-| --host value, -h value    | specify host or alias      |
-| --token value             | specify oauth token        |
-| --service value, -s value | specify FIWARE Service     |
-| --path value, -p value    | specify FIWARE ServicePath |
-| --help                    | show help (default: false) |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --help                    | show help (default: true)              |
 
 <a name="append-multiple-attributes"></a>
 
@@ -27,16 +26,20 @@ ngsi append [common options] attrs [options]
 
 ### Options
 
-| Options                   | Description                        |
-| ------------------------- | ---------------------------------- |
-| --id value, -i value      | specify id                         |
-| --type value, -t value    | specify entity Type                |
-| --keyValues, -k           | specify keyValues (default: false) |
-| --append, -a              | specify append (default: false)    |
-| --data value, -d value    | specify data                       |
-| --link value, -L value    | specify @context                   |
-| --context value, -C value | specify @context (LD)              |
-| --help                    | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | entity id (required)                   |
+| --type VALUE, -t VALUE    | entity type                            |
+| --keyValues, -K           | keyValues (default: false)             |
+| --append, -a              | append (default: false)                |
+| --data VALUE, -d VALUE    | attributes data                        |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                    |
+| --context VLAUE, -C VLAUE | @context VLAUE (LD)                    |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |
 
 ### Example
 
@@ -68,10 +71,14 @@ ngsi append [common options] tattrs [options]
 
 ### Options
 
-| Options                   | Description                        |
-| ------------------------- | ---------------------------------- |
-| --id value, -i value      | specify id                         |
-| --data value, -d value    | data                               |
-| --link value, -L value    | @context (LD)                      |
-| --context value, -C value | @context (LD)                      |
-| --help                    | show help (default: false)         |
+| Options                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE    | broker or server host VALUE (required) |
+| --service VALUE, -s VALUE | FIWARE Service VALUE                   |
+| --path VALUE, -p VALUE    | FIWARE ServicePath VALUE               |
+| --id VALUE, -i VALUE      | temporal entity id (required)          |
+| --data VALUE, -d VALUE    | attributes instance of temporal entity |
+| --link VALUE, -L VALUE    | @context VALUE (LD)                    |
+| --context VLAUE, -C VLAUE | @context VLAUE (LD)                    |
+| --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --help                    | show help (default: true)              |

@@ -180,7 +180,7 @@ ngsi get entity --id E2 --pretty
 #
 # 0007 Get entity E2 as keyValues
 #
-ngsi get entity --id E2 -keyValues
+ngsi get entity --id E2 --keyValues
 
 ```0
 {"id":"E2","type":"Thing","A1":123.4}

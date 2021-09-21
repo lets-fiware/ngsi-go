@@ -35,25 +35,13 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/urfave/cli/v2"
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
+	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
 )
 
-func attributesList(c *cli.Context) error {
+func attributesList(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "attributesList"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
-	if client.Server.NgsiType != "ld" {
-		return &ngsiCmdError{funcName, 3, "only available on NGSI-LD", nil}
-	}
 
 	path := "/attributes"
 
@@ -61,7 +49,7 @@ func attributesList(c *cli.Context) error {
 		path += "/" + url.QueryEscape(c.String("attr"))
 	} else {
 		args := []string{"details"}
-		v := parseOptions(c, args, nil)
+		v := ngsicli.ParseOptions(c, args, nil)
 		client.SetQuery(v)
 	}
 
@@ -69,17 +57,17 @@ func attributesList(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 4, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil

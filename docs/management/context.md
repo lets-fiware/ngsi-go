@@ -16,10 +16,10 @@ ngsi context list [options]
 
 ### Options
 
-| Options                         | Description                                  |
-| ------------------------------- | -------------------------------------------- |
-| --name value, -n value          | specify @context name                        |
-| --help                          | show help (default: false)                   |
+| Options                | Description               |
+| ---------------------- | ------------------------- |
+| --name VALUE, -n VALUE | @context name             |
+| --help                 | show help (default: true) |
 
 ### Example 1
 
@@ -54,11 +54,12 @@ ngsi context add [options]
 
 ### Options
 
-| Options                | Description                         |
-| ---------------------- | ----------------------------------- |
-| --name value, -n value | specify @context name (Required)    |
-| --url value, -u value  | specify URL for @context (Required) |
-| --help                 | show help (default: false)          |
+| Options                | Description               |
+| ---------------------- | ------------------------- |
+| --name VALUE, -n VALUE | @context name (required)  |
+| --url VALUE, -u VALUE  | url for @context          |
+| --json VALUE, -j VALUE | url for @context          |
+| --help                 | show help (default: true) |
 
 ### Example
 
@@ -76,11 +77,11 @@ ngsi context update [options]
 
 ### Options
 
-| Options                | Description                         |
-| ---------------------- | ----------------------------------- |
-| --name value, -n value | specify @context name (Required)    |
-| --url value, -u value  | specify URL for @context (Required) |
-| --help                 | show help (default: false)          |
+| Options                | Description                 |
+| ---------------------- | --------------------------- |
+| --name VALUE, -n VALUE | @context name (required)    |
+| --url VALUE, -u VALUE  | url for @context (required) |
+| --help                 | show help (default: true)   |
 
 ### Example
 
@@ -98,10 +99,10 @@ ngsi context delete [options]
 
 ### Options
 
-| Options                | Description                         |
-| ---------------------- | ----------------------------------- |
-| --name value, -n value | specify @context name (Required)    |
-| --help                 | show help (default: false)          |
+| Options                | Description               |
+| ---------------------- | ------------------------- |
+| --name VALUE, -n VALUE | @context name (required)  |
+| --help                 | show help (default: true) |
 
 ### Example
 
@@ -119,17 +120,17 @@ ngsi context server [options]
 
 ### Options
 
-| Options                | Description                                         |
-| ---------------------- | --------------------------------------------------- |
-| --name value, -n value | specify @context name                               |
-| --data value, -d value | specify @context data                               |
-| --host value, -h value | specify host for receiver (default: "0.0.0.0")      |
-| --port value, -p value | specify port for receiver (default: "1028")         |
-| --url value, -u value  | specify url for receiver (default: "/")             |
-| --https, -s            | start in https (default: false)                     |
-| --key value, -k value  | specify key file (only needed if https is enabled)  |
-| --cert value, -c value | specify cert file (only needed if https is enabled) |
-| --help                 | specify show help (default: false)                  |
+| Options                | Description                                 |
+| ---------------------- | ------------------------------------------- |
+| --name VALUE, -n VALUE | @context name                               |
+| --data VALUE, -d VALUE | @context data                               |
+| --host VALUE, -h VALUE | host for server                             |
+| --port VALUE, -p VALUE | port for server                             |
+| --url VALUE, -u VALUE  | url for server                              |
+| --https, -s            | start in https (default: false)             |
+| --key VALUE, -k VALUE  | key file (only needed if https is enabled)  |
+| --cert VALUE, -c VALUE | cert file (only needed if https is enabled) |
+| --help                 | show help (default: true)                   |
 
 ### Example
 

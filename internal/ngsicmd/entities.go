@@ -34,36 +34,27 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/lets-fiware/ngsi-go/internal/ngsicli"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 	"github.com/lets-fiware/ngsi-go/internal/ngsilib"
-	"github.com/urfave/cli/v2"
 )
 
-func entitiesList(c *cli.Context) error {
+func entitiesList(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "entitiesList"
 
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
-
 	if client.IsNgsiLd() {
-		if isSetOR(c, []string{"typePattern", "mq", "metadata", "value", "uniq"}) {
-			return &ngsiCmdError{funcName, 3, "cannot specfiy typePattern, mq, metadata, value or uniq", nil}
+		if c.IsSetOR([]string{"typePattern", "mq", "metadata", "value", "uniq"}) {
+			return ngsierr.New(funcName, 1, "cannot specfiy typePattern, mq, metadata, value or uniq", nil)
 		}
 		return entitiesListLD(c, ngsi, client)
 	}
-	if isSetOR(c, []string{"link", "acceptJson", "acceptGeoJson"}) {
-		return &ngsiCmdError{funcName, 4, "cannot specfiy link acceptJson or acceptGeoJson", nil}
+	if c.IsSetOR([]string{"link", "acceptJson", "acceptGeoJson"}) {
+		return ngsierr.New(funcName, 2, "cannot specfiy link acceptJson or acceptGeoJson", nil)
 	}
 	return entitiesListV2(c, ngsi, client)
 }
 
-func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func entitiesListV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "entitiesList"
 
 	attrs := "__NONE"
@@ -77,7 +68,7 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 	limit := 100
 
 	verbose := c.IsSet("verbose")
-	if c.Bool("pretty") || c.Bool("keyValues") || isSetOR(c, []string{"attrs", "metadata", "orderBy"}) {
+	if c.Bool("pretty") || c.Bool("keyValues") || c.IsSetOR([]string{"attrs", "metadata", "orderBy"}) {
 		verbose = true
 	}
 	values := c.IsSet("values")
@@ -86,9 +77,9 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 	}
 	lines := c.Bool("lines")
 
-	buf := jsonBuffer{}
+	buf := ngsilib.NewJsonBuffer()
 	if verbose {
-		buf.bufferOpen(ngsi.StdWriter, false, false)
+		buf.BufferOpen(ngsi.StdWriter, false, false)
 		attrs = ""
 	}
 
@@ -97,7 +88,7 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 		args := []string{"id", "type", "idPattern", "typePattern", "query", "mq", "georel", "geometry", "coords", "attrs", "metadata", "orderBy"}
 		opts := []string{"keyValues", "values", "unique", "skipForwarding"}
-		v := parseOptions(c, args, opts)
+		v := ngsicli.ParseOptions(c, args, opts)
 
 		if attrs != "" {
 			v.Set("attrs", attrs)
@@ -120,16 +111,16 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 
 		if c.IsSet("count") {
 			count, err := client.ResultsCount(res)
 			if err != nil {
-				return &ngsiCmdError{funcName, 3, "ResultsCount error", nil}
+				return ngsierr.New(funcName, 3, "ResultsCount error", nil)
 			}
 			fmt.Fprintln(ngsi.StdWriter, count)
 			break
@@ -137,7 +128,7 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, "ResultsCount error", err}
+			return ngsierr.New(funcName, 4, "ResultsCount error", err)
 		}
 		if count == 0 {
 			break
@@ -146,13 +137,13 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 		if client.IsSafeString() {
 			body, err = ngsilib.JSONSafeStringDecode(body)
 			if err != nil {
-				return &ngsiCmdError{funcName, 5, err.Error(), err}
+				return ngsierr.New(funcName, 5, err.Error(), err)
 			}
 		}
 
-		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, values, verbose, false)
+		err = entitiesPrint(ngsi, body, buf, c.Bool("pretty"), lines, values, verbose, false)
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 6, err.Error(), err)
 		}
 
 		if (page+1)*limit < count {
@@ -162,16 +153,16 @@ func entitiesListV2(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 		}
 	}
 	if verbose {
-		buf.bufferClose()
+		buf.BufferClose()
 	}
 	return nil
 }
 
-func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+func entitiesListLD(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "entitiesListLD"
 
 	idPattern := ""
-	if !isSetOR(c, []string{"type", "idPattern", "query", "attrs", "georel"}) {
+	if !c.IsSetOR([]string{"type", "idPattern", "query", "attrs", "georel"}) {
 		idPattern = ".*"
 	}
 
@@ -180,14 +171,14 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 	limit := 100
 
 	verbose := c.IsSet("verbose")
-	if isSetOR(c, []string{"pretty", "keyValues", "acceptGeoJson", "attrs", "orderBy"}) {
+	if c.IsSetOR([]string{"pretty", "keyValues", "acceptGeoJson", "attrs", "orderBy"}) {
 		verbose = true
 	}
 	lines := c.Bool("lines")
 
-	buf := jsonBuffer{}
+	buf := ngsilib.NewJsonBuffer()
 	if verbose {
-		buf.bufferOpen(ngsi.StdWriter, c.Bool("acceptGeoJson"), c.Bool("pretty"))
+		buf.BufferOpen(ngsi.StdWriter, c.Bool("acceptGeoJson"), c.Bool("pretty"))
 	}
 
 	for {
@@ -195,7 +186,7 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 		args := []string{"id", "type", "idPattern", "query", "georel", "geometry", "coords", "attrs", "orderBy"}
 		opts := []string{"keyValues"}
-		v := parseOptions(c, args, opts)
+		v := ngsicli.ParseOptions(c, args, opts)
 
 		if idPattern != "" {
 			v.Set("idPattern", idPattern)
@@ -224,16 +215,16 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 		res, body, err := client.HTTPGet()
 		if err != nil {
-			return &ngsiCmdError{funcName, 1, err.Error(), err}
+			return ngsierr.New(funcName, 1, err.Error(), err)
 		}
 		if res.StatusCode != http.StatusOK {
-			return &ngsiCmdError{funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+			return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 		}
 
 		if c.IsSet("count") {
 			count, err := client.ResultsCount(res)
 			if err != nil {
-				return &ngsiCmdError{funcName, 3, "ResultsCount error", nil}
+				return ngsierr.New(funcName, 3, "ResultsCount error", nil)
 			}
 			fmt.Fprintln(ngsi.StdWriter, count)
 			break
@@ -241,7 +232,7 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 
 		count, err = client.ResultsCount(res)
 		if err != nil {
-			return &ngsiCmdError{funcName, 4, "ResultsCount error", err}
+			return ngsierr.New(funcName, 4, "ResultsCount error", err)
 		}
 		if count == 0 {
 			break
@@ -250,13 +241,13 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 		if client.IsSafeString() {
 			body, err = ngsilib.JSONSafeStringDecode(body)
 			if err != nil {
-				return &ngsiCmdError{funcName, 5, err.Error(), err}
+				return ngsierr.New(funcName, 5, err.Error(), err)
 			}
 		}
 
-		err = entitiesPrint(ngsi, body, &buf, c.Bool("pretty"), lines, false, verbose, c.Bool("acceptGeoJson"))
+		err = entitiesPrint(ngsi, body, buf, c.Bool("pretty"), lines, false, verbose, c.Bool("acceptGeoJson"))
 		if err != nil {
-			return &ngsiCmdError{funcName, 6, err.Error(), err}
+			return ngsierr.New(funcName, 6, err.Error(), err)
 		}
 
 		if (page+1)*limit < count {
@@ -266,12 +257,12 @@ func entitiesListLD(c *cli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 		}
 	}
 	if verbose {
-		buf.bufferClose()
+		buf.BufferClose()
 	}
 	return nil
 }
 
-func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lines, values, verbose, geoJSON bool) error {
+func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *ngsilib.JsonBuffer, pretty, lines, values, verbose, geoJSON bool) error {
 	const funcName = "entitiesPrint"
 	const geoJSONFeatures = `{"type":"FeatureCollection","features":`
 	var err error
@@ -280,7 +271,7 @@ func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lin
 		if bytes.HasPrefix(body, []byte(geoJSONFeatures)) && bytes.HasSuffix(body, []byte(`}`)) {
 			body = body[len(geoJSONFeatures) : len(body)-1]
 		} else {
-			return &ngsiCmdError{funcName, 1, "geojson error: " + string(body), err}
+			return ngsierr.New(funcName, 1, "geojson error: "+string(body), err)
 		}
 	}
 
@@ -289,25 +280,25 @@ func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lin
 			var values [][]interface{}
 			err = ngsilib.JSONUnmarshal(body, &values)
 			if err != nil {
-				return &ngsiCmdError{funcName, 2, err.Error(), err}
+				return ngsierr.New(funcName, 2, err.Error(), err)
 			}
 			for _, e := range values {
 				b, err := ngsilib.JSONMarshal(&e)
 				if err != nil {
-					return &ngsiCmdError{funcName, 3, err.Error(), err}
+					return ngsierr.New(funcName, 3, err.Error(), err)
 				}
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
 		} else {
-			var entities entitiesRespose
+			var entities ngsilib.EntitiesRespose
 			err = ngsilib.JSONUnmarshal(body, &entities)
 			if err != nil {
-				return &ngsiCmdError{funcName, 4, err.Error(), err}
+				return ngsierr.New(funcName, 4, err.Error(), err)
 			}
 			for _, e := range entities {
 				b, err := ngsilib.JSONMarshal(&e)
 				if err != nil {
-					return &ngsiCmdError{funcName, 5, err.Error(), err}
+					return ngsierr.New(funcName, 5, err.Error(), err)
 				}
 				fmt.Fprintln(ngsi.StdWriter, string(b))
 			}
@@ -321,17 +312,17 @@ func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lin
 			}
 			err := ngsi.JSONConverter.Indent(newBuf, body, indent, "  ")
 			if err != nil {
-				return &ngsiCmdError{funcName, 6, err.Error(), err}
+				return ngsierr.New(funcName, 6, err.Error(), err)
 			}
-			buf.bufferWrite(newBuf.Bytes())
+			buf.BufferWrite(newBuf.Bytes())
 		} else {
-			buf.bufferWrite(body)
+			buf.BufferWrite(body)
 		}
 	} else {
-		var entities entitiesRespose
+		var entities ngsilib.EntitiesRespose
 		err = ngsilib.JSONUnmarshal(body, &entities)
 		if err != nil {
-			return &ngsiCmdError{funcName, 7, err.Error(), err}
+			return ngsierr.New(funcName, 7, err.Error(), err)
 		}
 		for _, e := range entities {
 			fmt.Fprintln(ngsi.StdWriter, e["id"])
@@ -340,23 +331,13 @@ func entitiesPrint(ngsi *ngsilib.NGSI, body []byte, buf *jsonBuffer, pretty, lin
 	return nil
 }
 
-func entitiesCount(c *cli.Context) error {
+func entitiesCount(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "entitiesCount"
-
-	ngsi, err := initCmd(c, funcName, true)
-	if err != nil {
-		return &ngsiCmdError{funcName, 1, err.Error(), err}
-	}
-
-	client, err := newClient(ngsi, c, false, []string{"broker"})
-	if err != nil {
-		return &ngsiCmdError{funcName, 2, err.Error(), err}
-	}
 
 	client.SetPath("/entities")
 
 	args := []string{"idPattern", "typePattern", "query", "mq", "georel", "geometry", "coords"}
-	v := parseOptions(c, args, nil)
+	v := ngsicli.ParseOptions(c, args, nil)
 
 	if c.IsSet("type") {
 		v.Set("type", c.String("type"))
@@ -378,15 +359,15 @@ func entitiesCount(c *cli.Context) error {
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return &ngsiCmdError{funcName, 3, err.Error(), err}
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return &ngsiCmdError{funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil}
+		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	count, err := client.ResultsCount(res)
 	if err != nil {
-		return &ngsiCmdError{funcName, 5, "ResultsCount error", nil}
+		return ngsierr.New(funcName, 3, "ResultsCount error", nil)
 	}
 
 	fmt.Fprintln(ngsi.StdWriter, count)

@@ -4,12 +4,11 @@ This command prints service providers for Keyrock
 
 ## Options
 
-| Options                | Description                    |
-| ---------------------- | ------------------------------ |
-| --host value, -h value | specify host or alias          |
-| --token value          | specify oauth token            |
-| --pretty, -P           | pretty format (default: false) |
-| --help                 | show help (default: false)     |
+| Options                | Description                            |
+| ---------------------- | -------------------------------------- |
+| --host VALUE, -h VALUE | broker or server host VALUE (required) |
+| --pretty, -P           | pretty format (default: false)         |
+| --help                 | show help (default: true)              |
 
 ### Examples
 

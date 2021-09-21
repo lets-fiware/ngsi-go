@@ -30,894 +30,455 @@ SOFTWARE.
 package ngsicmd
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli/v2"
+	"github.com/lets-fiware/ngsi-go/internal/assert"
+	"github.com/lets-fiware/ngsi-go/internal/helper"
+	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
 func TestAttrsReadV2(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "attrs", "--host", "orion", "--id", "airqualityobserved1", "--attrs", "CO"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
 	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO"})
-	err := attrsRead(c)
+	err := attrsRead(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"CO\":{\"type\":\"Number\",\"value\":400.463869544,\"metadata\":{}}}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsReadV2Pretty(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "attrs", "--host", "orion", "--id", "airqualityobserved1", "--attrs", "CO", "--pretty"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues,pretty")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
 	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO", "--pretty"})
-	err := attrsRead(c)
+	err := attrsRead(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\n  \"CO\": {\n    \"type\": \"Number\",\n    \"value\": 400.463869544,\n    \"metadata\": {}\n  }\n}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsReadV2SafeString(t *testing.T) {
-	ngsi, set, app, buf := setupTest()
+	c := setupTest([]string{"get", "attrs", "--host", "orion", "--id", "airqualityobserved1", "--attrs", "CO", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
 	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attr=CO"})
-	err := attrsRead(c)
+	err := attrsRead(c, c.Ngsi, c.Client)
 
 	if assert.NoError(t, err) {
-		actual := buf.String()
+		actual := helper.GetStdoutString(c)
 		expected := "{\"CO\":{\"type\":\"Number\",\"value\":400.463869544,\"metadata\":{}}}\n"
 		assert.Equal(t, expected, actual)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestAttrsReadErrorInitCmd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=airqualityobserved1", "--attr=CO"})
-	err := attrsRead(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestAttrsReadErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data,link")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=airqualityobserved1", "--attr=CO"})
-	err := attrsRead(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsReadErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "attrs", "--host", "orion", "--id", "airqualityobserved1", "--attrs", "CO"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/v2/entities/airqualityobserved1/attr"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO"})
-	err := attrsRead(c)
+	err := attrsRead(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestAttrsReadErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "attrs", "--host", "orion", "--id", "airqualityobserved1", "--attrs", "CO"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO"})
-	err := attrsRead(c)
+	err := attrsRead(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestAttrsReadV2ErrorSafeString(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "attrs", "--host", "orion", "--id", "airqualityobserved1", "--attrs", "CO", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value"400.463869544,"metadata":{}}}`)
 	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=airqualityobserved1", "--attr=CO"})
-	err := attrsRead(c)
+	err := attrsRead(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		expected := "invalid character '4' after object key (30) Number\",\"value\"400.463869544,\""
 		assert.Equal(t, expected, ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsReadV2ErrorPretty(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"get", "attrs", "--host", "orion", "--id", "airqualityobserved1", "--attrs", "CO", "--pretty"})
 
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.ResBody = []byte(`{"CO":{"type":"Number","value":400.463869544,"metadata":{}}}`)
 	reqRes.Path = "/v2/entities/airqualityobserved1/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues,pretty")
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=airqualityobserved1", "--attr=CO", "--pretty"})
+	helper.SetJSONIndentError(c.Ngsi)
 
-	setJSONIndentError(ngsi)
-
-	err := attrsRead(c)
+	err := attrsRead(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsAppendV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestAttrsAppendV2SafeString(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestAttrsAppendLD(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion-ld", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}", "--context", "[\"http://context\"]"})
 
-	setupFlagString(set, "host,id,type,attr,data,context")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
 	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
-func TestAttrsAppendErrorInitCmd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsAppend(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestAttrsAppendErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data,link")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsAppend(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestAttrsAppendErrorData(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010"})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsAppendLDErrorContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion-ld", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}", "--context", "[\"http://context\""})
 
-	setupFlagString(set, "host,id,type,attr,data,context")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
-	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsAppendV2SafeStringError(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value: true}", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value: true}"})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsAppendErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attr"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestAttrsAppendErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"append", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsAppend(c)
+	err := attrsAppend(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestAttrsUpdateV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsUpdate(c)
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestAttrsUpdateV2SafeString(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsUpdate(c)
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestAttrsUpdateLD(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion-ld", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}", "--context", "[\"http://context\"]"})
 
-	setupFlagString(set, "host,id,type,attr,data,context")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
 	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\"]"})
-	err := attrsUpdate(c)
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
-func TestAttrsUpdateErrorInitCmd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsUpdate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestAttrsUpdateErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data,link")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsUpdate(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestAttrsUpdateErrorData(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010"})
-	err := attrsUpdate(c)
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsUpdateLDErrorContext(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion-ld", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}", "--context", "[\"http://context\""})
 
-	setupFlagString(set, "host,id,type,attr,data,context")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.ReqData = []byte(`{"@context":["http://context"],"specialOffer":{"value":true}}`)
-	reqRes.Path = "/ngsi-ld/v1/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion-ld", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}", "--context=[\"http://context\""})
-	err := attrsUpdate(c)
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "unexpected EOF", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsUpdateV2SafeStringError(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}"})
-	err := attrsUpdate(c)
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: :{\"value\":true}", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsUpdateErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attr"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsUpdate(c)
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestAttrsUpdateErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsUpdate(c)
+	err := attrsUpdate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 7, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
 
 func TestAttrsReplaceV2(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsReplace(c)
+	err := attrsReplace(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
 func TestAttrsReplaceV2SafeString(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsReplace(c)
+	err := attrsReplace(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
 }
 
-func TestAttrsReplaceErrorInitCmd(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsReplace(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "required host not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
-func TestAttrsReplaceErrorNewClient(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
-
-	setupFlagString(set, "host,id,type,attr,data,link")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--link=abc", "--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsReplace(c)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "abc not found", ngsiErr.Message)
-	} else {
-		t.FailNow()
-	}
-}
-
 func TestAttrsReplaceErrorData(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010"})
-	err := attrsReplace(c)
+	err := attrsReplace(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "data is empty", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsReplaceV2SafeStringError(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}", "--safeString", "on"})
 
-	setupFlagString(set, "host,id,type,attr,data,safeString")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusNoContent
-	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
-
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--safeString=on", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}"})
-	err := attrsReplace(c)
+	err := attrsReplace(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error: :{\"value\":true}", ngsiErr.Message)
-	} else {
-		t.FailNow()
 	}
 }
 
 func TestAttrsReplaceErrorHTTP(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusNoContent
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attr"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.Err = errors.New("http error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data={\"specialOffer\":{\"value\": true}}"})
-	err := attrsReplace(c)
+	err := attrsReplace(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
-		assert.Equal(t, "url error", ngsiErr.Message)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
 
 func TestAttrsReplaceErrorHTTPStatus(t *testing.T) {
-	ngsi, set, app, _ := setupTest()
+	c := setupTest([]string{"update", "attrs", "--host", "orion", "--id", "urn:ngsi-ld:Product:010", "--data", "{\"specialOffer\":{\"value\": true}}"})
 
-	setupFlagString(set, "host,id,type,attr,data")
-	setupFlagBool(set, "append,keyValues")
-	reqRes := MockHTTPReqRes{}
+	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v2/entities/urn:ngsi-ld:Product:010/attrs"
-	mock := NewMockHTTP()
-	mock.ReqRes = append(mock.ReqRes, reqRes)
-	ngsi.HTTP = mock
+	reqRes.ResBody = []byte("error")
+	helper.SetClientHTTP(c, reqRes)
 
-	c := cli.NewContext(app, set, nil)
-	_ = set.Parse([]string{"--host=orion", "--id=urn:ngsi-ld:Product:010", "--data=\"specialOffer\":{\"value\": true}"})
-	err := attrsReplace(c)
+	err := attrsReplace(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsiCmdError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
-	} else {
-		t.FailNow()
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
