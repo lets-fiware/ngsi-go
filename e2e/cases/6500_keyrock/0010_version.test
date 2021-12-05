@@ -24,33 +24,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM golang:1.16.0-alpine3.13 AS builder
-LABEL stage=ngsi-builder
+#
+# 0001 Keyrock version
+#
+ngsi version --host keyrock
 
-WORKDIR /opt/ngsi-test/
+```
+{"keyrock":{"version":"7.0.1","release_date":"2018-06-25","uptime":"REGEX(.*)","git_hash":"https://github.com/ging/fiware-idm/releases/tag/7.0.1","doc":"https://fiware-idm.readthedocs.io/en/7.0.1/","api":{"version":"v1","link":"http://localhost:3000/v1"}}}
+```
 
-COPY *.go /opt/ngsi-test/
+#
+# 0002 Keyrock version --pretty
+#
+ngsi version --host keyrock --pretty
 
-RUN GO111MODULE=off CGO_ENABLED=0 go build -ldflags "-w -s"
-
-FROM alpine:3.12.3 AS runner
-LABEL stage=ngsi-runner
-
-COPY --from=builder /opt/ngsi-test/ngsi-test /usr/local/bin/
-COPY ngsi-test-config.json /root/.ngsi-test-config.json
-COPY ngsi-go-config.json /root/.config/fiware/
-COPY 9999_HALT /root/
-
-RUN \
-    apk add --no-cache \
-        bash=5.0.17-r0 \
-        bash-completion=2.10-r0 \
-        jq=1.6-r1 \
-        curl=7.79.1-r0 && \
-    echo "source /usr/share/bash-completion/bash_completion" >> /root/.bashrc && \
-    echo "source /usr/share/bash-compeletion/completions/ngsi_bash_autocomplete" >> /root/.bashrc
-
-WORKDIR /root/e2e
-
-ENTRYPOINT ["/usr/local/bin/ngsi-test"]
-CMD ["-verbose", "/root/9999_HALT"]
+```
+{
+  "keyrock": {
+    "version": "7.0.1",
+    "release_date": "2018-06-25",
+    "uptime": "REGEX(.*)",
+    "git_hash": "https://github.com/ging/fiware-idm/releases/tag/7.0.1",
+    "doc": "https://fiware-idm.readthedocs.io/en/7.0.1/",
+    "api": {
+      "version": "v1",
+      "link": "http://localhost:3000/v1"
+    }
+  }
+}
+```
