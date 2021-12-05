@@ -2241,8 +2241,8 @@ OPTIONS:
    --redirectSignOutUri VALUE, -S VALUE  redirect redirect sign out uri
    --grantType VALUE, -g VALUE           grant type
    --tokenTypes VALUE, -t VALUE          token types
-   --responseType VALUE, -r VALUE        response type
-   --clientType VALUE, -c VALUE          client type
+   --scope VALUE, -s VALUE               scopes to limit an application's access to a user's account
+   --openid, -o                          enable OpenID Connect Authentication (default: false)
    --verbose, -v                         verbose (default: false)
    --pretty, -P                          pretty format (default: false)
    --help                                show help (default: true)
@@ -2285,8 +2285,8 @@ OPTIONS:
    --redirectSignOutUri VALUE, -S VALUE  redirect redirect sign out uri
    --grantType VALUE, -g VALUE           grant type
    --tokenTypes VALUE, -t VALUE          token types
-   --responseType VALUE, -r VALUE        response type
-   --clientType VALUE, -c VALUE          client type
+   --scope VALUE, -s VALUE               scopes to limit an application's access to a user's account
+   --openid, -o                          enable OpenID Connect Authentication (default: false)
    --verbose, -v                         verbose (default: false)
    --pretty, -P                          pretty format (default: false)
    --help                                show help (default: true)

@@ -47,11 +47,12 @@ type keyrockApplicationItems struct {
 	Image              string      `json:"image,omitempty"`
 	URL                string      `json:"url,omitempty"`
 	RedirectURI        string      `json:"redirect_uri,omitempty"`
-	RedirectSignOutUri string      `json:"redirect_sign_out_uri,omitempty"`
+	RedirectSignOutUri string      `json:"redirect_sign_out_uri"`
 	GrantType          interface{} `json:"grant_type,omitempty"`
 	ResponseType       interface{} `json:"response_type,omitempty"`
 	TokenTypes         interface{} `json:"token_types,omitempty"`
 	ClientType         interface{} `json:"client_type,omitempty"`
+	Scope              interface{} `json:"scope,omitempty"`
 }
 
 type keyrockApplication struct {
@@ -131,7 +132,7 @@ func applicationsGet(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Cli
 func applicationsCreate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "applicationsCreate"
 
-	b, err := makeAppBody(c, ngsi)
+	b, err := makeAppBody(c, ngsi, false)
 	if err != nil {
 		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
@@ -175,7 +176,7 @@ func applicationsUpdate(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.
 
 	client.SetPath("/v1/applications/" + c.String("aid"))
 
-	b, err := makeAppBody(c, ngsi)
+	b, err := makeAppBody(c, ngsi, true)
 	if err != nil {
 		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
@@ -221,7 +222,7 @@ func applicationsDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.
 	return nil
 }
 
-func makeAppBody(c *ngsicli.Context, ngsi *ngsilib.NGSI) ([]byte, error) {
+func makeAppBody(c *ngsicli.Context, ngsi *ngsilib.NGSI, update bool) ([]byte, error) {
 	const funcName = "makeAppBody"
 
 	if c.IsSet("data") {
@@ -236,12 +237,25 @@ func makeAppBody(c *ngsicli.Context, ngsi *ngsilib.NGSI) ([]byte, error) {
 
 	app.Application.Name = c.String("name")
 	app.Application.Description = c.String("description")
-	app.Application.RedirectURI = c.String("redirectUri")
-	app.Application.RedirectSignOutUri = c.String("redirectSignOutUri")
+	if app.Application.Description == "" && !update {
+		app.Application.Description = app.Application.Name
+	}
 	app.Application.URL = c.String("url")
+	if app.Application.URL == "" && !update {
+		app.Application.URL = "http://localhost"
+	}
+	app.Application.RedirectURI = c.String("redirectUri")
+	if app.Application.RedirectURI == "" && !update {
+		app.Application.RedirectURI = "http://localhost"
+	}
+	app.Application.RedirectSignOutUri = c.String("redirectSignOutUri")
 	s := c.String("grantType")
 	if s != "" {
 		app.Application.GrantType = strings.Split(s, ",")
+	} else {
+		if !update {
+			app.Application.GrantType = []string{"client_credentials", "password", "implicit", "authorization_code", "refresh_token"}
+		}
 	}
 	s = c.String("tokenTypes")
 	if s != "" {
@@ -254,6 +268,15 @@ func makeAppBody(c *ngsicli.Context, ngsi *ngsilib.NGSI) ([]byte, error) {
 	s = c.String("clientType")
 	if s != "" {
 		app.Application.ClientType = strings.Split(s, ",")
+	}
+	s = c.String("scope")
+	if s != "" {
+		app.Application.Scope = strings.Split(s, ",")
+	}
+	if c.IsSet("openid") {
+		app.Application.Scope = "openid"
+		app.Application.GrantType = []string{"client_credentials", "password", "implicit", "authorization_code", "refresh_token"}
+		app.Application.TokenTypes = []string{"jwt"}
 	}
 
 	b, err := ngsilib.JSONMarshal(app)
