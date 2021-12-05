@@ -43,6 +43,12 @@ func printVersion(c *Context, token *token) bool {
 	if arg != nil && (*arg == "--version" || *arg == "-v") {
 		fmt.Fprintf(c.Ngsi.StdWriter, "ngsi version %s\n", c.App.Version)
 		return true
+	} else if arg != nil && *arg == "--serial" {
+		var x, y, z int
+		if _, err := fmt.Sscanf(c.App.Version, "%d.%d.%d", &x, &y, &z); err == nil {
+			fmt.Fprintf(c.Ngsi.StdWriter, "%d%02d%02d", x, y, z)
+		}
+		return true
 	}
 	_ = token.Prev()
 

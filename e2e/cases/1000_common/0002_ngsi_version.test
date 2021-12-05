@@ -32,3 +32,12 @@ ngsi --version
 ```
 ngsi version REGEX(.*)
 ```
+
+#
+# 0002 ngsi --serial
+#
+ngsi --serial
+
+```
+REGEX([0-9]+)
+```
