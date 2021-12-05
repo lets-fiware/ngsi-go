@@ -35,7 +35,7 @@ RUN \
     make bin/ngsi
     
 
-FROM alpine:3.14 AS runner
+FROM alpine:3.15 AS runner
 
 COPY --from=builder /ngsi-go/bin/ngsi /usr/local/bin/ngsi
 
