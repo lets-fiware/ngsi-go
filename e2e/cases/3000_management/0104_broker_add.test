@@ -603,6 +603,37 @@ ngsi broker delete --host orion-with-basic-auth
 ```
 
 #
+# 0071 Add broker which has an alias name including colon
+#
+ngsi broker add \
+--host localhost:1026 \
+--brokerHost http://localhost:1026 \
+--ngsiType v2
+
+```
+```
+
+#
+# 0072 Get broker which has an alias name including colon
+#
+ngsi broker get \
+--host localhost:1026
+
+```
+brokerHost http://localhost:1026
+ngsiType v2
+```
+
+#
+# 0073 Delete broker which has an alias name including colon
+#
+ngsi broker delete \
+--host localhost:1026
+
+```
+```
+
+#
 # 0100 host not found
 #
 ngsi broker add
