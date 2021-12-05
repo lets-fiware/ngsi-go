@@ -1,5 +1,6 @@
 ## NGSI Go v0.9.0-next
 
+-   Improve: Add --serial flag to print serial value as NGSI Go version (#204)
 -   Improve: Add colon as a valid character for alias name (#203)
 -   Improve: Support version command for Keyrock (#202)
 -   Improve: Large scale refactoring (#200)

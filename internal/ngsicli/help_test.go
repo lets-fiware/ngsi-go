@@ -63,6 +63,19 @@ func TestPrintVersionV(t *testing.T) {
 	assert.Equal(t, expected, buffer.String())
 }
 
+func TestPrintSerial(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	c := &Context{Ngsi: &ngsilib.NGSI{StdWriter: buffer}, App: &App{Version: "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab"}}
+	token := newToken([]string{"--serial"})
+
+	actual := printVersion(c, token)
+
+	assert.Equal(t, true, actual)
+	expected := "00900"
+	assert.Equal(t, expected, buffer.String())
+}
+
 func TestPrintVersionFalse(t *testing.T) {
 	buffer := &bytes.Buffer{}
 
