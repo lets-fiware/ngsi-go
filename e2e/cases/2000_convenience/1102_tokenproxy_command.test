@@ -113,6 +113,7 @@ ngsi version --host orion-with-tokenproxy --pretty
     "libversions": {
       "boost": "REGEX(.*)",
       "libcurl": "REGEX(.*)",
+      "libmosquitto": "REGEX(.*)",
       "libmicrohttpd": "REGEX(.*)",
       "openssl": "REGEX(.*)",
       "rapidjson": "REGEX(.*)",

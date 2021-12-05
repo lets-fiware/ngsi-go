@@ -68,6 +68,7 @@ ngsi version --host orion
   "libversions": {
      "boost": "REGEX(.*)",
      "libcurl": "REGEX(.*)",
+     "libmosquitto": "REGEX(.*)",
      "libmicrohttpd": "REGEX(.*)",
      "openssl": "REGEX(.*)",
      "rapidjson": "REGEX(.*)",
@@ -152,6 +153,7 @@ ngsi version --host orion
   "libversions": {
      "boost": "REGEX(.*)",
      "libcurl": "REGEX(.*)",
+     "libmosquitto": "REGEX(.*)",
      "libmicrohttpd": "REGEX(.*)",
      "openssl": "REGEX(.*)",
      "rapidjson": "REGEX(.*)",

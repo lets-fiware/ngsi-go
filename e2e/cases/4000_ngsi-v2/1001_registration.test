@@ -65,7 +65,7 @@ ngsi list registrations -P
         "url": "REGEX(.*)"
       },
       "supportedForwardingMode": "all",
-      "legacyForwarding": true
+      "legacyForwarding": false
     },
     "status": "active"
   }
@@ -100,7 +100,7 @@ ngsi get registration --id $id -P
       "url": "REGEX(.*)"
     },
     "supportedForwardingMode": "all",
-    "legacyForwarding": true
+    "legacyForwarding": false
   },
   "status": "active"
 }
