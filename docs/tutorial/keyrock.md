@@ -18,6 +18,28 @@ Username keyrock@letsfiware.jp
 Password 1234
 ```
 
+### Get version
+
+```console
+ngsi version --host keyrock --pretty
+```
+
+```json
+{
+  "keyrock": {
+    "version": "7.0.1",
+    "release_date": "2018-06-25",
+    "uptime": "01:51:01.1",
+    "git_hash": "https://github.com/ging/fiware-idm/releases/tag/7.0.1",
+    "doc": "https://fiware-idm.readthedocs.io/en/7.0.1/",
+    "api": {
+      "version": "v1",
+      "link": "https://keyrock.e-suda.info/v1"
+    }
+  }
+}
+```
+
 ### Get a token
 
 ```console

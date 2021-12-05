@@ -42,10 +42,6 @@ import (
 func cbVersion(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "cbVersion"
 
-	if client.Server.ServerType == "keyrock" {
-		return ngsierr.New(funcName, 1, "not supported by keyrock", nil)
-	}
-
 	switch client.Server.ServerType {
 	default:
 		client.SetPath("/version")
@@ -61,17 +57,17 @@ func cbVersion(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) e
 
 	res, body, err := client.HTTPGet()
 	if err != nil {
-		return ngsierr.New(funcName, 2, err.Error(), err)
+		return ngsierr.New(funcName, 1, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusOK {
-		return ngsierr.New(funcName, 3, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
+		return ngsierr.New(funcName, 2, fmt.Sprintf("error %s %s", res.Status, string(body)), nil)
 	}
 
 	if c.Bool("pretty") && client.Server.ServerType != "perseo-core" {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, body, "", "  ")
 		if err != nil {
-			return ngsierr.New(funcName, 4, err.Error(), err)
+			return ngsierr.New(funcName, 3, err.Error(), err)
 		}
 		fmt.Fprintln(ngsi.StdWriter, newBuf.String())
 		return nil

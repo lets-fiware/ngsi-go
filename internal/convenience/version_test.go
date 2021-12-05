@@ -155,15 +155,21 @@ func TestVersionPerseoCore(t *testing.T) {
 	}
 }
 
-func TestVersionErrorKeyrock(t *testing.T) {
+func TestVersionKeyrock(t *testing.T) {
 	c := setupTest([]string{"version", "--host", "keyrock"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/version"
+	reqRes.ResBody = []byte(`{"keyrock":{"version":"7.0.1","release_date":"2018-06-25","uptime":"01:38:39.9","git_hash":"https://github.com/ging/fiware-idm/releases/tag/7.0.1","doc":"https://fiware-idm.readthedocs.io/en/7.0.1/","api":{"version":"v1","link":"https://keyrock.e-suda.info/v1"}}}`)
+	helper.SetClientHTTP(c, reqRes)
 
 	err := cbVersion(c, c.Ngsi, c.Client)
 
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
-		assert.Equal(t, "not supported by keyrock", ngsiErr.Message)
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := `{"keyrock":{"version":"7.0.1","release_date":"2018-06-25","uptime":"01:38:39.9","git_hash":"https://github.com/ging/fiware-idm/releases/tag/7.0.1","doc":"https://fiware-idm.readthedocs.io/en/7.0.1/","api":{"version":"v1","link":"https://keyrock.e-suda.info/v1"}}}`
+		assert.Equal(t, expected, actual)
 	}
 }
 
@@ -180,7 +186,7 @@ func TestVersionErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "error", ngsiErr.Message)
 	}
 }
@@ -197,7 +203,7 @@ func TestVersionErrorStatusCode(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error  ", ngsiErr.Message)
 	}
 }
@@ -217,7 +223,7 @@ func TestVersionIotaErrorPretty(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
