@@ -24,7 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM golang:1.16.0-alpine3.13 AS builder
+FROM golang:1.17.4-alpine3.15 AS builder
 
 RUN \
     cd / && \
@@ -35,7 +35,7 @@ RUN \
     make bin/ngsi
     
 
-FROM alpine:3.14 AS runner
+FROM alpine:3.15 AS runner
 
 COPY --from=builder /ngsi-go/bin/ngsi /usr/local/bin/ngsi
 COPY ./ngsi-go-config.json /opt/ngsi-go/ngsi-go-config.json

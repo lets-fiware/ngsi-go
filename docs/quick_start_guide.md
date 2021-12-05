@@ -19,18 +19,19 @@ ngsi version -h letsfiware
 ```json
 {
 "orion" : {
-  "version" : "3.1.0",
-  "uptime" : "0 d, 0 h, 0 m, 10 s",
-  "git_hash" : "260505c911ecf204ebcf0bd31788013c225da6dd",
-  "compile_time" : "Wed Jun 9 12:59:59 UTC 2021",
+  "version" : "3.3.1",
+  "uptime" : "0 d, 0 h, 0 m, 1 s",
+  "git_hash" : "a9ff9652c7b93240f48d2b497783407a80861370",
+  "compile_time" : "Thu Nov 11 10:08:31 UTC 2021",
   "compiled_by" : "root",
-  "compiled_in" : "e11ec65d5407",
-  "release_date" : "Wed Jun 9 12:59:59 UTC 2021",
+  "compiled_in" : "831b4bc01053",
+  "release_date" : "Thu Nov 11 10:08:31 UTC 2021",
   "machine" : "x86_64",
-  "doc" : "https://fiware-orion.rtfd.io/en/3.1.0/",
+  "doc" : "https://fiware-orion.rtfd.io/en/3.3.1/",
   "libversions": {
      "boost": "1_66",
      "libcurl": "libcurl/7.61.1 OpenSSL/1.1.1g zlib/1.2.11 nghttp2/1.33.0",
+     "libmosquitto": "2.0.12",
      "libmicrohttpd": "0.9.70",
      "openssl": "1.1",
      "rapidjson": "1.1.0",
