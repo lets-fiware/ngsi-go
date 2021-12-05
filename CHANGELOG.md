@@ -1,5 +1,6 @@
 ## NGSI Go v0.9.0-next
 
+-   Improve: Add colon as a valid character for alias name (#203)
 -   Improve: Support version command for Keyrock (#202)
 -   Improve: Large scale refactoring (#200)
 -   Update: Update roadmap.md and README.md (#199)
