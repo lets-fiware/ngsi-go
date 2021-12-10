@@ -49,27 +49,34 @@ func InitCmd(c *Context) (*ngsilib.NGSI, error) {
 		ngsi.BatchFlag = &b
 	}
 
+	if c.IsSet("configDir") && (c.IsSet("config") || c.IsSet("cache")) {
+		return nil, ngsierr.New(funcName, 1, "configDir cannot be specified with config or cache at the same time", nil)
+	}
 	var file *string
 	if c.IsSet("config") {
 		s := c.String("config")
 		file = &s
 	}
+	if c.IsSet("configDir") {
+		s := c.String("configDir")
+		ngsi.ConfigDir = &s
+	}
 
 	err := ngsi.InitConfig(file)
 	if err != nil {
-		return nil, ngsierr.New(funcName, 1, err.Error(), err)
+		return nil, ngsierr.New(funcName, 2, err.Error(), err)
 	}
 
 	prevArgs := ngsi.GetPreviousArgs()
 
 	err = initStdErrOption(ngsi, c, prevArgs)
 	if err != nil {
-		return nil, ngsierr.New(funcName, 2, err.Error(), err)
+		return nil, ngsierr.New(funcName, 3, err.Error(), err)
 	}
 
 	err = initSyslogOption(ngsi, c, prevArgs)
 	if err != nil {
-		return nil, ngsierr.New(funcName, 3, err.Error(), err)
+		return nil, ngsierr.New(funcName, 4, err.Error(), err)
 	}
 
 	initHiddenOptions(ngsi, c)
@@ -81,7 +88,7 @@ func InitCmd(c *Context) (*ngsilib.NGSI, error) {
 	tokenCache := initCacheFileOption(ngsi, c, prevArgs)
 	err = ngsi.InitTokenMgr(tokenCache)
 	if err != nil {
-		return nil, ngsierr.New(funcName, 4, err.Error(), err)
+		return nil, ngsierr.New(funcName, 5, err.Error(), err)
 	}
 
 	return ngsi, nil

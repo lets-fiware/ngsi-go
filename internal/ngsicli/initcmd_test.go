@@ -81,6 +81,22 @@ func TestInitCmdBatchFlagFalse(t *testing.T) {
 	}
 }
 
+func TestInitCmdConfigDir(t *testing.T) {
+	_ = setupTestInitNGSI()
+
+	f := configDirFlag.Copy(true)
+	err := f.SetValue("/tmp")
+	assert.NoError(t, err)
+
+	c := &Context{Flags: []Flag{f}}
+
+	ngsi, err := InitCmd(c)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "/tmp/ngsi-go-config.json", *ngsi.ConfigFile.FileName())
+	}
+}
+
 func TestInitCmdConfig(t *testing.T) {
 	_ = setupTestInitNGSI()
 
@@ -130,6 +146,54 @@ func TestInitCmdinsecureSkipVerifyFlagTrue(t *testing.T) {
 	}
 }
 
+func TestInitCmdErrorConfigDirConfig(t *testing.T) {
+	_ = setupTestInitNGSI()
+
+	var err error
+
+	f1 := configDirFlag.Copy(true)
+	err = f1.SetValue("/tmp")
+	assert.NoError(t, err)
+
+	f2 := configFlag.Copy(true)
+	err = f2.SetValue("config")
+	assert.NoError(t, err)
+
+	c := &Context{Flags: []Flag{f1, f2}}
+
+	_, err = InitCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "configDir cannot be specified with config or cache at the same time", ngsiErr.Message)
+	}
+}
+
+func TestInitCmdErrorConfigDirCache(t *testing.T) {
+	_ = setupTestInitNGSI()
+
+	var err error
+
+	f1 := configDirFlag.Copy(true)
+	err = f1.SetValue("/tmp")
+	assert.NoError(t, err)
+
+	f2 := cacheFlag.Copy(true)
+	err = f2.SetValue("config")
+	assert.NoError(t, err)
+
+	c := &Context{Flags: []Flag{f1, f2}}
+
+	_, err = InitCmd(c)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "configDir cannot be specified with config or cache at the same time", ngsiErr.Message)
+	}
+}
+
 func TestInitCmdErrorInitConfig(t *testing.T) {
 	ngsi := setupTestInitNGSI()
 
@@ -140,7 +204,7 @@ func TestInitCmdErrorInitConfig(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "InitConfig error", ngsiErr.Message)
 	}
 }
@@ -158,7 +222,7 @@ func TestInitCmdErrorInitStdErrOption(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "stderr logLevel error", ngsiErr.Message)
 	}
 }
@@ -176,7 +240,7 @@ func TestInitCmdErrorInitSyslogOption(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "syslog logLevel error", ngsiErr.Message)
 	}
 }
@@ -192,7 +256,7 @@ func TestInitCmdErrorInitTokenMgr(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "InitTOkenMgr error", ngsiErr.Message)
 	}
 }

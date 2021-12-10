@@ -32,6 +32,7 @@ package ngsicli
 var GlobalFlags = []Flag{
 	SyslogFlag,
 	StderrFlag,
+	ConfigDirFlag,
 	ConfigFlag,
 	CacheFlag,
 	MarginFlag,
@@ -53,6 +54,10 @@ var (
 		Name:    "stderr",
 		Usage:   "stderr logging `LEVEL` (err, info, debug)",
 		Choices: []string{"off", "err", "info", "debug"},
+	}
+	ConfigDirFlag = &StringFlag{
+		Name:  "configDir",
+		Usage: "configuration `DIR` name",
 	}
 	ConfigFlag = &StringFlag{
 		Name:  "config",

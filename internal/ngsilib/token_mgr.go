@@ -140,7 +140,7 @@ func (ngsi *NGSI) InitTokenMgr(file *string) error {
 	cacheFile := ngsi.CacheFile
 
 	if file == nil {
-		home, err := getConfigDir(cacheFile)
+		home, err := getConfigDir(ngsi.ConfigDir, cacheFile)
 		if err != nil {
 			return ngsierr.New(funcName, 1, err.Error(), err)
 		}

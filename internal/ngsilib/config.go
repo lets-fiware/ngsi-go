@@ -76,7 +76,7 @@ func initConfig(ngsi *NGSI, io IoLib) error {
 	saveFlag := false
 
 	if io.FileName() == nil {
-		home, err := getConfigDir(io)
+		home, err := getConfigDir(ngsi.ConfigDir, io)
 		if err != nil {
 			return ngsierr.New(funcName, 1, err.Error(), err)
 		}

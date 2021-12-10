@@ -48,6 +48,7 @@ type NGSI struct {
 	tokenList     tokenInfoList
 	contextList   ContextsInfo
 
+	ConfigDir     *string
 	ConfigFile    IoLib
 	CacheFile     IoLib
 	StdReader     io.Reader
@@ -170,26 +171,34 @@ func (ngsi *NGSI) StdoutFlush() {
 	}
 }
 
-func getConfigDir(io IoLib) (string, error) {
+func getConfigDir(configDir *string, io IoLib) (string, error) {
 	const funcName = "getConfigDir"
 
-	var path string
-	home, err := io.UserHomeDir()
-	if err != nil {
-		return "", ngsierr.New(funcName, 1, err.Error(), err)
-	}
-	if gNGSI.OsType == "windows" {
-		path = io.Getenv("APPDATA")
-		if path == "" {
-			path = home
-		}
-	} else {
-		path, err = io.UserConfigDir()
+	var home string
+
+	if configDir == nil {
+		var path string
+		var err error
+
+		home, err = io.UserHomeDir()
 		if err != nil {
-			path = io.FilePathJoin(home, ".config")
+			return "", ngsierr.New(funcName, 1, err.Error(), err)
 		}
+		if gNGSI.OsType == "windows" {
+			path = io.Getenv("APPDATA")
+			if path == "" {
+				path = home
+			}
+		} else {
+			path, err = io.UserConfigDir()
+			if err != nil {
+				path = io.FilePathJoin(home, ".config")
+			}
+		}
+		home = io.FilePathJoin(path, "fiware")
+	} else {
+		home = *configDir
 	}
-	home = io.FilePathJoin(path, "fiware")
 	if !existsFile(io, home) {
 		err := io.MkdirAll(home, 0700)
 		if err != nil {
