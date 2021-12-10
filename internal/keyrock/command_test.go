@@ -56,7 +56,7 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"applications", "get", "--host", "keyrock", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c"}, rc: 1},
 		{args: []string{"applications", "list", "--host", "keyrock"}, rc: 1},
 		{args: []string{"applications", "get", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c"}, rc: 1},
-		{args: []string{"applications", "create", "--host", "keyrock"}, rc: 1},
+		{args: []string{"applications", "create", "--host", "keyrock", "--name", "test"}, rc: 1},
 		{args: []string{"applications", "update", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c"}, rc: 1},
 		{args: []string{"applications", "update", "--host", "keyrock", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c"}, rc: 1},
 		{args: []string{"applications", "delete", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c"}, rc: 1},

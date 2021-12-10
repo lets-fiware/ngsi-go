@@ -1,0 +1,272 @@
+# MIT License
+#
+# Copyright (c) 2020-2021 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 Create application (openid)
+#
+ngsi applications --host keyrock create --name "openid" --openid
+
+
+```
+REGEX(.*)
+```
+
+#
+# 0002 Save application id
+#
+$aid=$$
+
+
+#
+# 0003 Get application
+#
+ngsi applications get --aid $aid --pretty
+
+
+```
+{
+  "application": {
+    "id": "REGEX(.*)",
+    "name": "openid",
+    "description": "openid",
+    "secret": "REGEX(.*)",
+    "url": "http://localhost",
+    "redirect_uri": "http://localhost",
+    "redirect_sign_out_uri": "",
+    "image": "default",
+    "grant_type": "client_credentials,password,authorization_code,implicit,refresh_token,hybrid",
+    "response_type": "code,token,id_token",
+    "token_types": "jwt,bearer",
+    "jwt_secret": "REGEX(.*)",
+    "client_type": null,
+    "scope": "openid",
+    "extra": null,
+    "urls": {
+      "permissions_url": "/v1/applications/REGEX(.*)/permissions",
+      "roles_url": "/v1/applications/REGEX(.*)/roles",
+      "users_url": "/v1/applications/REGEX(.*)/users",
+      "pep_proxies_url": "/v1/applications/REGEX(.*)/pep_proxies",
+      "iot_agents_url": "/v1/applications/REGEX(.*)/iot_agents",
+      "trusted_applications_url": "/v1/applications/REGEX(.*)/trusted_applications"
+    }
+  }
+}
+```
+
+#
+# 0004 Delete application
+#
+ngsi applications delete --aid $aid
+
+#
+# 0011 Create application (scope)
+#
+ngsi applications create --name "FIWARE Draco" \
+  --url https://draco.example.com \
+  --redirectUri https://draco.example.com:443/nifi-api/access/oidc/callback \
+  --scope openid \
+  --tokenTypes jwt
+
+
+```
+REGEX(.*)
+```
+
+#
+# 0012 Save application id
+#
+$aid=$$
+
+
+#
+# 0013 Get application
+#
+ngsi applications get --aid $aid --pretty
+
+
+```
+{
+  "application": {
+    "id": "REGEX(.*)",
+    "name": "FIWARE Draco",
+    "description": "FIWARE Draco",
+    "secret": "REGEX(.*)",
+    "url": "https://draco.example.com",
+    "redirect_uri": "https://draco.example.com:443/nifi-api/access/oidc/callback",
+    "redirect_sign_out_uri": "",
+    "image": "default",
+    "grant_type": "client_credentials,password,authorization_code,implicit,refresh_token,hybrid",
+    "response_type": "code,token,id_token",
+    "token_types": "jwt,bearer",
+    "jwt_secret": "REGEX(.*)",
+    "client_type": null,
+    "scope": "openid",
+    "extra": null,
+    "urls": {
+      "permissions_url": "/v1/applications/REGEX(.*)/permissions",
+      "roles_url": "/v1/applications/REGEX(.*)/roles",
+      "users_url": "/v1/applications/REGEX(.*)/users",
+      "pep_proxies_url": "/v1/applications/REGEX(.*)/pep_proxies",
+      "iot_agents_url": "/v1/applications/REGEX(.*)/iot_agents",
+      "trusted_applications_url": "/v1/applications/REGEX(.*)/trusted_applications"
+    }
+  }
+}
+```
+
+#
+# 0014 Delete application
+#
+ngsi applications delete --aid $aid
+
+#
+# 0101 Create application (openid)
+#
+ngsi applications --host keyrock create --name "fiware"
+
+
+```
+REGEX(.*)
+```
+
+#
+# 0102 Save application id
+#
+$aid=$$
+
+#
+# 0103 Update application (openid)
+#
+ngsi applications update --aid $aid --openid
+
+```
+{"values_updated":{"grant_type":"client_credentials,password,authorization_code,implicit,refresh_token,hybrid","response_type":"code,token,id_token","token_types":"jwt,bearer","jwt_secret":"REGEX(.*)","scope":"openid"}}
+```
+
+#
+# 0104 Get application
+#
+ngsi applications get --aid $aid --pretty
+
+
+```
+{
+  "application": {
+    "id": "REGEX(.*)",
+    "name": "fiware",
+    "description": "fiware",
+    "secret": "REGEX(.*)",
+    "url": "http://localhost",
+    "redirect_uri": "http://localhost",
+    "redirect_sign_out_uri": "",
+    "image": "default",
+    "grant_type": "client_credentials,password,authorization_code,implicit,refresh_token,hybrid",
+    "response_type": "code,token,id_token",
+    "token_types": "jwt,bearer",
+    "jwt_secret": "REGEX(.*)",
+    "client_type": null,
+    "scope": "openid",
+    "extra": null,
+    "urls": {
+      "permissions_url": "/v1/applications/REGEX(.*)/permissions",
+      "roles_url": "/v1/applications/REGEX(.*)/roles",
+      "users_url": "/v1/applications/REGEX(.*)/users",
+      "pep_proxies_url": "/v1/applications/REGEX(.*)/pep_proxies",
+      "iot_agents_url": "/v1/applications/REGEX(.*)/iot_agents",
+      "trusted_applications_url": "/v1/applications/REGEX(.*)/trusted_applications"
+    }
+  }
+}
+```
+
+#
+# 0105 Delete application
+#
+ngsi applications delete --aid $aid
+
+#
+# 0111 Create application (scope)
+#
+ngsi applications create --name "fiware"
+
+```
+REGEX(.*)
+```
+
+#
+# 0112 Save application id
+#
+$aid=$$
+
+#
+# 0113 Update application (scope)
+#
+ngsi applications update --aid $aid --scope openid --tokenTypes jwt
+
+```
+{"values_updated":{"token_types":"jwt,bearer","jwt_secret":"REGEX(.*)","scope":"openid"}}
+```
+
+#
+# 0114 Get application
+#
+ngsi applications get --aid $aid --pretty
+
+
+```
+{
+  "application": {
+    "id": "REGEX(.*)",
+    "name": "fiware",
+    "description": "fiware",
+    "secret": "REGEX(.*)",
+    "url": "http://localhost",
+    "redirect_uri": "http://localhost",
+    "redirect_sign_out_uri": "",
+    "image": "default",
+    "grant_type": "client_credentials,password,authorization_code,implicit,refresh_token",
+    "response_type": "code,token",
+    "token_types": "jwt,bearer",
+    "jwt_secret": "REGEX(.*)",
+    "client_type": null,
+    "scope": "openid",
+    "extra": null,
+    "urls": {
+      "permissions_url": "/v1/applications/REGEX(.*)/permissions",
+      "roles_url": "/v1/applications/REGEX(.*)/roles",
+      "users_url": "/v1/applications/REGEX(.*)/users",
+      "pep_proxies_url": "/v1/applications/REGEX(.*)/pep_proxies",
+      "iot_agents_url": "/v1/applications/REGEX(.*)/iot_agents",
+      "trusted_applications_url": "/v1/applications/REGEX(.*)/trusted_applications"
+    }
+  }
+}
+```
+
+#
+# 0115 Delete application
+#
+ngsi applications delete --aid $aid

@@ -140,22 +140,22 @@ ngsi application [command options] create [options]
 
 ### Options
 
-| Options                              | Description                            |
-| ------------------------------------ | -------------------------------------- |
-| --host VALUE, -h VALUE               | broker or server host VALUE (required) |
-| --data VALUE, -d VALUE               | application data                       |
-| --name VALUE, -n VALUE               | application name                       |
-| --description VALUE, -D VALUE        | description                            |
-| --url VALUE, -u VALUE                | url                                    |
-| --redirectUri VALUE, -R VALUE        | redirect uri                           |
-| --redirectSignOutUri VALUE, -S VALUE | redirect redirect sign out uri         |
-| --grantType VALUE, -g VALUE          | grant type                             |
-| --tokenTypes VALUE, -t VALUE         | token types                            |
-| --responseType VALUE, -r VALUE       | response type                          |
-| --clientType VALUE, -c VALUE         | client type                            |
-| --verbose, -v                        | verbose (default: false)               |
-| --pretty, -P                         | pretty format (default: false)         |
-| --help                               | show help (default: true)              |
+| Options                              | Description                                                 |
+| ------------------------------------ | ----------------------------------------------------------- |
+| --host VALUE, -h VALUE               | broker or server host VALUE (required)                      |
+| --data VALUE, -d VALUE               | application data                                            |
+| --name VALUE, -n VALUE               | application name                                            |
+| --description VALUE, -D VALUE        | description                                                 |
+| --url VALUE, -u VALUE                | url                                                         |
+| --redirectUri VALUE, -R VALUE        | redirect uri                                                |
+| --redirectSignOutUri VALUE, -S VALUE | redirect redirect sign out uri                              |
+| --grantType VALUE, -g VALUE          | grant type                                                  |
+| --tokenTypes VALUE, -t VALUE         | token types                                                 |
+| --scope VALUE, -s VALUE              | scopes to limit an application's access to a user's account |
+| --openid, -o                         | enable OpenID Connect Authentication (default: false)       |
+| --verbose, -v                        | verbose (default: false)                                    |
+| --pretty, -P                         | pretty format (default: false)                              |
+| --help                               | show help (default: true)                                   |
 
 ### Examples
 
@@ -174,6 +174,33 @@ ngsi applications create --name "Test_application 1" \
 58de156f-0fec-400b-bc7c-86265a885bee
 ```
 
+#### Request
+
+```console
+ngsi applications create --name "FIWARE Draco" \
+  --url https://draco.example.com \
+  --redirectUri https://draco.example.com:443/nifi-api/access/oidc/callback \
+  --openid
+```
+
+```console
+6418de2a-c50e-485e-bdc1-e714c6522d93
+```
+
+#### Request
+
+```console
+ngsi applications create --name "FIWARE Draco" \
+  --url https://draco.example.com \
+  --redirectUri https://draco.example.com:443/nifi-api/access/oidc/callback \
+  --scope openid \
+  --tokenTypes jwt
+```
+
+```console
+247d64f7-a479-4b55-8047-46da8004506c
+```
+
 <a name="update-an-application"></a>
 
 ## Update an application
@@ -186,23 +213,23 @@ ngsi application [command options] update [options]
 
 ### Options
 
-| Options                              | Description                            |
-| ------------------------------------ | -------------------------------------- |
-| --host VALUE, -h VALUE               | broker or server host VALUE (required) |
-| --aid VALUE, -i VALUE                | application id (required)              |
-| --data VALUE, -d VALUE               | application data                       |
-| --name VALUE, -n VALUE               | application name                       |
-| --description VALUE, -D VALUE        | description                            |
-| --url VALUE, -u VALUE                | url                                    |
-| --redirectUri VALUE, -R VALUE        | redirect uri                           |
-| --redirectSignOutUri VALUE, -S VALUE | redirect redirect sign out uri         |
-| --grantType VALUE, -g VALUE          | grant type                             |
-| --tokenTypes VALUE, -t VALUE         | token types                            |
-| --responseType VALUE, -r VALUE       | response type                          |
-| --clientType VALUE, -c VALUE         | client type                            |
-| --verbose, -v                        | verbose (default: false)               |
-| --pretty, -P                         | pretty format (default: false)         |
-| --help                               | show help (default: true)              |
+| Options                              | Description                                                 |
+| ------------------------------------ | ----------------------------------------------------------- |
+| --host VALUE, -h VALUE               | broker or server host VALUE (required)                      |
+| --aid VALUE, -i VALUE                | application id (required)                                   |
+| --data VALUE, -d VALUE               | application data                                            |
+| --name VALUE, -n VALUE               | application name                                            |
+| --description VALUE, -D VALUE        | description                                                 |
+| --url VALUE, -u VALUE                | url                                                         |
+| --redirectUri VALUE, -R VALUE        | redirect uri                                                |
+| --redirectSignOutUri VALUE, -S VALUE | redirect redirect sign out uri                              |
+| --grantType VALUE, -g VALUE          | grant type                                                  |
+| --tokenTypes VALUE, -t VALUE         | token types                                                 |
+| --scope VALUE, -s VALUE              | scopes to limit an application's access to a user's account |
+| --openid, -o                         | enable OpenID Connect Authentication (default: false)       |
+| --verbose, -v                        | verbose (default: false)                                    |
+| --pretty, -P                         | pretty format (default: false)                              |
+| --help                               | show help (default: true)                                   |
 
 ### Examples
 

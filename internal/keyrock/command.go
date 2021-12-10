@@ -100,9 +100,12 @@ var ApplicationsCmd = ngsicli.Command{
 				keyrcokApplicationTokenTypesFlag,
 				keyrcokApplicationResponseTypeFlag,
 				keyrcokApplicationClientTypeFlag,
+				keyrcokApplicationScopeFlag,
+				keyrcokApplicationOpenIDFlag,
 				ngsicli.VerboseFlag,
 				ngsicli.PrettyFlag,
 			},
+			OptionFlags: &ngsicli.ValidationFlag{Mode: ngsicli.XnorCondition, Flags: []string{"data", "name"}},
 			Action: func(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 				return applicationsCreate(c, ngsi, client)
 			},
@@ -123,6 +126,8 @@ var ApplicationsCmd = ngsicli.Command{
 				keyrcokApplicationTokenTypesFlag,
 				keyrcokApplicationResponseTypeFlag,
 				keyrcokApplicationClientTypeFlag,
+				keyrcokApplicationScopeFlag,
+				keyrcokApplicationOpenIDFlag,
 				ngsicli.VerboseFlag,
 				ngsicli.PrettyFlag,
 			},

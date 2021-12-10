@@ -610,7 +610,7 @@ func TestApplicationsDeleteErrorStatusCode(t *testing.T) {
 func TestMakeAppBodyData(t *testing.T) {
 	c := setupTest([]string{"applications", "create", "--host", "keyrock", "--data", "{\"application\":{}}"})
 
-	actual, err := makeAppBody(c, c.Ngsi)
+	actual, err := makeAppBody(c, c.Ngsi, false)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "{\"application\":{}}", string(actual))
@@ -620,27 +620,46 @@ func TestMakeAppBodyData(t *testing.T) {
 func TestMakeAppBodyParam1(t *testing.T) {
 	c := setupTest([]string{"applications", "create", "--host", "keyrock", "--name", "app1", "--description", "application1", "--redirectUri", "http://ruri", "--redirectSignOutUri", "http://suri", "--url", "http://url"})
 
-	actual, err := makeAppBody(c, c.Ngsi)
+	actual, err := makeAppBody(c, c.Ngsi, false)
 
 	if assert.NoError(t, err) {
-		assert.Equal(t, "{\"application\":{\"name\":\"app1\",\"description\":\"application1\",\"url\":\"http://url\",\"redirect_uri\":\"http://ruri\",\"redirect_sign_out_uri\":\"http://suri\"}}", string(actual))
+		assert.Equal(t, "{\"application\":{\"name\":\"app1\",\"description\":\"application1\",\"url\":\"http://url\",\"redirect_uri\":\"http://ruri\",\"redirect_sign_out_uri\":\"http://suri\",\"grant_type\":[\"client_credentials\",\"password\",\"implicit\",\"authorization_code\",\"refresh_token\"]}}", string(actual))
 	}
 }
 
 func TestMakeAppBodyParam2(t *testing.T) {
-	c := setupTest([]string{"applications", "create", "--host", "keyrock", "--grantType", "abc,def", "--tokenTypes", "123,456", "--responseType", "123,xyz", "--clientType", "987,654"})
+	c := setupTest([]string{"applications", "create", "--host", "keyrock", "--name", "app", "--grantType", "abc,def", "--tokenTypes", "123,456", "--responseType", "123,xyz", "--clientType", "987,654"})
 
-	actual, err := makeAppBody(c, c.Ngsi)
+	actual, err := makeAppBody(c, c.Ngsi, false)
 
 	if assert.NoError(t, err) {
-		assert.Equal(t, "{\"application\":{\"grant_type\":[\"abc\",\"def\"],\"response_type\":[\"123\",\"xyz\"],\"token_types\":[\"123\",\"456\"],\"client_type\":[\"987\",\"654\"]}}", string(actual))
+		assert.Equal(t, "{\"application\":{\"name\":\"app\",\"description\":\"app\",\"url\":\"http://localhost\",\"redirect_uri\":\"http://localhost\",\"redirect_sign_out_uri\":\"\",\"grant_type\":[\"abc\",\"def\"],\"response_type\":[\"123\",\"xyz\"],\"token_types\":[\"123\",\"456\"],\"client_type\":[\"987\",\"654\"]}}", string(actual))
+	}
+}
+
+func TestMakeAppBodyScope(t *testing.T) {
+	c := setupTest([]string{"applications", "create", "--host", "keyrock", "--name", "app", "--scope", "jwt"})
+
+	actual, err := makeAppBody(c, c.Ngsi, false)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "{\"application\":{\"name\":\"app\",\"description\":\"app\",\"url\":\"http://localhost\",\"redirect_uri\":\"http://localhost\",\"redirect_sign_out_uri\":\"\",\"grant_type\":[\"client_credentials\",\"password\",\"implicit\",\"authorization_code\",\"refresh_token\"],\"scope\":[\"jwt\"]}}", string(actual))
+	}
+}
+func TestMakeAppBodyOpenID(t *testing.T) {
+	c := setupTest([]string{"applications", "create", "--host", "keyrock", "--name", "app", "--openid"})
+
+	actual, err := makeAppBody(c, c.Ngsi, false)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "{\"application\":{\"name\":\"app\",\"description\":\"app\",\"url\":\"http://localhost\",\"redirect_uri\":\"http://localhost\",\"redirect_sign_out_uri\":\"\",\"grant_type\":[\"client_credentials\",\"password\",\"implicit\",\"authorization_code\",\"refresh_token\"],\"token_types\":[\"jwt\"],\"scope\":\"openid\"}}", string(actual))
 	}
 }
 
 func TestMakeAppBodyErrorData(t *testing.T) {
 	c := setupTest([]string{"applications", "create", "--host", "keyrock", "--data", "@"})
 
-	_, err := makeAppBody(c, c.Ngsi)
+	_, err := makeAppBody(c, c.Ngsi, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
@@ -654,7 +673,7 @@ func TestMakeAppBodyErrorParam(t *testing.T) {
 
 	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
-	_, err := makeAppBody(c, c.Ngsi)
+	_, err := makeAppBody(c, c.Ngsi, false)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)

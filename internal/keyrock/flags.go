@@ -150,11 +150,23 @@ var (
 		Name:    "responseType",
 		Aliases: []string{"r"},
 		Usage:   "response type",
+		Hidden:  true,
 	}
 	keyrcokApplicationClientTypeFlag = &ngsicli.StringFlag{
 		Name:    "clientType",
 		Aliases: []string{"c"},
 		Usage:   "client type",
+		Hidden:  true,
+	}
+	keyrcokApplicationScopeFlag = &ngsicli.StringFlag{
+		Name:    "scope",
+		Aliases: []string{"s"},
+		Usage:   "scopes to limit an application's access to a user's account",
+	}
+	keyrcokApplicationOpenIDFlag = &ngsicli.BoolFlag{
+		Name:    "openid",
+		Aliases: []string{"o"},
+		Usage:   "enable OpenID Connect Authentication",
 	}
 )
 
