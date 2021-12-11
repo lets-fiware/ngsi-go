@@ -36,20 +36,20 @@ var (
 	hostBrokerFlag = &ngsicli.StringFlag{
 		Name:        "host",
 		Aliases:     []string{"h"},
-		Usage:       "context broker host aliase",
+		Usage:       "context broker host alias",
 		SkipRefHost: true,
 	}
 	hostBrokerRFlag = &ngsicli.StringFlag{
 		Name:        "host",
 		Aliases:     []string{"h"},
-		Usage:       "context broker host aliase",
+		Usage:       "context broker host alias",
 		Required:    true,
 		SkipRefHost: true,
 	}
 	hostBrokerRPFlag = &ngsicli.StringFlag{
 		Name:         "host",
 		Aliases:      []string{"h"},
-		Usage:        "context broker host aliase",
+		Usage:        "context broker host alias",
 		Required:     true,
 		PreviousArgs: true,
 		SkipRefHost:  true,
@@ -57,7 +57,7 @@ var (
 	brokerHostFlag = &ngsicli.StringFlag{
 		Name:    "brokerHost",
 		Aliases: []string{"b"},
-		Usage:   "context broker host address or aliase",
+		Usage:   "context broker host address or alias",
 	}
 	ngsiTypeFlag = &ngsicli.StringFlag{
 		Name:  "ngsiType",
@@ -147,6 +147,11 @@ var (
 		Name:  "token",
 		Usage: "token `VALUE`",
 	}
+	brokerOverWrite = &ngsicli.BoolFlag{
+		Name:    "overWrite",
+		Aliases: []string{"O"},
+		Usage:   "overwrite broker alias",
+	}
 )
 
 // flag for server config
@@ -154,27 +159,27 @@ var (
 	hostServerFlag = &ngsicli.StringFlag{
 		Name:        "host",
 		Aliases:     []string{"h"},
-		Usage:       "server host aliase",
+		Usage:       "server host alias",
 		SkipRefHost: true,
 	}
 	hostServerRFlag = &ngsicli.StringFlag{
 		Name:        "host",
 		Aliases:     []string{"h"},
-		Usage:       "server host aliase",
+		Usage:       "server host alias",
 		Required:    true,
 		SkipRefHost: true,
 	}
 	hostServerRPFlag = &ngsicli.StringFlag{
 		Name:         "host",
 		Aliases:      []string{"h"},
-		Usage:        "server host aliase",
+		Usage:        "server host alias",
 		Required:     true,
 		PreviousArgs: true,
 		SkipRefHost:  true,
 	}
 	serverHostFlag = &ngsicli.StringFlag{
 		Name:  "serverHost",
-		Usage: "server host address or aliase",
+		Usage: "server host address or alias",
 	}
 	serverTypeFlag = &ngsicli.StringFlag{
 		Name:  "serverType",
@@ -184,6 +189,11 @@ var (
 		Name:   "all",
 		Usage:  "print all servers",
 		Hidden: true,
+	}
+	serverOverWrite = &ngsicli.BoolFlag{
+		Name:    "overWrite",
+		Aliases: []string{"O"},
+		Usage:   "overwrite server alias",
 	}
 )
 

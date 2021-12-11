@@ -140,12 +140,12 @@ brokersList001 fiware not found
 ```
 
 #
-# 0102 brokersAdd008 can'n specify broker Type
+# 0102 brokersAdd007 can't specify broker Type
 #
 ngsi broker add --host scorpiobroker --brokerHost http://scorpio:9090/ --ngsiType v2 --brokerType scorpio
 
 ```1
-brokersAdd006 can'n specify broker Type
+brokersAdd007 can't specify broker Type
 ```
 
 #
@@ -154,5 +154,5 @@ brokersAdd006 can'n specify broker Type
 ngsi broker add --host scorpiobroker --brokerHost http://scorpio:9090/ --ngsiType ld --brokerType orion
 
 ```1
-brokersAdd006 brokerType Error: orion
+brokersAdd007 brokerType Error: orion
 ```

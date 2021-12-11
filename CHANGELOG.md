@@ -1,7 +1,8 @@
 ## NGSI Go v0.9.0-next
 
--   Hardening: Add --configDir global flag (#207)
--   Hardening: Add feature to support OpenID for Keyrock (#206)
+-   Hardening: Add --overWrite flag for overwriting broker/server alias (#209)
+-   Hardening: Add --configDir global flag (#208)
+-   Hardening: Add feature to support OpenID for Keyrock (#207)
 -   Update: Update docker images (#205)
 -   Improve: Add --serial flag to print serial value as NGSI Go version (#204)
 -   Improve: Add colon as a valid character for alias name (#203)

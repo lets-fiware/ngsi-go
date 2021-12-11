@@ -123,19 +123,25 @@ func brokersAdd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 		return ngsierr.New(funcName, 1, "name error "+host, nil)
 	}
 	if ngsi.ExistsBrokerHost(host) {
-		return ngsierr.New(funcName, 2, host+" already exists", nil)
+		if c.Bool("overWrite") {
+			if err := deleteBrokerAlias(ngsi, host); err != nil {
+				return ngsierr.New(funcName, 2, err.Error(), err)
+			}
+		} else {
+			return ngsierr.New(funcName, 3, host+" already exists", nil)
+		}
 	}
 
 	if !c.IsSet("brokerHost") {
-		return ngsierr.New(funcName, 3, "brokerHost is missing", nil)
+		return ngsierr.New(funcName, 4, "brokerHost is missing", nil)
 	}
 
 	if !c.IsSet("ngsiType") && ngsilib.IsHTTP(c.String("brokerHost")) {
-		return ngsierr.New(funcName, 4, "ngsiType is missing", nil)
+		return ngsierr.New(funcName, 5, "ngsiType is missing", nil)
 	}
 
 	if c.IsSet("ngsiType") && !ngsilib.IsHTTP(c.String("brokerHost")) {
-		return ngsierr.New(funcName, 5, "can't specify ngsiType", nil)
+		return ngsierr.New(funcName, 6, "can't specify ngsiType", nil)
 	}
 
 	param := map[string]string{"serverType": "broker"}
@@ -158,7 +164,7 @@ func brokersAdd(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) 
 	err := ngsi.CreateServer(host, param)
 	if err != nil {
 		ngsi.Updated = false
-		return ngsierr.New(funcName, 6, err.Error(), err)
+		return ngsierr.New(funcName, 7, err.Error(), err)
 	}
 
 	return nil
@@ -219,18 +225,28 @@ func brokersDelete(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Clien
 			return ngsierr.New(funcName, 3, err.Error(), nil)
 		}
 	} else {
-		err := ngsi.IsHostReferenced(host)
+		err := deleteBrokerAlias(ngsi, host)
 		if err != nil {
-			return ngsierr.New(funcName, 4, host+" is referenced", err)
+			return ngsierr.New(funcName, 4, err.Error(), err)
 		}
+	}
+	return nil
+}
 
-		setPreviousArgs(ngsi, "")
+func deleteBrokerAlias(ngsi *ngsilib.NGSI, host string) error {
+	const funcName = "deleteBrokerAlias"
 
-		err = ngsi.DeleteServer(host)
-		if err != nil {
-			ngsi.Updated = false
-			return ngsierr.New(funcName, 5, err.Error(), err)
-		}
+	err := ngsi.IsHostReferenced(host)
+	if err != nil {
+		return ngsierr.New(funcName, 1, host+" is referenced", err)
+	}
+
+	setPreviousArgs(ngsi, "")
+
+	err = ngsi.DeleteServer(host)
+	if err != nil {
+		ngsi.Updated = false
+		return ngsierr.New(funcName, 2, err.Error(), err)
 	}
 	return nil
 }

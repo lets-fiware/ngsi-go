@@ -18,7 +18,7 @@ ngsi server list [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host VALUE, -h VALUE | server host aliase                                   |
+| --host VALUE, -h VALUE | server host alias                                    |
 | --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
@@ -47,7 +47,7 @@ ngsi server get [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host VALUE, -h VALUE | server host aliase (required)                        |
+| --host VALUE, -h VALUE | server host alias (required)                         |
 | --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
@@ -88,8 +88,8 @@ ngsi server add [options]
 
 | Options                        | Description                             |
 | ------------------------------ | --------------------------------------- |
-| --host VALUE, -h VALUE         | server host aliase (required)           |
-| --serverHost VALUE             | server host address or aliase           |
+| --host VALUE, -h VALUE         | server host alias (required)            |
+| --serverHost VALUE             | server host address or alias            |
 | --serverType VALUE             | serverType (comet, ql)                  |
 | --idmType VALUE, -t VALUE      | token type                              |
 | --idmHost VALUE, -m VALUE      | identity manager host                   |
@@ -106,6 +106,7 @@ ngsi server add [options]
 | --service VALUE, -s VALUE      | FIWARE Service VALUE                    |
 | --path VALUE, -p VALUE         | FIWARE ServicePath VALUE                |
 | --safeString VALUE             | use safe string (VALUE: on/off)         |
+| --overWrite, -O                | overwrite server alias (default: false) |
 | --help                         | show help (default: true)               |
 
 > **Note:** Orion interprets the FIWARE Service name (tenant name) in lowercase. To use a coherent FIWARE Service name,
@@ -279,8 +280,8 @@ ngsi server upadte [options]
 
 | Options                        | Description                             |
 | ------------------------------ | --------------------------------------- |
-| --host VALUE, -h VALUE         | server host aliase (required)           |
-| --serverHost VALUE             | server host address or aliase           |
+| --host VALUE, -h VALUE         | server host alias (required)            |
+| --serverHost VALUE             | server host address or alias            |
 | --idmType VALUE, -t VALUE      | token type                              |
 | --idmHost VALUE, -m VALUE      | identity manager host                   |
 | --apiPath VALUE, -a VALUE      | API path                                |
@@ -316,7 +317,7 @@ ngsi server upadte [options]
 
 | Options                | Description                   |
 | ---------------------- | ----------------------------- |
-| --host VALUE, -h VALUE | server host aliase (required) |
+| --host VALUE, -h VALUE | server host alias (required) |
 | --help                 | show help (default: true)     |
 
 #### Example 1

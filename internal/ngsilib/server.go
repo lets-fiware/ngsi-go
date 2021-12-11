@@ -151,7 +151,7 @@ func (ngsi *NGSI) checkAllParams(host *Server) error {
 		}
 		if Contains(ngsiV2Types, ngsiType) {
 			if host.BrokerType != "" {
-				return ngsierr.New(funcName, 4, "can'n specify broker Type", nil)
+				return ngsierr.New(funcName, 4, "can't specify broker Type", nil)
 			}
 			host.NgsiType = cV2
 			host.BrokerType = ""

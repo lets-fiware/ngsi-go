@@ -634,6 +634,59 @@ ngsi broker delete \
 ```
 
 #
+# 0081 Add broker (overwrite test)
+#
+ngsi broker add --host overwrite --ngsiType v2 --brokerHost http://localhost:1026
+
+```
+```
+
+#
+# 0082 Get broker
+#
+ngsi broker get --host overwrite
+
+```
+brokerHost http://localhost:1026
+ngsiType v2
+```
+
+#
+# 0083 Add broker (overwrite error)
+#
+ngsi broker add --host overwrite --ngsiType v2 --brokerHost http://localhost:1026
+
+```1
+brokersAdd003 overwrite already exists
+```
+
+#
+# 0084 Add broker --overWrite
+#
+ngsi broker add --host overwrite --ngsiType v2 --brokerHost http://overwrite:1026 --overWrite
+
+```
+```
+
+#
+# 0085 Get broker
+#
+ngsi broker get --host overwrite
+
+```
+brokerHost http://overwrite:1026
+ngsiType v2
+```
+
+#
+# 0086 Delete broker (clean up)
+#
+ngsi broker delete --host overwrite
+
+```
+```
+
+#
 # 0100 host not found
 #
 ngsi broker add
@@ -644,19 +697,19 @@ Run001 missing required options
 ```
 
 #
-# 0101 brokersAdd003 brokerHost is missing
+# 0101 brokersAdd004 brokerHost is missing
 #
 ngsi broker add --host fiware
 
 ```1
-brokersAdd003 brokerHost is missing
+brokersAdd004 brokerHost is missing
 ```
 
 #
-# 0102 brokersAdd006 brokerHost error: orion-v2
+# 0102 brokersAdd007 brokerHost error: orion-v2
 #
 ngsi broker add --host fiware --brokerHost orion-v2
 
 ```1
-brokersAdd006 host error: orion-v2
+brokersAdd007 host error: orion-v2
 ```

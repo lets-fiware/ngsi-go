@@ -43,7 +43,7 @@ type Flag interface {
 	FlagAliases() []string
 	FlagUsage() string
 	FlagHidden() bool
-	Check(name, aliase string) bool
+	Check(name, alias string) bool
 	IsSet() bool
 	IsRequired() bool
 	IsInitClient() bool
@@ -104,13 +104,13 @@ func (f *StringFlag) IsInitClient() bool {
 	return f.InitClient
 }
 
-func (f *StringFlag) Check(name, aliase string) bool {
+func (f *StringFlag) Check(name, alias string) bool {
 	if name != "" && f.Name == name {
 		return true
 	}
-	if aliase != "" {
+	if alias != "" {
 		for _, a := range f.Aliases {
-			if aliase == a {
+			if alias == a {
 				return true
 			}
 		}
@@ -193,13 +193,13 @@ func (f *BoolFlag) IsInitClient() bool {
 	return false
 }
 
-func (f *BoolFlag) Check(name, aliase string) bool {
+func (f *BoolFlag) Check(name, alias string) bool {
 	if name != "" && f.Name == name {
 		return true
 	}
-	if aliase != "" {
+	if alias != "" {
 		for _, a := range f.Aliases {
-			if aliase == a {
+			if alias == a {
 				return true
 			}
 		}
@@ -292,13 +292,13 @@ func (f *Int64Flag) IsInitClient() bool {
 	return false
 }
 
-func (f *Int64Flag) Check(name, aliase string) bool {
+func (f *Int64Flag) Check(name, alias string) bool {
 	if name != "" && f.Name == name {
 		return true
 	}
-	if aliase != "" {
+	if alias != "" {
 		for _, a := range f.Aliases {
-			if aliase == a {
+			if alias == a {
 				return true
 			}
 		}
@@ -354,8 +354,8 @@ func flagName(name string, aliases []string, usage string, arg string) string {
 
 	n := "--" + name + arg
 
-	for _, aliase := range aliases {
-		n += ", -" + aliase + arg
+	for _, alias := range aliases {
+		n += ", -" + alias + arg
 	}
 
 	return n

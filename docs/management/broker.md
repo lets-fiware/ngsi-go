@@ -18,7 +18,7 @@ ngsi broker list [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host VALUE, -h VALUE | context broker host aliase                           |
+| --host VALUE, -h VALUE | context broker host alias                            |
 | --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
@@ -69,7 +69,7 @@ ngsi broker get [options]
 
 | Options                | Description                                          |
 | ---------------------- | ---------------------------------------------------- |
-| --host VALUE, -h VALUE | context broker host aliase (required)                |
+| --host VALUE, -h VALUE | context broker host alias (required)                 |
 | --json, -j             | JSON format (default: false)                         |
 | --pretty, -P           | pretty format (default: false)                       |
 | --clearText            | show obfuscated items as clear text (default: false) |
@@ -108,8 +108,8 @@ ngsi broker add [options]
 
 | Options                        | Description                                       |
 | ------------------------------ | ------------------------------------------------- |
-| --host VALUE, -h VALUE         | context broker host aliase (required)             |
-| --brokerHost VALUE, -b VALUE   | context broker host address or aliase             |
+| --host VALUE, -h VALUE         | context broker host alias (required)              |
+| --brokerHost VALUE, -b VALUE   | context broker host address or alias              |
 | --ngsiType VALUE               | NGSI type: v2 or ld                               |
 | --brokerType VALUE             | NGSI-LD broker type: orion-ld, scorpio or stellio |
 | --idmType VALUE, -t VALUE      | token type                                        |
@@ -127,6 +127,7 @@ ngsi broker add [options]
 | --service VALUE, -s VALUE      | FIWARE Service VALUE                              |
 | --path VALUE, -p VALUE         | FIWARE ServicePath VALUE                          |
 | --safeString VALUE             | use safe string (VALUE: on/off)                   |
+| --overWrite, -O                | overwrite broker alias (default: false)           |
 | --help                         | show help (default: true)                         |
 
 -   The `--brokerType` option is used with `--ngsiType ld` option when adding a NGSI-LD broker. It is not needed for
@@ -386,8 +387,8 @@ ngsi broker upadte [options]
 
 | Options                        | Description                                       |
 | ------------------------------ | ------------------------------------------------- |
-| --host VALUE, -h VALUE         | context broker host aliase (required)             |
-| --brokerHost VALUE, -b VALUE   | context broker host address or aliase             |
+| --host VALUE, -h VALUE         | context broker host alias (required)              |
+| --brokerHost VALUE, -b VALUE   | context broker host address or alias              |
 | --ngsiType VALUE               | NGSI type: v2 or ld                               |
 | --brokerType VALUE             | NGSI-LD broker type: orion-ld, scorpio or stellio |
 | --idmType VALUE, -t VALUE      | token type                                        |
@@ -425,7 +426,7 @@ ngsi broker upadte [options]
 
 | Options                 | Description                           |
 | ----------------------- | ------------------------------------- |
-| --host VALUE, -h VALUE  | context broker host aliase (required) |
+| --host VALUE, -h VALUE  | context broker host alias (required)  |
 | --help                  | show help (default: true)             |
 
 #### Example 1

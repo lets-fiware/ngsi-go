@@ -91,7 +91,7 @@ ngsi server add \
   --username admin@letsfiware.jp
 
 ```1
-serverAdd006 username and password are needed
+serverAdd007 username and password are needed
 ```
 
 #
@@ -161,7 +161,7 @@ ngsi server add \
   --username admin@letsfiware.jp
 
 ```1
-serverAdd006 username and password are needed
+serverAdd007 username and password are needed
 ```
 
 #
@@ -243,7 +243,7 @@ ngsi server add \
   --clientId 00000000-1111-2222-3333-444444444444
 
 ```1
-serverAdd006 idmHost, username, password, clientID and clientSecret are needed
+serverAdd007 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
@@ -320,7 +320,7 @@ ngsi server add \
   --username fiware
 
 ```1
-serverAdd006 idmHost, username and password are needed
+serverAdd007 idmHost, username and password are needed
 ```
 
 #
@@ -402,7 +402,7 @@ ngsi server add \
   --clientId ngsi_api
 
 ```1
-serverAdd006 idmHost, username, password, clientID and clientSecret are needed
+serverAdd007 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
@@ -484,7 +484,7 @@ ngsi server add \
   --clientId 0000000000000000000000_A_ZZZ
 
 ```1
-serverAdd006 idmHost, username, password, clientID and clientSecret are needed
+serverAdd007 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
@@ -558,7 +558,7 @@ ngsi server add \
   --clientId orion
 
 ```1
-serverAdd006 idmHost, clientID and clientSecret are needed
+serverAdd007 idmHost, clientID and clientSecret are needed
 ```
 
 #
@@ -640,7 +640,7 @@ ngsi server add \
   --clientId 00000000-1111-2222-3333-444444444444
 
 ```1
-serverAdd006 idmHost, username, password, clientID and clientSecret are needed
+serverAdd007 idmHost, username, password, clientID and clientSecret are needed
 ```
 
 #
@@ -715,7 +715,7 @@ ngsi server add \
   --username admin
 
 ```1
-serverAdd006 idmHost, username and password are needed
+serverAdd007 idmHost, username and password are needed
 ```
 
 #
@@ -789,7 +789,7 @@ ngsi server add \
   --username admin
 
 ```1
-serverAdd006 idmHost, username and password are needed
+serverAdd007 idmHost, username and password are needed
 ```
 
 #
@@ -859,7 +859,7 @@ ngsi server add \
   --username admin
 
 ```1
-serverAdd006 headerName and either headerValue or headerEnvValue
+serverAdd007 headerName and either headerValue or headerEnvValue
 ```
 
 #
@@ -929,5 +929,5 @@ ngsi server add \
   --username admin
 
 ```1
-serverAdd006 headerName and either headerValue or headerEnvValue
+serverAdd007 headerName and either headerValue or headerEnvValue
 ```
