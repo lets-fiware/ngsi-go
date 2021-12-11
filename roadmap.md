@@ -18,11 +18,11 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for October 2021:
+and incorporated in the next release of the product planned for March 2022:
 
--   CII Best Practices Badge program compliant
 -   Improve NGSI commands and convenience commands
 -   NGSI-LD API support
+-   Improve unit tests and E2E tests
 
 ## Medium term
 
@@ -30,8 +30,8 @@ The following list of features are planned to be addressed in the medium term,
 typically within the subsequent release(s) generated in the next 9 months after
 next planned release:
 
--   NGSI-LD API full support (ETSI GS CIM 009 v1.4.2)
--   Improve unit tests and E2E tests
+-   NGSI-LD API full support ([ETSI GS CIM 009 v1.4.2](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.04.02_60/gs_CIM009v010402p.pdf))
+-   NGSI-LD API full support ([ETSI GS CIM 009 v1.5.1](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.05.01_60/gs_CIM009v010501p.pdf))
 
 ## Long term
 
@@ -41,4 +41,3 @@ scheduled for a release in the near future. Please feel free to contact us if
 you wish to get involved in the implementation or influence the roadmap
 
 -   FIWARE Incubated GE
--   Dependencies free

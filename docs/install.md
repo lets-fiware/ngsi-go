@@ -4,7 +4,7 @@
 
 The NGSI Go binary is installed in `/usr/local/bin`.
 
-### Installation on UNIX
+### Installation on Linux
 
 ```console
 curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.9.0/ngsi-v0.9.0-linux-amd64.tar.gz
