@@ -163,7 +163,7 @@ func TestCheckAllParamsErrorV2BrokerType(t *testing.T) {
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 4, ngsiErr.ErrNo)
-		assert.Equal(t, "can'n specify broker Type", ngsiErr.Message)
+		assert.Equal(t, "can't specify broker Type", ngsiErr.Message)
 	}
 }
 

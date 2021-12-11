@@ -249,6 +249,18 @@ func TestBrokersAddLDSafeString(t *testing.T) {
 	}
 }
 
+func TestBrokersAddOverWrite(t *testing.T) {
+	c := setupTest([]string{"broker", "add", "--host", "orion", "--brokerHost", "http://overwrite", "--ngsiType", "v2", "--overWrite"})
+
+	err := brokersAdd(c, c.Ngsi, c.Client)
+
+	if assert.NoError(t, err) {
+		list := c.Ngsi.AllServersList()
+		v := (*list)["orion"]
+		assert.Equal(t, "http://overwrite", v.ServerHost)
+	}
+}
+
 func TestBrokersAddErrorNameString(t *testing.T) {
 	c := setupTest([]string{"broker", "add", "--host", "@orion", "--brokerHost", "http://orion", "--ngsiType", "v2"})
 
@@ -261,6 +273,20 @@ func TestBrokersAddErrorNameString(t *testing.T) {
 	}
 }
 
+func TestBrokersAddErrorOverWrite(t *testing.T) {
+	c := setupTest([]string{"broker", "add", "--host", "orion", "--brokerHost", "http://orion", "--ngsiType", "v2", "--overWrite"})
+
+	c.Ngsi.ConfigFile = &helper.MockIoLib{OpenErr: errors.New("open error"), Filename: helper.StrPtr("ngsi-go-config.json")}
+
+	err := brokersAdd(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "open error", ngsiErr.Message)
+	}
+}
+
 func TestBrokersAddErrorAlreadyExists(t *testing.T) {
 	c := setupTest([]string{"broker", "add", "--host", "orion", "--brokerHost", "http://orion", "--ngsiType", "v2"})
 
@@ -268,10 +294,11 @@ func TestBrokersAddErrorAlreadyExists(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "orion already exists", ngsiErr.Message)
 	}
 }
+
 func TestBrokersAddErrorBrokerHost(t *testing.T) {
 	c := setupTest([]string{"broker", "add", "--host", "orion-v2", "--ngsiType", "v2"})
 
@@ -279,7 +306,7 @@ func TestBrokersAddErrorBrokerHost(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "brokerHost is missing", ngsiErr.Message)
 	}
 }
@@ -291,7 +318,7 @@ func TestBrokersAddErrorNgsiType(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "ngsiType is missing", ngsiErr.Message)
 	}
 }
@@ -303,7 +330,7 @@ func TestBrokersAddErrorNgsiType2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "can't specify ngsiType", ngsiErr.Message)
 	}
 }
@@ -315,7 +342,7 @@ func TestBrokersAddErrorCreateBroker(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "unknown parameter: 123", ngsiErr.Message)
 	}
 }
@@ -416,7 +443,30 @@ func TestBrokersDeleteErrorUpdateBroker(t *testing.T) {
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }
-func TestBrokersDeleteErrorReference(t *testing.T) {
+
+func TestBrokersDeleteErrorDeleteServer(t *testing.T) {
+	c := setupTest([]string{"broker", "delete", "--host", "orion"})
+
+	c.Ngsi.ConfigFile = &helper.MockIoLib{OpenErr: errors.New("open error"), Filename: helper.StrPtr("ngsi-go-config.json")}
+
+	err := brokersDelete(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "open error", ngsiErr.Message)
+	}
+}
+
+func TestDeleteBrokerAlias(t *testing.T) {
+	c := setupTest([]string{"broker", "delete", "--host", "orion"})
+
+	err := deleteBrokerAlias(c.Ngsi, "orion")
+
+	assert.NoError(t, err)
+}
+
+func TestDeleteBrokerAliasErrorReference(t *testing.T) {
 	conf := `{
 		"version": "1",
 		"servers": {
@@ -432,25 +482,25 @@ func TestBrokersDeleteErrorReference(t *testing.T) {
 
 	c := setupTestWithConfig([]string{"broker", "delete", "--host", "orion"}, conf)
 
-	err := brokersDelete(c, c.Ngsi, c.Client)
+	err := deleteBrokerAlias(c.Ngsi, "orion")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "orion is referenced", ngsiErr.Message)
 	}
 }
 
-func TestBrokersDeleteErrorDeleteServer(t *testing.T) {
+func TestDeleteBrokerAliasErrorDeleteServer(t *testing.T) {
 	c := setupTest([]string{"broker", "delete", "--host", "orion"})
 
 	c.Ngsi.ConfigFile = &helper.MockIoLib{OpenErr: errors.New("open error"), Filename: helper.StrPtr("ngsi-go-config.json")}
 
-	err := brokersDelete(c, c.Ngsi, c.Client)
+	err := deleteBrokerAlias(c.Ngsi, "orion")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }

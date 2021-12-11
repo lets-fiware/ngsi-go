@@ -290,9 +290,9 @@ func parseCmdFlag(c *Context, token *token, cmd *Command) (*Command, error) {
 			c.Bashcompletion = true
 			return nil, nil
 		}
-		name, aliase, opt := isOption(*arg)
+		name, alias, opt := isOption(*arg)
 		if opt {
-			err := parseOpt(flags, token, name, aliase)
+			err := parseOpt(flags, token, name, alias)
 			if err != nil {
 				return nil, ngsierr.New(funcName, 1, err.Error(), err)
 			}
@@ -562,9 +562,9 @@ func parseGlobalFlag(c *Context, token *token) error {
 			return nil
 		}
 
-		name, aliase, opt := isOption(*arg)
+		name, alias, opt := isOption(*arg)
 		if opt {
-			err := parseOpt(c.GlobalFlags, token, name, aliase)
+			err := parseOpt(c.GlobalFlags, token, name, alias)
 			if err != nil {
 				return ngsierr.New(funcName, 1, err.Error(), err)
 			}
@@ -582,25 +582,25 @@ func isOption(arg string) (string, string, bool) {
 	if (strings.HasPrefix(arg, "--") && len(arg) > 2) ||
 		(strings.HasPrefix(arg, "-") && !strings.HasPrefix(arg, "--") && len(arg) > 1) {
 		name := ""
-		aliase := ""
+		alias := ""
 		if strings.HasPrefix(arg, "--") {
 			name = (arg)[2:]
 		} else {
-			aliase = string((arg)[1:])
+			alias = string((arg)[1:])
 		}
-		return name, aliase, true
+		return name, alias, true
 	}
 
 	return arg, "", false
 }
 
-func parseOpt(flags []Flag, token *token, name, aliase string) error {
+func parseOpt(flags []Flag, token *token, name, alias string) error {
 	const funcName = "parseOpt"
 
 	for _, ff := range flags {
 		switch f := ff.(type) {
 		case *StringFlag:
-			if f.Check(name, aliase) {
+			if f.Check(name, alias) {
 				v := token.Next()
 				if v == nil {
 					return ngsierr.New(funcName, 1, "value missing", nil)
@@ -608,7 +608,7 @@ func parseOpt(flags []Flag, token *token, name, aliase string) error {
 				return f.SetValue(*v)
 			}
 		case *Int64Flag:
-			if f.Check(name, aliase) {
+			if f.Check(name, alias) {
 				v := token.Next()
 				if v == nil {
 					return ngsierr.New(funcName, 2, "value missing", nil)
@@ -620,7 +620,7 @@ func parseOpt(flags []Flag, token *token, name, aliase string) error {
 				return nil
 			}
 		case *BoolFlag:
-			if f.Check(name, aliase) {
+			if f.Check(name, alias) {
 				if token.Peek() == nil {
 					f.Value = true
 				} else {
@@ -640,11 +640,11 @@ func parseOpt(flags []Flag, token *token, name, aliase string) error {
 	if name != "" {
 		name = "--" + name
 	}
-	if aliase != "" {
-		aliase = "-" + aliase
+	if alias != "" {
+		alias = "-" + alias
 	}
 
-	return ngsierr.New(funcName, 4, "unknown flag: "+name+aliase, nil)
+	return ngsierr.New(funcName, 4, "unknown flag: "+name+alias, nil)
 }
 
 func hintCmdList(cmds []*Command) string {

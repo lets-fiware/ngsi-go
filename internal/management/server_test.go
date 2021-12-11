@@ -213,6 +213,18 @@ func TestServersAdd(t *testing.T) {
 	}
 }
 
+func TestServersAddOverWrite(t *testing.T) {
+	c := setupTest([]string{"server", "add", "--host", "comet", "--serverHost", "http://overwrite", "--serverType", "comet", "--overWrite"})
+
+	err := serverAdd(c, c.Ngsi, c.Client)
+
+	if assert.NoError(t, err) {
+		list := c.Ngsi.AllServersList()
+		assert.Equal(t, "http://overwrite", (*list)["comet"].ServerHost)
+		assert.Equal(t, "comet", (*list)["comet"].ServerType)
+	}
+}
+
 func TestServersAddKeyrock(t *testing.T) {
 	c := setupTest([]string{"server", "add", "--host", "idm", "--serverHost", "http://keyrock", "--serverType", "keyrock", "--username", "fiware", "--password", "1234"})
 
@@ -251,6 +263,21 @@ func TestServersAddErrorNameString(t *testing.T) {
 	}
 }
 
+func TestServersAddErrorOverWrite(t *testing.T) {
+	c := setupTest([]string{"server", "add", "--host", "comet", "--serverHost", "http://comet", "--serverType", "comet", "--service", "Foo", "--overWrite"})
+
+	c.Ngsi.ConfigFile = &helper.MockIoLib{OpenErr: errors.New("open error"), Filename: helper.StrPtr("ngsi-config.json")}
+
+	err := serverAdd(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "open error", ngsiErr.Message)
+	}
+
+}
+
 func TestServersAddErrorAlreadyExists(t *testing.T) {
 	c := setupTest([]string{"server", "add", "--host", "comet", "--serverHost", "http://comet", "--serverType", "comet", "--service", "Foo"})
 
@@ -258,10 +285,11 @@ func TestServersAddErrorAlreadyExists(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "comet already exists", ngsiErr.Message)
 	}
 }
+
 func TestServersAddErrorServerHost(t *testing.T) {
 	c := setupTest([]string{"server", "add", "--host", "server", "http://comet", "--serverType", "comet", "--service", "Foo"})
 
@@ -269,7 +297,7 @@ func TestServersAddErrorServerHost(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "serverHost is missing", ngsiErr.Message)
 	}
 }
@@ -281,7 +309,7 @@ func TestServersAddErrorServerType(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, "serverType is missing", ngsiErr.Message)
 	}
 }
@@ -293,7 +321,7 @@ func TestServersAddErrorUnknownServerType(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 6, ngsiErr.ErrNo)
 		assert.Equal(t, "serverType error: fiware (Comet, Cygnus, Iota, Keyrock, Perseo, QuantumLeap, WireCloud, Queryproxy, Regproxy, Tokenproxy)", ngsiErr.Message)
 	}
 }
@@ -305,7 +333,7 @@ func TestServersAddErrorAdd(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
 		assert.Equal(t, "host error: fiware", ngsiErr.Message)
 	}
 }
@@ -410,7 +438,29 @@ func TestServersDeleteErrorUpdateServer(t *testing.T) {
 	}
 }
 
-func TestServersDeleteErrorReference(t *testing.T) {
+func TestServersDeleteErrorDeleteServer(t *testing.T) {
+	c := setupTest([]string{"server", "delete", "--host", "comet"})
+
+	c.Ngsi.ConfigFile = &helper.MockIoLib{OpenErr: errors.New("open error"), Filename: helper.StrPtr("ngsi-config.json")}
+
+	err := serverDelete(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "open error", ngsiErr.Message)
+	}
+}
+
+func TestDeleteServerAlias(t *testing.T) {
+	c := setupTest([]string{"server", "delete", "--host", "ql"})
+
+	err := deleteServerAlias(c.Ngsi, "ql")
+
+	assert.NoError(t, err)
+}
+
+func TestDeleteServerAliasErrorReference(t *testing.T) {
 	conf := `{
 		"version": "1",
 		"servers": {
@@ -428,25 +478,25 @@ func TestServersDeleteErrorReference(t *testing.T) {
 
 	c.Ngsi.FileReader = &helper.MockFileLib{ReadFileData: []byte(conf)}
 
-	err := serverDelete(c, c.Ngsi, c.Client)
+	err := deleteServerAlias(c.Ngsi, "comet")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
 		assert.Equal(t, "comet is referenced", ngsiErr.Message)
 	}
 }
 
-func TestServersDeleteErrorDeleteServer(t *testing.T) {
+func TestDeleteServerAliasErrorDeleteServer(t *testing.T) {
 	c := setupTest([]string{"server", "delete", "--host", "comet"})
 
 	c.Ngsi.ConfigFile = &helper.MockIoLib{OpenErr: errors.New("open error"), Filename: helper.StrPtr("ngsi-config.json")}
 
-	err := serverDelete(c, c.Ngsi, c.Client)
+	err := deleteServerAlias(c.Ngsi, "comet")
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 5, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "open error", ngsiErr.Message)
 	}
 }

@@ -1584,22 +1584,22 @@ func TestIsOption(t *testing.T) {
 	cases := []struct {
 		args     string
 		name     string
-		aliase   string
+		alias    string
 		expected bool
 	}{
-		{args: "--host", name: "host", aliase: "", expected: true},
-		{args: "-h", name: "", aliase: "h", expected: true},
-		{args: "host", name: "host", aliase: "", expected: false},
-		{args: "h", name: "h", aliase: "", expected: false},
-		{args: "--", name: "--", aliase: "", expected: false},
-		{args: "-", name: "-", aliase: "", expected: false},
+		{args: "--host", name: "host", alias: "", expected: true},
+		{args: "-h", name: "", alias: "h", expected: true},
+		{args: "host", name: "host", alias: "", expected: false},
+		{args: "h", name: "h", alias: "", expected: false},
+		{args: "--", name: "--", alias: "", expected: false},
+		{args: "-", name: "-", alias: "", expected: false},
 	}
 
 	for _, c := range cases {
-		name, aliase, err := isOption(c.args)
+		name, alias, err := isOption(c.args)
 
 		assert.Equal(t, c.name, name)
-		assert.Equal(t, c.aliase, aliase)
+		assert.Equal(t, c.alias, alias)
 		assert.Equal(t, c.expected, err)
 	}
 

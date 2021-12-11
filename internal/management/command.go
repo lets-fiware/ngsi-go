@@ -109,6 +109,7 @@ var BrokersCmd = ngsicli.Command{
 				ngsicli.ScopeFlag,
 				ngsicli.SafeStringFlag,
 				ngsicli.XAuthTokenFlag,
+				brokerOverWrite,
 			},
 			Action: func(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 				return brokersAdd(c, ngsi, client)
@@ -214,6 +215,7 @@ var ServerCmd = ngsicli.Command{
 				ngsicli.ScopeFlag,
 				ngsicli.SafeStringFlag,
 				ngsicli.XAuthTokenFlag,
+				serverOverWrite,
 			},
 			Action: func(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 				return serverAdd(c, ngsi, client)
