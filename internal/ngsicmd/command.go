@@ -301,6 +301,7 @@ var CreateCmd = ngsicli.Command{
 				exceptAttrsFlag,
 				attrsFormatFlag,
 				ngsicli.SafeStringFlag,
+				rawFlag,
 				notifyURLFlag,
 				getFlag,
 			},
@@ -592,6 +593,7 @@ var GetCmd = ngsicli.Command{
 				localTimeFlag,
 				ngsicli.PrettyFlag,
 				ngsicli.SafeStringFlag,
+				rawFlag,
 			},
 			RequiredFlags: []string{"id"},
 			Action: func(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
@@ -969,6 +971,7 @@ var UpdateCmd = ngsicli.Command{
 				exceptAttrsFlag,
 				attrsFormatFlag,
 				ngsicli.SafeStringFlag,
+				rawFlag,
 				notifyURLFlag,
 				getFlag,
 			},

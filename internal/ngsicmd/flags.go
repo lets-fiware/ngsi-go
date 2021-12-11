@@ -476,6 +476,10 @@ var (
 		Name:  "skipForwarding",
 		Usage: "skip forwarding to CPrs (v2)",
 	}
+	rawFlag = &ngsicli.BoolFlag{
+		Name:  "raw",
+		Usage: "handle raw data",
+	}
 )
 
 var (

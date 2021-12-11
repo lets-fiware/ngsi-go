@@ -4852,6 +4852,7 @@ OPTIONS:
    --exceptAttrs VALUE        exceptAttrs (v2)
    --attrsFormat VALUE        attrsFormat (v2)
    --safeString VALUE         use safe string (VALUE: on/off)
+   --raw                      handle raw data (default: false)
    --help                     show help (default: true)
 
 GLOBAL OPTIONS:
@@ -5576,6 +5577,7 @@ OPTIONS:
    --localTime                localTime (default: false)
    --pretty, -P               pretty format (default: false)
    --safeString VALUE         use safe string (VALUE: on/off)
+   --raw                      handle raw data (default: false)
    --help                     show help (default: true)
 
 GLOBAL OPTIONS:
@@ -6397,6 +6399,7 @@ OPTIONS:
    --exceptAttrs VALUE        exceptAttrs (v2)
    --attrsFormat VALUE        attrsFormat (v2)
    --safeString VALUE         use safe string (VALUE: on/off)
+   --raw                      handle raw data (default: false)
    --help                     show help (default: true)
 
 GLOBAL OPTIONS:

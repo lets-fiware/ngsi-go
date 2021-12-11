@@ -1,5 +1,6 @@
 ## NGSI Go v0.9.0-next
 
+-   Hardening: Add --raw flag for Subscription command (#212)
 -   Hardening: Avoid creating duplicate role name in Keyrock (#210)
 -   Hardening: Add --overWrite flag for overwriting broker/server alias (#209)
 -   Hardening: Add --configDir global flag (#208)

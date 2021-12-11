@@ -355,6 +355,7 @@ ngsi get [common options] subscription [options]
 | --localTime               | localTime (default: false)             |
 | --pretty, -P              | pretty format (default: false)         |
 | --safeString VALUE        | use safe string (VALUE: on/off)        |
+| --raw                     | handle raw data (default: false)       |
 | --help                    | show help (default: true)              |
 
 ### Examples for NGSIv2
