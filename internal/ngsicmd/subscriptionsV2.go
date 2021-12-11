@@ -272,18 +272,23 @@ func subscriptionGetV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 		return ngsierr.New(funcName, 2, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil)
 	}
 
-	var sub subscriptionResposeV2
-	if err := ngsilib.JSONUnmarshalDecode(body, &sub, client.IsSafeString()); err != nil {
-		return ngsierr.New(funcName, 3, err.Error(), err)
+	b := body
+
+	if !c.Bool("raw") {
+		var sub subscriptionResposeV2
+		if err := ngsilib.JSONUnmarshalDecode(body, &sub, client.IsSafeString()); err != nil {
+			return ngsierr.New(funcName, 3, err.Error(), err)
+		}
+
+		if c.IsSet("localTime") {
+			toLocaltime(&sub)
+		}
+		b, err = ngsilib.JSONMarshal(&sub)
+		if err != nil {
+			return ngsierr.New(funcName, 4, err.Error(), err)
+		}
 	}
 
-	if c.IsSet("localTime") {
-		toLocaltime(&sub)
-	}
-	b, err := ngsilib.JSONMarshal(&sub)
-	if err != nil {
-		return ngsierr.New(funcName, 4, err.Error(), err)
-	}
 	if c.Bool("pretty") {
 		newBuf := new(bytes.Buffer)
 		err := ngsi.JSONConverter.Indent(newBuf, b, "", "  ")
@@ -301,6 +306,9 @@ func subscriptionGetV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.C
 func subscriptionsCreateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsCreateV2"
 
+	var b []byte
+	var err error
+
 	client.SetPath("/subscriptions")
 
 	opts := []string{"skipInitialNotification"}
@@ -309,23 +317,31 @@ func subscriptionsCreateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsil
 
 	client.SetHeader("Content-Type", "application/json")
 
-	var t subscriptionV2
+	if c.Bool("raw") && c.IsSet("data") {
+		b, err = ngsi.ReadAll(c.String("data"))
+		if err != nil {
+			return ngsierr.New(funcName, 1, err.Error(), err)
+		}
+	} else {
 
-	if err := setSubscriptionValuesV2(c, ngsi, &t, false); err != nil {
-		return ngsierr.New(funcName, 1, err.Error(), err)
-	}
+		var t subscriptionV2
 
-	b, err := ngsilib.JSONMarshalEncode(&t, true)
-	if err != nil {
-		return ngsierr.New(funcName, 2, err.Error(), err)
+		if err := setSubscriptionValuesV2(c, ngsi, &t, false); err != nil {
+			return ngsierr.New(funcName, 2, err.Error(), err)
+		}
+
+		b, err = ngsilib.JSONMarshalEncode(&t, true)
+		if err != nil {
+			return ngsierr.New(funcName, 3, err.Error(), err)
+		}
 	}
 
 	res, body, err := client.HTTPPost(b)
 	if err != nil {
-		return ngsierr.New(funcName, 3, err.Error(), err)
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusCreated {
-		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
+		return ngsierr.New(funcName, 5, fmt.Sprintf("%s %s", res.Status, string(body)), nil)
 	}
 
 	location := res.Header.Get("Location")
@@ -342,6 +358,9 @@ func subscriptionsCreateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsil
 func subscriptionsUpdateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "subscriptionsUpdateV2"
 
+	var b []byte
+	var err error
+
 	id := c.String("id")
 
 	client.SetPath("/subscriptions/" + id)
@@ -352,23 +371,30 @@ func subscriptionsUpdateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsil
 
 	client.SetHeader("Content-Type", "application/json")
 
-	var t subscriptionV2
+	if c.Bool("raw") && c.IsSet("data") {
+		b, err = ngsi.ReadAll(c.String("data"))
+		if err != nil {
+			return ngsierr.New(funcName, 1, err.Error(), err)
+		}
+	} else {
+		var t subscriptionV2
 
-	if err := setSubscriptionValuesV2(c, ngsi, &t, true); err != nil {
-		return ngsierr.New(funcName, 1, err.Error(), err)
-	}
+		if err := setSubscriptionValuesV2(c, ngsi, &t, true); err != nil {
+			return ngsierr.New(funcName, 2, err.Error(), err)
+		}
 
-	b, err := ngsilib.JSONMarshalEncode(&t, true)
-	if err != nil {
-		return ngsierr.New(funcName, 2, err.Error(), err)
+		b, err = ngsilib.JSONMarshalEncode(&t, true)
+		if err != nil {
+			return ngsierr.New(funcName, 3, err.Error(), err)
+		}
 	}
 
 	res, body, err := client.HTTPPatch(b)
 	if err != nil {
-		return ngsierr.New(funcName, 3, err.Error(), err)
+		return ngsierr.New(funcName, 4, err.Error(), err)
 	}
 	if res.StatusCode != http.StatusNoContent {
-		return ngsierr.New(funcName, 4, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil)
+		return ngsierr.New(funcName, 5, fmt.Sprintf("%s %s %s", res.Status, string(body), id), nil)
 	}
 
 	ngsi.Logging(ngsilib.LogInfo, fmt.Sprintf("%s is updated, FIWARE-Service: %s, FIWARE-ServicePath: %s",

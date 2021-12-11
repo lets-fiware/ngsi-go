@@ -460,6 +460,24 @@ func TestSubscriptionsGetV2(t *testing.T) {
 	}
 }
 
+func TestSubscriptionsGetV2Raw(t *testing.T) {
+	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "615d5b66f19d2a10c44e264c", "--raw"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v2/subscriptions/615d5b66f19d2a10c44e264c"
+	reqRes.ResBody = []byte(`{"id":"615d5b66f19d2a10c44e264c","description":"TestNotification","status":"active","subject":{"entities":[{"idPattern":"Alert.*","type":"Alert"}],"condition":{"attrs":[]}},"notification":{"attrs":[],"onlyChangedAttrs":false,"attrsFormat":"keyValues","httpCustom":{"url":"http://dev/null","headers":{"fiware-shared-key":"test"}}}}`)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionGetV2(c, c.Ngsi, c.Client)
+
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := "{\"id\":\"615d5b66f19d2a10c44e264c\",\"description\":\"TestNotification\",\"status\":\"active\",\"subject\":{\"entities\":[{\"idPattern\":\"Alert.*\",\"type\":\"Alert\"}],\"condition\":{\"attrs\":[]}},\"notification\":{\"attrs\":[],\"onlyChangedAttrs\":false,\"attrsFormat\":\"keyValues\",\"httpCustom\":{\"url\":\"http://dev/null\",\"headers\":{\"fiware-shared-key\":\"test\"}}}}"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestSubscriptionsGetV2Pretty(t *testing.T) {
 	c := setupTest([]string{"get", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--pretty"})
 
@@ -598,6 +616,38 @@ func TestSubscriptionsCreateV2(t *testing.T) {
 	}
 }
 
+func TestSubscriptionsCreateV2DataRaw(t *testing.T) {
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--raw", "--data", `{"description":"TestNotification","subject":{"entities":[{"idPattern":"Alert.*","type":"Alert"}],"condition":{"attrs":[]}},"notification":{"httpCustom":{"url":"http://dev/null","headers":{"fiware-shared-key":"test"}},"attrsFormat":"keyValues"}}`})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.ReqData = []byte(`{"description":"TestNotification","subject":{"entities":[{"idPattern":"Alert.*","type":"Alert"}],"condition":{"attrs":[]}},"notification":{"httpCustom":{"url":"http://dev/null","headers":{"fiware-shared-key":"test"}},"attrsFormat":"keyValues"}}`)
+	reqRes.Path = "/v2/subscriptions"
+	reqRes.ResHeader = http.Header{"Location": []string{"/v2/subscriptions/5f0a44789dd803416ccbf15c"}}
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
+
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := "5f0a44789dd803416ccbf15c\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestSubscriptionsCreateV2ErrorDataRaw(t *testing.T) {
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--raw", "--data", "@"})
+
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "file name error", ngsiErr.Message)
+	}
+}
+
 func TestSubscriptionsCreateV2ErrorsetSubscriptionValuesV2(t *testing.T) {
 	c := setupTest([]string{"create", "subscription", "--host", "orion", "--throttling", "1", "--expires", "2020-10-05T00:58:26.929Z", "--data", "@"})
 
@@ -611,7 +661,7 @@ func TestSubscriptionsCreateV2ErrorsetSubscriptionValuesV2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "file name error", ngsiErr.Message)
 	}
 }
@@ -633,7 +683,7 @@ func TestSubscriptionsCreateV2ErrorMarshal(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
@@ -653,7 +703,7 @@ func TestSubscriptionsCreateV2ErrorHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
@@ -673,7 +723,7 @@ func TestSubscriptionsCreateV2ErrorStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, " error", ngsiErr.Message)
 	}
 }
@@ -691,6 +741,34 @@ func TestSubscriptionsUpdateV2(t *testing.T) {
 	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
 
 	assert.NoError(t, err)
+}
+
+func TestSubscriptionsUpdateV2DataRaw(t *testing.T) {
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--raw", "--data", `{"description":"TestNotification","subject":{"entities":[{"idPattern":"Alert.*","type":"Alert"}],"condition":{"attrs":[]}},"notification":{"httpCustom":{"url":"http://dev/null","headers":{"fiware-shared-key":"test"}},"attrsFormat":"keyValues"}}`})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusNoContent
+	reqRes.ReqData = []byte(`{"description":"TestNotification","subject":{"entities":[{"idPattern":"Alert.*","type":"Alert"}],"condition":{"attrs":[]}},"notification":{"httpCustom":{"url":"http://dev/null","headers":{"fiware-shared-key":"test"}},"attrsFormat":"keyValues"}}`)
+	reqRes.Path = "/v2/subscriptions/5f0a44789dd803416ccbf15c"
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
+
+	assert.NoError(t, err)
+
+}
+
+func TestSubscriptionsUpdateV2ErrorDataRaw(t *testing.T) {
+	c := setupTest([]string{"update", "subscription", "--host", "orion", "--id", "5f0a44789dd803416ccbf15c", "--raw", "--data", "@"})
+
+	err := subscriptionsUpdateV2(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "file name error", ngsiErr.Message)
+	}
 }
 
 func TestSubscriptionsUpdateV2wAttr(t *testing.T) {
@@ -722,7 +800,7 @@ func TestSubscriptionsUpdateV2ErrotsetSubscriptionValuesV2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error 2", ngsiErr.Message)
 	}
 }
@@ -742,7 +820,7 @@ func TestSubscriptionsUpdateV2Marshal(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
@@ -761,7 +839,7 @@ func TestSubscriptionsUpdateV2ErrotHTTP(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
@@ -781,7 +859,7 @@ func TestSubscriptionsUpdateV2ErrorStatus(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 5, ngsiErr.ErrNo)
 		assert.Equal(t, " error 5f0a44789dd803416ccbf15c", ngsiErr.Message)
 	}
 }

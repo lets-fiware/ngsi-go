@@ -129,7 +129,7 @@ func TestSubscriptionsCreateErrorV2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }
@@ -167,7 +167,7 @@ func TestSubscriptionsUpdateErrorV2(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
 		assert.Equal(t, "http error", ngsiErr.Message)
 	}
 }

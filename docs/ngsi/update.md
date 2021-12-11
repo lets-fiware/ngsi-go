@@ -198,6 +198,7 @@ ngsi update [common options] subscription [options]
 | --exceptAttrs VALUE       | exceptAttrs (v2)                                       |
 | --attrsFormat VALUE       | attrsFormat (v2)                                       |
 | --safeString VALUE        | use safe string (VALUE: on/off)                        |
+| --raw                     | handle raw data (default: false)                       |
 | --help                    | show help (default: true)                              |
 
 ### Example
