@@ -40,3 +40,7 @@ sections. Anybody is welcome to join these conversations.
 
 Wherever possible, do not take these conversations to private channels, including contacting the maintainers directly.
 Keeping communication public means everybody can benefit and learn from the conversation.
+
+## Disclosure of vulnerabilities
+
+Please contact us by email if you find any vulnerabilities related to NGSI Go. You can send an email to `ngsi-go-vulnerabilities@letsfiware.jp`. Do not use GitHub issues.
