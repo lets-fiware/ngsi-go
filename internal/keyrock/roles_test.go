@@ -279,11 +279,35 @@ func TestRolesGetErrorPretty(t *testing.T) {
 func TestRolesCreate(t *testing.T) {
 	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
 
+	reqRes1 := helper.MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes1.ResBody = []byte(`{"roles":[]}`)
+
+	reqRes2 := helper.MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusCreated
+	reqRes2.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes2.ReqData = []byte(`{"role":{"name":"role1"}}`)
+	reqRes2.ResBody = []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
+
+	err := rolesCreate(c, c.Ngsi, c.Client)
+
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := "33fd15c0-e919-47b0-9e05-5f47999f6d91\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestRolesCreateExist(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
 	reqRes := helper.MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
-	reqRes.ReqData = []byte(`{"role":{"name":"role1"}}`)
-	reqRes.ResBody = []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+	reqRes.ResBody = []byte(`{"roles":[{"name":"role1","id":"33fd15c0-e919-47b0-9e05-5f47999f6d91"}]}`)
 
 	helper.SetClientHTTP(c, reqRes)
 
@@ -320,13 +344,18 @@ func TestRolesCreateData(t *testing.T) {
 func TestRolesCreateVerbose(t *testing.T) {
 	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose"})
 
-	reqRes := helper.MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusCreated
-	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
-	reqRes.ReqData = []byte(`{"role":{"name":"role1"}}`)
-	reqRes.ResBody = []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+	reqRes1 := helper.MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes1.ResBody = []byte(`{"roles":[]}`)
 
-	helper.SetClientHTTP(c, reqRes)
+	reqRes2 := helper.MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusCreated
+	reqRes2.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes2.ReqData = []byte(`{"role":{"name":"role1"}}`)
+	reqRes2.ResBody = []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
 
 	err := rolesCreate(c, c.Ngsi, c.Client)
 
@@ -370,47 +399,12 @@ func TestRolesCreateErrorData(t *testing.T) {
 	}
 }
 
-func TestRolesCreateErrorName(t *testing.T) {
+func TestRolesCreateErrorGetRoleByName(t *testing.T) {
 	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
-
-	helper.SetJSONEncodeErr(c.Ngsi, 0)
-
-	err := rolesCreate(c, c.Ngsi, c.Client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 2, ngsiErr.ErrNo)
-		assert.Equal(t, "json error", ngsiErr.Message)
-	}
-}
-
-func TestRolesCreateErrorHTTP(t *testing.T) {
-	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose"})
-
-	reqRes := helper.MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusBadRequest
-	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/role"
-	reqRes.ReqData = []byte(`{"role":{"name":"role1"}}`)
-	reqRes.Err = errors.New("http error")
-
-	helper.SetClientHTTP(c, reqRes)
-
-	err := rolesCreate(c, c.Ngsi, c.Client)
-
-	if assert.Error(t, err) {
-		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 3, ngsiErr.ErrNo)
-		assert.Equal(t, "http error", ngsiErr.Message)
-	}
-}
-
-func TestRolesCreateErrorStatusCode(t *testing.T) {
-	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose"})
 
 	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusBadRequest
 	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
-	reqRes.ReqData = []byte(`{"role":{"name":"role1"}}`)
 	reqRes.ResBody = []byte(`{"code":"400","reasonPhrase":"Bad Request"}`)
 
 	helper.SetClientHTTP(c, reqRes)
@@ -419,23 +413,61 @@ func TestRolesCreateErrorStatusCode(t *testing.T) {
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
-		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error  {\"code\":\"400\",\"reasonPhrase\":\"Bad Request\"}", ngsiErr.Message)
 	}
 }
 
-func TestRolesCreateErrorPretty(t *testing.T) {
-	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose", "--pretty"})
+func TestRolesCreateErrorJSONMarshal(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
 
 	reqRes := helper.MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
-	reqRes.ReqData = []byte(`{"role":{"name":"role1"}}`)
-	reqRes.ResBody = []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+	reqRes.ResBody = []byte(`{"roles":[{"name":"role1","id":"33fd15c0-e919-47b0-9e05-5f47999f6d91"}]}`)
 
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 	helper.SetClientHTTP(c, reqRes)
 
+	err := rolesCreate(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestRolesCreateErrorPrintRole(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--pretty"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes.ResBody = []byte(`{"roles":[{"name":"role1","id":"33fd15c0-e919-47b0-9e05-5f47999f6d91"}]}`)
+
 	helper.SetJSONIndentError(c.Ngsi)
+	helper.SetClientHTTP(c, reqRes)
+
+	err := rolesCreate(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 4, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestRolesCreateErrorName(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes.ResBody = []byte(`{"roles":[]}`)
+
+	helper.SetClientHTTP(c, reqRes)
+	helper.SetJSONEncodeErr(c.Ngsi, 0)
 
 	err := rolesCreate(c, c.Ngsi, c.Client)
 
@@ -446,24 +478,125 @@ func TestRolesCreateErrorPretty(t *testing.T) {
 	}
 }
 
-func TestRolesCreateErrorID(t *testing.T) {
-	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+func TestRolesCreateErrorHTTP(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose"})
 
-	reqRes := helper.MockHTTPReqRes{}
-	reqRes.Res.StatusCode = http.StatusCreated
-	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
-	reqRes.ReqData = []byte(`{"role":{"name":"role1"}}`)
-	reqRes.ResBody = []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+	reqRes1 := helper.MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes1.ResBody = []byte(`{"roles":[]}`)
 
-	helper.SetClientHTTP(c, reqRes)
+	reqRes2 := helper.MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusBadRequest
+	reqRes2.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/role"
+	reqRes2.ReqData = []byte(`{"role":{"name":"role1"}}`)
+	reqRes2.Err = errors.New("http error")
 
-	helper.SetJSONDecodeErr(c.Ngsi, 0)
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
 
 	err := rolesCreate(c, c.Ngsi, c.Client)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 6, ngsiErr.ErrNo)
+		assert.Equal(t, "http error", ngsiErr.Message)
+	}
+}
+
+func TestRolesCreateErrorStatusCode(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose"})
+
+	reqRes1 := helper.MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes1.ResBody = []byte(`{"roles":[]}`)
+
+	reqRes2 := helper.MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusBadRequest
+	reqRes2.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes2.ReqData = []byte(`{"role":{"name":"role1"}}`)
+	reqRes2.ResBody = []byte(`{"code":"400","reasonPhrase":"Bad Request"}`)
+
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
+
+	err := rolesCreate(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 7, ngsiErr.ErrNo)
+		assert.Equal(t, "error  {\"code\":\"400\",\"reasonPhrase\":\"Bad Request\"}", ngsiErr.Message)
+	}
+}
+
+func TestRolesCreateErrorPretty(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose", "--pretty"})
+
+	reqRes1 := helper.MockHTTPReqRes{}
+	reqRes1.Res.StatusCode = http.StatusOK
+	reqRes1.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes1.ResBody = []byte(`{"roles":[]}`)
+
+	reqRes2 := helper.MockHTTPReqRes{}
+	reqRes2.Res.StatusCode = http.StatusCreated
+	reqRes2.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes2.ReqData = []byte(`{"role":{"name":"role1"}}`)
+	reqRes2.ResBody = []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+
+	helper.SetClientHTTP(c, reqRes1, reqRes2)
+
+	helper.SetJSONIndentError(c.Ngsi)
+
+	err := rolesCreate(c, c.Ngsi, c.Client)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 8, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestPrintRole(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose", "--pretty"})
+
+	body := []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+
+	err := printRole(c, c.Ngsi, body)
+
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := "{\n  \"role\": {\n    \"id\": \"33fd15c0-e919-47b0-9e05-5f47999f6d91\",\n    \"is_internal\": false,\n    \"name\": \"role1\",\n    \"oauth_client_id\": \"fd7fe349-f7da-4c27-b404-74da17641025\"\n  }\n}\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestPrintRoleErrorPretty(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1", "--verbose", "--pretty"})
+
+	body := []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+
+	helper.SetJSONIndentError(c.Ngsi)
+
+	err := printRole(c, c.Ngsi, body)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
+	}
+}
+
+func TestPrintRoleErrorID(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
+	body := []byte(`{"role":{"id":"33fd15c0-e919-47b0-9e05-5f47999f6d91","is_internal":false,"name":"role1","oauth_client_id":"fd7fe349-f7da-4c27-b404-74da17641025"}}`)
+
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
+
+	err := printRole(c, c.Ngsi, body)
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }
@@ -666,5 +799,99 @@ func TestRolesDeleteErrorStatusCode(t *testing.T) {
 		ngsiErr := err.(*ngsierr.NgsiError)
 		assert.Equal(t, 2, ngsiErr.ErrNo)
 		assert.Equal(t, "error  {\"code\":\"400\",\"reasonPhrase\":\"Bad Request\"}", ngsiErr.Message)
+	}
+}
+
+func TestGetRoleByName(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes.ResBody = []byte(`{"roles":[{"id":"1c5d64b2-f023-455b-8b45-35452745961a","name":"role1"}]}`)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	r, err := getRoleByName(c.Ngsi, c.Client, "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "role1")
+
+	if assert.NoError(t, err) {
+		actual := r.ID
+		expected := "1c5d64b2-f023-455b-8b45-35452745961a"
+		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestGetRoleByNameNotFound(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes.ResBody = []byte(`{}`)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	actual, err := getRoleByName(c.Ngsi, c.Client, "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "role1")
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, (*keyrockRoleItmes)(nil), actual)
+	}
+}
+
+func TestGetRoleByNameErrorHTTP(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes.Err = errors.New("error")
+
+	helper.SetClientHTTP(c, reqRes)
+
+	_, err := getRoleByName(c.Ngsi, c.Client, "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "role1")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 1, ngsiErr.ErrNo)
+		assert.Equal(t, "error", ngsiErr.Message)
+	}
+}
+
+func TestGetRoleByNameErrorStatusCode(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusBadRequest
+	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes.ResBody = []byte(`{"code":"400","reasonPhrase":"Bad Request"}`)
+
+	helper.SetClientHTTP(c, reqRes)
+
+	_, err := getRoleByName(c.Ngsi, c.Client, "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "role1")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 2, ngsiErr.ErrNo)
+		assert.Equal(t, "error  {\"code\":\"400\",\"reasonPhrase\":\"Bad Request\"}", ngsiErr.Message)
+	}
+}
+
+func TestGetRoleByNameErrorJSONUnmarshal(t *testing.T) {
+	c := setupTest([]string{"applications", "roles", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "role1"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusOK
+	reqRes.Path = "/v1/applications/0fbfa58c-e5b6-41c3-b748-ab29f1567a9c/roles"
+	reqRes.ResBody = []byte(`{}`)
+
+	helper.SetJSONDecodeErr(c.Ngsi, 0)
+	helper.SetClientHTTP(c, reqRes)
+
+	_, err := getRoleByName(c.Ngsi, c.Client, "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "role1")
+
+	if assert.Error(t, err) {
+		ngsiErr := err.(*ngsierr.NgsiError)
+		assert.Equal(t, 3, ngsiErr.ErrNo)
+		assert.Equal(t, "json error", ngsiErr.Message)
 	}
 }

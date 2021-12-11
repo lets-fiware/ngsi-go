@@ -197,7 +197,7 @@ ngsi applications roles --aid $aid get --rid $rid --pretty
 ```
 
 #
-# 0040 Delete a role
+# 0041 Delete a role
 #
 ngsi applications roles --aid $aid delete --rid $rid
 
@@ -205,7 +205,7 @@ ngsi applications roles --aid $aid delete --rid $rid
 ```
 
 #
-# 0050 List roles
+# 0051 List roles
 #
 ngsi applications roles --aid $aid list --pretty
 
@@ -219,6 +219,94 @@ ngsi applications roles --aid $aid list --pretty
     {
       "id": "provider",
       "name": "Provider"
+    }
+  ]
+}
+```
+
+#
+# 0061 Delete applicaiton
+#
+ngsi applications delete --aid $aid
+
+```
+```
+
+#
+# 0071 Create application
+#
+ngsi applications create --host keyrock --name role_test
+
+```
+REGEX(.*)
+```
+
+#
+# 0071 Save aid
+#
+$aid=$$
+
+#
+# 0072 Create role
+#
+ngsi applications roles create --aid $aid --name admin
+
+```
+REGEX(.*)
+```
+
+#
+# 0073 List roles
+#
+ngsi applications roles list --aid $aid --pretty
+
+```
+{
+  "roles": [
+    {
+      "id": "purchaser",
+      "name": "Purchaser"
+    },
+    {
+      "id": "provider",
+      "name": "Provider"
+    },
+    {
+      "id": "REGEX(.*)",
+      "name": "admin"
+    }
+  ]
+}
+```
+
+#
+# 0074 Create role with existing role name
+#
+ngsi applications roles create --aid $aid --name admin
+
+```
+REGEX(.*)
+```
+
+#
+# 0075 List roles
+#
+ngsi applications roles list --aid $aid --pretty
+
+```
+{
+  "roles": [
+    {
+      "id": "purchaser",
+      "name": "Purchaser"
+    },
+    {
+      "id": "provider",
+      "name": "Provider"
+    },
+    {
+      "id": "REGEX(.*)",
+      "name": "admin"
     }
   ]
 }
