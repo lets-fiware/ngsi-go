@@ -1,14 +1,15 @@
 # Global Options
 
-| Options        | Description                                      |
-| -------------- | ------------------------------------------------ |
-| --syslog LEVEL | specify logging LEVEL (off, err, info, debug)    |
-| --stderr LEVEL | specify logging LEVEL (off, err, info, debug)    |
-| --config FILE  | specify configuration FILE                       |
-| --cache FILE   | specify cache FILE                               |
-| --batch, -B    | don't use previous args (batch) (default: false) |
-| --help         | show help (default: false)                       |
-| --version, -v  | print the version (default: false)               |
+| Options         | Description                                      |
+| --------------- | ------------------------------------------------ |
+| --syslog LEVEL  | syslog logging LEVEL (off, err, info, debug)     |
+| --stderr LEVEL  | stderr logging LEVEL (off, err, info, debug)     |
+| --configDir DIR | configuration `DIR` name                         |
+| --config FILE   | configuration `FILE` name                        |
+| --cache FILE    | cache `FILE` name                                |
+| --batch, -B     | don't use previous args (batch) (default: false) |
+| --help          | show help (default: false)                       |
+| --version, -v   | print the version (default: false)               |
 
 ## syslog
 

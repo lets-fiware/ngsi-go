@@ -137,11 +137,24 @@ func TestStdoutFlush(t *testing.T) {
 
 }
 
+func TestGetConfigDirConfigDir(t *testing.T) {
+	testNgsiLibInit()
+
+	configDir := "/tmp"
+	io := &MockIoLib{}
+
+	dir, err := getConfigDir(&configDir, io)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, "/tmp", dir)
+	}
+}
+
 func TestGetConfigDir(t *testing.T) {
 	testNgsiLibInit()
 	io := &MockIoLib{ConfigDir: "/home/ngsi/.config"}
 
-	dir, err := getConfigDir(io)
+	dir, err := getConfigDir(nil, io)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "/home/ngsi/.config/fiware", dir)
@@ -154,7 +167,7 @@ func TestGetConfigDirGetenv(t *testing.T) {
 	ngsi.OsType = "windows"
 	io := &MockIoLib{ConfigDir: "/home/ngsi/.config", Env: `C:\Users\`}
 
-	dir, err := getConfigDir(io)
+	dir, err := getConfigDir(nil, io)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "C:\\Users\\/fiware", dir)
@@ -167,7 +180,7 @@ func TestGetConfigDirGetenvNotFound(t *testing.T) {
 	ngsi.OsType = "windows"
 	io := &MockIoLib{ConfigDir: "/home/ngsi/.config", Env: ""}
 
-	dir, err := getConfigDir(io)
+	dir, err := getConfigDir(nil, io)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "/fiware", dir)
@@ -178,7 +191,7 @@ func TestGetConfigDirNotExists(t *testing.T) {
 	testNgsiLibInit()
 	io := &MockIoLib{ConfigDir: "/home/ngsi/.config", StatErr: errors.New("error")}
 
-	dir, err := getConfigDir(io)
+	dir, err := getConfigDir(nil, io)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "/home/ngsi/.config/fiware", dir)
@@ -189,7 +202,7 @@ func TestGetConfigDirErrorUserConfigDir(t *testing.T) {
 	testNgsiLibInit()
 	io := &MockIoLib{HomeDir: "/home/ngsi", ConfigDir: "/home/ngsi/.config", ConfigDirErr: errors.New("error")}
 
-	dir, err := getConfigDir(io)
+	dir, err := getConfigDir(nil, io)
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, "/home/ngsi/.config/fiware", dir)
@@ -200,7 +213,7 @@ func TestGetConfigDirErrorUserHomeDir(t *testing.T) {
 	testNgsiLibInit()
 	io := &MockIoLib{ConfigDir: "/home/ngsi/.config", HomeDirErr: errors.New("error homedir")}
 
-	_, err := getConfigDir(io)
+	_, err := getConfigDir(nil, io)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)
@@ -213,7 +226,7 @@ func TestGetConfigDirErrorMkdir(t *testing.T) {
 	testNgsiLibInit()
 	io := &MockIoLib{ConfigDir: "/home/ngsi/.config", StatErr: errors.New("error stat"), MkdirErr: errors.New("error mkdir")}
 
-	_, err := getConfigDir(io)
+	_, err := getConfigDir(nil, io)
 
 	if assert.Error(t, err) {
 		ngsiErr := err.(*ngsierr.NgsiError)

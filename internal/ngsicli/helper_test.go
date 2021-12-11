@@ -687,6 +687,10 @@ var (
 		Name:  "stderr",
 		Usage: "specify logging `LEVEL` (off, err, info, debug)",
 	}
+	configDirFlag = &StringFlag{
+		Name:  "configDir",
+		Usage: "configuration `DIR` name",
+	}
 	configFlag = &StringFlag{
 		Name:  "config",
 		Usage: "specify configuration `FILE`",
