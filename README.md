@@ -1,6 +1,6 @@
 [![Let's FIWARE Banner](https://raw.githubusercontent.com/lets-fiware/ngsi-go/gh-pages/img/ngsi-go-logo-non-free.png)](https://www.letsfiware.jp/)
 [![NGSI v2](https://img.shields.io/badge/NGSI-v2-5dc0cf.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
-[![NGSI LD](https://img.shields.io/badge/NGSI-LD-d6604d.svg)](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf)
+[![NGSI LD](https://img.shields.io/badge/NGSI-LD-d6604d.svg)](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.05.01_60/gs_CIM009v010501p.pdf)
 
 ![FIWARE: Tools](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/deployment-tools.svg)
 [![License: MIT](https://img.shields.io/github/license/lets-fiware/ngsi-go.svg)](https://opensource.org/licenses/MIT)
@@ -52,7 +52,7 @@ It's a powerful tool and easy to use. It has various features as shown:
 
 -   Supported FIWARE Open APIs
     -   FIWARE [NGSI v2](https://fiware-ges.github.io/orion/api/v2/stable/) API
-    -   [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf) API
+    -   [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.05.01_60/gs_CIM009v010501p.pdf) API
     -   [STH-Comet](https://github.com/telefonicaid/fiware-sth-comet) API
     -   [QuantumLeap](https://github.com/orchestracities/ngsi-timeseries-api) API
     -   [Cygnus](https://github.com/telefonicaid/fiware-cygnus/blob/master/doc/cygnus-common/installation_and_administration_guide/management_interface_v1.md) API
@@ -136,13 +136,13 @@ ngsi settings list
 
 ```text
 NAME:
-   ngsi - command-line tool for FIWARE NGSI and NGSI-LD
+   ngsi - command-line tool for FIWARE Open APIs
 
 USAGE:
-   ngsi [global options] command [command options] [arguments...]
+   ngsi [global options] command [options] [arguments...]
 
 VERSION:
-   0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)
+   ngsi version 0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -151,6 +151,8 @@ COMMANDS:
      macs         manage mashable application components for WireCloud
      workspaces   manage workspaces for WireCloud
      tabs         manage tabs for WireCloud
+   Context-Aware CEP:
+     rules  rules command for PERSEO
    CONVENIENCE:
      admin       admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
      apis        print endpoints of API
@@ -166,8 +168,6 @@ COMMANDS:
      template    create template of subscription or registration
      tokenproxy  token proxy
      version     print the version
-   Context-Aware CEP:
-     rules  rules command for PERSEO
    IoT Agent:
      devices   manage devices for IoT Agent
      services  manage services for IoT Agent
@@ -176,12 +176,6 @@ COMMANDS:
      users          manage users for Keyrock
      organizations  manage organizations for Keyrock
      providers      print service providers for Keyrock
-   MANAGEMENT:
-     broker    manage config for broker
-     context   manage @context
-     settings  manage settings
-     server    manage config for server
-     token     manage token
    NGSI:
      append   append attributes
      create   create entity(ies), subscription, registration or ldContext
@@ -197,19 +191,27 @@ COMMANDS:
    TIME SERIES:
      hdelete  delete historical raw and aggregated time series context information
      hget     get historical raw and aggregated time series context information
+   MANAGEMENT:
+     broker    manage config for broker
+     context   manage @context
+     settings  manage settings
+     server    manage config for server
+     token     manage token
+     license   print OSS license information
 
 GLOBAL OPTIONS:
-   --syslog LEVEL        specify logging LEVEL (off, err, info, debug)
-   --stderr LEVEL        specify logging LEVEL (off, err, info, debug)
-   --config FILE         specify configuration FILE
-   --cache FILE          specify cache FILE
+   --syslog LEVEL        syslog logging LEVEL (off, err, info, debug)
+   --stderr LEVEL        stderr logging LEVEL (err, info, debug)
+   --configDir DIR       configuration DIR name
+   --config FILE         configuration FILE name
+   --cache FILE          cache FILE name
    --batch, -B           don't use previous args (batch) (default: false)
    --insecureSkipVerify  TLS/SSL skip certificate verification (default: false)
    --help                show help (default: false)
    --version, -v         print the version (default: false)
 
-COPYRIGHT:
-   (c) 2020-2021 Kazuhito Suda
+PREVIOUS ARGS:
+   None
 ```
 
 ## Tutorial
@@ -226,20 +228,20 @@ The NGSI Go binary is installed in `/usr/local/bin`.
 #### Installation on Linux
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.9.0/ngsi-v0.9.0-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.9.0-linux-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.10.0/ngsi-v0.10.0-linux-amd64.tar.gz
+sudo tar zxvf ngsi-v0.10.0-linux-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.9.0-linux-arm.tar.gz` and `ngsi-v0.9.0-linux-arm64.tar.gz` binaries are also available.
+`ngsi-v0.10.0-linux-arm.tar.gz` and `ngsi-v0.10.0-linux-arm64.tar.gz` binaries are also available.
 
 #### Installation on Mac
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.9.0/ngsi-v0.9.0-darwin-amd64.tar.gz
-sudo tar zxvf ngsi-v0.9.0-darwin-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.10.0/ngsi-v0.10.0-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.10.0-darwin-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.9.0-darwin-arm64.tar.gz` binary is also available.
+`ngsi-v0.10.0-darwin-arm64.tar.gz` binary is also available.
 
 ### Install bash autocomplete file for NGSI Go
 
@@ -254,13 +256,7 @@ echo "source /etc/bash_completion.d/ngsi_bash_autocomplete" >> ~/.bashrc
 
 ## Third party packages
 
-The NGSI Go makes use of the following package:
-
-| Package                                         | OSS License        |
-| ----------------------------------------------- | ------------------ |
-| [urfave/cli](https://github.com/urfave/cli)     | MIT License        |
-
-The dependencies of dependencies have been omitted from the list.
+The NGSI Go makes no use of third-party packages.
 
 -   [Open Source Insights](https://deps.dev/go/github.com%2Flets-fiware%2Fngsi-go)
 

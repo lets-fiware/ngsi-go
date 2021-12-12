@@ -30,7 +30,7 @@ RUN \
     apk update && \
     apk add --no-cache \
         make=4.3-r0 \
-        git=2.30.2-r0
+        git=2.34.1-r0
 
 WORKDIR /root/go/src/github.com/lets-fiware
 

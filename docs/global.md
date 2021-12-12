@@ -37,13 +37,13 @@ ngsi --help
 
 ```text
 NAME:
-   ngsi - command-line tool for FIWARE NGSI and NGSI-LD
+   ngsi - command-line tool for FIWARE Open APIs
 
 USAGE:
-   ngsi [global options] command [command options] [arguments...]
+   ngsi [global options] command [options] [arguments...]
 
 VERSION:
-   0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)
+   ngsi version 0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -52,6 +52,8 @@ COMMANDS:
      macs         manage mashable application components for WireCloud
      workspaces   manage workspaces for WireCloud
      tabs         manage tabs for WireCloud
+   Context-Aware CEP:
+     rules  rules command for PERSEO
    CONVENIENCE:
      admin       admin command for FIWARE Orion, Cygnus, Perseo, Scorpio
      apis        print endpoints of API
@@ -67,8 +69,6 @@ COMMANDS:
      template    create template of subscription or registration
      tokenproxy  token proxy
      version     print the version
-   Context-Aware CEP:
-     rules  rules command for PERSEO
    IoT Agent:
      devices   manage devices for IoT Agent
      services  manage services for IoT Agent
@@ -77,12 +77,6 @@ COMMANDS:
      users          manage users for Keyrock
      organizations  manage organizations for Keyrock
      providers      print service providers for Keyrock
-   MANAGEMENT:
-     broker    manage config for broker
-     context   manage @context
-     settings  manage settings
-     server    manage config for server
-     token     manage token
    NGSI:
      append   append attributes
      create   create entity(ies), subscription, registration or ldContext
@@ -98,19 +92,27 @@ COMMANDS:
    TIME SERIES:
      hdelete  delete historical raw and aggregated time series context information
      hget     get historical raw and aggregated time series context information
+   MANAGEMENT:
+     broker    manage config for broker
+     context   manage @context
+     settings  manage settings
+     server    manage config for server
+     token     manage token
+     license   print OSS license information
 
 GLOBAL OPTIONS:
-   --syslog LEVEL        specify logging LEVEL (off, err, info, debug)
-   --stderr LEVEL        specify logging LEVEL (off, err, info, debug)
-   --config FILE         specify configuration FILE
-   --cache FILE          specify cache FILE
+   --syslog LEVEL        syslog logging LEVEL (off, err, info, debug)
+   --stderr LEVEL        stderr logging LEVEL (err, info, debug)
+   --configDir DIR       configuration DIR name
+   --config FILE         configuration FILE name
+   --cache FILE          cache FILE name
    --batch, -B           don't use previous args (batch) (default: false)
    --insecureSkipVerify  TLS/SSL skip certificate verification (default: false)
    --help                show help (default: false)
    --version, -v         print the version (default: false)
 
-COPYRIGHT:
-   (c) 2020-2021 Kazuhito Suda
+PREVIOUS ARGS:
+   None
 ```
 
 ## version
@@ -122,5 +124,5 @@ ngsi --version
 ```
 
 ```text
-ngsi version 0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)
+ngsi version 0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)
 ```

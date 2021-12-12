@@ -75,7 +75,7 @@ ngsi regproxy health --host regproxy --pretty
 ```
 {
   "ngsi-go": "regproxy",
-  "version": "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)",
+  "version": "0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)",
   "health": "OK",
   "csource": "http://remote-orion:1026",
   "verbose": true,
@@ -160,7 +160,7 @@ ngsi regproxy health --host regproxy --pretty
 ```
 {
   "ngsi-go": "regproxy",
-  "version": "0.9.0 (git_hash:bfd1ec240a8a8421929e2923f8fb5d3f6cab18ab)",
+  "version": "0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)",
   "health": "OK",
   "csource": "http://remote-orion:1026",
   "verbose": true,
