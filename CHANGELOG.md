@@ -1,4 +1,4 @@
-## NGSI Go v0.9.0-next
+## NGSI Go v0.10.0 - Dec 12, 2021
 
 -   Hardening: Add command to print OSS license information (#214)
 -   Update: Update documentation (#213)
