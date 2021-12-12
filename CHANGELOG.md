@@ -1,5 +1,6 @@
 ## NGSI Go v0.9.0-next
 
+-   Hardening: Add command to print OSS license information (#214)
 -   Update: Update documentation (#213)
 -   Hardening: Add --raw flag for Subscription command (#212)
 -   Hardening: Avoid creating duplicate role name in Keyrock (#210)

@@ -74,6 +74,7 @@ func TestNGSICommand(t *testing.T) {
 		{args: []string{"settings", "delete"}, rc: 1},
 		{args: []string{"settings", "previousArgs"}, rc: 1},
 		{args: []string{"token", "--host", "orion"}, rc: 1},
+		{args: []string{"license"}, rc: 0},
 	}
 
 	for _, c := range cases {
