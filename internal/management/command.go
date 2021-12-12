@@ -41,7 +41,7 @@ func NewNgsiApp() *ngsicli.App {
 var ManagementApp = &ngsicli.App{
 	Copyright: ngsicli.Copyright,
 	Version:   ngsicli.Version,
-	Usage:     "keyrock command",
+	Usage:     "manage command",
 	Flags:     ngsicli.GlobalFlags,
 	Commands: []*ngsicli.Command{
 		&BrokersCmd,
@@ -49,6 +49,7 @@ var ManagementApp = &ngsicli.App{
 		&ContextCmd,
 		&SettingsCmd,
 		&TokenCmd,
+		&LicenseCmd,
 	},
 }
 
@@ -392,5 +393,14 @@ var TokenCmd = ngsicli.Command{
 	Category: "MANAGEMENT",
 	Action: func(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 		return tokenCommand(c, ngsi, client)
+	},
+}
+
+var LicenseCmd = ngsicli.Command{
+	Name:     "license",
+	Usage:    "print OSS license information",
+	Category: "MANAGEMENT",
+	Action: func(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
+		return licenseCommand(c, ngsi, client)
 	},
 }

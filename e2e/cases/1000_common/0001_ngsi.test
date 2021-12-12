@@ -100,6 +100,7 @@ COMMANDS:
      settings  manage settings
      server    manage config for server
      token     manage token
+     license   print OSS license information
 
 GLOBAL OPTIONS:
    --syslog LEVEL        syslog logging LEVEL (off, err, info, debug)

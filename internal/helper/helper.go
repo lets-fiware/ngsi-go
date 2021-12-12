@@ -236,6 +236,10 @@ func GetStdoutString(c *ngsicli.Context) string {
 	return c.Ngsi.StdWriter.(*bytes.Buffer).String()
 }
 
+func GetStderrString(c *ngsicli.Context) string {
+	return c.Ngsi.Stderr.(*bytes.Buffer).String()
+}
+
 func StrPtr(s string) *string {
 	return &s
 }

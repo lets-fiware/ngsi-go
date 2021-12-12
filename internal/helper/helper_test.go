@@ -144,6 +144,16 @@ func TestGetStdoutString(t *testing.T) {
 
 }
 
+func TestGetStderrString(t *testing.T) {
+	buf := bytes.NewBuffer([]byte("fiware"))
+	c := &ngsicli.Context{Ngsi: &ngsilib.NGSI{Stderr: buf}}
+
+	s := GetStderrString(c)
+
+	assert.Equal(t, "fiware", s)
+
+}
+
 func TestStrPtr(t *testing.T) {
 	s := StrPtr("fiware")
 

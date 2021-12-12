@@ -133,6 +133,7 @@ func NewNgsiApp() *ngsicli.App {
 			&iotagent.ServicesCmd,
 			&ngsicmd.TemplateCmd,
 			&management.TokenCmd,
+			&management.LicenseCmd,
 			&convenience.TokenProxyCmd,
 			&ngsicmd.UpdateCmd,
 			&ngsicmd.UpsertCmd,
