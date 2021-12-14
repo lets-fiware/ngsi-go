@@ -1,5 +1,6 @@
 ## NGSI Go v0.10.0-next
 
+-   Update: Update Orion to 3.4.0 (#218)
 -   Update: Add links in mkdocs.yml (#217)
 
 ## NGSI Go v0.10.0 - Dec 12, 2021

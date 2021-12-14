@@ -28,7 +28,7 @@ version: "3"
 
 services:
   orion:
-    image: telefonicaiot/fiware-orion:3.3.1
+    image: telefonicaiot/fiware-orion:3.4.0
     depends_on:
       - mongo
     command: -dbhost mongo
