@@ -1,3 +1,7 @@
+## NGSI Go v0.10.0-next
+
+-   Update: Add links in mkdocs.yml (#217)
+
 ## NGSI Go v0.10.0 - Dec 12, 2021
 
 -   Hardening: Add command to print OSS license information (#214)

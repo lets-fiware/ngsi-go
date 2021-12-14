@@ -24,6 +24,8 @@ nav:
     - 'ls': convenience/ls.md
     - 'receiver': convenience/receiver.md
     - 'regproxy': convenience/regproxy.md
+    - 'queryproxy': convenience/queryproxy.md
+    - 'tokenproxy': convenience/tokenproxy.md
     - 'rm': convenience/rm.md
     - 'template': convenience/template.md
     - 'version': convenience/version.md
@@ -54,7 +56,7 @@ nav:
       - 'users': keyrock/organizations-users.md
     - 'applications':
       - 'applications': keyrock/applications.md
-      - 'users': keyrock/users.md
+      - 'users': keyrock/applications-users.md
       - 'roles': keyrock/applications-roles.md
       - 'permissions': keyrock/applications-permissions.md
       - 'organizations': keyrock/applications-organizations.md
@@ -62,6 +64,11 @@ nav:
       - 'iot-agent': keyrock/applications-iot-agent.md
       - 'trusted-applications': keyrock/applications-trusted-applications.md
     - 'providers': keyrock/providers.md
+  - 'WireCloud':
+    - 'macs': wirecloud/macs.md
+    - 'preferences': wirecloud/preferences.md
+    - 'tabs': wirecloud/tabs.md
+    - 'workspaces': wirecloud/workspaces.md
   - 'Management command':
     - 'broker': management/broker.md
     - 'context': management/context.md
