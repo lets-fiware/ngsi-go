@@ -1,5 +1,6 @@
 ## NGSI Go v0.10.0-next
 
+-   Update: Update golang to 1.17.5 (#219)
 -   Update: Update Orion to 3.4.0 (#218)
 -   Update: Add links in mkdocs.yml (#217)
 
