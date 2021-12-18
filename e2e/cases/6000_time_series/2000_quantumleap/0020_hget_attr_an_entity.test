@@ -33,6 +33,7 @@ ngsi hget --host quantumleap attr --id device001 --attr A1 --lastN 10
 {
   "attrName": "A1",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T01:30:00.000+00:00",
     "2016-09-13T01:31:00.000+00:00",
@@ -103,6 +104,7 @@ ngsi hget attr --id device001 --attr A1 --hLimit 10
 {
   "attrName": "A1",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T00:00:00.000+00:00",
     "2016-09-13T00:01:00.000+00:00",
@@ -139,6 +141,7 @@ ngsi hget attr --id device001 --attr A1 --hLimit 10 --hOffset 11
 {
   "attrName": "A1",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T00:11:00.000+00:00",
     "2016-09-13T00:12:00.000+00:00",
@@ -175,6 +178,7 @@ ngsi hget attr --id device001 --attr A2 --hLimit 10
 {
   "attrName": "A2",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T00:00:00.000+00:00",
     "2016-09-13T00:01:00.000+00:00",
@@ -211,6 +215,7 @@ ngsi hget attr --id device001 --attr A2 --hLimit 10 --hOffset 11
 {
   "attrName": "A2",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T00:11:00.000+00:00",
     "2016-09-13T00:12:00.000+00:00",
@@ -247,6 +252,7 @@ ngsi hget attr --id device001 --attr A1 --aggrMethod count --aggrPeriod hour --l
 {
   "attrName": "A1",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T00:00:00.000+00:00",
     "2016-09-13T01:00:00.000+00:00"
@@ -268,6 +274,7 @@ ngsi hget attr --id device001 --attr A1 --lastN 3 \
 {
   "attrName": "A1",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T01:37:00.000+00:00",
     "2016-09-13T01:38:00.000+00:00",
@@ -291,6 +298,7 @@ ngsi hget attr --id device001 --attr A1 --lastN 3 \
 {
   "attrName": "A1",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T01:32:00.000+00:00",
     "2016-09-13T01:33:00.000+00:00",
@@ -314,6 +322,7 @@ ngsi hget attr --id device001 --attr A1 --lastN 3 \
 {
   "attrName": "A1",
   "entityId": "device001",
+  "entityType": "Thing",
   "index": [
     "2016-09-13T01:36:00.000+00:00",
     "2016-09-13T01:37:00.000+00:00",

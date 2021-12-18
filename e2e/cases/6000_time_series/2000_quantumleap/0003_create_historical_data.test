@@ -105,32 +105,24 @@ ngsi hget --host quantumleap --service openiot --path / entities
 ```
 [
   {
-    "id": "Event001",
-    "index": [
-      "REGEX(.*)"
-    ],
-    "type": "Event"
+    "entityId": "Event001",
+    "entityType": "Event",
+    "index": "REGEX(.*)"
   },
   {
-    "id": "Event002",
-    "index": [
-      "REGEX(.*)"
-    ],
-    "type": "Event"
+    "entityId": "Event002",
+    "entityType": "Event",
+    "index": "REGEX(.*)"
   },
   {
-    "id": "device001",
-    "index": [
-      "REGEX(.*)"
-    ],
-    "type": "Thing"
+    "entityId": "device001",
+    "entityType": "Thing",
+    "index": "REGEX(.*)"
   },
   {
-    "id": "device002",
-    "index": [
-      "REGEX(.*)"
-    ],
-    "type": "Thing"
+    "entityId": "device002",
+    "entityType": "Thing",
+    "index": "REGEX(.*)"
   }
 ]
 ```
