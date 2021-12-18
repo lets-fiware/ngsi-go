@@ -56,14 +56,14 @@ services:
       - DB_URI=mongo:27017
 
   quantumleap:
-    image: orchestracities/quantumleap:0.8.0
+    image: orchestracities/quantumleap:release-0.8.3
     depends_on:
       - crate
     environment:
       - CRATE_HOST=crate
 
   crate:
-    image: crate:4.1.4
+    image: crate:4.6.6
     command: crate -Cauth.host_based.enabled=false -Ccluster.name=democluster -Chttp.cors.enabled=true -Chttp.cors.allow-origin="*"
     environment:
       - CRATE_HEAP_SIZE=2g
