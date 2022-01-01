@@ -173,5 +173,5 @@ It's a powerful tool and easy to use. It has various features as shown:
 
 ## Copyright and License
 
-Copyright (c) 2020-2021 Kazuhito Suda<br>
+Copyright (c) 2020-2022 Kazuhito Suda<br>
 Licensed under the [MIT License](https://raw.githubusercontent.com/lets-fiware/ngsi-go/main/LICENSE).

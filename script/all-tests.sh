@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2021 Kazuhito Suda
+# Copyright (c) 2020-2022 Kazuhito Suda
 #
 # This file is part of NGSI Go
 #
