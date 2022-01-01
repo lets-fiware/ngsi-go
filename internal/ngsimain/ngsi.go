@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2020-2021 Kazuhito Suda
+Copyright (c) 2020-2022 Kazuhito Suda
 
 This file is part of NGSI Go
 
@@ -56,7 +56,7 @@ var Version = ""
 // Revision has a git hash value
 var Revision = ""
 
-const copyright = "(c) 2020-2021 Kazuhito Suda"
+const copyright = "(c) 2020-2022 Kazuhito Suda"
 
 var usage = "command-line tool for FIWARE Open APIs"
 
