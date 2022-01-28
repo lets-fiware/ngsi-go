@@ -1,5 +1,6 @@
 ## NGSI Go v0.10.0-next
 
+-   Fix: Fix issue #228 that no version and revision are printed when error level is higher than info (#229)
 -   Update: Update golang to 1.17.6 (#227)
 -   Hardening: Support version command for Orion-LD (#226)
 -   Update: Update Orion-LD to 1.0.1 (#225)

@@ -30,7 +30,7 @@
 ngsi --stderr info version --host unknown
 
 ```1
- (git_hash:)
+REGEX(.*)
 Run001 error host: unknown
 ngsiRun005 error host: unknown
 newClient001 error host: unknown
