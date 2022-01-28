@@ -1,7 +1,8 @@
 ## NGSI Go v0.10.0-next
 
--   Update: Update Orion-LD to 1.0.1 (#226)
--   Hardening: Support version command for Orion-LD (#225)
+-   Update: Update golang to 1.17.6 (#227)
+-   Hardening: Support version command for Orion-LD (#226)
+-   Update: Update Orion-LD to 1.0.1 (#225)
 -   Hardening: Allows to create subs even if specifying only uri (#224)
 -   Update: Update Orion to 3.5.0 (#223)
 -   Update: Update copyright (#222)
