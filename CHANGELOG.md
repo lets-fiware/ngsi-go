@@ -1,5 +1,6 @@
 ## NGSI Go v0.10.0-next
 
+-   Update: Update Orion to 3.5.0 (#223)
 -   Update: Update copyright (#222)
 -   Fix: Fix incorrect link in docs/usage.md (#221)
 -   Update: Update QuantumLeap to 0.8.3 and Crate DB to 4.6.6 (#220)
