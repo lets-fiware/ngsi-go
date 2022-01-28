@@ -42,9 +42,9 @@ import (
 func cbVersion(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) error {
 	const funcName = "cbVersion"
 
+	client.SetPath("/version")
+
 	switch client.Server.ServerType {
-	default:
-		client.SetPath("/version")
 	case "cygnus":
 		client.SetPath("/v1/version")
 	case "iota":
@@ -53,6 +53,10 @@ func cbVersion(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsilib.Client) e
 		client.SetPath("/perseo-core/version")
 	case "wirecloud":
 		client.SetPath("/api/features")
+	case "broker":
+		if client.Server.NgsiType == "ld" && client.Server.BrokerType == "orion-ld" {
+			client.SetPath("/ngsi-ld/ex/v1/version")
+		}
 	}
 
 	res, body, err := client.HTTPGet()

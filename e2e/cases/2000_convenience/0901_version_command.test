@@ -62,15 +62,24 @@ ngsi version --host orion-ld
 
 ```
 {
-  "orionld version": "REGEX(.*)",
-  "orion version":   "REGEX(.*)",
-  "uptime":          "REGEX(.*)",
-  "git_hash":        "REGEX(([0-9a-f]{40}|nogitversion))",
-  "compile_time":    "REGEX(.*)",
-  "compiled_by":     "REGEX(.*)",
-  "compiled_in":     "REGEX(.*)",
-  "release_date":    "REGEX(.*)",
-  "doc":             "REGEX(.*)"
+  "Orion-LD version": "REGEX(.*)",
+  "based on orion": "REGEX(.*)",
+  "kbase version": "REGEX(.*)",
+  "kalloc version": "REGEX(.*)",
+  "khash version": "REGEX(.*)",
+  "kjson version": "REGEX(.*)",
+  "microhttpd version": "REGEX(.*)",
+  "rapidjson version": "REGEX(.*)",
+  "libcurl version": "REGEX(.*)",
+  "libuuid version": "REGEX(.*)",
+  "mongocpp version": "REGEX(.*)",
+  "mongoc version": "REGEX(.*)",
+  "mongodb server version": "REGEX(.*)",
+  "boost version": "REGEX(.*)",
+  "openssl version": "REGEX(.*)",
+  "branch": "REGEX(.*)",
+  "cached subscriptions": REGEX(.*),
+  "Next File Descriptor": REGEX(.*)
 }
 ```
 

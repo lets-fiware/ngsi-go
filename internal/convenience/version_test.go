@@ -57,12 +57,17 @@ func TestVersionLD(t *testing.T) {
 
 	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
-	reqRes.Path = "/version"
+	reqRes.Path = "/ngsi-ld/ex/v1/version"
+	reqRes.ResBody = []byte(`{"Orion-LD version":"1.0.1-PRE-468","based on orion":"1.15.0-next","kbase version":"0.8","kalloc version":"0.8","khash version":"0.8","kjson version":"0.8","microhttpd version":"0.9.72-0","rapidjson version":"1.0.2","libcurl version":"7.61.1","libuuid version":"UNKNOWN","mongocpp version":"1.1.3","mongoc version":"1.17.5","mongodb server version":"4.4.11","boost version":"1_66","openssl version":"OpenSSL 1.1.1k  FIPS 25 Mar 2021","branch":"","cached subscriptions":0,"Next File Descriptor":20}`)
 	helper.SetClientHTTP(c, reqRes)
 
 	err := cbVersion(c, c.Ngsi, c.Client)
 
-	assert.NoError(t, err)
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := "{\"Orion-LD version\":\"1.0.1-PRE-468\",\"based on orion\":\"1.15.0-next\",\"kbase version\":\"0.8\",\"kalloc version\":\"0.8\",\"khash version\":\"0.8\",\"kjson version\":\"0.8\",\"microhttpd version\":\"0.9.72-0\",\"rapidjson version\":\"1.0.2\",\"libcurl version\":\"7.61.1\",\"libuuid version\":\"UNKNOWN\",\"mongocpp version\":\"1.1.3\",\"mongoc version\":\"1.17.5\",\"mongodb server version\":\"4.4.11\",\"boost version\":\"1_66\",\"openssl version\":\"OpenSSL 1.1.1k  FIPS 25 Mar 2021\",\"branch\":\"\",\"cached subscriptions\":0,\"Next File Descriptor\":20}"
+		assert.Equal(t, expected, actual)
+	}
 }
 
 func TestVersionIota(t *testing.T) {
