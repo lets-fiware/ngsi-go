@@ -330,6 +330,16 @@ func subscriptionsCreateV2(c *ngsicli.Context, ngsi *ngsilib.NGSI, client *ngsil
 			return ngsierr.New(funcName, 2, err.Error(), err)
 		}
 
+		if !c.IsSet("entityId") && !c.IsSet("idPattern") && !c.IsSet("type") && !c.IsSet("typePattern") {
+			if t.Subject == nil {
+				t.Subject = new(subscriptionSubjectV2)
+			}
+			if len(t.Subject.Entities) == 0 {
+				t.Subject.Entities = append(t.Subject.Entities, *new(subscriptionEntityV2))
+			}
+			t.Subject.Entities[0].IDPattern = ".*"
+		}
+
 		b, err = ngsilib.JSONMarshalEncode(&t, true)
 		if err != nil {
 			return ngsierr.New(funcName, 3, err.Error(), err)

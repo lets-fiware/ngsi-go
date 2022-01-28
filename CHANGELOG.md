@@ -1,5 +1,6 @@
 ## NGSI Go v0.10.0-next
 
+-   Hardening: Allows to create subs even if specifying only uri (#224)
 -   Update: Update Orion to 3.5.0 (#223)
 -   Update: Update copyright (#222)
 -   Fix: Fix incorrect link in docs/usage.md (#221)

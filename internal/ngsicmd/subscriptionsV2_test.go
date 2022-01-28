@@ -616,6 +616,26 @@ func TestSubscriptionsCreateV2(t *testing.T) {
 	}
 }
 
+func TestSubscriptionsCreateV2OnlyURI(t *testing.T) {
+	c := setupTest([]string{"create", "subscription", "--host", "orion", "--uri", "http://ngsiproxy"})
+
+	reqRes := helper.MockHTTPReqRes{}
+	reqRes.Res.StatusCode = http.StatusCreated
+	reqRes.ReqData = []byte(`{"subject":{"entities":[{"idPattern":".*"}]},"notification":{"http":{"url":"http://ngsiproxy"}}}`)
+	reqRes.Path = "/v2/subscriptions"
+	reqRes.ResHeader = http.Header{"Location": []string{"/v2/subscriptions/5f0a44789dd803416ccbf15c"}}
+
+	helper.SetClientHTTP(c, reqRes)
+
+	err := subscriptionsCreateV2(c, c.Ngsi, c.Client)
+
+	if assert.NoError(t, err) {
+		actual := helper.GetStdoutString(c)
+		expected := "5f0a44789dd803416ccbf15c\n"
+		assert.Equal(t, expected, actual)
+	}
+}
+
 func TestSubscriptionsCreateV2DataRaw(t *testing.T) {
 	c := setupTest([]string{"create", "subscription", "--host", "orion", "--raw", "--data", `{"description":"TestNotification","subject":{"entities":[{"idPattern":"Alert.*","type":"Alert"}],"condition":{"attrs":[]}},"notification":{"httpCustom":{"url":"http://dev/null","headers":{"fiware-shared-key":"test"}},"attrsFormat":"keyValues"}}`})
 
