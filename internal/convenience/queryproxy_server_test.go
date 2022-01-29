@@ -579,7 +579,7 @@ func TestQueryProxyHealthCmd(t *testing.T) {
 	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.11.0 (git_hash:a7da56ae829c3204e31aa0c82ed1d5cca2a37ef9)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
 
 	helper.SetClientHTTP(c, reqRes)
 
@@ -587,7 +587,7 @@ func TestQueryProxyHealthCmd(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := helper.GetStdoutString(c)
-		expected := "{\"ngsi-go\":\"queryproxy\",\"version\":\"0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)\",\"health\":\"OK\",\"orion\":\"http://orion:1026/v2/entities\",\"verbose\":true,\"uptime\":\"0 d, 2 h, 49 m, 1 s\",\"timesent\":3,\"success\":3,\"failure\":0}"
+		expected := "{\"ngsi-go\":\"queryproxy\",\"version\":\"0.11.0 (git_hash:a7da56ae829c3204e31aa0c82ed1d5cca2a37ef9)\",\"health\":\"OK\",\"orion\":\"http://orion:1026/v2/entities\",\"verbose\":true,\"uptime\":\"0 d, 2 h, 49 m, 1 s\",\"timesent\":3,\"success\":3,\"failure\":0}"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -598,7 +598,7 @@ func TestQueryProxyHealthCmdPretty(t *testing.T) {
 	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.11.0 (git_hash:a7da56ae829c3204e31aa0c82ed1d5cca2a37ef9)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
 
 	helper.SetClientHTTP(c, reqRes)
 
@@ -606,7 +606,7 @@ func TestQueryProxyHealthCmdPretty(t *testing.T) {
 
 	if assert.NoError(t, err) {
 		actual := helper.GetStdoutString(c)
-		expected := "{\n  \"ngsi-go\": \"queryproxy\",\n  \"version\": \"0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)\",\n  \"health\": \"OK\",\n  \"orion\": \"http://orion:1026/v2/entities\",\n  \"verbose\": true,\n  \"uptime\": \"0 d, 2 h, 49 m, 1 s\",\n  \"timesent\": 3,\n  \"success\": 3,\n  \"failure\": 0\n}\n"
+		expected := "{\n  \"ngsi-go\": \"queryproxy\",\n  \"version\": \"0.11.0 (git_hash:a7da56ae829c3204e31aa0c82ed1d5cca2a37ef9)\",\n  \"health\": \"OK\",\n  \"orion\": \"http://orion:1026/v2/entities\",\n  \"verbose\": true,\n  \"uptime\": \"0 d, 2 h, 49 m, 1 s\",\n  \"timesent\": 3,\n  \"success\": 3,\n  \"failure\": 0\n}\n"
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -655,7 +655,7 @@ func TestQueryProxyHealthCmdIotaErrorPretty(t *testing.T) {
 	reqRes := helper.MockHTTPReqRes{}
 	reqRes.Res.StatusCode = http.StatusOK
 	reqRes.Path = "/health"
-	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
+	reqRes.ResBody = []byte(`{"ngsi-go":"queryproxy","version":"0.11.0 (git_hash:a7da56ae829c3204e31aa0c82ed1d5cca2a37ef9)","health":"OK","orion":"http://orion:1026/v2/entities","verbose":true,"uptime":"0 d, 2 h, 49 m, 1 s","timesent":3,"success":3,"failure":0}`)
 	helper.SetClientHTTP(c, reqRes)
 
 	helper.SetJSONIndentError(c.Ngsi)

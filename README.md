@@ -142,7 +142,7 @@ USAGE:
    ngsi [global options] command [options] [arguments...]
 
 VERSION:
-   ngsi version 0.10.0 (git_hash:8385af6dff05e842ef3786a231a4bdfe0880b4bf)
+   ngsi version 0.11.0 (git_hash:a7da56ae829c3204e31aa0c82ed1d5cca2a37ef9)
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -228,20 +228,20 @@ The NGSI Go binary is installed in `/usr/local/bin`.
 #### Installation on Linux
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.10.0/ngsi-v0.10.0-linux-amd64.tar.gz
-sudo tar zxvf ngsi-v0.10.0-linux-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.11.0/ngsi-v0.11.0-linux-amd64.tar.gz
+sudo tar zxvf ngsi-v0.11.0-linux-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.10.0-linux-arm.tar.gz` and `ngsi-v0.10.0-linux-arm64.tar.gz` binaries are also available.
+`ngsi-v0.11.0-linux-arm.tar.gz` and `ngsi-v0.11.0-linux-arm64.tar.gz` binaries are also available.
 
 #### Installation on Mac
 
 ```console
-curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.10.0/ngsi-v0.10.0-darwin-amd64.tar.gz
-sudo tar zxvf ngsi-v0.10.0-darwin-amd64.tar.gz -C /usr/local/bin
+curl -OL https://github.com/lets-fiware/ngsi-go/releases/download/v0.11.0/ngsi-v0.11.0-darwin-amd64.tar.gz
+sudo tar zxvf ngsi-v0.11.0-darwin-amd64.tar.gz -C /usr/local/bin
 ```
 
-`ngsi-v0.10.0-darwin-arm64.tar.gz` binary is also available.
+`ngsi-v0.11.0-darwin-arm64.tar.gz` binary is also available.
 
 ### Install bash autocomplete file for NGSI Go
 
