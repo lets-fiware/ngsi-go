@@ -69,6 +69,9 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	bufStdout := bufio.NewWriter(stdout)
 	ngsi.InitLog(bufStdin, bufStdout, stderr)
 
+	ngsicli.Version = Version
+	ngsicli.Revision = Revision
+
 	Version = fmt.Sprintf("%s (git_hash:%s)", Version, Revision)
 
 	app := NewNgsiApp()
