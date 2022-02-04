@@ -132,7 +132,7 @@ services:
       - IDM_ADMIN_PASS=1234
 
   cygnus:
-    image: fiware/cygnus-ngsi:2.6.0
+    image: telefonicaiot/fiware-cygnus:2.16.0
     depends_on:
         - mongo
     networks:

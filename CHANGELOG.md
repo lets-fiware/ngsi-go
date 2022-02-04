@@ -1,3 +1,7 @@
+## NGSI Go v0.11.0-next
+
+-   Update: Update Cygnus to 2.16.0 (#232)
+
 ## NGSI Go v0.11.0 - Jan 29, 2022
 
 -   Fix: Fix issue #228 that no version and revision are printed when error level is higher than info (#229)
