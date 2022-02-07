@@ -1,5 +1,6 @@
 ## NGSI Go v0.11.0-next
 
+-   Update: Update Orion to 3.5.1 (#233)
 -   Update: Update Cygnus to 2.16.0 (#232)
 
 ## NGSI Go v0.11.0 - Jan 29, 2022
