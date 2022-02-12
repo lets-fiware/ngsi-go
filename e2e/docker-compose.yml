@@ -56,7 +56,7 @@ services:
       - DB_URI=mongo:27017
 
   quantumleap:
-    image: orchestracities/quantumleap:release-0.8.3
+    image: orchestracities/quantumleap:0.8.3
     depends_on:
       - crate
     environment:
