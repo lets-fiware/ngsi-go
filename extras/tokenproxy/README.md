@@ -51,7 +51,7 @@ ngsi tokenproxy health --host tokenproxy --pretty
 ```
 {
   "ngsi-go": "tokenproxy",
-  "version": "0.11.0 (git_hash:a7da56ae829c3204e31aa0c82ed1d5cca2a37ef9)",
+  "version": "0.12.0 (git_hash:06a13ec2347c05c9fae96106577c06371b7c6bf5)",
   "health": "OK",
   "idm": "http://keyrock:3000/oauth2/token",
   "clientId": "a1a6048b-df1d-4d4f-9a08-5cf836041d14",
