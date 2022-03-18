@@ -1,5 +1,6 @@
 ## NGSI Go v0.11.0-next
 
+-   Update: Extend the length limit of alias name (#236)
 -   Update: Update Orion to 3.6.0 (#235)
 -   Update Quantumleap to 0.8.3 (#234)
 -   Update: Update Orion to 3.5.1 (#233)
