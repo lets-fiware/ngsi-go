@@ -1,5 +1,6 @@
 ## NGSI Go v0.12.0-next
 
+-   Update: Update Orion to 3.6.0 (#244)
 -   Fix: Fix gosimple S1001 error (#243)
 
 ## NGSI Go v0.12.0 - March 19, 2022
