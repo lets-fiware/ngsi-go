@@ -1,3 +1,7 @@
+## NGSI Go v0.12.0-next
+
+-   Fix: Fix gosimple S1001 error (#243)
+
 ## NGSI Go v0.12.0 - March 19, 2022
 
 -   Update: Extend the length limit of alias name (#236)

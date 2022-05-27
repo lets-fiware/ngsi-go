@@ -561,9 +561,7 @@ func (i *MockIoutilLib) ReadFull(r io.Reader, buf []byte) (n int, err error) {
 		return 0, i.ReadFullErr
 	}
 	if i.ReadFullData != nil {
-		for i, v := range i.ReadFullData {
-			buf[i] = v
-		}
+		copy(buf, i.ReadFullData)
 		return len(buf), nil
 	}
 	return io.ReadFull(r, buf)
