@@ -1,3 +1,7 @@
+## NGSI Go v0.12.0-next
+
+-   Update: Update Orion to 3.6.0 (#242)
+
 ## NGSI Go v0.12.0 - March 19, 2022
 
 -   Update: Extend the length limit of alias name (#236)
