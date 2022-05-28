@@ -161,7 +161,8 @@ ngsi get subscription --id $id --pretty --raw
       "headers": {
         "fiware-shared-key": "test"
       }
-    }
+    },
+    "covered": false
   }
 }
 ```
