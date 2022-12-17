@@ -1,5 +1,6 @@
 ## NGSI Go v0.12.0-next
 
+-   Update: Update golang to 1.19.4 (#248)
 -   Update: Update Node.js dependencies (#247)
 -   Update: Update Orion to 3.6.0 (#244)
 -   Fix: Fix gosimple S1001 error (#243)
