@@ -24,7 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM golang:1.17.6-alpine3.15 AS builder
+FROM golang:1.19.4-alpine3.17 AS builder
 LABEL stage=ngsi-builder
 
 WORKDIR /opt/ngsi-test/
