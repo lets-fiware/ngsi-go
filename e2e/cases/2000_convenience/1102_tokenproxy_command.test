@@ -1,0 +1,141 @@
+# MIT License
+#
+# Copyright (c) 2020-2022 Kazuhito Suda
+#
+# This file is part of NGSI Go
+#
+# https://github.com/lets-fiware/ngsi-go
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+#
+# 0001 ngsi settings clear
+#
+ngsi settings clear
+
+```
+```
+
+#
+# 0101 Add tokenproxy
+#
+ngsi server add --host tokenproxy --serverType tokenproxy --serverHost http://tokenproxy:1029
+
+```
+```
+
+#
+# 0102 Check tokenproxy healthy
+#
+ngsi tokenproxy health --host tokenproxy --pretty
+
+```
+{
+  "ngsi-go": "tokenproxy",
+  "version": "REGEX(.*)",
+  "health": "OK",
+  "idm": "http://keyrock:3000/oauth2/token",
+  "clientId": "de95b7b2-2be4-46c8-89da-0aa633cd594c",
+  "clientSecret": "33b387a5-8926-448f-bb9e-644775cd0f74",
+  "verbose": true,
+  "uptime": "REGEX(.*)",
+  "timesent": REGEX(.*),
+  "success": REGEX(.*),
+  "revoke": REGEX(.*),
+  "failure": REGEX(.*)
+}
+```
+
+#
+# 0103 Add broker orion-with-tokenproxy
+#
+ngsi broker add --host orion-with-tokenproxy --ngsiType v2 --brokerHost http://pep-proxy:1026 --idmType tokenproxy --idmHost http://tokenproxy:1029 --username keyrock@letsfiware.jp --password 1234
+
+```
+```
+
+#
+# 0104 Get broker orion-with-tokenproxy
+#
+ngsi broker get --host orion-with-tokenproxy
+
+```
+brokerHost http://pep-proxy:1026
+ngsiType v2
+IdmType tokenproxy
+IdmHost http://tokenproxy:1029
+Username keyrock@letsfiware.jp
+Password ****
+```
+
+#
+# 0105 Get token orion-with-tokenproxy
+#
+ngsi token --host orion-with-tokenproxy
+
+```
+REGEX(.*)
+```
+
+#
+# 0106 Get version orion-with-tokenproxy
+#
+ngsi version --host orion-with-tokenproxy --pretty
+
+```
+{
+  "orion": {
+    "version": "REGEX(.*)",
+    "uptime": "REGEX(.*)",
+    "git_hash": "REGEX(([0-9a-f]{40}|nogitversion))",
+    "compile_time": "REGEX(.*)",
+    "compiled_by": "REGEX(.*)",
+    "compiled_in": "REGEX(.*)",
+    "release_date": "REGEX(.*)",
+    "machine": "REGEX(.*)",
+    "doc": "REGEX(.*)",
+    "libversions": {
+      "boost": "REGEX(.*)",
+      "libcurl": "REGEX(.*)",
+      "libmosquitto": "REGEX(.*)",
+      "libmicrohttpd": "REGEX(.*)",
+      "openssl": "REGEX(.*)",
+      "rapidjson": "REGEX(.*)",
+      "mongoc": "REGEX(.*)",
+      "bson": "REGEX(.*)"
+    }
+  }
+}
+```
+
+#
+# 0107 Delete orion-with-tokenproxy
+#
+ngsi broker delete --host orion-with-tokenproxy
+
+```
+```
+
+#
+# 0107 Delete tokenproxy
+#
+ngsi server delete --host tokenproxy
+
+```
+```
