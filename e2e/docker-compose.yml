@@ -102,7 +102,7 @@ services:
       - PERSEO_FE_URL=http://perseo:9090
 
   pep-proxy:
-    image: fiware/pep-proxy:8.1.0-distroless
+    image: letsfiware/pep-proxy:8.1.0-distroless
     depends_on:
       - keyrock
     environment:
@@ -117,7 +117,7 @@ services:
       - PEP_PASSWORD=pep_proxy_955add39-c55b-46f3-bcb5-944cfcaba758
    
   keyrock:
-    image: fiware/idm:8.1.0-distroless
+    image: letsfiware/idm:8.1.0-distroless
     depends_on:
       - mysql
     environment:
