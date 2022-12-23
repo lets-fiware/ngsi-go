@@ -1,5 +1,6 @@
 ## NGSI Go v0.12.0-next
 
+-   Add: Revert 1102_tokenproxy_command.test (#250)
 -   Add: Add SECURITY.md (#249)
 -   Update: Update golang to 1.19.4 (#248)
 -   Update: Update Node.js dependencies (#247)
