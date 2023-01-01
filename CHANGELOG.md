@@ -1,5 +1,6 @@
 ## NGSI Go v0.12.0-next
 
+-   Update: Update copyright date (#251)
 -   Add: Revert 1102_tokenproxy_command.test (#250)
 -   Add: Add SECURITY.md (#249)
 -   Update: Update golang to 1.19.4 (#248)
