@@ -37,7 +37,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net"
 	"net/http"
@@ -356,9 +355,7 @@ func (io *MockIoLib) FilePathJoin(elem ...string) string {
 	return strings.Join(elem, "/")
 }
 
-//
 // MockFileLib
-//
 type MockFileLib struct {
 	Name              string
 	OpenError         error
@@ -422,9 +419,7 @@ func (f *MockFileLib) File() bufio.Reader {
 	return *err
 }
 
-//
 // MockJSONLib
-//
 type MockJSONLib struct {
 	IndentErr error
 	ValidErr  *bool
@@ -467,9 +462,7 @@ func (j *MockJSONLib) Valid(data []byte) bool {
 	return j.Jsonlib.Valid(data)
 }
 
-//
 // MockSyslogLIb
-//
 type MockSyslogLib struct {
 	Err error
 	Buf *bytes.Buffer
@@ -536,9 +529,7 @@ func (n *MockNetLib) ListenAndServeTLS(addr, certFile, keyFile string, handler h
 	return n.ListenAndServeTLSErr
 }
 
-//
-//  MockIoutilLib
-//
+// MockIoutilLib
 type MockIoutilLib struct {
 	CopyErr      error
 	ReadFullErr  error
@@ -574,7 +565,7 @@ func (i *MockIoutilLib) WriteFile(filename string, data []byte, perm os.FileMode
 	if i.WriteFileErr != nil {
 		return i.WriteFileErr
 	}
-	return ioutil.WriteFile(filename, data, perm)
+	return os.WriteFile(filename, data, perm)
 }
 
 func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
@@ -584,12 +575,10 @@ func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
 	if i.ReadFileData != nil {
 		return i.ReadFileData, nil
 	}
-	return ioutil.ReadFile(filename)
+	return os.ReadFile(filename)
 }
 
-//
 // MockFilePathLib
-//
 type MockFilePathLib struct {
 	PathAbsErr error
 }
@@ -606,9 +595,7 @@ func (i *MockFilePathLib) FilePathBase(path string) string {
 	return filepath.Base(path)
 }
 
-//
 // MockZipLib
-//
 type MockZipLib struct {
 	Zip       error
 	ZipReader *zip.Reader
@@ -633,9 +620,7 @@ func (m *MockMultiPart) NewWriter(w io.Writer) ngsilib.MultiPartLib {
 	return &MockMultiPartLib{Mw: multipart.NewWriter(w), CreatePartErr: m.CreatePartErr, CloseErr: m.CloseErr}
 }
 
-//
 // MockMultiPartLib
-//
 type MockMultiPartLib struct {
 	CreatePartErr error
 	CloseErr      error
@@ -660,9 +645,7 @@ func (m MockMultiPartLib) Close() error {
 	return m.Mw.Close()
 }
 
-//
 // MockZipFile
-//
 type MockZipFile struct {
 }
 

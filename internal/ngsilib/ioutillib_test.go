@@ -31,7 +31,7 @@ package ngsilib
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"testing"
 )
 
@@ -39,7 +39,7 @@ func TestIoutilLibCopy(t *testing.T) {
 	iolib := ioutilLib{}
 	src := bytes.NewReader([]byte("FIWARE"))
 
-	_, _ = iolib.Copy(ioutil.Discard, src)
+	_, _ = iolib.Copy(io.Discard, src)
 }
 
 func TestIoutilLibReadFull(t *testing.T) {

@@ -34,9 +34,7 @@ import (
 	"io"
 )
 
-//
 // ZipLib is ...
-//
 type ZipLib interface {
 	NewReader(r io.ReaderAt, size int64) (*zip.Reader, error)
 }

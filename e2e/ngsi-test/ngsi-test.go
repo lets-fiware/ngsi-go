@@ -35,7 +35,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -96,7 +95,7 @@ func readConfigFile() error {
 
 	fmt.Printf("config: %s\n", fileName)
 
-	b, err := ioutil.ReadFile(fileName)
+	b, err := os.ReadFile(fileName)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}
@@ -175,7 +174,7 @@ func runTestCaseDir(dirName string, dirs, files, cases *int) error {
 	dirList := []string{}
 	fileList := []string{}
 
-	ls, err := ioutil.ReadDir(dirName)
+	ls, err := os.ReadDir(dirName)
 	if err != nil {
 		return &ngsiCmdError{funcName, 1, err.Error(), err}
 	}

@@ -37,7 +37,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -209,7 +208,7 @@ func loadContext() error {
 
 	printMsg(funcName, 1, "dir: "+*gDir)
 
-	files, err := ioutil.ReadDir(*gDir)
+	files, err := os.ReadDir(*gDir)
 	if err != nil {
 		printMsg(funcName, 2, "ReadDir: "+err.Error())
 		return err
@@ -219,7 +218,7 @@ func loadContext() error {
 		if !f.IsDir() && strings.HasSuffix(f.Name(), ".jsonld") {
 			fname := f.Name()
 			fmt.Println("load: " + fname)
-			b, err := ioutil.ReadFile(filepath.Join(*gDir, fname))
+			b, err := os.ReadFile(filepath.Join(*gDir, fname))
 			if err != nil {
 				printMsg(funcName, 3, "ReadFile: "+err.Error())
 				return err
