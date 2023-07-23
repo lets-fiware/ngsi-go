@@ -1,5 +1,6 @@
 ## NGSI Go v0.12.0-next
 
+-   Update: Update golang to 1.20.6 (#260)
 -   Update: Update Node.js dependencies (#253)
 -   Update: Update copyright date (#251)
 -   Add: Revert 1102_tokenproxy_command.test (#250)

@@ -33,7 +33,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -123,7 +122,7 @@ func (r *httpRequest) Request(method string, url *url.URL, headers map[string]st
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	b, err = ioutil.ReadAll(resp.Body)
+	b, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, nil, ngsierr.New(funcName, 5, err.Error(), err)
 	}

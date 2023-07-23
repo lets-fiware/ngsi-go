@@ -65,9 +65,7 @@ func (t *timeLib) Format(layout string) string {
 	return t.TTime.Format(layout)
 }
 
-//
 // GetDateTime
-//
 func GetDateTime(dateTime string) (string, error) {
 	const funcName = "getDateTime"
 
@@ -81,17 +79,13 @@ func GetDateTime(dateTime string) (string, error) {
 	return dateTime, nil
 }
 
-//
 // GetTime
-//
 func GetTime(ngsi *NGSI, v int64) string {
 	_ = ngsi.TimeLib.Unix(v/1000, 0)
 	return ngsi.TimeLib.Format("2006/01/02 15:04:05")
 }
 
-//
 // HumanizeUptime
-//
 func HumanizeUptime(t int64) string {
 	return fmt.Sprintf("%d d, %d h, %d m, %d s", (t/3600)/24, (t/3600)%24, (t/60)%60, t%60)
 }

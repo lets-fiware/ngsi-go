@@ -78,7 +78,6 @@ type IdmParams struct {
 	TokenScope     string
 }
 
-//
 // TokenPlugin interface
 //
 // TokenPlugin is ...

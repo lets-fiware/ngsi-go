@@ -35,7 +35,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -47,9 +46,7 @@ import (
 	"github.com/lets-fiware/ngsi-go/internal/ngsierr"
 )
 
-//
 // testNgsiLibInit
-//
 func testNgsiLibInit() *NGSI {
 	gNGSI = nil
 
@@ -59,9 +56,7 @@ func testNgsiLibInit() *NGSI {
 	return ngsi
 }
 
-//
 // MockTimeLib
-//
 type MockTimeLib struct {
 	dateTime string
 	unixTime int64
@@ -95,9 +90,7 @@ func (t *MockTimeLib) Format(layout string) string {
 	return t.tTime.Format(layout)
 }
 
-//
 // MockJSONLib
-//
 type MockJSONLib struct {
 	IndentErr error
 	ValidErr  *bool
@@ -300,9 +293,7 @@ func (h *MockHTTP) Request(method string, url *url.URL, headers map[string]strin
 	return &r.Res, r.ResBody, r.Err
 }
 
-//
 // MockFileLib
-//
 type MockFileLib struct {
 	Name              string
 	OpenError         error
@@ -378,9 +369,7 @@ func (f *MockFileLib) File() bufio.Reader {
 	return *err
 }
 
-//
-//  MockIoutilLib
-//
+// MockIoutilLib
 type MockIoutilLib struct {
 	CopyErr      error
 	WriteFileErr error
@@ -398,19 +387,17 @@ func (i *MockIoutilLib) WriteFile(filename string, data []byte, perm os.FileMode
 	if i.WriteFileErr != nil {
 		return i.WriteFileErr
 	}
-	return ioutil.WriteFile(filename, data, perm)
+	return os.WriteFile(filename, data, perm)
 }
 
 func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
 	if i.ReadFileErr != nil {
 		return nil, i.ReadFileErr
 	}
-	return ioutil.ReadFile(filename)
+	return os.ReadFile(filename)
 }
 
-//
 // MockFilePathLib
-//
 type MockFilePathLib struct {
 	PathAbsErr error
 }

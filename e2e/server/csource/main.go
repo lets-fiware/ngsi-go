@@ -37,7 +37,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -151,7 +150,7 @@ func loadEntitites() error {
 
 	printMsg(funcName, 1, *gConfigFile)
 
-	b, err := ioutil.ReadFile(*gConfigFile)
+	b, err := os.ReadFile(*gConfigFile)
 	if err != nil {
 		printMsg(funcName, 2, err.Error())
 		return err

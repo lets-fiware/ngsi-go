@@ -35,9 +35,7 @@ import (
 	"net/textproto"
 )
 
-//
 // MultiPart is ...
-//
 type MultiPart interface {
 	NewWriter(w io.Writer) MultiPartLib
 }
@@ -49,9 +47,7 @@ func (m *multiPart) NewWriter(w io.Writer) MultiPartLib {
 	return &multiPartLib{mw: multipart.NewWriter(w)}
 }
 
-//
 // MultiPartLib is ...
-//
 type MultiPartLib interface {
 	CreatePart(header textproto.MIMEHeader) (io.Writer, error)
 	FormDataContentType() string

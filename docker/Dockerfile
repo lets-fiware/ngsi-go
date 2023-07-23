@@ -24,7 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM golang:1.19.4-alpine3.17 AS builder
+FROM golang:1.20.6-alpine3.18 AS builder
 
 RUN \
     apk update && \

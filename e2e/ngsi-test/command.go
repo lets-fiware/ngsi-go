@@ -33,7 +33,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -264,7 +264,7 @@ func waitCmd(line int, args []string) (err error) {
 			}
 			defer func() { setNewError(funcName, 5, res.Body.Close(), &err) }()
 
-			b, err := ioutil.ReadAll(res.Body)
+			b, err := io.ReadAll(res.Body)
 			if err != nil {
 				return &ngsiCmdError{funcName, 6, err.Error(), err}
 			}
@@ -313,7 +313,7 @@ func httpRequest(method string, url string, header map[string]string, b []byte) 
 	}
 	defer func() { setNewError(funcName, 3, res.Body.Close(), &err) }()
 
-	b, err = ioutil.ReadAll(res.Body)
+	b, err = io.ReadAll(res.Body)
 	if err != nil {
 		return &ngsiCmdError{funcName, 4, err.Error(), err}
 	}

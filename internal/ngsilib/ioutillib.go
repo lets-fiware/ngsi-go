@@ -31,7 +31,6 @@ package ngsilib
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 )
 
@@ -55,9 +54,9 @@ func (i *ioutilLib) ReadFull(r io.Reader, buf []byte) (n int, err error) {
 }
 
 func (i *ioutilLib) WriteFile(filename string, data []byte, perm os.FileMode) error {
-	return ioutil.WriteFile(filename, data, perm)
+	return os.WriteFile(filename, data, perm)
 }
 
 func (i *ioutilLib) ReadFile(filename string) ([]byte, error) {
-	return ioutil.ReadFile(filename)
+	return os.ReadFile(filename)
 }

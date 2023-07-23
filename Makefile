@@ -148,3 +148,7 @@ darwin_arm64:
 .PHONY: version
 version:
 	@echo $(VERSION)
+
+.PHONY: gofmt
+gofmt:
+	find . -name "*.go" -print -exec gofmt -s -w \{\} \;

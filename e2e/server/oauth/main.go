@@ -39,7 +39,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -330,7 +329,7 @@ func readTokens(fileName string) error {
 		return nil
 	}
 
-	b, err := ioutil.ReadFile(fileName)
+	b, err := os.ReadFile(fileName)
 	if err != nil {
 		printMsg(funcName, 1, err.Error())
 		return err

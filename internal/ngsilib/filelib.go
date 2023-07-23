@@ -32,7 +32,6 @@ package ngsilib
 import (
 	"bufio"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -77,11 +76,11 @@ func (f *fileLib) FilePathAbs(path string) (string, error) {
 }
 
 func (f *fileLib) ReadAll(r io.Reader) ([]byte, error) {
-	return ioutil.ReadAll(r)
+	return io.ReadAll(r)
 }
 
 func (f *fileLib) ReadFile(filename string) ([]byte, error) {
-	return ioutil.ReadFile(filename)
+	return os.ReadFile(filename)
 }
 
 func (f *fileLib) SetReader(r io.Reader) {

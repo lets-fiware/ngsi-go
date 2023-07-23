@@ -31,7 +31,6 @@ package helper
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 )
 
@@ -70,7 +69,7 @@ func (i *MockIoutilLib) WriteFile(filename string, data []byte, perm os.FileMode
 	if i.WriteFileErr != nil {
 		return i.WriteFileErr
 	}
-	return ioutil.WriteFile(filename, data, perm)
+	return os.WriteFile(filename, data, perm)
 }
 
 func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
@@ -80,5 +79,5 @@ func (i *MockIoutilLib) ReadFile(filename string) ([]byte, error) {
 	if i.ReadFileData != nil {
 		return i.ReadFileData, nil
 	}
-	return ioutil.ReadFile(filename)
+	return os.ReadFile(filename)
 }
