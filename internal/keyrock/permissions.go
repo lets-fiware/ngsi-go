@@ -40,15 +40,17 @@ import (
 )
 
 type keyrockPermissionItems struct {
-	ID            string      `json:"id,omitempty"`
-	Name          string      `json:"name,omitempty"`
-	Description   string      `json:"description,omitempty"`
-	IsInternal    *bool       `json:"is_internal,omitempty"`
-	Action        string      `json:"action,omitempty"`
-	Resource      string      `json:"resource,omitempty"`
-	IsRegex       interface{} `json:"is_regex,omitempty"`
-	XML           string      `json:"xml,omitempty"`
-	OauthClientID string      `json:"oauth_client_id,omitempty"`
+	ID                            string      `json:"id,omitempty"`
+	Name                          string      `json:"name,omitempty"`
+	Description                   string      `json:"description,omitempty"`
+	IsInternal                    *bool       `json:"is_internal,omitempty"`
+	Action                        string      `json:"action,omitempty"`
+	Resource                      string      `json:"resource,omitempty"`
+	AuthorizationServiceHeader    string      `json:"authorization_service_header,omitempty"`
+	UseAuthorizationServiceHeader interface{} `json:"use_authorization_service_header,omitempty"`
+	IsRegex                       interface{} `json:"is_regex,omitempty"`
+	XML                           string      `json:"xml,omitempty"`
+	OauthClientID                 string      `json:"oauth_client_id,omitempty"`
 }
 
 type keyrockPermission struct {
@@ -236,6 +238,20 @@ func makePermissionBody(c *ngsicli.Context, ngsi *ngsilib.NGSI) ([]byte, error) 
 	perm.Permission.Description = c.String("description")
 	perm.Permission.Action = c.String("action")
 	perm.Permission.Resource = c.String("resource")
+
+	if c.IsSet("regex") {
+		perm.Permission.IsRegex = c.Bool(("regex"))
+	}
+
+	if c.IsSet("serviceHeader") {
+		if c.String("serviceHeader") == "" {
+			perm.Permission.UseAuthorizationServiceHeader = false
+		} else {
+			perm.Permission.UseAuthorizationServiceHeader = true
+			perm.Permission.AuthorizationServiceHeader = c.String(("serviceHeader"))
+		}
+
+	}
 
 	b, err := ngsilib.JSONMarshal(perm)
 	if err != nil {

@@ -663,6 +663,39 @@ func TestSetPermissionsParam(t *testing.T) {
 	}
 }
 
+func TestSetPermissionsRegex(t *testing.T) {
+	c := setupTest([]string{"applications", "permissions", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "abc", "--description", "xyz", "--action", "GET", "--resource", "login", "--regex", "true"})
+
+	actual, err := makePermissionBody(c, c.Ngsi)
+
+	if assert.NoError(t, err) {
+		expected := "{\"permission\":{\"name\":\"abc\",\"description\":\"xyz\",\"action\":\"GET\",\"resource\":\"login\",\"is_regex\":true}}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestSetPermissionsAuthorizationServiceHeaderTrue(t *testing.T) {
+	c := setupTest([]string{"applications", "permissions", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "abc", "--description", "xyz", "--action", "GET", "--resource", "login", "--serviceHeader", "tenant"})
+
+	actual, err := makePermissionBody(c, c.Ngsi)
+
+	if assert.NoError(t, err) {
+		expected := "{\"permission\":{\"name\":\"abc\",\"description\":\"xyz\",\"action\":\"GET\",\"resource\":\"login\",\"authorization_service_header\":\"tenant\",\"use_authorization_service_header\":true}}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
+func TestSetPermissionsAuthorizationServiceHeaderFalse(t *testing.T) {
+	c := setupTest([]string{"applications", "permissions", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--name", "abc", "--description", "xyz", "--action", "GET", "--resource", "login", "--serviceHeader", ""})
+
+	actual, err := makePermissionBody(c, c.Ngsi)
+
+	if assert.NoError(t, err) {
+		expected := "{\"permission\":{\"name\":\"abc\",\"description\":\"xyz\",\"action\":\"GET\",\"resource\":\"login\",\"use_authorization_service_header\":false}}"
+		assert.Equal(t, expected, string(actual))
+	}
+}
+
 func TestSetPermissionsParamErrorData(t *testing.T) {
 	c := setupTest([]string{"applications", "permissions", "create", "--host", "keyrock", "--aid", "0fbfa58c-e5b6-41c3-b748-ab29f1567a9c", "--data", "@"})
 

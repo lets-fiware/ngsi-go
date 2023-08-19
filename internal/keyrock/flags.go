@@ -255,6 +255,17 @@ var (
 		Aliases: []string{"r"},
 		Usage:   "resoruce",
 	}
+	keyrockPermissionRegexFlag = &ngsicli.BoolFlag{
+		Name:    "regex",
+		Aliases: []string{"R"},
+		Usage:   "use resource with regex",
+	}
+	keyrockPermissionServiceHeaderFlag = &ngsicli.StringFlag{
+		Name:       "serviceHeader",
+		Aliases:    []string{"S"},
+		ValueEmpty: true,
+		Usage:      "set authorization service header",
+	}
 )
 
 // Keyrock Iot Agents
