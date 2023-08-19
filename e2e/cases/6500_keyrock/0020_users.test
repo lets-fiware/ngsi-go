@@ -33,7 +33,6 @@ ngsi users --host keyrock list --pretty
 {
   "users": [
     {
-      "scope": [],
       "id": "admin",
       "username": "admin",
       "email": "keyrock@letsfiware.jp",
@@ -71,7 +70,6 @@ ngsi users get --uid $alice --pretty
 ```
 {
   "user": {
-    "scope": [],
     "id": "REGEX(.*)",
     "username": "alice",
     "email": "alice@test.com",
@@ -81,7 +79,8 @@ ngsi users get --uid $alice --pretty
     "gravatar": false,
     "date_password": "REGEX(.*)",
     "description": null,
-    "website": null
+    "website": null,
+    "extra": null
   }
 }
 ```
@@ -110,7 +109,6 @@ ngsi users get --uid $bob --pretty
 ```
 {
   "user": {
-    "scope": [],
     "id": "REGEX(.*)",
     "username": "bob",
     "email": "bob-the-manager@test.com",
@@ -120,7 +118,8 @@ ngsi users get --uid $bob --pretty
     "gravatar": false,
     "date_password": "REGEX(.*)",
     "description": null,
-    "website": null
+    "website": null,
+    "extra": null
   }
 }
 ```
@@ -146,7 +145,6 @@ ngsi users get --uid $bob --pretty
 ```
 {
   "user": {
-    "scope": [],
     "id": "REGEX(.*)",
     "username": "bob",
     "email": "bob-the-manager@test.com",
@@ -156,7 +154,8 @@ ngsi users get --uid $bob --pretty
     "gravatar": false,
     "date_password": "REGEX(.*)",
     "description": "bob is the manager",
-    "website": null
+    "website": null,
+    "extra": null
   }
 }
 ```
@@ -185,7 +184,6 @@ ngsi users list --pretty
 {
   "users": [
     {
-      "scope": [],
       "id": "REGEX(.*)",
       "username": "admin",
       "email": "keyrock@letsfiware.jp",

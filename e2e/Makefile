@@ -25,18 +25,18 @@
 # SOFTWARE.
 
 build:
-	docker-compose build --no-cache
+	docker compose build --no-cache
 up:
 	script/docker-compose-up.sh
 down:
-	docker-compose down
+	docker compose down
 ps:
-	docker-compose ps
+	docker compose ps
 logs:
-	docker-compose logs
+	docker compose logs
 rmi:
 	script/rmi.sh
 shell:
-	docker-compose exec ngsi-test bash
+	docker compose exec ngsi-test bash
 run_e2e_test:
-	docker-compose exec -T ngsi-test /usr/local/bin/ngsi-test -verbose cases/
+	docker compose exec -T ngsi-test /usr/local/bin/ngsi-test -verbose cases/

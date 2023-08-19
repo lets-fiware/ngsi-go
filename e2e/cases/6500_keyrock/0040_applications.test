@@ -222,7 +222,6 @@ ngsi applications update --aid $aid --url http://fiware.app/ --pretty
 {
   "values_updated": {
     "url": "http://fiware.app/",
-    "token_types": "jwt,permanent,bearer,bearer",
     "scope": ""
   }
 }
