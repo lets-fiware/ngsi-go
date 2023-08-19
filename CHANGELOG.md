@@ -1,3 +1,5 @@
+## NGSI Go v0.13.0-next
+
 ## NGSI Go v0.13.0 - 19 August, 2023
 
 -   Improve: Add flags for Keyrock permission (#262)
