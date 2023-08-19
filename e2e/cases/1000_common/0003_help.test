@@ -2855,16 +2855,18 @@ CATEGORY:
    Keyrock
 
 OPTIONS:
-   --host VALUE, -h VALUE         broker or server host VALUE (required)
-   --aid VALUE, -i VALUE          application id (required)
-   --data VALUE, -d VALUE         permissionrole data
-   --name VALUE, -n VALUE         permission name
-   --description VALUE, -D VALUE  description
-   --action VALUE, -a VALUE       action
-   --resource VALUE, -r VALUE     resoruce
-   --verbose, -v                  verbose (default: false)
-   --pretty, -P                   pretty format (default: false)
-   --help                         show help (default: true)
+   --host VALUE, -h VALUE           broker or server host VALUE (required)
+   --aid VALUE, -i VALUE            application id (required)
+   --data VALUE, -d VALUE           permissionrole data
+   --name VALUE, -n VALUE           permission name
+   --description VALUE, -D VALUE    description
+   --action VALUE, -a VALUE         action
+   --resource VALUE, -r VALUE       resoruce
+   --regex, -R                      use resource with regex (default: false)
+   --serviceHeader VALUE, -S VALUE  set authorization service header
+   --verbose, -v                    verbose (default: false)
+   --pretty, -P                     pretty format (default: false)
+   --help                           show help (default: true)
 
 GLOBAL OPTIONS:
    --syslog LEVEL        syslog logging LEVEL (off, err, info, debug)
@@ -2895,17 +2897,19 @@ CATEGORY:
    Keyrock
 
 OPTIONS:
-   --host VALUE, -h VALUE         broker or server host VALUE (required)
-   --aid VALUE, -i VALUE          application id (required)
-   --pid VALUE, -p VALUE          permission id (required)
-   --data VALUE, -d VALUE         permissionrole data
-   --name VALUE, -n VALUE         permission name
-   --description VALUE, -D VALUE  description
-   --action VALUE, -a VALUE       action
-   --resource VALUE, -r VALUE     resoruce
-   --verbose, -v                  verbose (default: false)
-   --pretty, -P                   pretty format (default: false)
-   --help                         show help (default: true)
+   --host VALUE, -h VALUE           broker or server host VALUE (required)
+   --aid VALUE, -i VALUE            application id (required)
+   --pid VALUE, -p VALUE            permission id (required)
+   --data VALUE, -d VALUE           permissionrole data
+   --name VALUE, -n VALUE           permission name
+   --description VALUE, -D VALUE    description
+   --action VALUE, -a VALUE         action
+   --resource VALUE, -r VALUE       resoruce
+   --regex, -R                      use resource with regex (default: false)
+   --serviceHeader VALUE, -S VALUE  set authorization service header
+   --verbose, -v                    verbose (default: false)
+   --pretty, -P                     pretty format (default: false)
+   --help                           show help (default: true)
 
 GLOBAL OPTIONS:
    --syslog LEVEL        syslog logging LEVEL (off, err, info, debug)

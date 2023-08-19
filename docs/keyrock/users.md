@@ -46,7 +46,6 @@ ngsi users list --pretty
 {
   "users": [
     {
-      "scope": [],
       "id": "31ea0ac1-595f-479e-9854-f911a26a3d51",
       "username": "alice",
       "email": "alice@test.com",
@@ -57,7 +56,6 @@ ngsi users list --pretty
       "website": null
     },
     {
-      "scope": [],
       "id": "admin",
       "username": "admin",
       "email": "keyrock@letsfiware.jp",
@@ -101,7 +99,6 @@ ngsi users get --uid 31ea0ac1-595f-479e-9854-f911a26a3d51 --pretty
 ```console
 {
   "user": {
-    "scope": [],
     "id": "31ea0ac1-595f-479e-9854-f911a26a3d51",
     "username": "alice",
     "email": "alice@test.com",
@@ -111,7 +108,8 @@ ngsi users get --uid 31ea0ac1-595f-479e-9854-f911a26a3d51 --pretty
     "gravatar": false,
     "date_password": "2021-02-20T20:42:23.000Z",
     "description": null,
-    "website": null
+    "website": null,
+    "extra": null
   }
 }
 ```

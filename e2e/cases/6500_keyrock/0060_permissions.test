@@ -309,7 +309,175 @@ ngsi applications permissions --aid $aid get --pid $pid --pretty
 ```
 
 #
-# 0020 Delete a permission
+# 0019 Delete a permission
+#
+ngsi applications permissions --aid $aid delete --pid $pid
+
+```
+```
+
+#
+# 0021 Create a permission with --regex
+#
+ngsi applications permissions --aid $aid \
+create --name "permission1" \
+--description "test" \
+--action "GET" \
+--resource "/v2/entities" \
+--regex
+
+```
+REGEX(.*)
+```
+
+#
+# 0022 Save a permission id
+#
+$pid=$$
+
+#
+# 0023 Get a permission
+#
+ngsi applications permissions --aid $aid get --pid $pid --pretty
+
+```
+{
+  "permission": {
+    "id": "REGEX(.*)",
+    "name": "permission1",
+    "description": "test",
+    "is_internal": false,
+    "action": "GET",
+    "resource": "/v2/entities",
+    "authorization_service_header": REGEX(.*),
+    "use_authorization_service_header": REGEX(.*),
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
+    "is_regex": 1,
+    "xml": REGEX(.*),
+    "oauth_client_id": "REGEX(.*)"
+  }
+}
+```
+
+#
+# 0023 Update a permission
+#
+ngsi applications permissions --aid $aid update --pid $pid --regex false
+
+```
+{"values_updated":{"is_regex":false}}
+```
+
+#
+# 0024 Get a permission
+#
+ngsi applications permissions --aid $aid get --pid $pid --pretty
+
+```
+{
+  "permission": {
+    "id": "REGEX(.*)",
+    "name": "permission1",
+    "description": "test",
+    "is_internal": false,
+    "action": "GET",
+    "resource": "/v2/entities",
+    "authorization_service_header": REGEX(.*),
+    "use_authorization_service_header": REGEX(.*),
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
+    "is_regex": 0,
+    "xml": REGEX(.*),
+    "oauth_client_id": "REGEX(.*)"
+  }
+}
+```
+
+#
+# 0031 Create a permission with --serviceHeader
+#
+ngsi applications permissions --aid $aid \
+create --name "permission1" \
+--description "test" \
+--action "GET" \
+--resource "/v2/entities" \
+--serviceHeader "tenant"
+
+```
+REGEX(.*)
+```
+
+#
+# 0032 Save a permission id
+#
+$pid=$$
+
+#
+# 0033 Get a permission
+#
+ngsi applications permissions --aid $aid get --pid $pid --pretty
+
+```
+{
+  "permission": {
+    "id": "REGEX(.*)",
+    "name": "permission1",
+    "description": "test",
+    "is_internal": false,
+    "action": "GET",
+    "resource": "/v2/entities",
+    "authorization_service_header": "tenant",
+    "use_authorization_service_header": 1,
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
+    "is_regex": 0,
+    "xml": REGEX(.*),
+    "oauth_client_id": "REGEX(.*)"
+  }
+}
+```
+
+#
+# 0023 Update a permission
+#
+ngsi applications permissions --aid $aid update --pid $pid --serviceHeader ""
+
+```
+{"values_updated":{"use_authorization_service_header":false}}
+```
+
+#
+# 0024 Get a permission
+#
+ngsi applications permissions --aid $aid get --pid $pid --pretty
+
+```
+{
+  "permission": {
+    "id": "REGEX(.*)",
+    "name": "permission1",
+    "description": "test",
+    "is_internal": false,
+    "action": "GET",
+    "resource": "/v2/entities",
+    "authorization_service_header": "tenant",
+    "use_authorization_service_header": 0,
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
+    "is_regex": 0,
+    "xml": REGEX(.*),
+    "oauth_client_id": "REGEX(.*)"
+  }
+}
+```
+
+#
+# 0025 Delete a permission
 #
 ngsi applications permissions --aid $aid delete --pid $pid
 

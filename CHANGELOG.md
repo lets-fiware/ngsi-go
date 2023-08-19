@@ -1,5 +1,6 @@
 ## NGSI Go v0.12.0-next
 
+-   Improve: Add flags for Keyrock permission (#262)
 -   Update: Update build and test environment (#261)
 -   Update: Update golang to 1.20.6 (#260)
 -   Update: Update Node.js dependencies (#253)

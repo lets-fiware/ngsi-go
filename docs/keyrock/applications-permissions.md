@@ -54,6 +54,11 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -62,6 +67,11 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -70,6 +80,11 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -78,6 +93,11 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -86,6 +106,11 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -94,6 +119,11 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --
       "description": null,
       "action": null,
       "resource": null,
+      "authorization_service_header": null,
+      "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     }
   ]
@@ -107,7 +137,7 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b list --
 This command gets a permission.
 
 ```console
-ngsi application [command options] permissions --aid {id} get [options]
+ngsi applications [command options] permissions --aid {id} get [options]
 ```
 
 ### Options
@@ -137,6 +167,11 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b get --p
     "is_internal": true,
     "action": null,
     "resource": null,
+    "authorization_service_header": null,
+    "use_authorization_service_header": 0,
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
     "is_regex": 0,
     "xml": null,
     "oauth_client_id": "idm_admin_app"
@@ -151,23 +186,25 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b get --p
 This command creates a permission.
 
 ```console
-ngsi application [command options] permissions --aid {id} create [options]
+ngsi applications [command options] permissions --aid {id} create [options]
 ```
 
 ### Options
 
-| Options                       | Description                            |
-| ----------------------------- | -------------------------------------- |
-| --host VALUE, -h VALUE        | broker or server host VALUE (required) |
-| --aid VALUE, -i VALUE         | application id (required)              |
-| --data VALUE, -d VALUE        | permissionrole data                    |
-| --name VALUE, -n VALUE        | permission name                        |
-| --description VALUE, -D VALUE | description                            |
-| --action VALUE, -a VALUE      | action                                 |
-| --resource VALUE, -r VALUE    | resoruce                               |
-| --verbose, -v                 | verbose (default: false)               |
-| --pretty, -P                  | pretty format (default: false)         |
-| --help                        | show help (default: true)              |
+| Options                         | Description                              |
+| ------------------------------- | ---------------------------------------- |
+| --host VALUE, -h VALUE          | broker or server host VALUE (required)   |
+| --aid VALUE, -i VALUE           | application id (required)                |
+| --data VALUE, -d VALUE          | permissionrole data                      |
+| --name VALUE, -n VALUE          | permission name                          |
+| --description VALUE, -D VALUE   | description                              |
+| --action VALUE, -a VALUE        | action                                   |
+| --resource VALUE, -r VALUE      | resoruce                                 |
+| --regex, -R                     | use resource with regex (default: false) |
+| --serviceHeader VALUE, -S VALUE | set authorization service header         |
+| --verbose, -v                   | verbose (default: false)                 |
+| --pretty, -P                    | pretty format (default: false)           |
+| --help                          | show help (default: true)                |
 
 ### Examples
 
@@ -178,7 +215,9 @@ ngsi applications permissions --aid $aid \
   create --name "permission1" \
   --description "test" \
   --action "GET" \
-  --resource "login"
+  --resource "login" \
+  --regex \
+  --serviceHeader "tenant1"
 ```
 
 ```console
@@ -192,24 +231,26 @@ ab781799-d2bb-4022-b4b9-5101cbc98e12
 This command updates a permission.
 
 ```console
-ngsi application [command options] permissions --aid {id} update [options]
+ngsi applications [command options] permissions --aid {id} update [options]
 ```
 
 ### Options
 
-| Options                       | Description                            |
-| ----------------------------- | -------------------------------------- |
-| --host VALUE, -h VALUE        | broker or server host VALUE (required) |
-| --aid VALUE, -i VALUE         | application id (required)              |
-| --pid VALUE, -p VALUE         | permission id (required)               |
-| --data VALUE, -d VALUE        | permissionrole data                    |
-| --name VALUE, -n VALUE        | permission name                        |
-| --description VALUE, -D VALUE | description                            |
-| --action VALUE, -a VALUE      | action                                 |
-| --resource VALUE, -r VALUE    | resoruce                               |
-| --verbose, -v                 | verbose (default: false)               |
-| --pretty, -P                  | pretty format (default: false)         |
-| --help                        | show help (default: true)              |
+| Options                         | Description                              |
+| ------------------------------- | ---------------------------------------- |
+| --host VALUE, -h VALUE          | broker or server host VALUE (required)   |
+| --aid VALUE, -i VALUE           | application id (required)                |
+| --pid VALUE, -p VALUE           | permission id (required)                 |
+| --data VALUE, -d VALUE          | permissionrole data                      |
+| --name VALUE, -n VALUE          | permission name                          |
+| --description VALUE, -D VALUE   | description                              |
+| --action VALUE, -a VALUE        | action                                   |
+| --resource VALUE, -r VALUE      | resoruce                                 |
+| --regex, -R                     | use resource with regex (default: false) |
+| --serviceHeader VALUE, -S VALUE | set authorization service header         |
+| --verbose, -v                   | verbose (default: false)                 |
+| --pretty, -P                    | pretty format (default: false)           |
+| --help                          | show help (default: true)                |
 
 ### Examples
 
@@ -224,6 +265,24 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b \
 {"values_updated":{"name":"perm1"}}
 ```
 
+```console
+ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b \
+  update --pid ab781799-d2bb-4022-b4b9-5101cbc98e12 --regex false
+```
+
+```console
+{"values_updated":{"is_regex":false}}
+```
+
+```console
+ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b \
+  update --pid ab781799-d2bb-4022-b4b9-5101cbc98e12 --serviceHeader ""
+```
+
+```console
+{"values_updated":{"use_authorization_service_header":false}}
+```
+
 <a name="delete-a-permission"></a>
 
 ## Delete a permission 
@@ -231,7 +290,7 @@ ngsi applications permissions --aid 8b58ecff-fb45-4811-945c-6f42339db06b \
 This command deletes a permission.
 
 ```console
-ngsi application [command options] permissions --aid {id} delete [options]
+ngsi applications [command options] permissions --aid {id} delete [options]
 ```
 
 ### Options
