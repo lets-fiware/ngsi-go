@@ -127,6 +127,7 @@ ngsi devices list --pretty
       "service_path": "/",
       "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
       "entity_type": "Sensor",
+      "polling": true,
       "transport": "HTTP",
       "attributes": [
         {
@@ -150,7 +151,6 @@ ngsi devices list --pretty
           "type": "Number"
         }
       ],
-      "lazy": [],
       "commands": [],
       "static_attributes": [
         {
@@ -199,7 +199,7 @@ ngsi devices create --data \
 ```
 
 #
-# 0015 List devices
+# 0016 List devices
 #
 ngsi devices list --pretty
 
@@ -213,6 +213,7 @@ ngsi devices list --pretty
       "service_path": "/",
       "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
       "entity_type": "Sensor",
+      "polling": true,
       "transport": "HTTP",
       "attributes": [
         {
@@ -236,7 +237,6 @@ ngsi devices list --pretty
           "type": "Number"
         }
       ],
-      "lazy": [],
       "commands": [],
       "static_attributes": [
         {
@@ -259,6 +259,7 @@ ngsi devices list --pretty
       "service_path": "/",
       "entity_name": "urn:ngsi-ld:WeatherObserved:sensor002",
       "entity_type": "Sensor",
+      "polling": true,
       "transport": "HTTP",
       "attributes": [
         {
@@ -282,7 +283,6 @@ ngsi devices list --pretty
           "type": "Number"
         }
       ],
-      "lazy": [],
       "commands": [],
       "static_attributes": [
         {
@@ -304,7 +304,7 @@ ngsi devices list --pretty
 ```
 
 #
-# 0016 Get sensor001
+# 0017 Get sensor001
 #
 ngsi devices get --id sensor001 --pretty
 
@@ -315,6 +315,7 @@ ngsi devices get --id sensor001 --pretty
   "service_path": "/",
   "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
   "entity_type": "Sensor",
+  "polling": true,
   "transport": "HTTP",
   "attributes": [
     {
@@ -338,7 +339,6 @@ ngsi devices get --id sensor001 --pretty
       "type": "Number"
     }
   ],
-  "lazy": [],
   "commands": [],
   "static_attributes": [
     {
@@ -358,16 +358,16 @@ ngsi devices get --id sensor001 --pretty
 ```
 
 #
-# 0017 Get sensor002
+# 0018 Get sensor002
 #
 ngsi devices get --id sensor002
 
 ```
-{"device_id":"sensor002","service":"openiot","service_path":"/","entity_name":"urn:ngsi-ld:WeatherObserved:sensor002","entity_type":"Sensor","transport":"HTTP","attributes":[{"object_id":"d","name":"dateObserved","type":"DateTime"},{"object_id":"t","name":"temperature","type":"Number"},{"object_id":"h","name":"relativeHumidity","type":"Number"},{"object_id":"p","name":"atmosphericPressure","type":"Number"}],"lazy":[],"commands":[],"static_attributes":[{"name":"location","type":"geo:json","value":{"type":"Point","coordinates":[139.7671,35.68117]}}],"explicitAttrs":false}
+{"device_id":"sensor002","service":"openiot","service_path":"/","entity_name":"urn:ngsi-ld:WeatherObserved:sensor002","entity_type":"Sensor","polling":true,"transport":"HTTP","attributes":[{"object_id":"d","name":"dateObserved","type":"DateTime"},{"object_id":"t","name":"temperature","type":"Number"},{"object_id":"h","name":"relativeHumidity","type":"Number"},{"object_id":"p","name":"atmosphericPressure","type":"Number"}],"commands":[],"static_attributes":[{"name":"location","type":"geo:json","value":{"type":"Point","coordinates":[139.7671,35.68117]}}],"explicitAttrs":false}
 ```
 
 #
-# 0018 Create device 
+# 0019 Create device
 #
 ngsi devices create --data \
 '{
@@ -394,7 +394,7 @@ ngsi devices create --data \
 ```
 
 #
-# 0019 Get sensor003
+# 0020 Get sensor003
 #
 ngsi devices get --id sensor003 --pretty
 
@@ -405,6 +405,7 @@ ngsi devices get --id sensor003 --pretty
   "service_path": "/",
   "entity_name": "urn:ngsi-ld:WeatherObserved:sensor003",
   "entity_type": "Sensor",
+  "polling": true,
   "transport": "HTTP",
   "attributes": [
     {
@@ -428,7 +429,6 @@ ngsi devices get --id sensor003 --pretty
       "type": "Number"
     }
   ],
-  "lazy": [],
   "commands": [],
   "static_attributes": [
     {
@@ -448,7 +448,7 @@ ngsi devices get --id sensor003 --pretty
 ```
 
 #
-# 0020 Update sensor003
+# 0021 Update sensor003
 #
 ngsi devices update --id sensor003 --data '{"entity_name": "urn:ngsi-ld:WeatherObserved:sensor333"}'
 
@@ -456,7 +456,7 @@ ngsi devices update --id sensor003 --data '{"entity_name": "urn:ngsi-ld:WeatherO
 ```
 
 #
-# 0021 Get sensor003
+# 0022 Get sensor003
 #
 ngsi devices get --id sensor003 --pretty
 
@@ -467,6 +467,7 @@ ngsi devices get --id sensor003 --pretty
   "service_path": "/",
   "entity_name": "urn:ngsi-ld:WeatherObserved:sensor333",
   "entity_type": "Sensor",
+  "polling": true,
   "transport": "HTTP",
   "attributes": [
     {
@@ -490,7 +491,6 @@ ngsi devices get --id sensor003 --pretty
       "type": "Number"
     }
   ],
-  "lazy": [],
   "commands": [],
   "static_attributes": [
     {
@@ -510,7 +510,7 @@ ngsi devices get --id sensor003 --pretty
 ```
 
 #
-# 0022 Delete sensor003
+# 0023 Delete sensor003
 #
 ngsi devices delete --id sensor003
 
@@ -518,7 +518,7 @@ ngsi devices delete --id sensor003
 ```
 
 #
-# 0023 Get sensor003
+# 0024 Get sensor003
 #
 ngsi devices get --id sensor003
 
@@ -527,7 +527,7 @@ idasDevicesGet002 404 Not Found {"name":"DEVICE_NOT_FOUND","message":"No device 
 ```
 
 #
-# 0024 List devices
+# 0025 List devices
 #
 ngsi devices list --pretty
 
@@ -541,6 +541,7 @@ ngsi devices list --pretty
       "service_path": "/",
       "entity_name": "urn:ngsi-ld:WeatherObserved:sensor001",
       "entity_type": "Sensor",
+      "polling": true,
       "transport": "HTTP",
       "attributes": [
         {
@@ -564,7 +565,6 @@ ngsi devices list --pretty
           "type": "Number"
         }
       ],
-      "lazy": [],
       "commands": [],
       "static_attributes": [
         {
@@ -587,6 +587,7 @@ ngsi devices list --pretty
       "service_path": "/",
       "entity_name": "urn:ngsi-ld:WeatherObserved:sensor002",
       "entity_type": "Sensor",
+      "polling": true,
       "transport": "HTTP",
       "attributes": [
         {
@@ -610,7 +611,6 @@ ngsi devices list --pretty
           "type": "Number"
         }
       ],
-      "lazy": [],
       "commands": [],
       "static_attributes": [
         {
@@ -632,7 +632,7 @@ ngsi devices list --pretty
 ```
 
 #
-# 0025 Delete sensor001
+# 0026 Delete sensor001
 #
 ngsi devices delete --id sensor001
 
@@ -640,7 +640,7 @@ ngsi devices delete --id sensor001
 ```
 
 #
-# 0026 List devices
+# 0027 List devices
 #
 ngsi devices list --pretty
 
@@ -654,6 +654,7 @@ ngsi devices list --pretty
       "service_path": "/",
       "entity_name": "urn:ngsi-ld:WeatherObserved:sensor002",
       "entity_type": "Sensor",
+      "polling": true,
       "transport": "HTTP",
       "attributes": [
         {
@@ -677,7 +678,6 @@ ngsi devices list --pretty
           "type": "Number"
         }
       ],
-      "lazy": [],
       "commands": [],
       "static_attributes": [
         {
@@ -699,19 +699,19 @@ ngsi devices list --pretty
 ```
 
 #
-# 0027 Delete services and devices
+# 0028 Delete services and devices
 #
 ngsi services delete --resource /iot/d --device true
 
 ```
 ```
 #
-# 0028 sleep 1
+# 0029 sleep 1
 #
 sleep 1
 
 #
-# 0029 List devices
+# 0030 List devices
 #
 ngsi devices list --pretty
 
@@ -723,7 +723,7 @@ ngsi devices list --pretty
 ```
 
 #
-# 0030 List services
+# 0031 List services
 #
 ngsi services list --pretty
 

@@ -177,6 +177,9 @@ ngsi applications roles --aid $aid permissions --rid $rid --pretty
       "resource": "login",
       "authorization_service_header": null,
       "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     }
   ]

@@ -30,7 +30,7 @@
 ngsi version --host keyrock
 
 ```
-{"keyrock":{"version":"7.0.1","release_date":"2018-06-25","uptime":"REGEX(.*)","git_hash":"https://github.com/ging/fiware-idm/releases/tag/7.0.1","doc":"https://fiware-idm.readthedocs.io/en/7.0.1/","api":{"version":"v1","link":"http://localhost:3000/v1"}}}
+{"keyrock":{"version":"8.3.0","release_date":"2023-06-09T13:19:25.000Z","uptime":"REGEX(.*)","doc":"https://keyrock-fiware.github.io/","api":{"version":"v1","link":"http://localhost:3000/v1"}}}
 ```
 
 #
@@ -41,11 +41,10 @@ ngsi version --host keyrock --pretty
 ```
 {
   "keyrock": {
-    "version": "7.0.1",
-    "release_date": "2018-06-25",
+    "version": "8.3.0",
+    "release_date": "2023-06-09T13:19:25.000Z",
     "uptime": "REGEX(.*)",
-    "git_hash": "https://github.com/ging/fiware-idm/releases/tag/7.0.1",
-    "doc": "https://fiware-idm.readthedocs.io/en/7.0.1/",
+    "doc": "https://keyrock-fiware.github.io/",
     "api": {
       "version": "v1",
       "link": "http://localhost:3000/v1"

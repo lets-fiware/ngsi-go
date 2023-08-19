@@ -129,6 +129,9 @@ ngsi applications permissions --aid $aid list --pretty
       "resource": null,
       "authorization_service_header": null,
       "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -139,6 +142,9 @@ ngsi applications permissions --aid $aid list --pretty
       "resource": null,
       "authorization_service_header": null,
       "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -149,6 +155,9 @@ ngsi applications permissions --aid $aid list --pretty
       "resource": null,
       "authorization_service_header": null,
       "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -159,6 +168,9 @@ ngsi applications permissions --aid $aid list --pretty
       "resource": null,
       "authorization_service_header": null,
       "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -169,6 +181,9 @@ ngsi applications permissions --aid $aid list --pretty
       "resource": null,
       "authorization_service_header": null,
       "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     },
     {
@@ -179,6 +194,9 @@ ngsi applications permissions --aid $aid list --pretty
       "resource": null,
       "authorization_service_header": null,
       "use_authorization_service_header": 0,
+      "regex_entity_ids": null,
+      "regex_attributes": null,
+      "regex_types": null,
       "xml": null
     }
   ]
@@ -201,6 +219,9 @@ ngsi applications permissions --aid $aid get --pid 1 --pretty
     "resource": null,
     "authorization_service_header": null,
     "use_authorization_service_header": 0,
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
     "is_regex": 0,
     "xml": null,
     "oauth_client_id": "idm_admin_app"
@@ -242,6 +263,9 @@ ngsi applications permissions --aid $aid get --pid $pid --pretty
     "resource": "login",
     "authorization_service_header": REGEX(.*),
     "use_authorization_service_header": REGEX(.*),
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
     "is_regex": REGEX(.*),
     "xml": REGEX(.*),
     "oauth_client_id": "REGEX(.*)"
@@ -274,6 +298,9 @@ ngsi applications permissions --aid $aid get --pid $pid --pretty
     "resource": "login",
     "authorization_service_header": REGEX(.*),
     "use_authorization_service_header": REGEX(.*),
+    "regex_entity_ids": null,
+    "regex_attributes": null,
+    "regex_types": null,
     "is_regex": REGEX(.*),
     "xml": REGEX(.*),
     "oauth_client_id": "REGEX(.*)"

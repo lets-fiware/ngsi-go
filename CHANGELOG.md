@@ -1,5 +1,6 @@
 ## NGSI Go v0.12.0-next
 
+-   Update: Update build and test environment (#261)
 -   Update: Update golang to 1.20.6 (#260)
 -   Update: Update Node.js dependencies (#253)
 -   Update: Update copyright date (#251)
@@ -7,7 +8,7 @@
 -   Add: Add SECURITY.md (#249)
 -   Update: Update golang to 1.19.4 (#248)
 -   Update: Update Node.js dependencies (#247)
--   Update: Update Orion to 3.6.0 (#244)
+-   Update: Update Orion to 3.7.0 (#244)
 -   Fix: Fix gosimple S1001 error (#243)
 
 ## NGSI Go v0.12.0 - March 19, 2022

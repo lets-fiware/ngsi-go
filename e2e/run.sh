@@ -25,13 +25,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+set -eu
+
 if [ ! -e "$1" ]; then
   echo "$1 not found."
 fi
 
-type docker-compose > /dev/null
-if [ $? -eq 0 ]; then
-  docker-compose exec ngsi-test /usr/local/bin/ngsi-test -verbose "$1"
+set +e
+found=$(docker info --format '{{json . }}' | jq -r '.ClientInfo.Plugins | .[].Name' | ${GREP_CMD} -ic compose)
+set -e
+if [ "${found}" -eq 1 ]; then
+  docker compose exec ngsi-test /usr/local/bin/ngsi-test -verbose "$1"
 else
   if [ -e /usr/local/bin/ngsi-test ]; then
     /usr/local/bin/ngsi-test -verbose "$1"

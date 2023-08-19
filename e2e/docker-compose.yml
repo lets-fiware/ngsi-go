@@ -28,13 +28,13 @@ version: "3"
 
 services:
   orion:
-    image: telefonicaiot/fiware-orion:3.7.0
+    image: telefonicaiot/fiware-orion:3.10.1
     depends_on:
       - mongo
     command: -dbhost mongo
 
   orion-ld:
-    image: fiware/orion-ld:1.0.1
+    image: quay.io/fiware/orion-ld:1.0.1
     restart: always
     depends_on:
       - mongo
@@ -47,7 +47,7 @@ services:
       - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   comet:
-    image: fiware/sth-comet:2.8.0
+    image: telefonicaiot/fiware-sth-comet:2.10.0
     restart: always
     depends_on:
       - mongo
@@ -69,7 +69,7 @@ services:
       - CRATE_HEAP_SIZE=2g
 
   iot-agent:
-    image: fiware/iotagent-ul:1.15.0
+    image: telefonicaiot/iotagent-ul:2.2.0
     depends_on:
       - mongo
     environment:
@@ -86,7 +86,7 @@ services:
       - IOTA_PROVIDER_URL=http://iot-agent:4041
 
   perseo:
-    image: telefonicaiot/perseo-fe:1.15.0
+    image: telefonicaiot/perseo-fe:1.27.0
     restart: always
     depends_on:
       - mongo
@@ -97,12 +97,12 @@ services:
       - PERSEO_ORION_URL=http://orion:1026/
 
   perseo-core:
-    image: telefonicaiot/perseo-core:1.6.0
+    image: telefonicaiot/perseo-core:1.13.0
     environment:
       - PERSEO_FE_URL=http://perseo:9090
 
   pep-proxy:
-    image: letsfiware/pep-proxy:8.1.0-distroless
+    image: letsfiware/fiware-pep-proxy:8.4.0
     depends_on:
       - keyrock
     environment:
@@ -115,9 +115,10 @@ services:
       - PEP_PROXY_APP_ID=de95b7b2-2be4-46c8-89da-0aa633cd594c
       - PEP_PROXY_USERNAME=pep_proxy_132b693f-decb-4eec-a23f-687b503abd4b
       - PEP_PASSWORD=pep_proxy_955add39-c55b-46f3-bcb5-944cfcaba758
+      - PEP_PROXY_AUTH_ENABLED=false
    
   keyrock:
-    image: letsfiware/idm:8.1.0-distroless
+    image: letsfiware/fiware-idm:8.4.0
     depends_on:
       - mysql
     environment:
@@ -132,7 +133,7 @@ services:
       - IDM_ADMIN_PASS=1234
 
   cygnus:
-    image: telefonicaiot/fiware-cygnus:2.16.0
+    image: telefonicaiot/fiware-cygnus:3.2.0
     depends_on:
         - mongo
     networks:
@@ -146,7 +147,7 @@ services:
         - ./config/cygnus-name_mappings.conf:/opt/apache-flume/conf/name_mappings.conf
 
   wirecloud:
-    image: fiware/wirecloud:1.3.1
+    image: quay.io/fiware/wirecloud:1.3.1
     depends_on:
         - keyrock
     environment:
@@ -156,7 +157,7 @@ services:
       - SOCIAL_AUTH_FIWARE_SECRET=ec7392a4-5163-4d84-a64c-d9e0b7dfb309
 
   mysql:
-    image: mysql:5.7.33
+    image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=secret
     volumes:

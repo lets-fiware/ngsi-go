@@ -47,52 +47,72 @@ attr --type Thing --id device001 --attr A1 --hLimit 10 --hOffset 0 --pretty
   "type": "StructuredValue",
   "value": [
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:00:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 1
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:01:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:02:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 3
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:03:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 4
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:04:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 5
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:05:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 6
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:06:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 7
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:07:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 8
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:08:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 9
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-13T00:09:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 10
     }
@@ -111,52 +131,72 @@ attr --type Thing --id device001 --attr A1 --lastN 10 --pretty
   "type": "StructuredValue",
   "value": [
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:50:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2991
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:51:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2992
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:52:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2993
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:53:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2994
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:54:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2995
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:55:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2996
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:56:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2997
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:57:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2998
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:58:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 2999
     },
     {
+      "_id": "REGEX(.*)",
       "recvTime": "2016-09-15T01:59:00.000Z",
+      "attrName": "A1",
       "attrType": "Number",
       "attrValue": 3000
     }

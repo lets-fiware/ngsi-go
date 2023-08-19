@@ -66,7 +66,7 @@ ngsi services list --pretty
       "apikey": "4jggokgpepnvsb2uv4s40d59ov",
       "service": "openiot",
       "subservice": "/",
-      "__v": 0,
+      "__v": REGEX(.*),
       "static_attributes": [],
       "internal_attributes": [],
       "entity_type": "Thing"
@@ -101,7 +101,7 @@ ngsi services list --pretty
       "apikey": "4jggokgpepnvsb2uv4s40d59ov",
       "service": "openiot",
       "subservice": "/",
-      "__v": 0,
+      "__v": REGEX(.*),
       "static_attributes": [],
       "internal_attributes": [],
       "entity_type": "Event"

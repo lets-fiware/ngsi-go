@@ -149,7 +149,8 @@ ngsi get subscription --id $id --pretty --raw
       }
     ],
     "condition": {
-      "attrs": []
+      "attrs": [],
+      "notifyOnMetadataChange": true
     }
   },
   "notification": {

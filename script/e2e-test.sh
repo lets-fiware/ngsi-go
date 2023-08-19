@@ -32,9 +32,13 @@ if [ -e e2e-test.sh ]; then
   cd ..
 fi
 
+if [ -e ./bin/ngsi ]; then
+  rm -f ./bin/ngsi
+fi
+
 make build
 cd e2e
-if [ ! "$(docker-compose ps -a | wc -l)" = "2" ]; then
+if [ ! "$(docker compose ps -a | wc -l)" = "2" ]; then
   make down
 fi
 make build
