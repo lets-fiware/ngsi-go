@@ -26,11 +26,12 @@
 
 FROM golang:1.20.6-alpine3.18 AS builder
 
+    # hadolint ignore=DL3018
 RUN \
     apk update && \
     apk add --no-cache \
-        make=4.3-r0 \
-        git=2.34.1-r0
+        make \
+        git
 
 WORKDIR /root/go/src/github.com/lets-fiware
 
