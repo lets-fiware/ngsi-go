@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2020-2023 Kazuhito Suda
+Copyright (c) 2020-2024 Kazuhito Suda
 
 This file is part of NGSI Go
 
@@ -42,7 +42,7 @@ the NGSI Go from https://github.com/lets-fiware/ngsi-go.
 
 MIT License
 
-Copyright (c) 2020-2023 Kazuhito Suda
+Copyright (c) 2020-2024 Kazuhito Suda
 
 This file is part of NGSI Go
 
